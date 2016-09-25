@@ -76,7 +76,7 @@ timepoints <- function(object,times,returnModels=FALSE){
   # used glm for ftime
   if(ftglm & callList$method=="hazard"){
     funOpts$glm.ftime <- object$ftimeMod
-  }else if(callList$method=="hazard"){
+  }else if(!ftglm & callList$method=="hazard"){
     funOpts$SL.ftime <- object$ftimeMod
   }
   
