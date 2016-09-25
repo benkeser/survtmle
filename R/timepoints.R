@@ -85,7 +85,7 @@ timepoints <- function(object,times,returnModels=FALSE){
   for(i in times){
     ct <- ct+1
     funOpts$t0 <- i
-    if(i != callList$t0){
+    if(i != object$t0){
       outList[[ct]] <- do.call("survtmle",args=funOpts)
     }else{
       outList[[ct]] <- object

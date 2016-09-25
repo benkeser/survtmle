@@ -101,7 +101,7 @@
 #' @return trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
 #' \code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
 #' If \code{returnModels=FALSE}, this will equal \code{NULL}.
-#'   
+#' @return t0 The timepoint the function was evaluated at. 
 #' 
 #' @export
 #' 
@@ -291,7 +291,7 @@ survtmle <- function(
     est=tmle.fit$est, var=tmle.fit$var,
     meanIC=tmle.fit$meanIC, ic=tmle.fit$ic,
     ftimeMod=tmle.fit$ftimeMod, ctimeMod=tmle.fit$ctimeMod,
-    trtMod=tmle.fit$trtMod
+    trtMod=tmle.fit$trtMod, t0=t0
   )
   class(out) <- "survtmle"
   out

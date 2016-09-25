@@ -138,6 +138,8 @@ If \code{returnModels=FALSE}, this will equal \code{NULL}.
 trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
 \code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
 If \code{returnModels=FALSE}, this will equal \code{NULL}.
+
+t0 The timepoint the function was evaluated at.
 }
 \description{
 This function estimates the marginal cumulative incidence for failures of
