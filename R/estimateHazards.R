@@ -153,7 +153,7 @@ estimateHazards <- function(dataList, J,adjustVars,
                                         verbose=verbose)",sep="")))
       }else{
         Qj.mod <- eval(parse(text=paste0("SL.ftime$J",j)))
-      }@€
+      }
       eval(parse(text=paste0("ftimeMod$J",j," <- Qj.mod")))
       
       # get predictions back
