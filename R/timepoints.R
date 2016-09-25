@@ -56,9 +56,10 @@ timepoints <- function(object,times,returnModels=FALSE){
                   FALSE)
   
   myOpts <- c("t0","returnModels", 
-              ifelse(cglm,"glm.ctime","SL.ctime"),ifelse(tglm, "glm.trt","SL.trt"),
-              ifelse(callList$method=="hazard",
-                ifelse(ftglm, "glm.ftime","SL.ftime"), NULL))
+              ifelse(cglm,"glm.ctime","SL.ctime"),ifelse(tglm, "glm.trt","SL.trt"))
+  if(callList$method=="hazard"){
+    myOpts <- c(myOpts, ifelse(ftglm, "glm.ftime","SL.ftime"))
+  }
   funOpts <- callList[-which(names(callList) %in% myOpts)]
     
   funOpts$returnModels <- returnModels
