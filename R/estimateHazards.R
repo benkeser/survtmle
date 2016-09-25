@@ -153,12 +153,13 @@ estimateHazards <- function(dataList, J,adjustVars,
                                         verbose=verbose)",sep="")))
       }else{
         Qj.mod <- eval(parse(text=paste0("SL.ftime$J",j)))
-      }
+      }@€
       eval(parse(text=paste0("ftimeMod$J",j," <- Qj.mod")))
       
       # get predictions back
       dataList <- lapply(dataList, function(x,j){
-        eval(parse(text=paste("x$Q",j,"PseudoHaz <- predict(Qj.mod, onlySL=T, newdata=x)[[1]]",sep="")))
+        eval(parse(text=paste("x$Q",j,
+          "PseudoHaz <- predict(Qj.mod, onlySL=TRUE, newdata=x[c('t', 'trt', names(adjustVars)),])[[1]]",sep="")))
         if(j != min(J)){
           eval(parse(text=paste("x$hazLessThan",j," <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',J[J<j],'Haz')]))",sep="")))
           eval(parse(text=paste("x$Q",j,"Haz <- x$Q",j,"PseudoHaz * (1-x$hazLessThan",j,")",sep="")))
