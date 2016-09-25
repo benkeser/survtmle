@@ -69,7 +69,7 @@ timepoints <- function(object,times,returnModels=FALSE){
   }
   # used glm for trt?
   if(tglm){
-    funOpts$glm.ctime <- object$trtMod
+    funOpts$glm.trt <- object$trtMod
   }else{
     funOpts$SL.trt <- object$trtMod
   }
