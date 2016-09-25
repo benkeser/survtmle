@@ -68,11 +68,11 @@ estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
       eval(parse(text=paste0("dat$g_",max(dat$trt), "<- trtMod$SL.predict")))
       eval(parse(text=paste0("dat$g_",min(dat$trt), "<- 1-trtMod$SL.predict")))
     }else if(!is.null(glm.trt) & is.null(SL.trt)){
-      if(all(class(SL.trt) != "glm")){
+      if(!("glm" %in% class(glm.trt))){
         thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- glm(as.formula(paste0("thisY ~ ",glm.trt)), data=dat,family=binomial)
       }else{
-        trtMod <- SL.trt
+        trtMod <- glm.trt
       }
       pred <- predict(trtMod,type="response")
       eval(parse(text=paste0("dat$g_",max(dat$trt), "<- pred")))
