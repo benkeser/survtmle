@@ -6,8 +6,8 @@
 #' The function is called by \code{survtmle} whenever \code{method="hazard"} is specified. 
 #' However, power users could, in theory, make calls directly to this function. 
 #' 
-#' @param ftime A numeric vector of failure times. Missing values are not supported. Right 
-#' censored observations should have a non-missing value for \code{ftime} while 
+#' @param ftime A numeric vector of failure times. Missing values or zero values
+#' are not supported. Right censored observations should have a non-missing value for \code{ftime} while 
 #' \code{ftype} should be set to 0. 
 #' @param ftype A numeric vector indicating the type of failure with type 0 reserved for 
 #' right censored observations. Each unique value will be treated as an (unordered) separate

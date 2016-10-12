@@ -12,8 +12,8 @@ hazard.tmle(ftime, ftype, trt, t0, incidence = TRUE, adjustVars = NULL,
   maxIter = 100, ...)
 }
 \arguments{
-\item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
-censored observations should have a non-missing value for \code{ftime} while 
+\item{ftime}{A numeric vector of failure times. Missing values or zero values
+are not supported. Right censored observations should have a non-missing value for \code{ftime} while 
 \code{ftype} should be set to 0.}
 
 \item{ftype}{A numeric vector indicating the type of failure with type 0 reserved for 
