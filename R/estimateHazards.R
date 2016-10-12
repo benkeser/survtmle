@@ -144,7 +144,7 @@ estimateHazards <- function(dataList, J,adjustVars,
         eval(parse(text=paste("NlessthanJ <- NlessthanJ + dataList[[1]]$N",i,sep="")))
       }
       
-      if(class(SL.ftime) != "SuperLearner"){
+      if(class(SL.ftime[[1]]) != "SuperLearner"){
         Qj.mod <- eval(parse(text=paste("SuperLearner(Y=dataList[[1]]$N",j,"[NlessthanJ==0],
                                         X=dataList[[1]][NlessthanJ==0,c('t', 'trt', names(adjustVars))],
                                         id=dataList[[1]]$id[NlessthanJ==0],
