@@ -64,7 +64,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   }
   
   ## determine who to include in estimation
-  include <- rep(T, nrow(wideDataList[[1]]))
+  include <- rep(TRUE, nrow(wideDataList[[1]]))
   if(t!=1){
     for(j in allJ){
       # exclude previously failed subjects
