@@ -55,62 +55,92 @@ estimateCensoring <- function(
   verbose=TRUE, 
   ...
 ){
+    include <- !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C!=1 & dataList[[1]]$t < t0) & 
+     !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C==1 & dataList[[1]]$t==t0)
   
-  include <- !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C!=1 & dataList[[1]]$t < t0) & 
-    !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C==1 & dataList[[1]]$t==t0)
+    # check for missing inputs
+    if(is.null(SL.ctime) & is.null(glm.ctime)){
+     warning("Super Learner library and glm formula for censoring not specified. Proceeding 
+             with empirical estimates")
+     glm.ctime <- "trt*factor(t)"
+    }
   
-  # check for missing inputs
-  if(is.null(SL.ctime) & is.null(glm.ctime)){
-    warning("Super Learner library and glm formula for censoring not specified. Proceeding 
-            with empirical estimates")
-    glm.ctime <- "trt*factor(t)"
-  }
-  
-  # if no SL library is specified, the code defaults to the specific GLM form
-  if(is.null(SL.ctime)){
-    if(all(class(glm.ctime) != "glm")){
-      ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
-      ctimeMod <- glm(as.formula(ctimeForm), 
-                      data=dataList[[1]][include,],
-                      family="binomial")
-      ctimeMod <- cleanglm(ctimeMod)
+    # if no SL library is specified, the code defaults to the specific GLM form
+    if(is.null(SL.ctime)){
+     if(!("glm" %in% class(glm.ctime))){
+      if(!all(dataList[[1]]$C == 0)){
+       ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
+       ctimeMod <- glm(as.formula(ctimeForm), 
+                       data=dataList[[1]][include,],
+                       family="binomial")
+       ctimeMod <- cleanglm(ctimeMod)
+      }else{
+        dataList <- lapply(dataList, function(x){
+        x$G_dC <- 1
+      })
+      ctimeMod <- "No censoring observed"
+      class(ctimeMod) <- "noCens"
+     }
     }else{
-      ctimeMod <- glm.ctime
+       ctimeMod <- glm.ctime
     }
-    dataList <- lapply(dataList, function(x){
-      g_dC <- rep(1, nrow(x))
-      if(t0!=1) g_dC[x$t!=t0] <- 1-predict(ctimeMod, newdata=x[x$t!=t0,], type="response")
-      g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
-      g_dC[x$t==1] <- 1
-      x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
-      x
-    })
-  }else if(is.null(glm.ctime)){
-    if(class(SL.ctime) != "SuperLearner"){
-      ctimeMod <- SuperLearner(Y=dataList[[1]]$C[include],
-        X=dataList[[1]][include,c("t", "trt", names(adjustVars))],
-        id=dataList[[1]]$id[include],
-        family=binomial(),
-        SL.library=SL.ctime,
-        verbose=verbose)
-    }else{ # if inputted SLlibrary.time is Super Learner object, just use that one
-      ctimeMod <- SL.ctime
-    }
-    dataList <- lapply(dataList, function(x){
-      g_dC <- rep(1, nrow(x))
-      if(t0!=1) g_dC[x$t!=t0] <- 
-          1-predict(ctimeMod, newdata=x[x$t!=t0,c("t", "trt", names(adjustVars))],onlySL=TRUE)[[1]]
-      g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
-      g_dC[x$t==1] <- 1
-      x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
-      x
-    })
-  }
-  out <- list(dataList = dataList,
-              ctimeMod = if(returnModels)
-                ctimeMod
-              else
-                NULL)
-  return(out)
+    # as long as there are some observed censoring events,
+    # get predictions from ctimeMod
+    if(class(ctimeMod) != "noCens"){
+       dataList <- lapply(dataList, function(x){
+        g_dC <- rep(1, nrow(x))
+        if(t0!=1) g_dC[x$t!=t0] <- 1-predict(ctimeMod, newdata=x[x$t!=t0,], type="response")
+        g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
+        g_dC[x$t==1] <- 1
+        x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
+        x
+      })
+    # if no observed censoring events, everybody gets 1
+    }else{
+      dataList <- lapply(dataList, function(x){
+        x$G_dC <- 1
+      })
+     }
+    }else{
+     if(class(SL.ctime) != "SuperLearner"){
+       if(!all(dataList[[1]]$C==0)){
+         ctimeMod <- SuperLearner(Y=dataList[[1]]$C[include],
+          X=dataList[[1]][include,c("t", "trt", names(adjustVars))],
+          id=dataList[[1]]$id[include],
+          family=binomial(),
+          SL.library=SL.ctime,
+           verbose=verbose)
+       }else{
+         dataList <- lapply(dataList, function(x){
+           x$G_dC <- 1
+         })
+        ctimeMod <- "No censoring observed"
+        class(ctimeMod) <- "noCens"
+      }
+     }else{ # if inputted SLlibrary.time is Super Learner object, just use that one
+        ctimeMod <- SL.ctime
+     } 
+     if(class(ctimeMod) != "noCens"){
+       dataList <- lapply(dataList, function(x){
+        G_dC <- rep(1, nrow(x))
+        if(t0!=1) g_dC[x$t!=t0] <- 
+            1-predict(ctimeMod, newdata=x[x$t!=t0,c("t", "trt", names(adjustVars))],onlySL=TRUE)[[1]]
+        g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
+        g_dC[x$t==1] <- 1
+        x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
+        x
+      })
+     }else{
+      dataList <- lapply(dataList, function(x){
+        x$G_dC <- 1
+      })
+     }
+   }
+   out <- list(dataList = dataList,
+               ctimeMod = if(returnModels)
+                 ctimeMod
+                else
+                 NULL)
+   return(out)
 }
 
