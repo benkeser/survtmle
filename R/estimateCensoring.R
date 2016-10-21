@@ -76,7 +76,7 @@ estimateCensoring <- function(
        ctimeMod <- cleanglm(ctimeMod)
       }else{
         dataList <- lapply(dataList, function(x){
-        x$G_dC <- 1
+        x$G_dC <- 1; x
       })
       ctimeMod <- "No censoring observed"
       class(ctimeMod) <- "noCens"
@@ -98,7 +98,7 @@ estimateCensoring <- function(
     # if no observed censoring events, everybody gets 1
     }else{
       dataList <- lapply(dataList, function(x){
-        x$G_dC <- 1
+        x$G_dC <- 1; x
       })
      }
     }else{
@@ -113,6 +113,7 @@ estimateCensoring <- function(
        }else{
          dataList <- lapply(dataList, function(x){
            x$G_dC <- 1
+           x
          })
         ctimeMod <- "No censoring observed"
         class(ctimeMod) <- "noCens"
@@ -133,6 +134,7 @@ estimateCensoring <- function(
      }else{
       dataList <- lapply(dataList, function(x){
         x$G_dC <- 1
+        x
       })
      }
    }
