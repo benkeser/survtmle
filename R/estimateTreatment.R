@@ -57,7 +57,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
   if(length(unique(dat$trt))==1){
     eval(parse(text=paste0("dat$g_",unique(dat$trt), "<- 1")))
   }else{
-    if(is.null(glm.trt) & !is.null(SL.trt)){
+    if(!is.null(SL.trt)){
       if(class(SL.trt) != "SuperLearner"){
         thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- SuperLearner(Y=thisY, X=adjustVars, newX=adjustVars, SL.library=SL.trt,
