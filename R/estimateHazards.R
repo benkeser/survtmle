@@ -164,8 +164,8 @@ estimateHazards <- function(dataList, J,adjustVars,
           eval(parse(text=paste("x$hazLessThan",j," <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',J[J<j],'Haz')]))",sep="")))
           eval(parse(text=paste("x$Q",j,"Haz <- x$Q",j,"PseudoHaz * (1-x$hazLessThan",j,")",sep="")))
         }else{
-          eval(parse(text=paste("x$hazLessThan",j," <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',J[J<j],'Haz')]))",sep="")))
           eval(parse(text=paste("x$Q",j,"Haz <- x$Q",j,"PseudoHaz",sep="")))
+          eval(parse(text=paste("x$hazLessThan",j," <- 0",sep="")))
         }
         x
       }, j=j)
