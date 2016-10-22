@@ -76,8 +76,8 @@ updateVariables <- function(
   dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
     for(z in uniqtrt){
       for(j in ofInterestJ){
-        eval(parse(text=paste("x$H",j,".jSelf.z",z,"<- (x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) * (1-x$hazNot",j,") * ((x$t<t0)*(1-(x$F",j,".z",z,".t0 - x$F",j,".t)/x$S.t) + (x$t==t0))",sep="")))
-        eval(parse(text=paste("x$H",j,".jNotSelf.z",z,"<- -(x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) *(1-x$hazNot",j,") * ((x$t<t0)*(x$F",j,".z",z,".t0 - x$F",j,".t)/x$S.t)",sep="")))
+        eval(parse(text=paste("x$H",j,".jSelf.z",z,"<- (x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) * (1-x$hazNot",j,") * ((x$t<t0)*(1-(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t)) + (x$t==t0))",sep="")))
+        eval(parse(text=paste("x$H",j,".jNotSelf.z",z,"<- -(x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) *(1-x$hazNot",j,") * ((x$t<t0)*(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t))",sep="")))
       }
     }
     x
