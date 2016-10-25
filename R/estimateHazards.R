@@ -158,6 +158,7 @@ estimateHazards <- function(dataList, J,adjustVars,
       
       # get predictions back
       dataList <- lapply(dataList, function(x,j){
+        
         eval(parse(text=paste("x$Q",j,
           "PseudoHaz <- predict(Qj.mod, onlySL=TRUE, newdata=x[,c('t', 'trt', names(adjustVars))])[[1]]",sep="")))
         if(j != min(J)){
