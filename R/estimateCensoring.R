@@ -123,7 +123,7 @@ estimateCensoring <- function(
      } 
      if(class(ctimeMod) != "noCens"){
        dataList <- lapply(dataList, function(x){
-        G_dC <- rep(1, nrow(x))
+        g_dC <- rep(1, nrow(x))
         if(t0!=1) g_dC[x$t!=t0] <- 
             1-predict(ctimeMod, newdata=x[x$t!=t0,c("t", "trt", names(adjustVars))],onlySL=TRUE)[[1]]
         g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
