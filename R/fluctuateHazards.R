@@ -62,7 +62,9 @@ fluctuateHazards <- function(
       fluc.mod <- optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
                         fn=LogLikelihood.offset, 
                         Y=dataList[[1]]$thisOutcome, 
-                        H=as.matrix(Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)])),
+                        H=suppressWarnings(
+                          as.matrix(Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
+                          ),
                         offset=dataList[[1]]$thisOffset,    
                         method="BFGS",gr=grad.offset,
                         control=list(reltol=1e-7,maxit=50000))
@@ -85,7 +87,7 @@ fluctuateHazards <- function(
     eps <- c(eps, beta)
       
     dataList <- lapply(dataList, function(x,j){
-      eval(parse(text=paste("x$Q",j,"PseudoHaz[x$trt==",z,"] <- plogis(x$thisOffset[x$trt==",z,"] + as.matrix(Diagonal(x=x$thisScale[x$trt==",z,"])%*%as.matrix(x[x$trt==",z,",c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))%*%as.matrix(beta))",sep="")))
+      eval(parse(text=paste("x$Q",j,"PseudoHaz[x$trt==",z,"] <- plogis(x$thisOffset[x$trt==",z,"] + suppressWarnings(as.matrix(Diagonal(x=x$thisScale[x$trt==",z,"])%*%as.matrix(x[x$trt==",z,",c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))%*%as.matrix(beta)))",sep="")))
       eval(parse(text=paste("x$Q",j,"Haz[x$trt==",z,"] <- x$Q",j,"PseudoHaz[x$trt==",z,"] * x$thisScale[x$trt==",z,"] + x$l",j,"[x$trt==",z,"]",sep="")))
       x 
     },j=j)
