@@ -1,0 +1,5 @@
+^survtmle\.Rproj$
+^\.travis\.yml$
+^\.gitignore$
+^\README\.md$
+^cran-comments\.md$
