@@ -4,7 +4,7 @@ Title: Compute targeted minimum loss-based estimates in right-censored survival
 Version: 0.0.0.9
 Authors@R: as.person(c(
   "David Benkeser <benkeser@berkeley.edu> [aut, cre]",
-  "Nima Hejazi <nhejazi@berkeley.edu [ctb]>"
+  "Nima Hejazi <nhejazi@berkeley.edu> [ctb]"
   ))
 Description: This package can be used to compute marginal cumulative incidence
              estimates in settings with and without competing risks.
