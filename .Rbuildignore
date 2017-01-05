@@ -1,5 +1,6 @@
 ^survtmle\.Rproj$
 ^\.travis\.yml$
+^appveyor\.yml$
 ^\.gitignore$
 ^\README\.md$
 ^cran-comments\.md$

@@ -1,12 +1,11 @@
 # R/`survtmle`
 
-[![Travis-CI Build
-Status](https://travis-ci.org/nhejazi/survtmle.svg?branch=master)](https://travis-ci.org/nhejazi/survtmle)
-[![Coverage
-Status](https://coveralls.io/repos/github/nhejazi/survtmle/badge.svg?branch=master)
-](https://coveralls.io/github/nhejazi/survtmle?branch=master)
-[![MIT
-license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![Travis-CI Build Status](https://travis-ci.org/benkeser/survtmle.svg?branch=master)](https://travis-ci.org/benkeser/survtmle)
+[![AppVeyor Build  Status](https://ci.appveyor.com/api/projects/status/github/benkeser/survtmle?branch=master&svg=true)](https://ci.appveyor.com/project/benkeser/survtmle)
+[![Coverage Status](https://coveralls.io/repos/github/benkeser/survtmle/badge.svg?branch=master)](https://coveralls.io/github/benkeser/survtmle?branch=master)
+[![CRAN](http://www.r-pkg.org/badges/version/survtmle)](http://www.r-pkg.org/pkg/survtmle)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 > Targeted Minimum Loss-Based Estimation (TMLE) for Survival Analysis and
 > Vaccine Sieve Analysis

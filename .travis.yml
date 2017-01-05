@@ -12,11 +12,6 @@ warnings_are_errors: true
 
 cache: packages
 
-r_packages:
-  - testthat
-  - rmarkdown
-  - SuperLearner
-
 r_github_packages:
   - jimhester/covr
 
