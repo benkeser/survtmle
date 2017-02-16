@@ -2,7 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/benkeser/survtmle.svg?branch=master)](https://travis-ci.org/benkeser/survtmle)
 [![AppVeyor Build  Status](https://ci.appveyor.com/api/projects/status/github/benkeser/survtmle?branch=master&svg=true)](https://ci.appveyor.com/project/benkeser/survtmle)
-[![Coverage Status](https://coveralls.io/repos/github/benkeser/survtmle/badge.svg?branch=master)](https://coveralls.io/github/benkeser/survtmle?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/benkeser/survtmle/master.svg)](https://codecov.io/github/benkeser/survtmle?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/survtmle)](http://www.r-pkg.org/pkg/survtmle)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
@@ -27,9 +27,6 @@ settings.
 
 - Install the most recent _stable release_:
   `devtools::install_github("benkeser/survtmle")`
-
-- To contribute, install the _development version_:
-  `devtools::install_github("benkeser/survtmle", ref = "develop")`
 
 ---
 

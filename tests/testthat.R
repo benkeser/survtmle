@@ -1,4 +1,4 @@
 library(testthat)
 library(survtmle)
 
-#test_check("survtmle")
+test_check("survtmle")
