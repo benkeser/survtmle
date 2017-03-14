@@ -14,7 +14,7 @@ Depends:
 Imports:
     SuperLearner,
     Matrix,
-    dplyr
+    plyr
 Suggests:
     testthat,
     knitr,
