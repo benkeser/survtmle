@@ -54,7 +54,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
       }
     }
     suppressMessages(
-      dataList[[1]] <- join(x=dataList[[1]],y=boundFormat,type="left")
+      dataList[[1]] <- dplyr::join(x=dataList[[1]],y=boundFormat,type="left")
     )  
   }else{
     for(j in J){
