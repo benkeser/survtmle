@@ -18,6 +18,7 @@
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @export 
+#' @importFrom plyr join
 #' 
 #' @return A list of \code{data.frame} objects as described above. 
 
