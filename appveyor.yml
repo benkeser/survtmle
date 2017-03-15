@@ -13,6 +13,11 @@ cache:
   - C:\RLibrary
 
 # Adapt as necessary starting from here
+branches:
+  only:
+    - master
+    - develop
+
 build_script:
   - travis-tool.sh install_deps
 
