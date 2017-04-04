@@ -3,6 +3,8 @@
 S3method(mean,tmle)
 S3method(print,survtmle)
 export(bin.ftime)
+export(cv_hazard.tmle)
+export(cv_survtmle_internal)
 export(estimateCensoring)
 export(estimateHazards)
 export(estimateIteratedMean)
