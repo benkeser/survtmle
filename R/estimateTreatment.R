@@ -31,6 +31,9 @@
 #' @return trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or \code{SuperLearner}
 #' object. Otherwise, \code{NULL}
 #' 
+#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
+#' 
 #' @export 
 #' 
 #' @examples
@@ -60,8 +63,8 @@ estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
     if(!is.null(SL.trt)){
       if(class(SL.trt) != "SuperLearner"){
         thisY <- as.numeric(dat$trt == max(dat$trt))
-        trtMod <- SuperLearner(Y=thisY, X=adjustVars, newX=adjustVars, SL.library=SL.trt,
-                               id=dat$id,verbose=verbose, family=binomial)
+        trtMod <- SuperLearner::SuperLearner(Y=thisY, X=adjustVars, newX=adjustVars, SL.library=SL.trt,
+                               id=dat$id,verbose=verbose, family="binomial")
       }else{
         trtMod <- SL.trt
       }
@@ -70,7 +73,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
     }else if(!is.null(glm.trt) & is.null(SL.trt)){
       if(!("glm" %in% class(glm.trt))){
         thisY <- as.numeric(dat$trt == max(dat$trt))
-        trtMod <- glm(as.formula(paste0("thisY ~ ",glm.trt)), data=dat,family=binomial)
+        trtMod <- stats::glm(stats::as.formula(paste0("thisY ~ ",glm.trt)), data=dat,family="binomial")
       }else{
         trtMod <- glm.trt
       }

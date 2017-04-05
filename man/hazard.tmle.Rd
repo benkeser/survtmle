@@ -8,8 +8,7 @@ hazard.tmle(ftime, ftype, trt, t0, incidence = TRUE, adjustVars = NULL,
   SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
   glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
-  method = "hazard", bounds = NULL, verbose, tol = 1/(length(ftime)),
-  maxIter = 100, ...)
+  bounds = NULL, verbose, tol = 1/(length(ftime)), maxIter = 100, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values or zero values

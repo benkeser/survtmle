@@ -52,7 +52,7 @@ updateVariables <- function(
     
     dataList <- lapply(dataList, function(x,j,uniqtrt,Fj.t0.allZ){
       for(i in 1:length(uniqtrt)){
-        ind <- tapply(X=x$id,IND=x$id,FUN=NULL)
+        ind <- tapply(X=x$id,INDEX=x$id,FUN=NULL)
         eval(parse(text=paste("x$F",j,".z",uniqtrt[i],".t0 <- Fj.t0.allZ[ind,",i,"]",sep="")))
       }
       x

@@ -136,7 +136,6 @@ hazard.tmle <- function(
   returnModels=FALSE,
   ftypeOfInterest="all",
   trtOfInterest="all",
-  method="hazard",
   bounds=NULL, 
   verbose,
   tol=1/(length(ftime)),

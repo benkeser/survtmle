@@ -30,6 +30,9 @@
 #' but with updated columns corresponding with estimated cumulative incidence at each time
 #' and estimated "clever covariates" at each time. 
 #' 
+#' @importFrom Matrix Diagonal
+#' @importFrom stats optim
+#' 
 #' @export
 
 
@@ -59,11 +62,11 @@ fluctuateHazards <- function(
     }, j=j,allJ=allJ)
 
 #    if(length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))>1){
-      fluc.mod <- optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
+      fluc.mod <- stats::optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
                         fn=LogLikelihood.offset, 
                         Y=dataList[[1]]$thisOutcome, 
                         H=suppressWarnings(
-                          as.matrix(Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
+                          as.matrix(Matrix::Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
                           ),
                         offset=dataList[[1]]$thisOffset,    
                         method="BFGS",gr=grad.offset,
@@ -87,7 +90,7 @@ fluctuateHazards <- function(
     eps <- c(eps, beta)
       
     dataList <- lapply(dataList, function(x,j){
-      eval(parse(text=paste("x$Q",j,"PseudoHaz[x$trt==",z,"] <- plogis(x$thisOffset[x$trt==",z,"] + suppressWarnings(as.matrix(Diagonal(x=x$thisScale[x$trt==",z,"])%*%as.matrix(x[x$trt==",z,",c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))%*%as.matrix(beta)))",sep="")))
+      eval(parse(text=paste("x$Q",j,"PseudoHaz[x$trt==",z,"] <- plogis(x$thisOffset[x$trt==",z,"] + suppressWarnings(as.matrix(Matrix::Diagonal(x=x$thisScale[x$trt==",z,"])%*%as.matrix(x[x$trt==",z,",c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))%*%as.matrix(beta)))",sep="")))
       eval(parse(text=paste("x$Q",j,"Haz[x$trt==",z,"] <- x$Q",j,"PseudoHaz[x$trt==",z,"] * x$thisScale[x$trt==",z,"] + x$l",j,"[x$trt==",z,"]",sep="")))
       x 
     },j=j)

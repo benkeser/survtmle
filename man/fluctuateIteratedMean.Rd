@@ -25,9 +25,6 @@ the naming convention for the regression if \code{t==t0} is different than if \c
 \item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
 
 \item{...}{Other arguments. Not currently used.}
-
-\item{adjustVars}{Object of class \code{data.frame} that contains the variables to adjust 
-for in the regression.}
 }
 \value{
 The function then returns a list that is exactly the same as the input \code{wideDataList}, 

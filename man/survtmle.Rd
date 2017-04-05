@@ -243,6 +243,6 @@ glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
 method="mean", returnModels = TRUE, ftypeOfInterest = 1)
 fit9
 
-# XXX NEED TO ADD EXAMPLE WITH BOUNDS XXX
+# TODO: Add bounds example
 }
 

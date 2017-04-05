@@ -6,8 +6,8 @@
 \usage{
 cv_hazard.tmle(ftime, ftype, trt, t0, incidence = TRUE, adjustVars = NULL,
   survtmleFits, validFolds, returnIC = TRUE, returnModels = FALSE,
-  ftypeOfInterest = "all", trtOfInterest = "all", method = "hazard",
-  bounds = NULL, verbose, tol = 1/(length(ftime)), maxIter = 100, ...)
+  ftypeOfInterest = "all", trtOfInterest = "all", bounds = NULL, verbose,
+  tol = 1/(length(ftime)), maxIter = 100, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values or zero values

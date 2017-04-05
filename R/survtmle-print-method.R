@@ -3,6 +3,7 @@
 #' The print method for an object of class \code{survtmle}
 #' 
 #' @param x An object of class \code{survtmle}
+#' @param ... Other options (not currently used)
 #' 
 #' @return Prints the estimates of cumulative incidence and the diagonal
 #' of the estimated covariance matrix. 

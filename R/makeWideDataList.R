@@ -20,13 +20,15 @@
 #' 
 #' @export 
 #' 
+#' @importFrom stats reshape
+#' 
 #' @return A list of \code{data.frame} objects as described above. 
 
 
 makeWideDataList <- function(dat, allJ, uniqtrt, adjustVars, dataList,t0,...){
   wideDataList <- vector(mode="list",length=length(dataList))
   wideDataList[[1]] <- data.frame(dat$trt, dat[,names(adjustVars)], 
-                                  reshape(dataList[[2]][,!(names(dataList[[2]]) %in% 
+                                  stats::reshape(dataList[[2]][,!(names(dataList[[2]]) %in% 
                                                              c("trt",names(adjustVars),"ftime","ftype"))],
                                           direction="wide",timevar="t",idvar="id"))
   colnames(wideDataList[[1]])[1] <- c("trt")
@@ -37,7 +39,7 @@ makeWideDataList <- function(dat, allJ, uniqtrt, adjustVars, dataList,t0,...){
   
   wideDataList[2:length(dataList)] <- lapply(dataList[2:length(dataList)], function(x){
     out <- data.frame(dat[,names(adjustVars)], 
-                      reshape(x[,!(names(x) %in% c("trt",names(adjustVars),"ftime","ftype"))],
+                      stats::reshape(x[,!(names(x) %in% c("trt",names(adjustVars),"ftime","ftype"))],
                               direction="wide",timevar="t",idvar="id")
                       ,row.names=NULL)
     out[,paste0("C.",1:t0)] <- 0

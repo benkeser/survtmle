@@ -1,6 +1,6 @@
 Package: survtmle
 Title: Compute targeted minimum loss-based estimates in right-censored survival
-       settings.
+       settings
 Version: 0.0.1
 Authors@R: as.person(c(
   "David Benkeser <benkeser@berkeley.edu> [aut, cre]",

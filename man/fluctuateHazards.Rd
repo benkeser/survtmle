@@ -5,7 +5,7 @@
 \title{fluctuateHazards}
 \usage{
 fluctuateHazards(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
-  ...)
+  cvSieve = FALSE, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}

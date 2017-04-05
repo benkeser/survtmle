@@ -77,6 +77,7 @@
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
 #' 
+#' 
 #' @return An object of class \code{survtmle}.
 #' @return call The call to \code{survtmle}.
 #' @return est A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
@@ -203,7 +204,7 @@
 #' method="mean", returnModels = TRUE, ftypeOfInterest = 1)
 #' fit9
 #' 
-#' # XXX NEED TO ADD EXAMPLE WITH BOUNDS XXX
+#' # TODO: Add bounds example
 
 survtmle <- function(
   ftime, 
@@ -258,7 +259,6 @@ survtmle <- function(
                             returnModels=returnModels,
                             ftypeOfInterest=ftypeOfInterest,
                             trtOfInterest=trtOfInterest,
-                            t0.bin=t0.bin,
                             bounds=bounds,
                             verbose=verbose, 
                             tol=tol,

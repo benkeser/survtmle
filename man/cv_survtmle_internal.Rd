@@ -41,6 +41,11 @@ validation fold for each of the \code{survtmleFits}.}
 needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
 unless the user is sure these estimates will not be needed later.}
 
+\item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
+objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
+use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
+for more information.}
+
 \item{ftypeOfInterest}{An input specifying what failure types to compute estimates of incidence for. 
 The default value is \code{"all"}, which computes estimates for values \code{unique(ftype)}. Can alternatively
 be set to a vector of values found in \code{ftype}.}

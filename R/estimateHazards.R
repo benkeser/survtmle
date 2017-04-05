@@ -42,6 +42,11 @@
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 
 #' 
+#' 
+#'
+#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom SuperLearner SuperLearner
+#' 
 #' @export
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
@@ -49,7 +54,7 @@
 #' summed over all causes \code{j' < j}. 
 #' 
 
-estimateHazards <- function(dataList, J,adjustVars,
+estimateHazards <- function(dataList, J, adjustVars,
                             SL.ftime, glm.ftime,
                             returnModels, bounds, verbose, ...){
   # check for missing inputs
@@ -98,7 +103,7 @@ estimateHazards <- function(dataList, J,adjustVars,
     }else{
       for(j in J){
         Qj.form <- sprintf("%s ~ %s", paste("N",j,sep=""), glm.ftime)
-        X <- model.matrix(as.formula(Qj.form),data=dataList[[1]])
+        X <- stats::model.matrix(stats::as.formula(Qj.form),data=dataList[[1]])
         
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J<j]){
@@ -114,9 +119,9 @@ estimateHazards <- function(dataList, J,adjustVars,
           x
         },j=j)
         
-        eval(parse(text=paste("Ytilde <- (dataList[[1]]$N",j,"-dataList[[1]]$l",j,")/(pmin(dataList[[1]]$u",j,", 1 - dataList[[1]]$hazLessThan",j,")  - dataList[[1]]$l",j,")",sep="")))
+        Ytilde <- eval(parse(text=paste("(dataList[[1]]$N",j,"-dataList[[1]]$l",j,")/(pmin(dataList[[1]]$u",j,", 1 - dataList[[1]]$hazLessThan",j,")  - dataList[[1]]$l",j,")",sep="")))
         if(class("glm.ftime") != "list"){
-          Qj.mod <- optim(par=rep(0,ncol(X)), fn=LogLikelihood, Y=Ytilde, X=X, 
+          Qj.mod <- stats::optim(par=rep(0,ncol(X)), fn=LogLikelihood, Y=Ytilde, X=X, 
                           method="BFGS",gr=grad,
                           control=list(reltol=1e-7,maxit=50000))
         }else{
@@ -128,7 +133,7 @@ estimateHazards <- function(dataList, J,adjustVars,
           beta <- Qj.mod$par
           eval(parse(text=paste0("ftimeMod$J",j," <- Qj.mod")))
           dataList <- lapply(dataList, function(x,j){
-            newX <- model.matrix(as.formula(Qj.form),data=x)
+            newX <- stats::model.matrix(stats::as.formula(Qj.form),data=x)
             eval(parse(text=paste("x$Q",j,"PseudoHaz <- plogis(newX%*%beta)",sep="")))
             eval(parse(text=paste("x$Q",j,"Haz <- (pmin(x$u",j,", 1 - x$hazLessThan",j,")  - x$l",j,") * x$Q",j,"PseudoHaz + x$l",j,sep="")))
             x

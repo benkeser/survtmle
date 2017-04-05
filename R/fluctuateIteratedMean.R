@@ -34,12 +34,12 @@
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. Needed only because
 #' the naming convention for the regression if \code{t==t0} is different than if \code{t!=t0}.
-#' @param adjustVars Object of class \code{data.frame} that contains the variables to adjust 
-#' for in the regression. 
 #' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @export 
+#' @importFrom stats as.formula optim glm
+#' @importFrom Matrix Diagonal
 #' 
 #' @return The function then returns a list that is exactly the same as the input \code{wideDataList}, 
 #' but with a column named \code{Qj.star.t} added to it, which is the fluctuated conditional mean of 
@@ -72,7 +72,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
 
     # fluctuation model
     suppressWarnings(
-      flucMod <- glm(as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
+      flucMod <- stat::glm(stats::as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
     )
     # get predictions back
     wideDataList <- lapply(wideDataList, function(x,t){
@@ -114,7 +114,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
       #                             method="BFGS",gr=grad.offset,
       #                             control=list(reltol=1e-12, maxit=50000))
       #           
-      fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
+      fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
                         fn=LogLikelihood.offset, 
                         Y=wideDataList[[1]]$thisOutcome[include], 
                         H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
@@ -125,7 +125,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
       fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
                         fn=LogLikelihood.offset, 
                         Y=wideDataList[[1]]$thisOutcome[include], 
-                        H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
+                        H=as.matrix(Matrix::Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
                                       as.matrix(wideDataList[[1]][include,cleverCovariates])),
                         offset=wideDataList[[1]]$thisOffset[include],
                         method="Brent",lower=-1000,upper=1000,

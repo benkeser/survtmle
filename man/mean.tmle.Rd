@@ -8,7 +8,7 @@
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
-  t0.bin = TRUE, bounds = NULL, verbose, ...)
+  bounds = NULL, verbose, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 

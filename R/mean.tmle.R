@@ -131,7 +131,6 @@ mean.tmle <- function(
   returnModels=FALSE,
   ftypeOfInterest="all",
   trtOfInterest="all",
-  t0.bin=TRUE,
   bounds=NULL, 
   verbose,
   ...
@@ -204,7 +203,7 @@ mean.tmle <- function(
     eval(parse(text=paste0("ftimeMod$J",timeAndType[i,2],"$t",timeAndType[i,1],"<-estOut$ftimeMod")))
     wideDataList <- fluctuateIteratedMean(wideDataList=wideDataList,t=timeAndType[i,1],whichJ=timeAndType[i,2],ntrt=ntrt,uniqtrt=uniqtrt,allJ=allJ,t0=t0,
                                           SL.ftime=SL.ftime, 
-                                          glm.ftime=glm.ftime,tol=tol,
+                                          glm.ftime=glm.ftime,
                                           returnModels=returnModels, bounds=bounds)
   }
   

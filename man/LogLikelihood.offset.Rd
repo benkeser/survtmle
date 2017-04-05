@@ -9,9 +9,11 @@ LogLikelihood.offset(beta, Y, H, offset)
 \arguments{
 \item{beta}{A vector of coefficients in a logistic glm}
 
-\item{Y}{The outcome}
+\item{Y}{The outcome vector}
 
-\item{X}{The design matrix}
+\item{H}{The covariate matrix}
+
+\item{offset}{The offset vector}
 }
 \value{
 Numeric of the summed negative log-likelihood loss over observations.

@@ -47,6 +47,11 @@
 #' @param maxIter A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
+#' @param returnModels A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
+#' objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
+#' use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
+#' for more information. 
+#' 
 #' 
 #' @return An object of class \code{cv_survtmle}.
 #' @return call The call to \code{cv_survtmle}.

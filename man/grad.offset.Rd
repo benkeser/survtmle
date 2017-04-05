@@ -11,7 +11,9 @@ grad.offset(beta, Y, H, offset = NULL)
 
 \item{Y}{The outcome}
 
-\item{X}{The design matrix}
+\item{H}{The covariate matrix}
+
+\item{offset}{The offset vector}
 }
 \value{
 Numeric vector of the gradient of the parameter vector
