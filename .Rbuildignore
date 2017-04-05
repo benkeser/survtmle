@@ -5,4 +5,4 @@
 ^\README\.md$
 ^cran-comments\.md$
 ^\.git$
-^\docs$
+^docs$
