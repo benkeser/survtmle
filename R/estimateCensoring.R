@@ -39,8 +39,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom glm glm 
-#' @importFrom stats as.formula predict
+#' @importFrom stats as.formula predict glm 
 #' @importFrom SuperLearner SuperLearner
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
@@ -90,7 +89,7 @@ estimateCensoring <- function(
     }
     # as long as there are some observed censoring events,
     # get predictions from ctimeMod
-    if(class(ctimeMod) != "noCens"){
+    if(all(class(ctimeMod) != "noCens")){
        dataList <- lapply(dataList, function(x){
         g_dC <- rep(1, nrow(x))
         if(t0!=1) g_dC[x$t!=t0] <- 1-predict(ctimeMod, newdata=x[x$t!=t0,], type="response")

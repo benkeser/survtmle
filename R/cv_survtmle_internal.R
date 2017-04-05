@@ -114,7 +114,7 @@ cv_survtmle_internal <- function(
   
   # hazard-based TMLE
   if(method=="hazard"){
-    cv_tmle.fit <- cv_hazard.tmle(ftime=ftime, 
+    cv_tmle.fit <- cv_hazard_tmle(ftime=ftime, 
                             ftype=ftype,
                             trt=trt,
                             t0=t0,

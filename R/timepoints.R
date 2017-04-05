@@ -33,7 +33,7 @@
 #' 
 #' # fit an initial survtmle object with t0=max(ftime)
 #' fm <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-#' glm.ftime = "A + W1 + W2", glm.ctime = "A + W1 + W2", method="mean", returnModels = TRUE)
+#' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", method="mean", returnModels = TRUE)
 #' 
 #' # call timepoints to get cumulative incidence estimates at each timepoint
 #' allTimes <- timepoints(object = fm, times = 1:4, returnModels = FALSE)

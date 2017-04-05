@@ -56,7 +56,7 @@ but with a column named \code{Qj.t} added to it, which is the estimated conditio
 \description{
 This function computes an estimate of the G-computation regression at 
 a specified time \code{t} using either \code{glm} or \code{SuperLearner}. The 
-structure of the function is specific to how it is called within \code{mean.tmle}.
+structure of the function is specific to how it is called within \code{mean_tmle}.
 In particular, \code{wideDataList} must have a very specific structure for this 
 function to run properly. The list should consist of \code{data.frame} objects. The first should
 have all rows set to their observed value of \code{trt}. The remaining should 

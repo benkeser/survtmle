@@ -1,4 +1,4 @@
-#' mean.tmle
+#' mean_tmle
 #' 
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using targeted minimum loss-based estimation based on the 
@@ -106,15 +106,14 @@
 #' ftype <- round(runif(n,0,1))
 #' 
 #' #' # Fit 1
-#' # fit mean.tmle object with glm estimators for treatment, censoring, and failure
-#' fit1 <- mean.tmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+#' # fit mean_tmle object with glm estimators for treatment, censoring, and failure
+#' fit1 <- mean_tmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
-#' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean", returnModels = TRUE)
+#' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2")
 #' 
 
 
-mean.tmle <- function(
+mean_tmle <- function(
   ftime, 
   ftype,
   trt,
@@ -132,7 +131,7 @@ mean.tmle <- function(
   ftypeOfInterest="all",
   trtOfInterest="all",
   bounds=NULL, 
-  verbose,
+  verbose = FALSE,
   ...
 ){
   # assemble data frame of necessary variables

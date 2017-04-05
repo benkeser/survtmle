@@ -32,7 +32,7 @@
 #' object. Otherwise, \code{NULL}
 #' 
 #' @importFrom stats as.formula predict model.matrix optim glm
-#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
+#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
 #' 
 #' @export 
 #' 
@@ -44,16 +44,16 @@
 #' 
 #' # call to estimateTreatment using glm
 #' fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, glm.trt = "W1 + W2")
-#' head(fit.trt)
+#' # head(fit.trt$dat)
 #' 
 #' # call to estimateTreatment using SuperLearner
 #' fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, 
 #' SL.trt = c("SL.mean","SL.glm","SL.step"))
-#' head(fit.trt)
+#' # head(fit.trt$dat)
 #' 
 
 
-estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
+estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL, returnModels = FALSE,
                               verbose=FALSE,...){
   if(length(unique(dat$trt))>2) stop("trt with more than 2 unique values not yet supported")
   
@@ -73,7 +73,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt, SL.trt, returnModels,
     }else if(!is.null(glm.trt) & is.null(SL.trt)){
       if(!("glm" %in% class(glm.trt))){
         thisY <- as.numeric(dat$trt == max(dat$trt))
-        trtMod <- stats::glm(stats::as.formula(paste0("thisY ~ ",glm.trt)), data=dat,family="binomial")
+        trtMod <- stats::glm(stats::as.formula(paste0("thisY ~ ",glm.trt)), data=adjustVars,family="binomial")
       }else{
         trtMod <- glm.trt
       }

@@ -2,7 +2,7 @@
 #' 
 #' This function computes an estimate of the G-computation regression at 
 #' a specified time \code{t} using either \code{glm} or \code{SuperLearner}. The 
-#' structure of the function is specific to how it is called within \code{mean.tmle}.
+#' structure of the function is specific to how it is called within \code{mean_tmle}.
 #' In particular, \code{wideDataList} must have a very specific structure for this 
 #' function to run properly. The list should consist of \code{data.frame} objects. The first should
 #' have all rows set to their observed value of \code{trt}. The remaining should 
@@ -93,14 +93,14 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   if(is.null(SL.ftime)){
     if(is.null(bounds)){ # with no bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
-      suppressWarnings(
+      suppressWarnings({
         Qmod <- stats::glm(as.formula(Qform), family="binomial", data=wideDataList[[1]][include,])
-      )
       
-      wideDataList <- lapply(wideDataList, function(x, whichJ, t){
-        eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x, type='response')",sep="")))
-        x
-      },t=t,whichJ=whichJ)
+        wideDataList <- lapply(wideDataList, function(x, whichJ, t){
+          eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x, type='response')",sep="")))
+          x
+        },t=t,whichJ=whichJ)
+      })
     }else{ # with bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
       X <- model.matrix(as.formula(Qform),data=wideDataList[[1]][include,])
@@ -129,12 +129,14 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         nE <- sum(wideDataList[[1]][include,outcomeName])
         ignoreSL <- nE <= 2
         if(ignoreSL){
-          Qmod <- stat::glm(as.formula(paste0(outcomeName," ~ trt")), data=wideDataList[[1]][include,])
-          wideDataList <- lapply(wideDataList, function(x, whichJ, t){
-            eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
-                                  ")) * predict(Qmod,newdata=data.frame(trt=x$trt))",sep="")))
-            x
-          },t=t,whichJ=whichJ)
+          suppressWarnings({
+            Qmod <- stats::glm(stats::as.formula(paste0(outcomeName," ~ trt")), data=wideDataList[[1]][include,])
+            wideDataList <- lapply(wideDataList, function(x, whichJ, t){
+             eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
+                                   ")) * predict(Qmod,newdata=data.frame(trt=x$trt))",sep="")))
+             x
+            },t=t,whichJ=whichJ)
+          })
         }else{
           simplify <- nE <= cvControl$V        
           if(simplify) cvControl <- list(V=nE - 1, stratifyCV = TRUE)

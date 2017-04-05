@@ -4,8 +4,8 @@
 \alias{estimateTreatment}
 \title{estimateTreatment}
 \usage{
-estimateTreatment(dat, adjustVars, glm.trt, SL.trt, returnModels,
-  verbose = FALSE, ...)
+estimateTreatment(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
+  returnModels = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{dat}{An object of class \code{data.frame}. Must have named column \code{trt}.}
@@ -56,12 +56,12 @@ adjustVars <- data.frame(W1 = rnorm(100), W2 = rnorm(100))
 
 # call to estimateTreatment using glm
 fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, glm.trt = "W1 + W2")
-head(fit.trt)
+# head(fit.trt$dat)
 
 # call to estimateTreatment using SuperLearner
 fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, 
 SL.trt = c("SL.mean","SL.glm","SL.step"))
-head(fit.trt)
+# head(fit.trt$dat)
 
 }
 

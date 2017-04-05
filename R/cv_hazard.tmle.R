@@ -1,4 +1,4 @@
-#' cv_hazard.tmle
+#' cv_hazard_tmle
 #' 
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using targeted minimum loss-based estimation based on the 
@@ -74,27 +74,8 @@
 #' 
 #' @export
 #' 
-#' @examples
-#' 
-#' ## Single failure type examples
-#' # simulate data
-#' set.seed(1234)
-#' n <- 100
-#' trt <- rbinom(n,1,0.5)
-#' adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
-#' 
-#' ftime <- round(1 + runif(n,1,4) - trt + adjustVars$W1 + adjustVars$W2)
-#' ftype <- round(runif(n,0,1))
-#' 
-#' #' # Fit 1
-#' # fit mean.tmle object with glm estimators for treatment, censoring, and failure
-#' fit1 <- mean.tmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-#' glm.trt = "W1 + W2", 
-#' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="hazard", returnModels = TRUE)
-#' 
 
-cv_hazard.tmle <- function(
+cv_hazard_tmle <- function(
   ftime, 
   ftype,
   trt,

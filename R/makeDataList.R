@@ -2,7 +2,7 @@
 #' 
 #' The function takes a \code{data.frame} of 
 #' short format right-censored failure times and reshapes the long format into 
-#' the wide format needed for calls to both \code{mean.tmle} and \code{hazard.tmle}. 
+#' the wide format needed for calls to both \code{mean_tmle} and \code{hazard_tmle}. 
 #' The list returned by the function will have number of entries equal to 
 #' \code{length(trtOfInterest) + 1}. The first will have the number of rows for each observation
 #' equal to the \code{ftime} corresponding to that observation. The subsequent entries will
@@ -12,7 +12,7 @@
 #' @param dat The short form \code{data.frame}
 #' @param J The unique values of \code{ftype} passed to \code{survtmle}. 
 #' @param ntrt The number of \code{trt} values of interest. 
-#' @param uniqtrt The unique values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The unique values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param bounds XXX NEED MORE DESCRIPTION HERE XXX
 #' @param ... Other arguments. Not currently used. 

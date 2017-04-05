@@ -13,17 +13,19 @@ fluctuateHazards(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
 \item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-\code{hazard.tmle}.}
+\code{hazard_tmle}.}
 
 \item{nJ}{The number of unique failure types.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean.tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
 \item{ntrt}{The number of \code{trt} values of interest.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
 \item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+
+\item{cvSieve}{A boolean indicating whether to fluctuate towards estimation of a cross-validated sieve effect.}
 
 \item{...}{Other arguments. Not currently used.}
 }
@@ -37,7 +39,7 @@ This function performs a fluctuation of an initial estimate of the cause-specifi
 hazard functions using a call to \code{glm} (i.e., a logistic submodel) or a call to
 \code{optim} (to ensure fluctuations stay within model space).
 The structure of the function is specific to how it is 
-called within \code{hazard.tmle}. In particular, \code{dataList} must have a very specific structure for this 
+called within \code{hazard_tmle}. In particular, \code{dataList} must have a very specific structure for this 
 function to run properly. The list should consist of \code{data.frame} objects. 
 The first will have the number of rows for each observation
 equal to the \code{ftime} corresponding to that observation. The subsequent entries will

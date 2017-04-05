@@ -1,4 +1,4 @@
-#' LogLikelihood.offset
+#' LogLikelihood_offset
 #' 
 #' A function that computes the log-likelihood for a logistic regression
 #' model with an offset. Used by 
@@ -13,7 +13,7 @@
 #' 
 
 
-LogLikelihood.offset <- function(beta, Y, H, offset){
+LogLikelihood_offset <- function(beta, Y, H, offset){
   X <- as.matrix(cbind(offset, H))
   pi <- stats::plogis(X%*%as.matrix(c(1,beta)))
   pi[pi==0] <- .Machine$double.neg.eps

@@ -211,7 +211,7 @@ survtmle <- function(
   ftype,
   trt,
   adjustVars,
-  t0=max(ftime),
+  t0=max(ftime[ftype > 0]),
   incidence=TRUE,
   SL.ftime=NULL,
   SL.ctime=NULL,
@@ -225,7 +225,7 @@ survtmle <- function(
   trtOfInterest="all",
   method="hazard",
   bounds=NULL,
-  verbose=TRUE,
+  verbose=FALSE,
   tol=1/(length(ftime)),
   maxIter=100
 ){
@@ -243,7 +243,7 @@ survtmle <- function(
   
   # hazard-based TMLE
   if(method=="hazard"){
-    tmle.fit <- hazard.tmle(ftime=ftime, 
+    tmle.fit <- hazard_tmle(ftime=ftime, 
                             ftype=ftype,
                             trt=trt,
                             t0=t0,
@@ -264,7 +264,7 @@ survtmle <- function(
                             tol=tol,
                             maxIter=maxIter)
   }else if(method=="mean"){
-    tmle.fit <- mean.tmle(ftime=ftime, 
+    tmle.fit <- mean_tmle(ftime=ftime, 
                           ftype=ftype,
                           trt=trt,
                           t0=t0,

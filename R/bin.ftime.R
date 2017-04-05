@@ -1,4 +1,4 @@
-#' bin.ftime
+#' bin_ftime
 #' 
 #' This is a helper function that takes a vector of continuously valued failure times and
 #' discretizes into \code{nKnots} number of discrete times. By default the bins
@@ -19,13 +19,13 @@
 #' @examples
 #' ftime <- runif(100,0,10)
 #' # first do default binning
-#' binned.ftime <- bin.ftime(ftime = ftime)
+#' binned.ftime <- bin_ftime(ftime = ftime)
 #' table(binned.ftime)
 #' # now specify own cutpoints
-#' binned.ftime2 <- bin.ftime(ftime = ftime, bins = c(2,5,8))
+#' binned.ftime2 <- bin_ftime(ftime = ftime, bins = c(2,5,8))
 #' table(binned.ftime)
 
-bin.ftime <- function(ftime, bins="default", nKnots=10){
+bin_ftime <- function(ftime, bins="default", nKnots=10){
   n <- length(ftime)
   if(bins=="default"){
     # check for proper input

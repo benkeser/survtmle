@@ -11,9 +11,9 @@
 #' @param dat A \code{data.frame} in short form. See \code{?makeDataList} for more information.
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
 #' @param ofInterestJ Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-#' \code{hazard.tmle}. 
+#' \code{hazard_tmle}. 
 #' @param nJ The number of unique failure types. 
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 

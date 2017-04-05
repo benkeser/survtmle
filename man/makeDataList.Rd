@@ -13,7 +13,7 @@ makeDataList(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...)
 
 \item{ntrt}{The number of \code{trt} values of interest.}
 
-\item{uniqtrt}{The unique values of \code{trtOfInterest} passed to \code{mean.tmle}.}
+\item{uniqtrt}{The unique values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
@@ -27,7 +27,7 @@ A list of \code{data.frame} objects as described above.
 \description{
 The function takes a \code{data.frame} of 
 short format right-censored failure times and reshapes the long format into 
-the wide format needed for calls to both \code{mean.tmle} and \code{hazard.tmle}. 
+the wide format needed for calls to both \code{mean_tmle} and \code{hazard_tmle}. 
 The list returned by the function will have number of entries equal to 
 \code{length(trtOfInterest) + 1}. The first will have the number of rows for each observation
 equal to the \code{ftime} corresponding to that observation. The subsequent entries will

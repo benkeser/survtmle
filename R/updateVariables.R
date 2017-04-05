@@ -7,12 +7,14 @@
 #' @param dataList A list of \code{data.frame} objects. 
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
 #' @param ofInterestJ Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-#' \code{hazard.tmle}. 
+#' \code{hazard_tmle}. 
 #' @param nJ The number of unique failure types. 
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param ntrt The number of \code{trt} values of interest. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
+#' @param cvSieve A boolean indicating whether the function should compute clever covariates for
+#' the cross-validated sieve effect parameter. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
@@ -23,7 +25,7 @@
 
 
 updateVariables <- function(
-  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, ...
+  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...
 ){
   
   dataList <- lapply(dataList, function(x, allJ){
@@ -73,15 +75,34 @@ updateVariables <- function(
   
   
   # set up clever covariates needed for fluctuation
-  dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
-    for(z in uniqtrt){
-      for(j in ofInterestJ){
-        eval(parse(text=paste("x$H",j,".jSelf.z",z,"<- (x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) * (1-x$hazNot",j,") * ((x$t<t0)*(1-(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t)) + (x$t==t0))",sep="")))
-        eval(parse(text=paste("x$H",j,".jNotSelf.z",z,"<- -(x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) *(1-x$hazNot",j,") * ((x$t<t0)*(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t))",sep="")))
+  if(!cvSieve){
+    dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
+      for(z in uniqtrt){
+        for(j in ofInterestJ){
+          eval(parse(text=paste("x$H",j,".jSelf.z",z,"<- (x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) * (1-x$hazNot",j,") * ((x$t<t0)*(1-(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t)) + (x$t==t0))",sep="")))
+          eval(parse(text=paste("x$H",j,".jNotSelf.z",z,"<- -(x$ftime>=x$t & x$trt==",z,")/(x$g_",z,"*x$G_dC) *(1-x$hazNot",j,") * ((x$t<t0)*(x$F",j,".z",z,".t0 - x$F",j,".t)/c(x$S.t))",sep="")))
+        }
       }
-    }
-    x
-  },ofInterestJ=ofInterestJ,uniqtrt=uniqtrt)
-  
+      x
+    },ofInterestJ=ofInterestJ,uniqtrt=uniqtrt)
+  }else{
+    dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
+      # placebo match
+      x$H1.jSelf.z0 <- 1/x$F1.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z0.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
+      x$H1.jNotSelf.z0 <- 1/x$F1.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z0.t0 - x$F1.t)/c(x$S.t))
+      # vaccine match
+      x$H1.jSelf.z1 <- -1/x$F1.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z1.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
+      x$H1.jNotSelf.z1 <- -1/x$F1.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z1.t0 - x$F1.t)/c(x$S.t))
+      # placebo mismatch
+      x$H2.jSelf.z0 <- -1/x$F2.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z0.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
+      x$H2.jNotSelf.z0 <- -1/x$F2.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z0.t0 - x$F2.t)/c(x$S.t))
+      # vaccine mismatch 
+      x$H2.jSelf.z1 <- 1/x$F2.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z1.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
+      x$H2.jNotSelf.z1 <- 1/x$F2.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z1.t0 - x$F2.t)/c(x$S.t))
+
+      x
+    })
+
+  }
   dataList
 }

@@ -4,7 +4,7 @@
 #' hazard functions using a call to \code{glm} (i.e., a logistic submodel) or a call to
 #' \code{optim} (to ensure fluctuations stay within model space).
 #' The structure of the function is specific to how it is 
-#' called within \code{hazard.tmle}. In particular, \code{dataList} must have a very specific structure for this 
+#' called within \code{hazard_tmle}. In particular, \code{dataList} must have a very specific structure for this 
 #' function to run properly. The list should consist of \code{data.frame} objects. 
 #' The first will have the number of rows for each observation
 #' equal to the \code{ftime} corresponding to that observation. The subsequent entries will
@@ -18,12 +18,13 @@
 #' @param dataList A list of \code{data.frame} objects. 
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
 #' @param ofInterestJ Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-#' \code{hazard.tmle}. 
+#' \code{hazard_tmle}. 
 #' @param nJ The number of unique failure types. 
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param ntrt The number of \code{trt} values of interest. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
+#' @param cvSieve A boolean indicating whether to fluctuate towards estimation of a cross-validated sieve effect.
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
@@ -63,17 +64,17 @@ fluctuateHazards <- function(
 
 #    if(length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))>1){
       fluc.mod <- stats::optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
-                        fn=LogLikelihood.offset, 
+                        fn=LogLikelihood_offset, 
                         Y=dataList[[1]]$thisOutcome, 
                         H=suppressWarnings(
                           as.matrix(Matrix::Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
                           ),
                         offset=dataList[[1]]$thisOffset,    
-                        method="BFGS",gr=grad.offset,
+                        method="BFGS",gr=grad_offset,
                         control=list(reltol=1e-7,maxit=50000))
 #    }else{
     #   fluc.mod <- optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
-    #                     fn=LogLikelihood.offset, 
+    #                     fn=LogLikelihood_offset, 
     #                     Y=dataList[[1]]$thisOutcome, 
     #                     H=as.matrix(Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)])),
     #                     offset=dataList[[1]]$thisOffset,    

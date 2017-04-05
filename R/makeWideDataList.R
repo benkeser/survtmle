@@ -2,7 +2,7 @@
 #' 
 #' The function takes a \code{data.frame} and \code{list} consisting of
 #' short and long format right-censored failure times. The function reshapes the long format into 
-#' the wide format needed for calls to \code{mean.tmle}. The list returned by the function
+#' the wide format needed for calls to \code{mean_tmle}. The list returned by the function
 #' will have number of entries equal to \code{length(trtOfInterest) + 1}. The first will 
 #' contain the observed \code{trt} columns and will set \code{C.t} (the censoring counting process)
 #' equal to the observed value of censoring. The subsequent entries will set \code{trt} equal to 
@@ -10,7 +10,7 @@
 #' 
 #' @param dat The short form \code{data.frame}
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param adjustVars A data.frame of adjustment variables that will be used in estimating the 
 #' conditional treatment, censoring, and failure (hazard or conditional mean) probabilities. 
 #' @param dataList A list of long format \code{data.frame} objects. See \code{?makeDataList} for 
