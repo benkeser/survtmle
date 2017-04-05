@@ -117,7 +117,7 @@ mean_tmle <- function(
   ftime, 
   ftype,
   trt,
-  t0=max(ftime),
+  t0=max(ftime[ftype > 0]),
   incidence=TRUE,
   adjustVars=NULL,
   SL.ftime=NULL,
