@@ -147,7 +147,7 @@ cv_hazard.tmle <- function(
   # 1. Get treatment probabilities in validation sample from fitted survtmle object
   # 2. Make long version of validation data set 
   # 3. Get censoring probabilities in validation sample from fitted survtmle object
-  # 4. Get estimated hazards in validation sample from fitted survtmle object 
+  # 4. Get estimated hazards in validation sample from fitted survtmle object
   # 5. Fluctuate using validation data until convergence
   # 6. Save estimates and influence functions
   # 7. Work on combining on back end 
@@ -261,7 +261,8 @@ cv_hazard.tmle <- function(
     while(any(abs(meanIC) > tol) & ct <= maxIter){
       ct <- ct + 1
       c.dataList <- fluctuateHazards(dataList=c.dataList, ofInterestJ=ofInterestJ, tol=tol,
-                                   allJ=allJ, nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0)
+                                   allJ=allJ, nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0,
+                                   cvSieve = TRUE)
       suppressWarnings(
         if(all(c.dataList[[1]]=="convergence failure")){
           return("fluctuation convergence failure")

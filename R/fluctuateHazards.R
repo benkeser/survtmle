@@ -34,7 +34,7 @@
 
 
 fluctuateHazards <- function(
-  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, ...
+  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...
 ){
   eps <- NULL
   for(z in uniqtrt){
@@ -94,7 +94,8 @@ fluctuateHazards <- function(
       
     # update variables based on new haz
     dataList <- updateVariables(dataList=dataList, allJ=allJ, ofInterestJ=ofInterestJ, 
-                                nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0)
+                                nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0,
+                                cvSieve = cvSieve)
     }
   }
   attr(dataList,"fluc") <- eps
