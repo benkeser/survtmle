@@ -4,7 +4,7 @@
 \alias{mean_tmle}
 \title{mean_tmle}
 \usage{
-mean_tmle(ftime, ftype, trt, t0 = max(ftime), incidence = TRUE,
+mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), incidence = TRUE,
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
