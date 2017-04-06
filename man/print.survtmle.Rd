@@ -18,4 +18,3 @@ of the estimated covariance matrix.
 \description{
 The print method for an object of class \code{survtmle}
 }
-

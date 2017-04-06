@@ -35,4 +35,3 @@ contain the observed \code{trt} columns and will set \code{C.t} (the censoring c
 equal to the observed value of censoring. The subsequent entries will set \code{trt} equal to 
 each level of \code{trtOfInterest} and set \code{C.t} to zero for everyone.
 }
-

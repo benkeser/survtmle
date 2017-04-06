@@ -23,4 +23,3 @@ A function that computes the gradient of the for a logistic regression
 model with an offset term. Used by 
 \code{optim} on occasion.
 }
-

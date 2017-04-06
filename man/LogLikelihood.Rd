@@ -20,4 +20,3 @@ Numeric of the summed negative log-likelihood loss over observations.
 A function that computes the log-likelihood for a model. Used by 
 \code{optim} on occasion.
 }
-

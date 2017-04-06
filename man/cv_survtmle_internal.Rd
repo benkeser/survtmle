@@ -116,4 +116,3 @@ t0 The timepoint the function was evaluated at.
 This function estimates the marginal cumulative incidence for failures of
 specified types using cross-validated targeted minimum loss-based estimation. More description to come...
 }
-
