@@ -40,3 +40,4 @@ but is subsequently summed over all timepoints for each observation and the func
 returns a new short form data set with columns added corresponding to the sum over
 all time points of the estimated efficient influence function evaluated at that observation.
 }
+

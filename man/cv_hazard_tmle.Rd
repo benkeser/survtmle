@@ -104,3 +104,4 @@ initial estimates of the cause-specific hazard functions for failures of each ty
 The function is called by \code{survtmle} whenever \code{method="hazard"} is specified. 
 However, power users could, in theory, make calls directly to this function.
 }
+

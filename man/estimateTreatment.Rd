@@ -64,3 +64,4 @@ SL.trt = c("SL.mean","SL.glm","SL.step"))
 # head(fit.trt$dat)
 
 }
+

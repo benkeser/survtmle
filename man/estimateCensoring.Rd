@@ -59,3 +59,4 @@ The function will fit a regression with \code{C} as the outcome and
 functions of \code{trt} and \code{names(adjustVars)} as specified by \code{glm.ctime} 
 or \code{SL.ctime} as predictors.
 }
+

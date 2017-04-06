@@ -59,3 +59,4 @@ The function returns the same \code{wideDataList}, but with a column called
 \code{Qj.star.t} added to it, which is the fluctuated initial regression estimate evaluated
 at the observed data points.
 }
+

@@ -34,3 +34,4 @@ table(binned.ftime)
 binned.ftime2 <- bin_ftime(ftime = ftime, bins = c(2,5,8))
 table(binned.ftime)
 }
+

@@ -72,3 +72,4 @@ the regressions. The function will fit a regression with \code{Qj.star.t+1} (als
 a column in \code{wideDataList}) on functions of \code{trt} and \code{names(adjustVars)}
 as specified by \code{glm.ftime} or \code{SL.ftime}.
 }
+

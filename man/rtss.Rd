@@ -37,3 +37,4 @@ the data sets; however, the \code{ftype} variable changes, simulating
 outputed data sets of multiply infected trial participants.
 }
 \keyword{datasets}
+
