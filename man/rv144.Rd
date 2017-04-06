@@ -27,4 +27,3 @@ trial" of the ALVAC/AIDSVAX vaccine. Privacy agreements prevent the sharing
 of the real data, so please note THAT THIS IS NOT THE REAL RV144 DATA.
 }
 \keyword{datasets}
-

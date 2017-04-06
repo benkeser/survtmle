@@ -7,8 +7,8 @@
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
-> Targeted Minimum Loss-Based Estimation (TMLE) for Survival Analysis and
-> Vaccine Sieve Analysis
+> Targeted Minimum Loss-Based Estimation (TMLE) for Survival Analysis with
+> Competing Risks
 
 ---
 
@@ -27,6 +27,9 @@ settings.
 
 - Install the most recent _stable release_:
   `devtools::install_github("benkeser/survtmle")`
+
+- To contribute, install the _development version_:
+  `devtools::install_github("benkeser/survtmle", ref = "develop")`
 
 ---
 

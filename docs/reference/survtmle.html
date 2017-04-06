@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -82,11 +85,12 @@
 specified types using targeted minimum loss-based estimation. More description to come...</p>
     
 
-    <pre><span class='fu'>survtmle</span>(<span class='no'>ftime</span>, <span class='no'>ftype</span>, <span class='no'>trt</span>, <span class='no'>adjustVars</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='no'>ftime</span>), <span class='kw'>incidence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>returnIC</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>trtOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"hazard"</span>,
-  <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1</span>/(<span class='fu'>length</span>(<span class='no'>ftime</span>)), <span class='kw'>maxIter</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
+    <pre><span class='fu'>survtmle</span>(<span class='no'>ftime</span>, <span class='no'>ftype</span>, <span class='no'>trt</span>, <span class='no'>adjustVars</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='no'>ftime</span>[<span class='no'>ftype</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>]),
+  <span class='kw'>incidence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>returnIC</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>trtOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"hazard"</span>, <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1</span>/(<span class='fu'>length</span>(<span class='no'>ftime</span>)), <span class='kw'>maxIter</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -233,35 +237,32 @@ If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
 <span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='no'>fit1</span></div><div class='output co'>#&gt; $est
-#&gt;          [,1]
-#&gt; 0 1 0.9164404
-#&gt; 1 1 0.9336150
-#&gt; 
-#&gt; $var
-#&gt;              0 1          1 1
-#&gt; 0 1 1.580290e-03 5.409717e-05
-#&gt; 1 1 5.409717e-05 4.979927e-04
-#&gt; </div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='co'># fit1</span>
+
 <span class='co'># Fit 2</span>
 <span class='co'># fit an survtmle object with SuperLearner estimators for failure and censoring</span>
 <span class='co'># and empirical estimators for treatment (default) using the "mean" method</span>
 <span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
 <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in estimateCensoring(dataList = dataList, ntrt = ntrt, uniqtrt = uniqtrt,     t0 = t0, verbose = verbose, adjustVars = adjustVars, SL.ctime = SL.ctime,     glm.ctime = glm.ctime, returnModels = returnModels): could not find function &quot;SuperLearner&quot;</span></div><div class='input'><span class='no'>fit2</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit2&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='co'># fit2</span>
+
 <span class='co'># Fit 3</span>
 <span class='co'># repeat Fit 1 using the "hazard" method </span>
 <span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='error'>Error in as.matrix(Diagonal(x = dataList[[1]]$thisScale) %*% as.matrix(dataList[[1]][,     c(cleverCovariatesNotSelf, cleverCovariatesSelf)])): could not find function &quot;Diagonal&quot;</span></div><div class='input'><span class='no'>fit3</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit3&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># fit3</span>
+
 <span class='co'># Fit 4</span>
 <span class='co'># repeat Fit 2 using the "hazard" method</span>
 <span class='no'>fit4</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
 <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in estimateCensoring(dataList = dataList, ntrt = ntrt, uniqtrt = uniqtrt,     t0 = t0, verbose = verbose, adjustVars = adjustVars, SL.ctime = SL.ctime,     glm.ctime = glm.ctime, returnModels = returnModels): could not find function &quot;SuperLearner&quot;</span></div><div class='input'><span class='no'>fit4</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit4&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># fit4</span>
+
 <span class='co'>## Multiple failure type examples</span>
 <span class='co'># simulate data</span>
 <span class='fu'>set.seed</span>(<span class='fl'>1234</span>)
@@ -278,55 +279,39 @@ If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
 <span class='no'>fit5</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='no'>fit5</span></div><div class='output co'>#&gt; $est
-#&gt;          [,1]
-#&gt; 0 1 0.6740958
-#&gt; 1 1 0.6232359
-#&gt; 0 2 0.3259042
-#&gt; 1 2 0.3767641
-#&gt; 
-#&gt; $var
-#&gt;               0 1           1 1           0 2           1 2
-#&gt; 0 1  4.986275e-03  4.569666e-06 -4.986275e-03 -4.569666e-06
-#&gt; 1 1  4.569666e-06  6.543332e-03 -4.569666e-06 -6.543332e-03
-#&gt; 0 2 -4.986275e-03 -4.569666e-06  4.986275e-03  4.569666e-06
-#&gt; 1 2 -4.569666e-06 -6.543332e-03  4.569666e-06  6.543332e-03
-#&gt; </div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='co'># fit5</span>
+
 <span class='co'># Fit 6</span>
 <span class='co'># fit an survtmle object with SuperLearner estimators for failure and censoring</span>
 <span class='co'># and empirical estimators for treatment (default) using the "mean" method</span>
 <span class='no'>fit6</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
 <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in estimateCensoring(dataList = dataList, ntrt = ntrt, uniqtrt = uniqtrt,     t0 = t0, verbose = verbose, adjustVars = adjustVars, SL.ctime = SL.ctime,     glm.ctime = glm.ctime, returnModels = returnModels): could not find function &quot;SuperLearner&quot;</span></div><div class='input'><span class='no'>fit6</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit6&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='co'># fit6</span>
+
 <span class='co'># Fit 7</span>
 <span class='co'># repeat Fit 5 using the "hazard" method </span>
 <span class='no'>fit7</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='error'>Error in as.matrix(Diagonal(x = dataList[[1]]$thisScale) %*% as.matrix(dataList[[1]][,     c(cleverCovariatesNotSelf, cleverCovariatesSelf)])): could not find function &quot;Diagonal&quot;</span></div><div class='input'><span class='no'>fit7</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit7&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: TMLE fluctuations did not converge. Check that meanIC is adequately small and proceed with caution.</span></div><div class='input'><span class='co'># fit7</span>
+
 <span class='co'># Fit 8</span>
 <span class='co'># repeat Fit 6 using the "hazard" method</span>
 <span class='no'>fit8</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
 <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.glm"</span>,<span class='st'>"SL.mean"</span>,<span class='st'>"SL.step"</span>),
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in estimateCensoring(dataList = dataList, ntrt = ntrt, uniqtrt = uniqtrt,     t0 = t0, verbose = verbose, adjustVars = adjustVars, SL.ctime = SL.ctime,     glm.ctime = glm.ctime, returnModels = returnModels): could not find function &quot;SuperLearner&quot;</span></div><div class='input'><span class='no'>fit8</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fit8&#39; not found</span></div><div class='input'>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"hazard"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># fit8 </span>
+
 <span class='co'># Fit 9</span>
 <span class='co'># repeat Fit 5, but only return estimates for ftype = 1</span>
 <span class='no'>fit9</span> <span class='kw'>&lt;-</span> <span class='fu'>survtmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='no'>fit9</span></div><div class='output co'>#&gt; $est
-#&gt;          [,1]
-#&gt; 0 1 0.6740958
-#&gt; 1 1 0.6232359
-#&gt; 
-#&gt; $var
-#&gt;              0 1          1 1
-#&gt; 0 1 4.986275e-03 4.569666e-06
-#&gt; 1 1 4.569666e-06 6.543332e-03
-#&gt; </div><div class='input'>
-<span class='co'># XXX NEED TO ADD EXAMPLE WITH BOUNDS XXX</span></div></pre>
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'><span class='co'># fit9</span>
+
+<span class='co'># TODO: Add bounds example</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -343,7 +328,7 @@ If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

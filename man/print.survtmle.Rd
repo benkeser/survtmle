@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{An object of class \code{survtmle}}
+
+\item{...}{Other options (not currently used)}
 }
 \value{
 Prints the estimates of cumulative incidence and the diagonal
@@ -16,4 +18,3 @@ of the estimated covariance matrix.
 \description{
 The print method for an object of class \code{survtmle}
 }
-

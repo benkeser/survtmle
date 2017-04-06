@@ -12,7 +12,7 @@ fluctuateIteratedMean(wideDataList, t, uniqtrt, whichJ, allJ, t0,
 
 \item{t}{The timepoint at which to compute the iterated mean.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean.tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
 \item{whichJ}{Numeric value indicating the cause of failure for which regression should be 
 computed.}
@@ -25,9 +25,6 @@ the naming convention for the regression if \code{t==t0} is different than if \c
 \item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
 
 \item{...}{Other arguments. Not currently used.}
-
-\item{adjustVars}{Object of class \code{data.frame} that contains the variables to adjust 
-for in the regression.}
 }
 \value{
 The function then returns a list that is exactly the same as the input \code{wideDataList}, 
@@ -39,7 +36,7 @@ but with a column named \code{Qj.star.t} added to it, which is the fluctuated co
 This function performs a fluctuation of an initial estimate of the G-computation regression at 
 a specified time \code{t} using a call to \code{glm} (i.e., a logistic submodel) or a call to
 \code{optim} (if bounds are specified). The structure of the function is specific to how it is 
-called within \code{mean.tmle}.
+called within \code{mean_tmle}.
 In particular, \code{wideDataList} must have a very specific structure for this 
 function to run properly. The list should consist of \code{data.frame} objects. The first should
 have all rows set to their observed value of \code{trt}. The remaining should 
@@ -62,4 +59,3 @@ The function returns the same \code{wideDataList}, but with a column called
 \code{Qj.star.t} added to it, which is the fluctuated initial regression estimate evaluated
 at the observed data points.
 }
-

@@ -15,11 +15,11 @@ getHazardInfluenceCurve(dataList, dat, allJ, ofInterestJ, nJ, uniqtrt, t0,
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
 \item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-\code{hazard.tmle}.}
+\code{hazard_tmle}.}
 
 \item{nJ}{The number of unique failure types.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean.tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
@@ -40,4 +40,3 @@ but is subsequently summed over all timepoints for each observation and the func
 returns a new short form data set with columns added corresponding to the sum over
 all time points of the estimated efficient influence function evaluated at that observation.
 }
-

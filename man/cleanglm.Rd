@@ -18,4 +18,3 @@ This function removes superfluous output from the call
 to \code{glm} that is not needed to perform later 
 predictions. It is applied as a space saving technique.
 }
-

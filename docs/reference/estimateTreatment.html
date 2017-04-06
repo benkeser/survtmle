@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -85,8 +88,8 @@ will compute estimates of the condtional probability of <code>trt==max(trt)</cod
 compute the probability of <code>trt==min(trt)</code> as one minus this probability.</p>
     
 
-    <pre><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='no'>glm.trt</span>, <span class='no'>SL.trt</span>, <span class='no'>returnModels</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -133,11 +136,12 @@ object. Otherwise, <code>NULL</code></p>
 <span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='fl'>100</span>), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='fl'>100</span>))
 
 <span class='co'># call to estimateTreatment using glm</span>
-<span class='no'>fit.trt</span> <span class='kw'>&lt;-</span> <span class='fu'>estimateTreatment</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in estimateTreatment(dat = dat, adjustVars = adjustVars, glm.trt = &quot;W1 + W2&quot;): argument &quot;SL.trt&quot; is missing, with no default</span></div><div class='input'><span class='fu'>head</span>(<span class='no'>fit.trt</span>)</div><div class='output co'>#&gt; <span class='error'>Error in head(fit.trt): object &#39;fit.trt&#39; not found</span></div><div class='input'>
+<span class='no'>fit.trt</span> <span class='kw'>&lt;-</span> <span class='fu'>estimateTreatment</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>)
+<span class='co'># head(fit.trt$dat)</span>
+
 <span class='co'># call to estimateTreatment using SuperLearner</span>
 <span class='no'>fit.trt</span> <span class='kw'>&lt;-</span> <span class='fu'>estimateTreatment</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-<span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.mean"</span>,<span class='st'>"SL.glm"</span>,<span class='st'>"SL.step"</span>))</div><div class='output co'>#&gt; <span class='error'>Error in estimateTreatment(dat = dat, adjustVars = adjustVars, SL.trt = c(&quot;SL.mean&quot;,     &quot;SL.glm&quot;, &quot;SL.step&quot;)): could not find function &quot;SuperLearner&quot;</span></div><div class='input'><span class='fu'>head</span>(<span class='no'>fit.trt</span>)</div><div class='output co'>#&gt; <span class='error'>Error in head(fit.trt): object &#39;fit.trt&#39; not found</span></div><div class='input'>
-</div></pre>
+<span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.mean"</span>,<span class='st'>"SL.glm"</span>,<span class='st'>"SL.step"</span>))</div><div class='output co'>#&gt; <span class='message'>Loading required package: nnls</span></div><div class='input'><span class='co'># head(fit.trt$dat)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -154,7 +158,7 @@ object. Otherwise, <code>NULL</code></p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

@@ -2,7 +2,7 @@
 #' 
 #' This function computes an estimate of the cause-specific hazard functions over all times
 #' using either \code{glm} or \code{SuperLearner}. The 
-#' structure of the function is specific to how it is called within \code{hazard.tmle}.
+#' structure of the function is specific to how it is called within \code{hazard_tmle}.
 #' In particular, \code{dataList} must have a very specific structure for this 
 #' function to run properly. The list should consist of \code{data.frame} objects. 
 #' The first will have the number of rows for each observation
@@ -14,7 +14,7 @@
 #' hazard of \code{min(J)}, while subsequent fits estimate the pseudo-hazard of all other values of
 #' j, where pseudo-hazard is used to mean the probability of a failure due to type j at a particular
 #' time point given no failure of any type at any previous time point AND no failure due to 
-#' type \code{j' < j} at a particular time point. The hazard estimates of causes j' can then be used to 
+#' type \code{k < j} at a particular time point. The hazard estimates of causes j' can then be used to 
 #' map this pseudo-hazard back into the hazard at a particular time. This is nothing more than 
 #' the re-framing of a conditional multinomial probability into a series of conditional 
 #' binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
@@ -38,19 +38,22 @@
 #' objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
 #' use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
 #' for more information. 
-#' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
+#' @param bounds A list of bounds... TODO: Add more description here.
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 
+
+#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom SuperLearner SuperLearner
 #' 
 #' @export
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
 #' but with additional columns corresponding to the hazard, pseudo-hazard, and the total hazard for
-#' summed over all causes \code{j' < j}. 
+#' summed over all causes \code{k < j}. 
 #' 
 
-estimateHazards <- function(dataList, J,adjustVars,
-                            SL.ftime, glm.ftime,
+estimateHazards <- function(dataList, J, adjustVars,
+                            SL.ftime = NULL, glm.ftime = NULL,
                             returnModels, bounds, verbose, ...){
   # check for missing inputs
   if(is.null(SL.ftime) & is.null(glm.ftime)){
@@ -98,7 +101,7 @@ estimateHazards <- function(dataList, J,adjustVars,
     }else{
       for(j in J){
         Qj.form <- sprintf("%s ~ %s", paste("N",j,sep=""), glm.ftime)
-        X <- model.matrix(as.formula(Qj.form),data=dataList[[1]])
+        X <- stats::model.matrix(stats::as.formula(Qj.form),data=dataList[[1]])
         
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J<j]){
@@ -114,9 +117,9 @@ estimateHazards <- function(dataList, J,adjustVars,
           x
         },j=j)
         
-        eval(parse(text=paste("Ytilde <- (dataList[[1]]$N",j,"-dataList[[1]]$l",j,")/(pmin(dataList[[1]]$u",j,", 1 - dataList[[1]]$hazLessThan",j,")  - dataList[[1]]$l",j,")",sep="")))
+        Ytilde <- eval(parse(text=paste("(dataList[[1]]$N",j,"-dataList[[1]]$l",j,")/(pmin(dataList[[1]]$u",j,", 1 - dataList[[1]]$hazLessThan",j,")  - dataList[[1]]$l",j,")",sep="")))
         if(class("glm.ftime") != "list"){
-          Qj.mod <- optim(par=rep(0,ncol(X)), fn=LogLikelihood, Y=Ytilde, X=X, 
+          Qj.mod <- stats::optim(par=rep(0,ncol(X)), fn=LogLikelihood, Y=Ytilde, X=X, 
                           method="BFGS",gr=grad,
                           control=list(reltol=1e-7,maxit=50000))
         }else{
@@ -128,7 +131,7 @@ estimateHazards <- function(dataList, J,adjustVars,
           beta <- Qj.mod$par
           eval(parse(text=paste0("ftimeMod$J",j," <- Qj.mod")))
           dataList <- lapply(dataList, function(x,j){
-            newX <- model.matrix(as.formula(Qj.form),data=x)
+            newX <- stats::model.matrix(stats::as.formula(Qj.form),data=x)
             eval(parse(text=paste("x$Q",j,"PseudoHaz <- plogis(newX%*%beta)",sep="")))
             eval(parse(text=paste("x$Q",j,"Haz <- (pmin(x$u",j,", 1 - x$hazLessThan",j,")  - x$l",j,") * x$Q",j,"PseudoHaz + x$l",j,sep="")))
             x

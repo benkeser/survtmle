@@ -39,11 +39,14 @@
 #' 
 #' @export
 #' 
+#' @importFrom stats as.formula predict glm 
+#' @importFrom SuperLearner SuperLearner
+#' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
 #' but with a column named \code{G_dC} added to it, which is the estimated conditional survival 
 #' distribution for the censoring variable evaluated at the each of the rows of each 
 #' \code{data.frame} in \code{dataList}. 
-
+#' 
 
 estimateCensoring <- function(
   dataList,
@@ -86,7 +89,7 @@ estimateCensoring <- function(
     }
     # as long as there are some observed censoring events,
     # get predictions from ctimeMod
-    if(class(ctimeMod) != "noCens"){
+    if(all(class(ctimeMod) != "noCens")){
        dataList <- lapply(dataList, function(x){
         g_dC <- rep(1, nrow(x))
         if(t0!=1) g_dC[x$t!=t0] <- 1-predict(ctimeMod, newdata=x[x$t!=t0,], type="response")
@@ -107,7 +110,7 @@ estimateCensoring <- function(
          ctimeMod <- SuperLearner(Y=dataList[[1]]$C[include],
           X=dataList[[1]][include,c("t", "trt", names(adjustVars))],
           id=dataList[[1]]$id[include],
-          family=binomial(),
+          family="binomial",
           SL.library=SL.ctime,
            verbose=verbose)
        }else{

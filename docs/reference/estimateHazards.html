@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -77,10 +80,30 @@
     <h1>estimateHazards</h1>
     </div>
 
+    
+    <p>This function computes an estimate of the cause-specific hazard functions over all times
+using either <code>glm</code> or <code>SuperLearner</code>. The 
+structure of the function is specific to how it is called within <code>hazard_tmle</code>.
+In particular, <code>dataList</code> must have a very specific structure for this 
+function to run properly. The list should consist of <code>data.frame</code> objects. 
+The first will have the number of rows for each observation
+equal to the <code>ftime</code> corresponding to that observation. The subsequent entries will
+have <code>t0</code> rows for each observation and will set <code>trt</code> column equal to each value
+of <code>trtOfInterest</code> in turn. The function uses the first entry in <code>dataList</code> to iteratively
+fit hazard regression models for each cause of failure. Thus, this <code>data.frame</code> needs to have
+a column called <code>Nj</code> for each value of j in <code>J</code>. The first fit estimates the 
+hazard of <code>min(J)</code>, while subsequent fits estimate the pseudo-hazard of all other values of
+j, where pseudo-hazard is used to mean the probability of a failure due to type j at a particular
+time point given no failure of any type at any previous time point AND no failure due to 
+type <code>k &lt; j</code> at a particular time point. The hazard estimates of causes j&#39; can then be used to 
+map this pseudo-hazard back into the hazard at a particular time. This is nothing more than 
+the re-framing of a conditional multinomial probability into a series of conditional 
+binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
+more than one over all possible causes of failure at a particular time point.</p>
+    
 
-
-    <pre><span class='fu'>estimateHazards</span>(<span class='no'>dataList</span>, <span class='no'>J</span>, <span class='no'>adjustVars</span>, <span class='no'>SL.ftime</span>, <span class='no'>glm.ftime</span>, <span class='no'>returnModels</span>,
-  <span class='no'>bounds</span>, <span class='no'>verbose</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>estimateHazards</span>(<span class='no'>dataList</span>, <span class='no'>J</span>, <span class='no'>adjustVars</span>, <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>returnModels</span>, <span class='no'>bounds</span>, <span class='no'>verbose</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -109,7 +132,7 @@ objects used to estimate the nuisance parameters. Must be set to <code>TRUE</cod
 use calls to <code>timepoints</code> to obtain estimates at times other than <code>t0</code>. See <code>?timepoints</code>
 for more information.</dd>
       <dt>bounds</dt>
-      <dd>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</dd>
+      <dd>A list of bounds... TODO: Add more description here.</dd>
       <dt>verbose</dt>
       <dd>A boolean indicating whether the function should print messages to indicate progress.</dd>
       <dt>...</dt>
@@ -120,28 +143,7 @@ for more information.</dd>
 
     <p>The function returns a list that is exactly the same as the input <code>dataList</code>, 
 but with additional columns corresponding to the hazard, pseudo-hazard, and the total hazard for
-summed over all causes <code>j&#39; &lt; j}.
-}
-\description{
-This function computes an estimate of the cause-specific hazard functions over all times
-using either \code{glm} or \code{SuperLearner}. The 
-structure of the function is specific to how it is called within \code{hazard.tmle}.
-In particular, \code{dataList} must have a very specific structure for this 
-function to run properly. The list should consist of \code{data.frame} objects. 
-The first will have the number of rows for each observation
-equal to the \code{ftime} corresponding to that observation. The subsequent entries will
-have \code{t0} rows for each observation and will set \code{trt} column equal to each value
-of \code{trtOfInterest} in turn. The function uses the first entry in \code{dataList} to iteratively
-fit hazard regression models for each cause of failure. Thus, this \code{data.frame} needs to have
-a column called \code{Nj} for each value of j in \code{J}. The first fit estimates the 
-hazard of \code{min(J)}, while subsequent fits estimate the pseudo-hazard of all other values of
-j, where pseudo-hazard is used to mean the probability of a failure due to type j at a particular
-time point given no failure of any type at any previous time point AND no failure due to 
-type \code{j&#39; &lt; j</code> at a particular time point. The hazard estimates of causes j&#39; can then be used to 
-map this pseudo-hazard back into the hazard at a particular time. This is nothing more than 
-the re-framing of a conditional multinomial probability into a series of conditional 
-binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
-more than one over all possible causes of failure at a particular time point.</p>
+summed over all causes <code>k &lt; j</code>.</p>
     
 
   </div>
@@ -158,7 +160,7 @@ more than one over all possible causes of failure at a particular time point.</p
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

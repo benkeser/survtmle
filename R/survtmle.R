@@ -77,6 +77,7 @@
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
 #' 
+#' 
 #' @return An object of class \code{survtmle}.
 #' @return call The call to \code{survtmle}.
 #' @return est A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
@@ -124,7 +125,7 @@
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="mean", returnModels = TRUE)
-#' fit1
+#' # fit1
 #' 
 #' # Fit 2
 #' # fit an survtmle object with SuperLearner estimators for failure and censoring
@@ -133,7 +134,7 @@
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
 #' method="mean", returnModels = TRUE)
-#' fit2
+#' # fit2
 #' 
 #' # Fit 3
 #' # repeat Fit 1 using the "hazard" method 
@@ -141,7 +142,7 @@
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="hazard", returnModels = TRUE)
-#' fit3
+#' # fit3
 #' 
 #' # Fit 4
 #' # repeat Fit 2 using the "hazard" method
@@ -149,7 +150,7 @@
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
 #' method="hazard", returnModels = TRUE)
-#' fit4
+#' # fit4
 #' 
 #' ## Multiple failure type examples
 #' # simulate data
@@ -168,7 +169,7 @@
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="mean", returnModels = TRUE)
-#' fit5
+#' # fit5
 #' 
 #' # Fit 6
 #' # fit an survtmle object with SuperLearner estimators for failure and censoring
@@ -177,7 +178,7 @@
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
 #' method="mean", returnModels = TRUE)
-#' fit6
+#' # fit6
 #' 
 #' # Fit 7
 #' # repeat Fit 5 using the "hazard" method 
@@ -185,7 +186,7 @@
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="hazard", returnModels = TRUE)
-#' fit7
+#' # fit7
 #' 
 #' # Fit 8
 #' # repeat Fit 6 using the "hazard" method
@@ -193,7 +194,7 @@
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
 #' method="hazard", returnModels = TRUE)
-#' fit8 
+#' # fit8 
 #' 
 #' # Fit 9
 #' # repeat Fit 5, but only return estimates for ftype = 1
@@ -201,16 +202,16 @@
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="mean", returnModels = TRUE, ftypeOfInterest = 1)
-#' fit9
+#' # fit9
 #' 
-#' # XXX NEED TO ADD EXAMPLE WITH BOUNDS XXX
+#' # TODO: Add bounds example
 
 survtmle <- function(
   ftime, 
   ftype,
   trt,
   adjustVars,
-  t0=max(ftime),
+  t0=max(ftime[ftype > 0]),
   incidence=TRUE,
   SL.ftime=NULL,
   SL.ctime=NULL,
@@ -224,7 +225,7 @@ survtmle <- function(
   trtOfInterest="all",
   method="hazard",
   bounds=NULL,
-  verbose=TRUE,
+  verbose=FALSE,
   tol=1/(length(ftime)),
   maxIter=100
 ){
@@ -242,7 +243,7 @@ survtmle <- function(
   
   # hazard-based TMLE
   if(method=="hazard"){
-    tmle.fit <- hazard.tmle(ftime=ftime, 
+    tmle.fit <- hazard_tmle(ftime=ftime, 
                             ftype=ftype,
                             trt=trt,
                             t0=t0,
@@ -258,13 +259,12 @@ survtmle <- function(
                             returnModels=returnModels,
                             ftypeOfInterest=ftypeOfInterest,
                             trtOfInterest=trtOfInterest,
-                            t0.bin=t0.bin,
                             bounds=bounds,
                             verbose=verbose, 
                             tol=tol,
                             maxIter=maxIter)
   }else if(method=="mean"){
-    tmle.fit <- mean.tmle(ftime=ftime, 
+    tmle.fit <- mean_tmle(ftime=ftime, 
                           ftype=ftype,
                           trt=trt,
                           t0=t0,

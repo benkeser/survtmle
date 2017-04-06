@@ -4,8 +4,8 @@
 \alias{estimateHazards}
 \title{estimateHazards}
 \usage{
-estimateHazards(dataList, J, adjustVars, SL.ftime, glm.ftime, returnModels,
-  bounds, verbose, ...)
+estimateHazards(dataList, J, adjustVars, SL.ftime = NULL, glm.ftime = NULL,
+  returnModels, bounds, verbose, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}
@@ -32,7 +32,7 @@ objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if 
 use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
 for more information.}
 
-\item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
+\item{bounds}{A list of bounds... TODO: Add more description here.}
 
 \item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
 
@@ -41,12 +41,12 @@ for more information.}
 \value{
 The function returns a list that is exactly the same as the input \code{dataList}, 
 but with additional columns corresponding to the hazard, pseudo-hazard, and the total hazard for
-summed over all causes \code{j' < j}.
+summed over all causes \code{k < j}.
 }
 \description{
 This function computes an estimate of the cause-specific hazard functions over all times
 using either \code{glm} or \code{SuperLearner}. The 
-structure of the function is specific to how it is called within \code{hazard.tmle}.
+structure of the function is specific to how it is called within \code{hazard_tmle}.
 In particular, \code{dataList} must have a very specific structure for this 
 function to run properly. The list should consist of \code{data.frame} objects. 
 The first will have the number of rows for each observation
@@ -58,10 +58,9 @@ a column called \code{Nj} for each value of j in \code{J}. The first fit estimat
 hazard of \code{min(J)}, while subsequent fits estimate the pseudo-hazard of all other values of
 j, where pseudo-hazard is used to mean the probability of a failure due to type j at a particular
 time point given no failure of any type at any previous time point AND no failure due to 
-type \code{j' < j} at a particular time point. The hazard estimates of causes j' can then be used to 
+type \code{k < j} at a particular time point. The hazard estimates of causes j' can then be used to 
 map this pseudo-hazard back into the hazard at a particular time. This is nothing more than 
 the re-framing of a conditional multinomial probability into a series of conditional 
 binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
 more than one over all possible causes of failure at a particular time point.
 }
-

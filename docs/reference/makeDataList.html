@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -80,7 +83,7 @@
     
     <p>The function takes a <code>data.frame</code> of 
 short format right-censored failure times and reshapes the long format into 
-the wide format needed for calls to both <code>mean.tmle</code> and <code>hazard.tmle</code>. 
+the wide format needed for calls to both <code>mean_tmle</code> and <code>hazard_tmle</code>. 
 The list returned by the function will have number of entries equal to 
 <code>length(trtOfInterest) + 1</code>. The first will have the number of rows for each observation
 equal to the <code>ftime</code> corresponding to that observation. The subsequent entries will
@@ -99,7 +102,7 @@ of <code>trtOfInterest</code> in turn.</p>
       <dt>ntrt</dt>
       <dd>The number of <code>trt</code> values of interest.</dd>
       <dt>uniqtrt</dt>
-      <dd>The unique values of <code>trtOfInterest</code> passed to <code>mean.tmle</code>.</dd>
+      <dd>The unique values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</dd>
       <dt>t0</dt>
       <dd>The timepoint at which <code>survtmle</code> was called to evaluate.</dd>
       <dt>bounds</dt>
@@ -127,7 +130,7 @@ of <code>trtOfInterest</code> in turn.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

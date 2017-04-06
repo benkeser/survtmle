@@ -3,7 +3,7 @@
 #' This function performs a fluctuation of an initial estimate of the G-computation regression at 
 #' a specified time \code{t} using a call to \code{glm} (i.e., a logistic submodel) or a call to
 #' \code{optim} (if bounds are specified). The structure of the function is specific to how it is 
-#' called within \code{mean.tmle}.
+#' called within \code{mean_tmle}.
 #' In particular, \code{wideDataList} must have a very specific structure for this 
 #' function to run properly. The list should consist of \code{data.frame} objects. The first should
 #' have all rows set to their observed value of \code{trt}. The remaining should 
@@ -28,18 +28,18 @@
 #' 
 #' @param wideDataList A list of \code{data.frame} objects. 
 #' @param t The timepoint at which to compute the iterated mean. 
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean.tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param whichJ Numeric value indicating the cause of failure for which regression should be 
 #' computed.
 #' @param allJ Numeric vector indicating the labels of all causes of failure. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. Needed only because
 #' the naming convention for the regression if \code{t==t0} is different than if \code{t!=t0}.
-#' @param adjustVars Object of class \code{data.frame} that contains the variables to adjust 
-#' for in the regression. 
 #' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @export 
+#' @importFrom stats as.formula optim glm
+#' @importFrom Matrix Diagonal
 #' 
 #' @return The function then returns a list that is exactly the same as the input \code{wideDataList}, 
 #' but with a column named \code{Qj.star.t} added to it, which is the fluctuated conditional mean of 
@@ -72,7 +72,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
 
     # fluctuation model
     suppressWarnings(
-      flucMod <- glm(as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
+      flucMod <- stats::glm(stats::as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
     )
     # get predictions back
     wideDataList <- lapply(wideDataList, function(x,t){
@@ -106,26 +106,26 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
     
     if(length(cleverCovariates)>1){
       #           fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-      #                             fn=LogLikelihood.offset, 
+      #                             fn=LogLikelihood_offset, 
       #                             Y=wideDataList[[1]]$thisOutcome[include], 
       #                             H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
       #                                           as.matrix(wideDataList[[1]][include,cleverCovariates])),
       #                             offset=wideDataList[[1]]$thisOffset[include],
-      #                             method="BFGS",gr=grad.offset,
+      #                             method="BFGS",gr=grad_offset,
       #                             control=list(reltol=1e-12, maxit=50000))
       #           
-      fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-                        fn=LogLikelihood.offset, 
+      fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
+                        fn=LogLikelihood_offset, 
                         Y=wideDataList[[1]]$thisOutcome[include], 
                         H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
                         offset=wideDataList[[1]]$thisOffset[include],
-                        method="BFGS",gr=grad.offset,
+                        method="BFGS",gr=grad_offset,
                         control=list(reltol=1e-7, maxit=50000))
     }else{
       fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-                        fn=LogLikelihood.offset, 
+                        fn=LogLikelihood_offset, 
                         Y=wideDataList[[1]]$thisOutcome[include], 
-                        H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
+                        H=as.matrix(Matrix::Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
                                       as.matrix(wideDataList[[1]][include,cleverCovariates])),
                         offset=wideDataList[[1]]$thisOffset[include],
                         method="Brent",lower=-1000,upper=1000,

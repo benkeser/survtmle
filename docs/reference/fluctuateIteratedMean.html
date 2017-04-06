@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -81,7 +84,7 @@
     <p>This function performs a fluctuation of an initial estimate of the G-computation regression at 
 a specified time <code>t</code> using a call to <code>glm</code> (i.e., a logistic submodel) or a call to
 <code>optim</code> (if bounds are specified). The structure of the function is specific to how it is 
-called within <code>mean.tmle</code>.
+called within <code>mean_tmle</code>.
 In particular, <code>wideDataList</code> must have a very specific structure for this 
 function to run properly. The list should consist of <code>data.frame</code> objects. The first should
 have all rows set to their observed value of <code>trt</code>. The remaining should 
@@ -115,7 +118,7 @@ at the observed data points.</p>
       <dt>t</dt>
       <dd>The timepoint at which to compute the iterated mean.</dd>
       <dt>uniqtrt</dt>
-      <dd>The values of <code>trtOfInterest</code> passed to <code>mean.tmle</code>.</dd>
+      <dd>The values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</dd>
       <dt>whichJ</dt>
       <dd>Numeric value indicating the cause of failure for which regression should be 
 computed.</dd>
@@ -128,9 +131,6 @@ the naming convention for the regression if <code>t==t0</code> is different than
       <dd>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</dd>
       <dt>...</dt>
       <dd>Other arguments. Not currently used.</dd>
-      <dt>adjustVars</dt>
-      <dd>Object of class <code>data.frame</code> that contains the variables to adjust 
-for in the regression.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -155,7 +155,7 @@ but with a column named <code>Qj.star.t</code> added to it, which is the fluctua
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

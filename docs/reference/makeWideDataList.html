@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -80,7 +83,7 @@
     
     <p>The function takes a <code>data.frame</code> and <code>list</code> consisting of
 short and long format right-censored failure times. The function reshapes the long format into 
-the wide format needed for calls to <code>mean.tmle</code>. The list returned by the function
+the wide format needed for calls to <code>mean_tmle</code>. The list returned by the function
 will have number of entries equal to <code>length(trtOfInterest) + 1</code>. The first will 
 contain the observed <code>trt</code> columns and will set <code>C.t</code> (the censoring counting process)
 equal to the observed value of censoring. The subsequent entries will set <code>trt</code> equal to 
@@ -96,7 +99,7 @@ each level of <code>trtOfInterest</code> and set <code>C.t</code> to zero for ev
       <dt>allJ</dt>
       <dd>Numeric vector indicating the labels of all causes of failure.</dd>
       <dt>uniqtrt</dt>
-      <dd>The values of <code>trtOfInterest</code> passed to <code>mean.tmle</code>.</dd>
+      <dd>The values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</dd>
       <dt>adjustVars</dt>
       <dd>A data.frame of adjustment variables that will be used in estimating the 
 conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.</dd>
@@ -128,7 +131,7 @@ more details on formatting.</dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

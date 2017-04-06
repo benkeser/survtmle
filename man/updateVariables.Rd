@@ -5,7 +5,7 @@
 \title{updateVariables}
 \usage{
 updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
-  ...)
+  cvSieve = FALSE, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}
@@ -13,17 +13,20 @@ updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
 \item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-\code{hazard.tmle}.}
+\code{hazard_tmle}.}
 
 \item{nJ}{The number of unique failure types.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean.tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
 \item{ntrt}{The number of \code{trt} values of interest.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
 \item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+
+\item{cvSieve}{A boolean indicating whether the function should compute clever covariates for
+the cross-validated sieve effect parameter.}
 
 \item{...}{Other arguments. Not currently used.}
 }
@@ -37,4 +40,3 @@ A helper function that maps hazard estimates into estimates of cumulative
 incidence and updates the "clever covariates" used by the targeted minimum 
 loss-based estimation fluctuation step.
 }
-
