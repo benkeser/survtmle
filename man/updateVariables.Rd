@@ -40,4 +40,3 @@ A helper function that maps hazard estimates into estimates of cumulative
 incidence and updates the "clever covariates" used by the targeted minimum 
 loss-based estimation fluctuation step.
 }
-

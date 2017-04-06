@@ -246,4 +246,3 @@ method="mean", returnModels = TRUE, ftypeOfInterest = 1)
 
 # TODO: Add bounds example
 }
-

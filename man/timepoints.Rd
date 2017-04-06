@@ -53,4 +53,3 @@ allTimes$t1
 # look at results for time 2 
 allTimes$t2
 }
-

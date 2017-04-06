@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mock RV144 data set — rv144 • survtmle</title>
+<title>bin_ftime — bin_ftime • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,42 +77,56 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mock RV144 data set</h1>
+    <h1>bin_ftime</h1>
     </div>
 
     
-    <p>A dataset containing data that is similar in structure to the RV144 &quot;Thai
-trial&quot; of the ALVAC/AIDSVAX vaccine. Privacy agreements prevent the sharing
-of the real data, so please note THAT THIS IS NOT THE REAL RV144 DATA.</p>
+    <p>This is a helper function that takes a vector of continuously valued failure times and
+discretizes into <code>nKnots</code> number of discrete times. By default the bins
+will be evenly spaced, but users can also input their own cutpoints through the
+<code>bins</code> argument.</p>
     
 
-    <pre><span class='no'>rv144</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre><span class='fu'>bin_ftime</span>(<span class='no'>ftime</span>, <span class='kw'>bins</span> <span class='kw'>=</span> <span class='st'>"default"</span>, <span class='kw'>nKnots</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <dl class="dl-horizontal">
+      <dt>ftime</dt>
+      <dd>A vector of failure times</dd>
+      <dt>bins</dt>
+      <dd>How should the failure times be discretized? Can be set to 
+<code>&quot;default&quot;</code> in which case cut points will be evenly over the range of <code>ftime</code>. 
+Or can be set to a vector containing the desired cutpoints for the failure time bins.</dd>
+      <dt>nKnots</dt>
+      <dd>If <code>bins=&quot;default&quot;</code>, how many bins of failure times should there be?
+The default value is 10 and the option is ignored if <code>bins != &quot;default&quot;</code></dd>
+    </dl>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame with 15,955 rows and 10 columns:
-<dl class='dl-horizontal'>
-  <dt>ftime</dt><dd>number of six month visit windows until first recorded incidence of HIV</dd>
-  <dt>ftype</dt><dd>the genotype of HIV (0 = censored, 1 = amino acid site 169 matched, 2 = amino acid site 169 mismatched)</dd>
-  <dt>vax</dt><dd>vaccine assignment (0 = placebo, 1 = vaccine)</dd>
-  <dt>male</dt><dd>male gender (0 = no, 1 = yes)</dd>
-  <dt>year04</dt><dd>trial enrollment year 2004 (0 = no, 1 = yes)</dd>
-  <dt>year05</dt><dd>trial enrollment year 2005 (0 = no, 1 = yes)</dd>
-  <dt>medRisk</dt><dd>medium category of risk behaviors (0 = no, 1 = yes)</dd>
-  <dt>highRisk</dt><dd>high category of risk behaviors (0 = no, 1 = yes)</dd>
-  <dt>medAge</dt><dd>medium category for age (0 = no, 1 = yes)</dd>
-  <dt>highAge</dt><dd>high category for age (0 = no, 1 = yes)</dd>
-  ...
-</dl></p>
+    <p>A vector of binned failure times</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>runif</span>(<span class='fl'>100</span>,<span class='fl'>0</span>,<span class='fl'>10</span>)
+<span class='co'># first do default binning</span>
+<span class='no'>binned.ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>bin_ftime</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>)
+<span class='fu'>table</span>(<span class='no'>binned.ftime</span>)</div><div class='output co'>#&gt; binned.ftime
+#&gt;  1  2  3  4  5  6  7  8  9 
+#&gt; 12 11 11 12 17  8 14  7  8 </div><div class='input'><span class='co'># now specify own cutpoints</span>
+<span class='no'>binned.ftime2</span> <span class='kw'>&lt;-</span> <span class='fu'>bin_ftime</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>5</span>,<span class='fl'>8</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'><span class='fu'>table</span>(<span class='no'>binned.ftime</span>)</div><div class='output co'>#&gt; binned.ftime
+#&gt;  1  2  3  4  5  6  7  8  9 
+#&gt; 12 11 11 12 17  8 14  7  8 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-          </ul>
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

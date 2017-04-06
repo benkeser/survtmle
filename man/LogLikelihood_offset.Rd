@@ -23,4 +23,3 @@ A function that computes the log-likelihood for a logistic regression
 model with an offset. Used by 
 \code{optim} on occasion.
 }
-

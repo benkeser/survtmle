@@ -50,4 +50,3 @@ estimate as offset and the targeted minimum loss-based estimation "clever covari
 then obtains predictions based on this fit on each of the \code{data.frame} objects in 
 \code{dataList}.
 }
-

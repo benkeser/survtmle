@@ -64,4 +64,3 @@ the re-framing of a conditional multinomial probability into a series of conditi
 binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
 more than one over all possible causes of failure at a particular time point.
 }
-

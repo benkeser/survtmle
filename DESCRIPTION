@@ -1,10 +1,10 @@
 Package: survtmle
 Title: Compute targeted minimum loss-based estimates in right-censored survival
        settings
-Version: 0.0.1
+Version: 0.0.5
 Authors@R: as.person(c(
-  "David Benkeser <benkeser@berkeley.edu> [aut, cre]",
-  "Nima Hejazi <nhejazi@berkeley.edu> [ctb]"
+  "David Benkeser <benkeser@berkeley.edu> [aut, cre, cph]",
+  "Nima Hejazi <nhejazi@berkeley.edu> [aut]"
   ))
 Description: This package can be used to compute marginal cumulative incidence
              estimates in settings with and without competing risks, including
@@ -23,4 +23,4 @@ License: MIT + file LICENSE
 URL: https://github.com/benkeser/survtmle
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

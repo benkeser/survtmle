@@ -52,6 +52,9 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
+  <a href="../articles/index.html">Articles</a>
+</li>
+<li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
@@ -84,7 +87,7 @@ loss-based estimation fluctuation step.</p>
     
 
     <pre><span class='fu'>updateVariables</span>(<span class='no'>dataList</span>, <span class='no'>allJ</span>, <span class='no'>ofInterestJ</span>, <span class='no'>nJ</span>, <span class='no'>uniqtrt</span>, <span class='no'>ntrt</span>, <span class='no'>t0</span>, <span class='no'>verbose</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='kw'>cvSieve</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -94,17 +97,20 @@ loss-based estimation fluctuation step.</p>
       <dd>Numeric vector indicating the labels of all causes of failure.</dd>
       <dt>ofInterestJ</dt>
       <dd>Numeric vector indicating <code>ftypeOfInterest</code> that was passed to 
-<code>hazard.tmle</code>.</dd>
+<code>hazard_tmle</code>.</dd>
       <dt>nJ</dt>
       <dd>The number of unique failure types.</dd>
       <dt>uniqtrt</dt>
-      <dd>The values of <code>trtOfInterest</code> passed to <code>mean.tmle</code>.</dd>
+      <dd>The values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</dd>
       <dt>ntrt</dt>
       <dd>The number of <code>trt</code> values of interest.</dd>
       <dt>t0</dt>
       <dd>The timepoint at which <code>survtmle</code> was called to evaluate.</dd>
       <dt>verbose</dt>
       <dd>A boolean indicating whether the function should print messages to indicate progress.</dd>
+      <dt>cvSieve</dt>
+      <dd>A boolean indicating whether the function should compute clever covariates for
+the cross-validated sieve effect parameter.</dd>
       <dt>...</dt>
       <dd>Other arguments. Not currently used.</dd>
     </dl>
@@ -130,7 +136,7 @@ and estimated &quot;clever covariates&quot; at each time.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Benkeser.</p>
+  <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">

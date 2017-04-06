@@ -34,4 +34,3 @@ equal to the \code{ftime} corresponding to that observation. The subsequent entr
 have \code{t0} rows for each observation and will set \code{trt} column equal to each value
 of \code{trtOfInterest} in turn.
 }
-

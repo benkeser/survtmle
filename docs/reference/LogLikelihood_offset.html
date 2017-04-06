@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mock RV144 data set — rv144 • survtmle</title>
+<title>LogLikelihood_offset — LogLikelihood_offset • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,41 +77,41 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mock RV144 data set</h1>
+    <h1>LogLikelihood_offset</h1>
     </div>
 
     
-    <p>A dataset containing data that is similar in structure to the RV144 &quot;Thai
-trial&quot; of the ALVAC/AIDSVAX vaccine. Privacy agreements prevent the sharing
-of the real data, so please note THAT THIS IS NOT THE REAL RV144 DATA.</p>
+    <p>A function that computes the log-likelihood for a logistic regression
+model with an offset. Used by 
+<code>optim</code> on occasion.</p>
     
 
-    <pre><span class='no'>rv144</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre><span class='fu'>LogLikelihood_offset</span>(<span class='no'>beta</span>, <span class='no'>Y</span>, <span class='no'>H</span>, <span class='no'>offset</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <dl class="dl-horizontal">
+      <dt>beta</dt>
+      <dd>A vector of coefficients in a logistic glm</dd>
+      <dt>Y</dt>
+      <dd>The outcome vector</dd>
+      <dt>H</dt>
+      <dd>The covariate matrix</dd>
+      <dt>offset</dt>
+      <dd>The offset vector</dd>
+    </dl>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame with 15,955 rows and 10 columns:
-<dl class='dl-horizontal'>
-  <dt>ftime</dt><dd>number of six month visit windows until first recorded incidence of HIV</dd>
-  <dt>ftype</dt><dd>the genotype of HIV (0 = censored, 1 = amino acid site 169 matched, 2 = amino acid site 169 mismatched)</dd>
-  <dt>vax</dt><dd>vaccine assignment (0 = placebo, 1 = vaccine)</dd>
-  <dt>male</dt><dd>male gender (0 = no, 1 = yes)</dd>
-  <dt>year04</dt><dd>trial enrollment year 2004 (0 = no, 1 = yes)</dd>
-  <dt>year05</dt><dd>trial enrollment year 2005 (0 = no, 1 = yes)</dd>
-  <dt>medRisk</dt><dd>medium category of risk behaviors (0 = no, 1 = yes)</dd>
-  <dt>highRisk</dt><dd>high category of risk behaviors (0 = no, 1 = yes)</dd>
-  <dt>medAge</dt><dd>medium category for age (0 = no, 1 = yes)</dd>
-  <dt>highAge</dt><dd>high category for age (0 = no, 1 = yes)</dd>
-  ...
-</dl></p>
+    <p>Numeric of the summed negative log-likelihood loss over observations.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
 
   </div>
