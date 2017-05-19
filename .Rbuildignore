@@ -9,5 +9,5 @@
 ^\.git$
 ^docs$
 ^debug$
-^paper$
+^paper_JSS$
 ^\.Rproj\.user$
