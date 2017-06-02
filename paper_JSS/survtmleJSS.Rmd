@@ -1,0 +1,62 @@
+---
+author:
+  - name: Nima Hejazi
+    affiliation: University of California, Berkeley
+    address: >
+      First line
+      Second line
+    email: \email{name@company.com}
+    url: http://nimahejazi.org
+  - name: David Benkeser
+    affiliation: Emory University
+    address: >
+      First line
+      Second line
+    email: \email{name@company.com}
+    url: http://rstudio.com
+title:
+  formatted: "\\pkg{survtmle}: Targeted Learning for Survival Analysis with Competing Risks in \\proglang{R}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "survtmle: Targeted Learning for Survival Analysis with Competing Risks in R"
+  # For running headers, if needed
+  short:     "\\pkg{survtmle}: Targeted Learning for Competing Risks in \\proglang{R}"
+abstract: >
+  The abstract of the article.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [keywords, not capitalized, "\\proglang{Java}"]
+  plain:     [keywords, not capitalized, Java]
+preamble: >
+  \usepackage{amsmath}
+bibliography:
+  survtmleJSS.bib
+output: rticles::jss_article
+---
+
+# Introduction
+
+This template demonstrates some of the basic latex you'll need to know to create a JSS article.
+
+## Code formatting
+
+Don't use markdown, instead use the more precise latex commands:
+
+* \proglang{Java}
+* \pkg{plyr}
+* \code{print("abc")}
+
+# R code
+
+Can be inserted in regular R markdown blocks.
+
+```{r}
+x <- 1:10
+x
+```
+
+# References
+
+---
+nocite: |
+ @neafsey2015genetic, @hubbard2016statistical
+...

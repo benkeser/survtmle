@@ -3,9 +3,12 @@
 ^appveyor\.yml$
 ^codecov\.yml$
 ^\.gitignore$
+^\.gitmodules$
 ^\README\.md$
 ^cran-comments\.md$
 ^\.git$
 ^paper$
 ^docs$
 ^debug$
+^paper_JSS$
+^\.Rproj\.user$
