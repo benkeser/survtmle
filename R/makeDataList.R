@@ -14,7 +14,7 @@
 #' @param ntrt The number of \code{trt} values of interest. 
 #' @param uniqtrt The unique values of \code{trtOfInterest} passed to \code{mean_tmle}.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
-#' @param bounds XXX NEED MORE DESCRIPTION HERE XXX
+#' @param bounds More description to be added soon. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @export 
@@ -26,20 +26,22 @@
 makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
   n <- nrow(dat)
   dataList <- vector(mode="list",length=ntrt+1)
-  
+  rankftime <- match(dat$ftime, sort(unique(dat$ftime)))
   # first element used for estimation
-  dataList[[1]] <- dat[rep(1:nrow(dat),dat$ftime),]
+  dataList[[1]] <- dat[rep(1:nrow(dat),rankftime),]
   for(j in J){
     eval(parse(text=paste("dataList[[1]]$N",j," <- 0",sep="")))
-    eval(parse(text=paste("dataList[[1]]$N",j,"[cumsum(dat$ftime)] <- as.numeric(dat$ftype==j)",sep="")))  
+    eval(parse(text=paste("dataList[[1]]$N",j,"[cumsum(rankftime)] <- as.numeric(dat$ftype==j)",sep="")))  
   }
   dataList[[1]]$C <- 0
-  dataList[[1]]$C[cumsum(dat$ftime)] <- as.numeric(dat$ftype==0)
+  dataList[[1]]$C[cumsum(rankftime)] <- as.numeric(dat$ftype==0)
   
   n.row.ii <- nrow(dataList[[1]])
+  uniqftime <- unique(dat$ftime)
+  orduniqftime <- uniqftime[order(uniqftime)]
   row.names(dataList[[1]])[row.names(dataList[[1]]) %in% paste(row.names(dat))] <- paste(row.names(dat),".0",sep="")
-  dataList[[1]]$t <- as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]),".",fixed=T))[seq(2,n.row.ii*2,2)]))+1
-  
+  dataList[[1]]$t <- orduniqftime[as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]),".",fixed=TRUE))[seq(2,n.row.ii*2,2)]))+1]
+
   if(!is.null(bounds)){
     boundFormat <- data.frame(t=bounds[[1]]$t)
     for(j in J){
