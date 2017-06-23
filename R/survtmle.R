@@ -254,6 +254,12 @@ survtmle <- function(
     adjustVars <- adjustVars[ind,,drop=FALSE]
     trt <- trt[ind]
   }
+  # haven't figured out how to fix updateVariables yet when ftypeOfInterest
+  # is not equal to unique(trt).
+  if(!all(unique(ftypeOfInterest) == unique(trt)) & method=="hazard"){
+    stop("Hazard implementation is not yet functional when ftypeOfInterest does not include all unique values of trt")
+  }
+
   # number of failure types
   nJ <- length(unique(ftype))-1
   #if(nJ >= 2) print(paste("ftype has ", nJ, " unique failure types. Calculating cumulative incidence estimates."))
