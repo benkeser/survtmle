@@ -242,7 +242,7 @@ mean_tmle <- function(
   }
   
   # calculate standard error
-  infCurves <- wideDataList[[1]][,grep("IC",names(wideDataList[[1]]))]
+  infCurves <- wideDataList[[1]][,grep("IC",names(wideDataList[[1]])),drop=FALSE]
   #   browser()
   meanIC <- apply(infCurves, MARGIN=2, FUN=mean)
   var <- t(as.matrix(infCurves))%*%as.matrix(infCurves)/n^2
