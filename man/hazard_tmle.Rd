@@ -7,9 +7,9 @@
 hazard_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), incidence = TRUE,
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
-  returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
-  bounds = NULL, verbose = FALSE, tol = 1/(length(ftime)),
-  maxIter = 100, ...)
+  returnModels = FALSE, ftypeOfInterest = unique(ftype[ftype != 0]),
+  trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
+  tol = 1/(length(ftime)), maxIter = 100, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values or zero values

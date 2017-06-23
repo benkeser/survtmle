@@ -54,10 +54,10 @@
 #' use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
 #' for more information. 
 #' @param ftypeOfInterest An input specifying what failure types to compute estimates of incidence for. 
-#' The default value is \code{"all"}, which computes estimates for values \code{unique(ftype)}. Can alternatively
+#' The default value computes estimates for values \code{unique(ftype)}. Can alternatively
 #' be set to a vector of values found in \code{ftype}.
 #' @param trtOfInterest An input specifying which levels of \code{trt} are of interest. The default value
-#' is \code{"all"}, which computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
+#' computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
 #' vector of values found in \code{trt}.
 #' @param method A character specification of how the targeted minimum loss-based estimators should be 
 #' computer, either \code{"mean"} or \code{"hazard"}. The \code{"mean"} specification uses a closed-form
@@ -224,8 +224,8 @@ survtmle <- function(
   glm.trt="1",
   returnIC=TRUE,
   returnModels=TRUE,
-  ftypeOfInterest="all",
-  trtOfInterest="all",
+  ftypeOfInterest=unique(ftype[ftype!=0]),
+  trtOfInterest=unique(trt),
   method="hazard",
   bounds=NULL,
   verbose=FALSE,

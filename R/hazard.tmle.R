@@ -133,8 +133,8 @@ hazard_tmle <- function(
   glm.trt="1",
   returnIC=TRUE,
   returnModels=FALSE,
-  ftypeOfInterest="all",
-  trtOfInterest="all",
+  ftypeOfInterest=unique(ftype[ftype!=0]),
+  trtOfInterest=unique(trt),
   bounds=NULL, 
   verbose = FALSE, 
   tol=1/(length(ftime)),
@@ -155,23 +155,14 @@ hazard_tmle <- function(
   #   t0 <- 
   # }
   # calculate number of failure types
-  if(all(ftypeOfInterest=="all")){
-    nJ <- length(unique(ftype[ftype!=0]))
-    allJ <- ofInterestJ <- sort(unique(ftype[ftype!=0]))
-  }else{
-    nJ <- length(ftypeOfInterest)
-    allJ <- sort(unique(ftype[ftype!=0]))
-    ofInterestJ <- sort(ftypeOfInterest)
-  }
+  nJ <- length(ftypeOfInterest)
+  allJ <- sort(unique(ftype[ftype!=0]))
+  ofInterestJ <- sort(ftypeOfInterest)
   
   # calculate number of groups
-  if(all(trtOfInterest=="all")){
-    ntrt <- length(unique(trt))
-    uniqtrt <- sort(unique(trt))
-  }else{
-    ntrt <- length(trtOfInterest)
-    uniqtrt <- sort(trtOfInterest)
-  }
+  ntrt <- length(trtOfInterest)
+  uniqtrt <- sort(trtOfInterest)
+
   
   # estimate trt probabilities
   trtOut <- estimateTreatment(dat=dat, ntrt=ntrt, uniqtrt=uniqtrt, adjustVars=adjustVars, 

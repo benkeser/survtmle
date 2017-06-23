@@ -57,10 +57,10 @@
 #' use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
 #' for more information. 
 #' @param ftypeOfInterest An input specifying what failure types to compute estimates of incidence for. 
-#' The default value is \code{"all"}, which computes estimates for values \code{unique(ftype)}. Can alternatively
+#' The default value computes estimates for values \code{unique(ftype)}. Can alternatively
 #' be set to a vector of values found in \code{ftype}.
 #' @param trtOfInterest An input specifying which levels of \code{trt} are of interest. The default value
-#' is \code{"all"}, which computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
+#' computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
 #' vector of values found in \code{trt}.
 #' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
@@ -131,8 +131,8 @@ mean_tmle <- function(
   glm.trt="1",
   returnIC=TRUE,
   returnModels=FALSE,
-  ftypeOfInterest="all",
-  trtOfInterest="all",
+  ftypeOfInterest=unique(ftype[ftype!=0]),
+  trtOfInterest=unique(trt),
   bounds=NULL, 
   verbose = FALSE,
   Gcomp = FALSE, 
@@ -148,23 +148,14 @@ mean_tmle <- function(
   } 
   
   # calculate number of failure types
-  if(all(ftypeOfInterest=="all")){
-    nJ <- length(unique(ftype[ftype!=0]))
-    allJ <- ofInterestJ <- sort(unique(ftype[ftype!=0]))
-  }else{
-    nJ <- length(ftypeOfInterest)
-    allJ <- sort(unique(ftype[ftype!=0]))
-    ofInterestJ <- sort(ftypeOfInterest)
-  }
+  nJ <- length(ftypeOfInterest)    
+  allJ <- sort(unique(ftype[ftype!=0]))
+  ofInterestJ <- sort(ftypeOfInterest)
   
   # calculate number of groups
-  if(all(trtOfInterest=="all")){
-    ntrt <- length(unique(trt))
-    uniqtrt <- sort(unique(trt))
-  }else{
-    ntrt <- length(trtOfInterest)
-    uniqtrt <- sort(trtOfInterest)
-  }
+  ntrt <- length(trtOfInterest)
+  uniqtrt <- sort(trtOfInterest)
+
   
   # estimate trt probabilities
   trtOut <- estimateTreatment(dat=dat, ntrt=ntrt, uniqtrt=uniqtrt, adjustVars=adjustVars, 

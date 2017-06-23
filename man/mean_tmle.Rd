@@ -7,8 +7,9 @@
 mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), incidence = TRUE,
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
-  returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
-  bounds = NULL, verbose = FALSE, Gcomp = FALSE, ...)
+  returnModels = FALSE, ftypeOfInterest = unique(ftype[ftype != 0]),
+  trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
+  Gcomp = FALSE, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
@@ -76,11 +77,11 @@ use calls to \code{timepoints} to obtain estimates at times other than \code{t0}
 for more information.}
 
 \item{ftypeOfInterest}{An input specifying what failure types to compute estimates of incidence for. 
-The default value is \code{"all"}, which computes estimates for values \code{unique(ftype)}. Can alternatively
+The default value computes estimates for values \code{unique(ftype)}. Can alternatively
 be set to a vector of values found in \code{ftype}.}
 
 \item{trtOfInterest}{An input specifying which levels of \code{trt} are of interest. The default value
-is \code{"all"}, which computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
+computes estimates for values \code{unique(trt)}. Can alternatively be set to a 
 vector of values found in \code{trt}.}
 
 \item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
