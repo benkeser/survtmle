@@ -259,6 +259,10 @@ survtmle <- function(
   if(!all(unique(ftypeOfInterest) == unique(trt)) & method=="hazard"){
     stop("Hazard implementation is not yet functional when ftypeOfInterest does not include all unique values of trt")
   }
+  # check that all failure types of interest are observed
+  if(!(all(ftypeOfInterest %in% ftype))){
+    stop("At least one ftypeOfInterest not observed. Remove from ftypeOfInterest and try again.")
+  }
 
   # number of failure types
   nJ <- length(unique(ftype))-1
