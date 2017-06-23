@@ -49,7 +49,8 @@
 #' \code{wideDataList}. 
 
 
-fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bounds=NULL,...){
+fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, Gcomp = FALSE, 
+                                  bounds=NULL,...){
   outcomeName <- ifelse(t==t0, paste("N",whichJ,".",t0,sep=""), paste("Q",whichJ,"star.",t+1,sep=""))
   
   ## determine who to include in estimation
