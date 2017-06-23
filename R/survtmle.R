@@ -251,7 +251,7 @@ survtmle <- function(
     warning("Some failure times less than or equal zero. Dropping these observations")
     ind <- which(ftime>0)
     ftime <- ftime[ind]; ftype <- ftype[ind]
-    adjustVars <- adjustVars[ind,,drop=FALSE],
+    adjustVars <- adjustVars[ind,,drop=FALSE]
     trt <- trt[ind]
   }
   # number of failure types
