@@ -256,7 +256,7 @@ survtmle <- function(
   }
   # haven't figured out how to fix updateVariables yet when ftypeOfInterest
   # is not equal to unique(trt).
-  if(!all(unique(ftypeOfInterest) == unique(trt)) & method=="hazard"){
+  if(!all(unique(ftypeOfInterest) == unique(ftypeOfInterest)) & method=="hazard"){
     stop("Hazard implementation is not yet functional when ftypeOfInterest does not include all unique values of trt")
   }
   # check that all failure types of interest are observed
