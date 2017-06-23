@@ -264,6 +264,11 @@ survtmle <- function(
     stop("At least one ftypeOfInterest not observed. Remove from ftypeOfInterest and try again.")
   }
 
+  # check that all trt of interest are observed
+  if(!(all(trtOfInterest %in% trt))){
+    stop("At least one trtOfInterest not observed. Remove from trtOfInterest and try again.")
+  }
+
   # number of failure types
   nJ <- length(unique(ftype))-1
   #if(nJ >= 2) print(paste("ftype has ", nJ, " unique failure types. Calculating cumulative incidence estimates."))
