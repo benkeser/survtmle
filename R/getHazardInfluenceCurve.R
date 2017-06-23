@@ -30,8 +30,8 @@ getHazardInfluenceCurve <- function(
 ){
   for(z in uniqtrt){
     for(j in ofInterestJ){
-      eval(parse(text=paste("dat$margF",j,".z",z,".t0 <- mean(dataList[[1]]$F",j,".z",z,".t0[dataList[[1]]$t==1])",sep="")))
-      eval(parse(text=paste("dat$F",j,".z",z,".t0 <- dataList[[1]]$F",j,".z",z,".t0[dataList[[1]]$t==1]",sep="")))      
+      eval(parse(text=paste("dat$margF",j,".z",z,".t0 <- mean(dataList[[1]]$F",j,".z",z,".t0[dataList[[1]]$t==min(dataList[[1]]$t)])",sep="")))
+      eval(parse(text=paste("dat$F",j,".z",z,".t0 <- dataList[[1]]$F",j,".z",z,".t0[dataList[[1]]$t==min(dataList[[1]]$t)]",sep="")))      
       thisD <- NULL
       for(jTild in allJ){
         thisD <- eval(parse(text=paste("cbind(thisD, dataList[[1]]$H",j,".j",ifelse(jTild==j,"Self","NotSelf"),".z",z,"/(1-dataList[[1]]$hazNot",j,")*(dataList[[1]]$N",jTild," - dataList[[1]]$Q",jTild,"Haz))",sep="")))

@@ -27,8 +27,14 @@
 updateVariables <- function(
   dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...
 ){
-  
-  dataList <- lapply(dataList, function(x, allJ){
+  #---------------------------------------------------------------------------------------------------------
+  # now there's a problem computing survival probabilities
+  # because dataList[[1]] might not have a row for every time point
+  # so we'll first need to compute it in dataList[[2]] and dataList[[3]]
+  # and then merge the results into dataList[[1]] on time, id, and trt
+  # TO DO: This.
+  #---------------------------------------------------------------------------------------------------------
+  dataList[2:(ntrt+1)] <- lapply(dataList[2:(ntrt+1)], function(x, allJ){
     # total hazard
     Q_dot <- rowSums(cbind(rep(0,nrow(x)), x[,paste0("Q",allJ,"Haz")]))
     # survival at t
@@ -47,6 +53,7 @@ updateVariables <- function(
   
   # calculate CIF at time t0
   for(j in ofInterestJ){
+    # TO DO: change this to static memory allocation
     Fj.t0.allZ <- NULL
     for(i in 1:ntrt){
       Fj.t0.allZ <- cbind(Fj.t0.allZ, eval(parse(text=paste("dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0]",sep=""))))
@@ -60,7 +67,25 @@ updateVariables <- function(
       x
     },j=j,uniqtrt=uniqtrt,Fj.t0.allZ=Fj.t0.allZ)
   }
+
+  # merge into dataList[[1]]
+  # indicators of S.t and Fj.t for dataList[[1]]
+  colInd <- which(colnames(dataList[[1]]) %in% c("S.t", paste0("F", ofInterestJ, ".t")))
+  # the first time it's called these columns won't exist
+  if(length(colInd) == 0){
+  dataList[[1]] <- merge(dataList[[1]], 
+                         Reduce(rbind,dataList[2:(ntrt+1)])[,c("id","t","trt","S.t",paste0("F",ofInterestJ,".t"))], 
+                         by = c("id","t","trt"))
+  }else{
+    # the next times it's called those columns will exist but we want them replaced
+    # with the values from dataList[[>1]]
+    dataList[[1]] <- merge(dataList[[1]][,-colInd], 
+                         Reduce(rbind,dataList[2:(ntrt+1)])[,c("id","t","trt","S.t",paste0("F",ofInterestJ,".t"))], 
+                         by = c("id","t","trt"))
+  }
   
+#---------------------------------------------------------------------------------------------------------
+
   dataList <- lapply(dataList, function(x,allJ){
     for(j in allJ){
       if(length(allJ)>1){

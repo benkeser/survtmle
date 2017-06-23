@@ -148,6 +148,12 @@ hazard_tmle <- function(
   dat <- data.frame(id=id, ftime=ftime,ftype=ftype,trt=trt)
   if(!is.null(adjustVars)) dat <- cbind(dat, adjustVars)
   
+  # # check for failure at t0
+  # failt0 <- t0 %in% unique(ftime)
+  # # if no failure, then assign to closest failure time
+  # if(!failt0){
+  #   t0 <- 
+  # }
   # calculate number of failure types
   if(all(ftypeOfInterest=="all")){
     nJ <- length(unique(ftype[ftype!=0]))

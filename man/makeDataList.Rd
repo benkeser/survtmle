@@ -17,7 +17,7 @@ makeDataList(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...)
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
-\item{bounds}{XXX NEED MORE DESCRIPTION HERE XXX}
+\item{bounds}{More description to be added soon.}
 
 \item{...}{Other arguments. Not currently used.}
 }

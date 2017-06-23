@@ -64,6 +64,9 @@
 #' vector of values found in \code{trt}.
 #' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
+#' @param Gcomp A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
+#' estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
+#' super learner is used to estimate failure and censoring mechanisms. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' 
@@ -132,6 +135,7 @@ mean_tmle <- function(
   trtOfInterest="all",
   bounds=NULL, 
   verbose = FALSE,
+  Gcomp = FALSE, 
   ...
 ){
   # assemble data frame of necessary variables
@@ -203,7 +207,8 @@ mean_tmle <- function(
     wideDataList <- fluctuateIteratedMean(wideDataList=wideDataList,t=timeAndType[i,1],whichJ=timeAndType[i,2],ntrt=ntrt,uniqtrt=uniqtrt,allJ=allJ,t0=t0,
                                           SL.ftime=SL.ftime, 
                                           glm.ftime=glm.ftime,
-                                          returnModels=returnModels, bounds=bounds)
+                                          returnModels=returnModels, bounds=bounds,
+                                          Gcomp = Gcomp)
   }
   
   

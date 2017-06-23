@@ -8,7 +8,7 @@ mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), incidence = TRUE,
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = FALSE, ftypeOfInterest = "all", trtOfInterest = "all",
-  bounds = NULL, verbose = FALSE, ...)
+  bounds = NULL, verbose = FALSE, Gcomp = FALSE, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
@@ -86,6 +86,10 @@ vector of values found in \code{trt}.}
 \item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
 
 \item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+
+\item{Gcomp}{A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
+estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
+super learner is used to estimate failure and censoring mechanisms.}
 
 \item{...}{Other arguments. Not currently used.}
 }

@@ -25,6 +25,9 @@ the naming convention for the regression if \code{t==t0} is different than if \c
 \item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
 
 \item{...}{Other arguments. Not currently used.}
+
+\item{Gcomp}{A boolean indicating whether \code{mean_tmle} was called to evaluate the G-computation
+estimator, in which case this function does nothing but relabel columns.}
 }
 \value{
 The function then returns a list that is exactly the same as the input \code{wideDataList}, 

@@ -91,10 +91,18 @@ estimateCensoring <- function(
     # get predictions from ctimeMod
     if(all(class(ctimeMod) != "noCens")){
        dataList <- lapply(dataList, function(x){
-        g_dC <- rep(1, nrow(x))
-        if(t0!=1) g_dC[x$t!=t0] <- 1-predict(ctimeMod, newdata=x[x$t!=t0,], type="response")
-        g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
-        g_dC[x$t==1] <- 1
+        g_dC <- rep(1, length(x[,1]))
+        if(t0!=1){
+          # temporarily replace time with t-1
+          # NOTE: this will fail if t enters model as a factor
+          x$t <- x$t - 1
+          g_dC <- 1-predict(ctimeMod, newdata=x, type="response")
+          # put time back to normal
+          x$t <- x$t + 1
+          # replace any observations with t = 1 
+          # to avoid extrapolation 
+          g_dC[x$t == 1] <- 1
+        }
         x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
         x
       })
@@ -127,10 +135,19 @@ estimateCensoring <- function(
      if(class(ctimeMod) != "noCens"){
        dataList <- lapply(dataList, function(x){
         g_dC <- rep(1, nrow(x))
-        if(t0!=1) g_dC[x$t!=t0] <- 
-            1-predict(ctimeMod, newdata=x[x$t!=t0,c("t", "trt", names(adjustVars))],onlySL=TRUE)[[1]]
-        g_dC <- c(1, g_dC[1:(length(g_dC)-1)])
-        g_dC[x$t==1] <- 1
+        if(t0!=1){
+          # temporarily replace time with t-1
+          # NOTE: this will fail if t enters model as a factor
+          x$t <- x$t - 1
+          g_dC <- 
+            1-predict(ctimeMod, newdata=x[,c("t", "trt", names(adjustVars))],
+                      onlySL=TRUE)[[1]]
+          # put time back to normal
+          x$t <- x$t + 1
+          # replace any observations with t = 1 
+          # to avoid extrapolation at t = 0
+          g_dC[x$t == 1] <- 1
+        }
         x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
         x
       })

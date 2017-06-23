@@ -35,6 +35,8 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. Needed only because
 #' the naming convention for the regression if \code{t==t0} is different than if \code{t!=t0}.
 #' @param bounds A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX
+#' @param Gcomp A boolean indicating whether \code{mean_tmle} was called to evaluate the G-computation
+#' estimator, in which case this function does nothing but relabel columns. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @export 
@@ -51,7 +53,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
   outcomeName <- ifelse(t==t0, paste("N",whichJ,".",t0,sep=""), paste("Q",whichJ,"star.",t+1,sep=""))
   
   ## determine who to include in estimation
-  include <- rep(T, nrow(wideDataList[[1]]))
+  include <- rep(TRUE, nrow(wideDataList[[1]]))
   if(t!=1){
     for(j in allJ){
       # exclude previously failed subjects
@@ -70,87 +72,101 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, bo
     
     flucForm <- paste(outcomeName, "~ -1 + offset(qlogis(Q",whichJ,".",t,")) +", paste0("H",uniqtrt,".",t, collapse="+"),sep="")
 
-    # fluctuation model
-    suppressWarnings(
-      flucMod <- stats::glm(stats::as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
-    )
-    # get predictions back
-    wideDataList <- lapply(wideDataList, function(x,t){
-      eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- predict(flucMod, newdata=x,type='response')",sep="")))
-      x
-    },t=t)
-    
-  }else{
-    cleverCovariates <- paste0("H",uniqtrt,".",t)
-    
-    # calculate offset term and outcome
-    wideDataList <- lapply(wideDataList, function(x){
-      eval(parse(text=paste("x$thisOutcome <- (x[,outcomeName] - x$l",whichJ,".",t,")",
-                            "/(x$u",whichJ,".",t," - x$l",whichJ,".",t,")",sep="")))
-      eval(parse(text=paste("x$thisScale <- x$u",whichJ,".",t," - wideDataList[[1]]$l",whichJ,".",t,sep="")))
-      
-      eval(parse(text=paste("x$Qtilde",whichJ,".",t,
-                            " <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
-                            ")) * (x$Q",whichJ,".",t," - x$l",whichJ,".",t,")/x$thisScale", 
-                            sep="")))
-      
-      eval(parse(text=paste("x$Qtilde",whichJ,".",t,"[x$Qtilde",whichJ,".",t,"==0] <- .Machine$double.neg.eps",sep="")))
-      eval(parse(text=paste("x$Qtilde",whichJ,".",t,"[x$Qtilde",whichJ,".",t,"==1] <- 1-.Machine$double.neg.eps",sep="")))
-      
-      x$thisOffset <- 0
-      eval(parse(text=paste("x$thisOffset[x$NnotJ.",t-1," + x$N",whichJ,".",t-1,"==0] <- ",
-                            "qlogis(x$Qtilde",whichJ,".",t,"[x$NnotJ.",t-1," + x$N",whichJ,".",t-1,"==0])",
-                            sep="")))
-      x
-    })
-    
-    if(length(cleverCovariates)>1){
-      #           fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-      #                             fn=LogLikelihood_offset, 
-      #                             Y=wideDataList[[1]]$thisOutcome[include], 
-      #                             H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
-      #                                           as.matrix(wideDataList[[1]][include,cleverCovariates])),
-      #                             offset=wideDataList[[1]]$thisOffset[include],
-      #                             method="BFGS",gr=grad_offset,
-      #                             control=list(reltol=1e-12, maxit=50000))
-      #           
-      fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
-                        fn=LogLikelihood_offset, 
-                        Y=wideDataList[[1]]$thisOutcome[include], 
-                        H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
-                        offset=wideDataList[[1]]$thisOffset[include],
-                        method="BFGS",gr=grad_offset,
-                        control=list(reltol=1e-7, maxit=50000))
+    if(!Gcomp){
+      # fluctuation model
+      suppressWarnings(
+        flucMod <- stats::glm(stats::as.formula(flucForm), family="binomial",data=wideDataList[[1]][include,], start=rep(0, length(uniqtrt)))
+      )
+      # get predictions back
+      wideDataList <- lapply(wideDataList, function(x,t){
+        eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- predict(flucMod, newdata=x,type='response')",sep="")))
+        x
+      },t=t)
     }else{
-      fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-                        fn=LogLikelihood_offset, 
-                        Y=wideDataList[[1]]$thisOutcome[include], 
-                        H=as.matrix(Matrix::Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
-                                      as.matrix(wideDataList[[1]][include,cleverCovariates])),
-                        offset=wideDataList[[1]]$thisOffset[include],
-                        method="Brent",lower=-1000,upper=1000,
-                        control=list(reltol=1e-7, maxit=50000))
+      # if Gcomp, just skip fluctuation step and assign this
+      wideDataList <- lapply(wideDataList, function(x,t){
+        eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- x$Q",whichJ,".",t,sep="")))
+        x
+      },t=t)
     }
-    
-    if(fluc.mod$convergence!=0){
-      stop("fluctuation convergence failure")
-    }else{
-      beta <- fluc.mod$par
+  }else{
+    if(!Gcomp){
+      cleverCovariates <- paste0("H",uniqtrt,".",t)
       
-      #           wideDataList <- lapply(wideDataList, function(x){
-      #             eval(parse(text=paste("x$Q",whichJ,"star.",t,
-      #                                   " <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
-      #                                   ")) * (plogis(x$thisOffset + ",
-      #                                   "as.matrix(Diagonal(x=x$thisScale)%*%as.matrix(x[,cleverCovariates]))%*%as.matrix(beta))",
-      #                                   "*x$thisScale + x$l",whichJ,".",t,")",sep="")))
+      # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x){
-        eval(parse(text=paste("x$Q",whichJ,"star.",t,
+        eval(parse(text=paste("x$thisOutcome <- (x[,outcomeName] - x$l",whichJ,".",t,")",
+                              "/(x$u",whichJ,".",t," - x$l",whichJ,".",t,")",sep="")))
+        eval(parse(text=paste("x$thisScale <- x$u",whichJ,".",t," - wideDataList[[1]]$l",whichJ,".",t,sep="")))
+        
+        eval(parse(text=paste("x$Qtilde",whichJ,".",t,
                               " <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
-                              ")) * (plogis(x$thisOffset + ",
-                              "as.matrix(x[,cleverCovariates])%*%as.matrix(beta))",
-                              "*x$thisScale + x$l",whichJ,".",t,")",sep="")))
-        x 
+                              ")) * (x$Q",whichJ,".",t," - x$l",whichJ,".",t,")/x$thisScale", 
+                              sep="")))
+        
+        eval(parse(text=paste("x$Qtilde",whichJ,".",t,"[x$Qtilde",whichJ,".",t,"==0] <- .Machine$double.neg.eps",sep="")))
+        eval(parse(text=paste("x$Qtilde",whichJ,".",t,"[x$Qtilde",whichJ,".",t,"==1] <- 1-.Machine$double.neg.eps",sep="")))
+        
+        x$thisOffset <- 0
+        eval(parse(text=paste("x$thisOffset[x$NnotJ.",t-1," + x$N",whichJ,".",t-1,"==0] <- ",
+                              "qlogis(x$Qtilde",whichJ,".",t,"[x$NnotJ.",t-1," + x$N",whichJ,".",t-1,"==0])",
+                              sep="")))
+        x
       })
+      
+      if(length(cleverCovariates)>1){
+        #           fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
+        #                             fn=LogLikelihood_offset, 
+        #                             Y=wideDataList[[1]]$thisOutcome[include], 
+        #                             H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
+        #                                           as.matrix(wideDataList[[1]][include,cleverCovariates])),
+        #                             offset=wideDataList[[1]]$thisOffset[include],
+        #                             method="BFGS",gr=grad_offset,
+        #                             control=list(reltol=1e-12, maxit=50000))
+        #           
+        fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
+                          fn=LogLikelihood_offset, 
+                          Y=wideDataList[[1]]$thisOutcome[include], 
+                          H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
+                          offset=wideDataList[[1]]$thisOffset[include],
+                          method="BFGS",gr=grad_offset,
+                          control=list(reltol=1e-7, maxit=50000))
+      }else{
+        fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
+                          fn=LogLikelihood_offset, 
+                          Y=wideDataList[[1]]$thisOutcome[include], 
+                          H=as.matrix(Matrix::Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
+                                        as.matrix(wideDataList[[1]][include,cleverCovariates])),
+                          offset=wideDataList[[1]]$thisOffset[include],
+                          method="Brent",lower=-1000,upper=1000,
+                          control=list(reltol=1e-7, maxit=50000))
+      }
+      
+      if(fluc.mod$convergence!=0){
+        stop("fluctuation convergence failure")
+      }else{
+        beta <- fluc.mod$par
+        
+        #           wideDataList <- lapply(wideDataList, function(x){
+        #             eval(parse(text=paste("x$Q",whichJ,"star.",t,
+        #                                   " <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
+        #                                   ")) * (plogis(x$thisOffset + ",
+        #                                   "as.matrix(Diagonal(x=x$thisScale)%*%as.matrix(x[,cleverCovariates]))%*%as.matrix(beta))",
+        #                                   "*x$thisScale + x$l",whichJ,".",t,")",sep="")))
+        wideDataList <- lapply(wideDataList, function(x){
+          eval(parse(text=paste("x$Q",whichJ,"star.",t,
+                                " <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
+                                ")) * (plogis(x$thisOffset + ",
+                                "as.matrix(x[,cleverCovariates])%*%as.matrix(beta))",
+                                "*x$thisScale + x$l",whichJ,".",t,")",sep="")))
+          x 
+        })
+      }
+    }else{
+        wideDataList <- lapply(wideDataList, function(x,t){
+          eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- x$Q",whichJ,".",t,sep="")))
+          x
+        },t=t)
     }
   }
   wideDataList
