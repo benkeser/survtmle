@@ -245,6 +245,15 @@ survtmle <- function(
   if(method=="hazard" & Gcomp){
     warning("G-computation estimator not implemented for method='hazard'. Proceeding with TMLE.")
   }
+
+  # check for ftime with 0
+  if(any(ftime<=0)){
+    warning("Some failure times less than or equal zero. Dropping these observations")
+    ind <- which(ftime>0)
+    ftime <- ftime[ind]; ftype <- ftype[ind]
+    adjustVars <- adjustVars[ind,,drop=FALSE],
+    trt <- trt[ind]
+  }
   # number of failure types
   nJ <- length(unique(ftype))-1
   #if(nJ >= 2) print(paste("ftype has ", nJ, " unique failure types. Calculating cumulative incidence estimates."))
