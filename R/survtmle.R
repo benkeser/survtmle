@@ -73,6 +73,9 @@
 #' is smaller than \code{tol}. The default (\code{1/length(ftime)}) is a sensible value. Larger values can
 #' be used in situations where convergence of the algorithm is an issue; however, this may result in 
 #' large finite-sample bias. 
+#' @param Gcomp A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
+#' estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
+#' super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.
 #' @param maxIter A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
@@ -227,7 +230,8 @@ survtmle <- function(
   bounds=NULL,
   verbose=FALSE,
   tol=1/(length(ftime)),
-  maxIter=100
+  maxIter=100,
+  Gcomp = FALSE
 ){
   
   call <- match.call(expand.dots = TRUE)
@@ -237,6 +241,10 @@ survtmle <- function(
     stop("Missing values in ftime, ftype, trt, or adjustVars not currently supported.")
   }
   
+  # check for G-comp for hazard
+  if(method=="hazard" & Gcomp){
+    warning("G-computation estimator not implemented for method='hazard'. Proceeding with TMLE.")
+  }
   # number of failure types
   nJ <- length(unique(ftype))-1
   #if(nJ >= 2) print(paste("ftype has ", nJ, " unique failure types. Calculating cumulative incidence estimates."))
@@ -261,7 +269,7 @@ survtmle <- function(
                             trtOfInterest=trtOfInterest,
                             bounds=bounds,
                             verbose=verbose, 
-                            tol=tol,
+                            tol=tol, 
                             maxIter=maxIter)
   }else if(method=="mean"){
     tmle.fit <- mean_tmle(ftime=ftime, 
@@ -282,7 +290,8 @@ survtmle <- function(
                           trtOfInterest=trtOfInterest,
                           bounds=bounds,
                           verbose=verbose, 
-                          tol=tol
+                          tol=tol,
+                          Gcomp=Gcomp
     )
   }
   

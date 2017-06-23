@@ -9,7 +9,7 @@ survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = TRUE, ftypeOfInterest = "all", trtOfInterest = "all",
   method = "hazard", bounds = NULL, verbose = FALSE,
-  tol = 1/(length(ftime)), maxIter = 100)
+  tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
@@ -105,6 +105,10 @@ large finite-sample bias.}
 \item{maxIter}{A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 algorithm will iterate until either the empirical mean of the efficient influence function
 is smaller than \code{tol} or until \code{maxIter} iterations have been completed.}
+
+\item{Gcomp}{A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
+estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
+super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.}
 }
 \value{
 An object of class \code{survtmle}.
