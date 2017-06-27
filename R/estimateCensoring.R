@@ -156,8 +156,9 @@ estimateCensoring <- function(
    # truncate small propensities at gtol
    dataList <- lapply(dataList,function(x){
     x$G_dC[x$G_dC < gtol]  <- gtol 
+    x
    })
-   
+
    out <- list(dataList = dataList,
                ctimeMod = if(returnModels)
                  ctimeMod
