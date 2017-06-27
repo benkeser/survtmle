@@ -235,7 +235,11 @@ checkInputs <- function(ftime,
 	# check that one of glm.ftime or SL.ftime is specified
 	if(is.null(glm.ftime) & is.null(SL.ftime)){
 		warning("glm.ftime and SL.ftime not specified. Proceeding with unadjusted estimates.")
-		glm.ftime <- paste0("-1 + trt*",paste0("I(t >=",unique(ftime[ftype==0]),")"))
+		if(method == "hazard"){
+			glm.ftime <- paste0("-1 + trt*",paste0("I(t >=",unique(ftime[ftype==0]),")"))			
+		}else{
+			glm.ftime <- "trt"
+		}
 	}	
 	# check that one of glm.ctime or SL.ctime is specified
 	if(is.null(glm.ctime) & is.null(SL.ctime)){
