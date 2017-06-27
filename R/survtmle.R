@@ -242,7 +242,8 @@ survtmle <- function(
                        glm.ftime=glm.ftime,glm.ctime=glm.ctime,glm.trt=glm.trt,
                        returnIC=returnIC, returnModels=returnModels, 
                        ftypeOfInterest=ftypeOfInterest,trtOfInterest=trtOfInterest,
-                       bounds=bounds,verbose=verbose,tol=tol,Gcomp=Gcomp)
+                       bounds=bounds,verbose=verbose,tol=tol,Gcomp=Gcomp,
+                       method = method)
 
   # hazard-based TMLE
   if(method=="hazard"){
