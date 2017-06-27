@@ -83,7 +83,6 @@ checkInputs <- function(ftime,
   trt,
   adjustVars,
   t0=max(ftime[ftype > 0]),
-  incidence=TRUE,
   SL.ftime=NULL,
   SL.ctime=NULL,
   SL.trt=NULL,
@@ -168,7 +167,7 @@ checkInputs <- function(ftime,
 	}
 
 	# check if time enters as a factor in glm.ftime or glm.ctime
-	if(method == "hazard" & (grepl("factor(t)", glm.ftime) | grepl("factor(t)",glm.ctime))
+	if(method == "hazard" & (!is.null(glm.ftime) & grepl("factor(t)", glm.ftime)) | (!is.null(glm.ctime) & grepl("factor(t)",glm.ctime)))
 	   & !all(1:t0 %in% unique(ftime))){
 		stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
 	}
