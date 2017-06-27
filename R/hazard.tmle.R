@@ -19,8 +19,6 @@
 #' conditional treatment, censoring, and failure (hazard or conditional mean) probabilities. 
 #' @param t0 The time at which to return cumulative incidence estimates. By default this is set
 #' to \code{max(ftime)}.
-#' @param incidence If \code{TRUE} the function return estimates of cumulative incidence. If 
-#' \code{FALSE} the function returns esimtates of survival. 
 #' @param SL.ftime A character vector or list specification to be passed to the \code{SL.library} argument 
 #' in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
 #' condtional mean). See \code{?SuperLearner} for more information on how to specify valid 
@@ -72,6 +70,7 @@
 #' @param maxIter A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
+#' @param gtol The truncation level of predicted censoring survival to handle positivity violations. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' 
@@ -123,7 +122,6 @@ hazard_tmle <- function(
   ftype,
   trt,
   t0=max(ftime[ftype > 0]),
-  incidence=TRUE, 
   adjustVars=NULL,
   SL.ftime=NULL,
   SL.ctime=NULL,
@@ -139,6 +137,7 @@ hazard_tmle <- function(
   verbose = FALSE, 
   tol=1/(length(ftime)),
   maxIter=100,
+  gtol = 1e-3,
   ...
 ){
   

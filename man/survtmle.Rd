@@ -5,12 +5,11 @@
 \title{survtmle}
 \usage{
 survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-  incidence = TRUE, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
-  glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
-  returnModels = TRUE, ftypeOfInterest = unique(ftype[ftype != 0]),
-  trtOfInterest = unique(trt), method = "hazard", bounds = NULL,
-  verbose = FALSE, tol = 1/(length(ftime)), maxIter = 100,
-  Gcomp = FALSE)
+  SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
+  glm.ctime = NULL, glm.trt = "1", returnIC = TRUE, returnModels = TRUE,
+  ftypeOfInterest = unique(ftype[ftype != 0]), trtOfInterest = unique(trt),
+  method = "hazard", bounds = NULL, verbose = FALSE,
+  tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE, gtol = 0.001)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
@@ -30,9 +29,6 @@ conditional treatment, censoring, and failure (hazard or conditional mean) proba
 
 \item{t0}{The time at which to return cumulative incidence estimates. By default this is set
 to \code{max(ftime)}.}
-
-\item{incidence}{If \code{TRUE} the function return estimates of cumulative incidence. If 
-\code{FALSE} the function returns esimtates of survival.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the \code{SL.library} argument 
 in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
@@ -110,6 +106,11 @@ is smaller than \code{tol} or until \code{maxIter} iterations have been complete
 \item{Gcomp}{A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
 estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
 super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.}
+
+\item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
+
+\item{incidence}{If \code{TRUE} the function return estimates of cumulative incidence. If 
+\code{FALSE} the function returns esimtates of survival.}
 }
 \value{
 An object of class \code{survtmle}.

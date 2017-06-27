@@ -19,8 +19,6 @@
 #' conditional treatment, censoring, and failure (hazard or conditional mean) probabilities. 
 #' @param t0 The time at which to return cumulative incidence estimates. By default this is set
 #' to \code{max(ftime)}.
-#' @param incidence If \code{TRUE} the function return estimates of cumulative incidence. If 
-#' \code{FALSE} the function returns esimtates of survival. 
 #' @param SL.ftime A character vector or list specification to be passed to the \code{SL.library} argument 
 #' in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
 #' condtional mean). See \code{?SuperLearner} for more information on how to specify valid 
@@ -67,6 +65,7 @@
 #' @param Gcomp A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
 #' estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
 #' super learner is used to estimate failure and censoring mechanisms. 
+#' @param gtol The truncation level of predicted censoring survival to handle positivity violations. 
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' 
@@ -121,7 +120,6 @@ mean_tmle <- function(
   ftype,
   trt,
   t0=max(ftime[ftype > 0]),
-  incidence=TRUE,
   adjustVars=NULL,
   SL.ftime=NULL,
   SL.ctime=NULL,
@@ -136,6 +134,7 @@ mean_tmle <- function(
   bounds=NULL, 
   verbose = FALSE,
   Gcomp = FALSE, 
+  gtol = 1e-3,
   ...
 ){
   # assemble data frame of necessary variables

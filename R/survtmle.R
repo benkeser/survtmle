@@ -79,6 +79,7 @@
 #' @param maxIter A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 #' algorithm will iterate until either the empirical mean of the efficient influence function
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
+#' @param gtol The truncation level of predicted censoring survival to handle positivity violations. 
 #' 
 #' 
 #' @return An object of class \code{survtmle}.
@@ -215,7 +216,6 @@ survtmle <- function(
   trt,
   adjustVars,
   t0=max(ftime[ftype > 0]),
-  incidence=TRUE,
   SL.ftime=NULL,
   SL.ctime=NULL,
   SL.trt=NULL,
@@ -231,62 +231,34 @@ survtmle <- function(
   verbose=FALSE,
   tol=1/(length(ftime)),
   maxIter=100,
-  Gcomp = FALSE
+  Gcomp = FALSE,
+  gtol = 1e-3
 ){
   
   call <- match.call(expand.dots = TRUE)
   
-  # check for missing values
-  if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0 | sum(is.na(adjustVars))>0){
-    stop("Missing values in ftime, ftype, trt, or adjustVars not currently supported.")
-  }
-  
-  # check for G-comp for hazard
-  if(method=="hazard" & Gcomp){
-    warning("G-computation estimator not implemented for method='hazard'. Proceeding with TMLE.")
-  }
+  # check and clean inputs
+  clean <- checkInputs(ftime=ftime,ftype=ftype,trt=trt,
+                       t0=t0, adjustVars=adjustVars,SL.ftime=SL.ftime,
+                       SL.ctime=SL.ctime,SL.trt = SL.trt,
+                       glm.ftime=glm.ftime,glm.ctime=glm.ctime,glm.trt=glm.trt,
+                       returnIC=returnIC, returnModels=returnModels, 
+                       ftypeOfInterest=ftypeOfInterest,trtOfInterest=trtOfInterest,
+                       bounds=bounds,verbose=verbose,tol=tol,Gcomp=Gcomp)
 
-  # check for ftime with 0
-  if(any(ftime<=0)){
-    warning("Some failure times less than or equal zero. Dropping these observations")
-    ind <- which(ftime>0)
-    ftime <- ftime[ind]; ftype <- ftype[ind]
-    adjustVars <- adjustVars[ind,,drop=FALSE]
-    trt <- trt[ind]
-  }
-  # haven't figured out how to fix updateVariables yet when ftypeOfInterest
-  # is not equal to unique(trt).
-  if(!all(unique(ftypeOfInterest) == unique(ftypeOfInterest)) & method=="hazard"){
-    stop("Hazard implementation is not yet functional when ftypeOfInterest does not include all unique values of trt")
-  }
-  # check that all failure types of interest are observed
-  if(!(all(ftypeOfInterest %in% ftype))){
-    stop("At least one ftypeOfInterest not observed. Remove from ftypeOfInterest and try again.")
-  }
-
-  # check that all trt of interest are observed
-  if(!(all(trtOfInterest %in% trt))){
-    stop("At least one trtOfInterest not observed. Remove from trtOfInterest and try again.")
-  }
-
-  # number of failure types
-  nJ <- length(unique(ftype))-1
-  #if(nJ >= 2) print(paste("ftype has ", nJ, " unique failure types. Calculating cumulative incidence estimates."))
-  
   # hazard-based TMLE
   if(method=="hazard"){
-    tmle.fit <- hazard_tmle(ftime=ftime, 
-                            ftype=ftype,
-                            trt=trt,
+    tmle.fit <- hazard_tmle(ftime=clean$ftime, 
+                            ftype=clean$ftype,
+                            trt=clean$trt,
                             t0=t0,
-                            incidence=incidence,
-                            adjustVars=adjustVars,
-                            SL.ftime=SL.ftime,
-                            SL.ctime=SL.ctime,
-                            SL.trt = SL.trt,
-                            glm.ftime=glm.ftime,
-                            glm.ctime=glm.ctime,
-                            glm.trt=glm.trt,
+                            adjustVars=clean$adjustVars,
+                            SL.ftime=clean$SL.ftime,
+                            SL.ctime=clean$SL.ctime,
+                            SL.trt = clean$SL.trt,
+                            glm.ftime=clean$glm.ftime,
+                            glm.ctime=clean$glm.ctime,
+                            glm.trt=clean$glm.trt,
                             returnIC=returnIC,
                             returnModels=returnModels,
                             ftypeOfInterest=ftypeOfInterest,
@@ -294,20 +266,19 @@ survtmle <- function(
                             bounds=bounds,
                             verbose=verbose, 
                             tol=tol, 
-                            maxIter=maxIter)
+                            maxIter=maxIter, gtol = gtol)
   }else if(method=="mean"){
-    tmle.fit <- mean_tmle(ftime=ftime, 
-                          ftype=ftype,
-                          trt=trt,
+    tmle.fit <- mean_tmle(ftime=clean$ftime, 
+                          ftype=clean$ftype,
+                          trt=clean$trt,
                           t0=t0,
-                          incidence=incidence,
-                          adjustVars=adjustVars,
-                          SL.ftime=SL.ftime,
-                          SL.ctime=SL.ctime,
-                          SL.trt = SL.trt,
-                          glm.ftime=glm.ftime,
-                          glm.ctime=glm.ctime,
-                          glm.trt=glm.trt,
+                          adjustVars=clean$adjustVars,
+                          SL.ftime=clean$SL.ftime,
+                          SL.ctime=clean$SL.ctime,
+                          SL.trt = clean$SL.trt,
+                          glm.ftime=clean$glm.ftime,
+                          glm.ctime=clean$glm.ctime,
+                          glm.trt=clean$glm.trt,
                           returnIC=returnIC,
                           returnModels=returnModels,
                           ftypeOfInterest=ftypeOfInterest,
@@ -315,7 +286,7 @@ survtmle <- function(
                           bounds=bounds,
                           verbose=verbose, 
                           tol=tol,
-                          Gcomp=Gcomp
+                          Gcomp=Gcomp, gtol = gtol
     )
   }
   

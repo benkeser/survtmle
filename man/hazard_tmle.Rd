@@ -4,12 +4,12 @@
 \alias{hazard_tmle}
 \title{hazard_tmle}
 \usage{
-hazard_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), incidence = TRUE,
+hazard_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]),
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
   glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
   returnModels = FALSE, ftypeOfInterest = unique(ftype[ftype != 0]),
   trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
-  tol = 1/(length(ftime)), maxIter = 100, ...)
+  tol = 1/(length(ftime)), maxIter = 100, gtol = 0.001, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values or zero values
@@ -26,9 +26,6 @@ be treated as an (unordered) separate type of treatment. Currently, only two uni
 
 \item{t0}{The time at which to return cumulative incidence estimates. By default this is set
 to \code{max(ftime)}.}
-
-\item{incidence}{If \code{TRUE} the function return estimates of cumulative incidence. If 
-\code{FALSE} the function returns esimtates of survival.}
 
 \item{adjustVars}{A data.frame of adjustment variables that will be used in estimating the 
 conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.}
@@ -97,6 +94,8 @@ finite-sample bias.}
 \item{maxIter}{A maximum number of iterations for the algorithm when \code{method="hazard"}. The 
 algorithm will iterate until either the empirical mean of the efficient influence function
 is smaller than \code{tol} or until \code{maxIter} iterations have been completed.}
+
+\item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
 
 \item{...}{Other arguments. Not currently used.}
 }

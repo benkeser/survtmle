@@ -34,6 +34,7 @@
 #' objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
 #' use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
 #' for more information. 
+#' @param gtol The truncation level of predicted censoring survival to handle positivity violations. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 
 #' 
@@ -56,17 +57,11 @@ estimateCensoring <- function(
   glm.ctime=NULL,
   returnModels=FALSE, 
   verbose=TRUE, 
+  gtol = 1e-3, 
   ...
 ){
     include <- !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C!=1 & dataList[[1]]$t < t0) & 
      !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C==1 & dataList[[1]]$t==t0)
-  
-    # check for missing inputs
-    if(is.null(SL.ctime) & is.null(glm.ctime)){
-     warning("Super Learner library and glm formula for censoring not specified. Proceeding 
-             with empirical estimates")
-     glm.ctime <- "trt*factor(t)"
-    }
   
     # if no SL library is specified, the code defaults to the specific GLM form
     if(is.null(SL.ctime)){
@@ -158,6 +153,11 @@ estimateCensoring <- function(
       })
      }
    }
+   # truncate small propensities at gtol
+   dataList <- lapply(dataList,function(x){
+    x$G_dC[x$G_dC < gtol]  <- gtol 
+   })
+   
    out <- list(dataList = dataList,
                ctimeMod = if(returnModels)
                  ctimeMod

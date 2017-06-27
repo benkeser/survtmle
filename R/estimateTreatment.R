@@ -23,6 +23,7 @@
 #' @param returnModels A boolean indicating whether fitted model objects should be returned.
 #' @param verbose A boolean passed to the \code{verbose} option of the call to 
 #' \code{SuperLearner}. 
+#' @param gtol The truncation level of predicted trt probabilities to handle positivity violations. 
 #' @param ... Other arguments. Not currently used
 #' 
 #' @return dat The input \code{data.frame} object with two added columns corresponding with
@@ -54,9 +55,7 @@
 
 
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL, returnModels = FALSE,
-                              verbose=FALSE,...){
-  if(length(unique(dat$trt))>2) stop("trt with more than 2 unique values not yet supported")
-  
+                              verbose=FALSE,...){  
   if(length(unique(dat$trt))==1){
     eval(parse(text=paste0("dat$g_",unique(dat$trt), "<- 1")))
   }else{
@@ -82,6 +81,11 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL, re
       eval(parse(text=paste0("dat$g_",min(dat$trt), "<- 1-pred")))
     }
   }
+
+  # truncate propensities
+  eval(parse(text=paste0("dat$g_",min(dat$trt), "[dat$g_",min(dat$trt), "< gtol]<- gtol")))
+  eval(parse(text=paste0("dat$g_",max(dat$trt), "[dat$g_",max(dat$trt), "< gtol]<- gtol")))
+
   out <- list(dat=dat,
               trtMod=if(returnModels & length(unique(dat$trt))>1)
                 trtMod

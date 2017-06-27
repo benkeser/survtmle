@@ -5,7 +5,8 @@
 \title{estimateCensoring}
 \usage{
 estimateCensoring(dataList, adjustVars, t0, SL.ctime = NULL,
-  glm.ctime = NULL, returnModels = FALSE, verbose = TRUE, ...)
+  glm.ctime = NULL, returnModels = FALSE, verbose = TRUE, gtol = 0.001,
+  ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects as described in \code{?makeDataList}.}
@@ -34,6 +35,8 @@ use calls to \code{timepoints} to obtain estimates at times other than \code{t0}
 for more information.}
 
 \item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+
+\item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
 
 \item{...}{Other arguments. Not currently used.}
 }

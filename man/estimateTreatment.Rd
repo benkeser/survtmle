@@ -32,6 +32,8 @@ with no new fitting.}
 \code{SuperLearner}.}
 
 \item{...}{Other arguments. Not currently used}
+
+\item{gtol}{The truncation level of predicted trt probabilities to handle positivity violations.}
 }
 \value{
 dat The input \code{data.frame} object with two added columns corresponding with
