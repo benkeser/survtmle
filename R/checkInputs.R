@@ -248,7 +248,7 @@ checkInputs <- function(ftime,
 	}	
 
 	# if covariates are null
-	if(is.null(adjustVars) | all(apply(adjustVars, 2, function(x){length(unique(x)==1)}))){
+	if(is.null(adjustVars) | all(apply(adjustVars, 2, function(x){length(unique(x))==1}))){
 		if(is.null(adjustVars)){
 			warning("adjustVars = NULL. Computing unadjusted estimates.")
 		}else{
