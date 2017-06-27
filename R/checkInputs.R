@@ -104,6 +104,10 @@ checkInputs <- function(ftime,
 		stop("trt with more than 2 unique values not yet supported.")
 	}
 
+	# check for reserved names in columns of adjustVars
+	if(any(colnames(adjustVars) == "t")){
+		stop("t is a reserved name for survtmle. Please rename column in adjustVars.")
+	}
 	# check for missing values
 	if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0 | sum(is.na(adjustVars))>0){
 		stop("Missing values in ftime, ftype, trt, or adjustVars not supported.")
@@ -168,12 +172,12 @@ checkInputs <- function(ftime,
 
 	# check if time enters as a factor in glm.ftime or glm.ctime
 	if(!is.null(glm.ftime) & method == "hazard"){
-		if(grepl("factor(t)", glm.ftime))){
+		if(grepl("factor(t)", glm.ftime)){
 			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
 		}
 	}
-	if(!is.null(glm.ctime) & method == "hazard"){
-		if(grepl("factor(t)", glm.ctime))){
+	if(!is.null(glm.ctime)){
+		if(grepl("factor(t)", glm.ctime)){
 			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
 		}
 	}
