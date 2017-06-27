@@ -55,7 +55,7 @@
 
 
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL, returnModels = FALSE,
-                              verbose=FALSE,...){  
+                              verbose=FALSE,gtol=1e-3,...){  
   if(length(unique(dat$trt))==1){
     eval(parse(text=paste0("dat$g_",unique(dat$trt), "<- 1")))
   }else{

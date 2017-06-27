@@ -108,9 +108,6 @@ estimator with no targeting step). Note, theory does not support inference for t
 super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.}
 
 \item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
-
-\item{incidence}{If \code{TRUE} the function return estimates of cumulative incidence. If 
-\code{FALSE} the function returns esimtates of survival.}
 }
 \value{
 An object of class \code{survtmle}.

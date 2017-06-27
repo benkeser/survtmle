@@ -16,8 +16,6 @@
 #' conditional treatment, censoring, and failure (hazard or conditional mean) probabilities. 
 #' @param t0 The time at which to return cumulative incidence estimates. By default this is set
 #' to \code{max(ftime)}.
-#' @param incidence If \code{TRUE} the function return estimates of cumulative incidence. If 
-#' \code{FALSE} the function returns esimtates of survival. 
 #' @param SL.ftime A character vector or list specification to be passed to the \code{SL.library} argument 
 #' in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
 #' condtional mean). See \code{?SuperLearner} for more information on how to specify valid 

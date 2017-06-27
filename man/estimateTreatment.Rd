@@ -5,7 +5,7 @@
 \title{estimateTreatment}
 \usage{
 estimateTreatment(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
-  returnModels = FALSE, verbose = FALSE, ...)
+  returnModels = FALSE, verbose = FALSE, gtol = 0.001, ...)
 }
 \arguments{
 \item{dat}{An object of class \code{data.frame}. Must have named column \code{trt}.}
@@ -31,9 +31,9 @@ with no new fitting.}
 \item{verbose}{A boolean passed to the \code{verbose} option of the call to 
 \code{SuperLearner}.}
 
-\item{...}{Other arguments. Not currently used}
-
 \item{gtol}{The truncation level of predicted trt probabilities to handle positivity violations.}
+
+\item{...}{Other arguments. Not currently used}
 }
 \value{
 dat The input \code{data.frame} object with two added columns corresponding with
