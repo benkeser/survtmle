@@ -159,7 +159,7 @@ mean_tmle <- function(
   # estimate trt probabilities
   trtOut <- estimateTreatment(dat=dat, ntrt=ntrt, uniqtrt=uniqtrt, adjustVars=adjustVars, 
                            SL.trt=SL.trt, glm.trt = glm.trt,
-                           returnModels = returnModels)
+                           returnModels = returnModels, gtol = gtol)
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
   
@@ -170,7 +170,7 @@ mean_tmle <- function(
   censOut <- estimateCensoring(dataList=dataList, ntrt=ntrt, uniqtrt=uniqtrt, t0=t0,verbose=verbose,
                                 adjustVars=adjustVars,
                                 SL.ctime=SL.ctime,glm.ctime=glm.ctime,
-                                returnModels=returnModels)
+                                returnModels=returnModels,gtol=gtol)
   dataList <- censOut$dataList
   ctimeMod <- censOut$ctimeMod
   
