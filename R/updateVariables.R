@@ -56,7 +56,14 @@ updateVariables <- function(
     # TO DO: change this to static memory allocation
     Fj.t0.allZ <- vector(mode="list",length=ntrt)
     for(i in 1:ntrt){
-      Fj.t0.allZ[[i]] <- eval(parse(text=paste("dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0]",sep="")))
+      t0.mod <- t0 
+      # if requested failure time is larger than last observed in this 
+      # treatment arm then only go out to final observed failure time
+      # to avoid extrapolating
+      if(t0 > max(dat$ftime[dat$trt == uniqtrt[i]])){
+        t0.mod <- max(dat$ftime[dat$trt == uniqtrt[i]])
+      }
+      eval(parse(text=paste("Fj.t0.allZ[[i]] <- dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0.mod]",sep="")))
     }
     
     dataList <- lapply(dataList, function(x,j,uniqtrt,Fj.t0.allZ){
