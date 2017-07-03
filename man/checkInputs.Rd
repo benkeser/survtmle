@@ -5,12 +5,11 @@
 \title{checkInputs}
 \usage{
 checkInputs(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-  incidence = TRUE, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
-  glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
-  returnModels = TRUE, ftypeOfInterest = unique(ftype[ftype != 0]),
-  trtOfInterest = unique(trt), method = "hazard", bounds = NULL,
-  verbose = FALSE, tol = 1/(length(ftime)), maxIter = 100,
-  Gcomp = FALSE)
+  SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
+  glm.ctime = NULL, glm.trt = "1", returnIC = TRUE, returnModels = TRUE,
+  ftypeOfInterest = unique(ftype[ftype != 0]), trtOfInterest = unique(trt),
+  method = "hazard", bounds = NULL, verbose = FALSE,
+  tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 

@@ -89,7 +89,7 @@ compute the probability of <code>trt==min(trt)</code> as one minus this probabil
     
 
     <pre><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gtol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -116,6 +116,8 @@ with no new fitting.</dd>
       <dt>verbose</dt>
       <dd>A boolean passed to the <code>verbose</code> option of the call to 
 <code>SuperLearner</code>.</dd>
+      <dt>gtol</dt>
+      <dd>The truncation level of predicted trt probabilities to handle positivity violations.</dd>
       <dt>...</dt>
       <dd>Other arguments. Not currently used</dd>
     </dl>

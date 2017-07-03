@@ -88,11 +88,12 @@ by <code>survtmle</code> whenever <code>method=&quot;mean&quot;</code> is specif
 users could, in theory, make calls directly to this function.</p>
     
 
-    <pre><span class='fu'>mean_tmle</span>(<span class='no'>ftime</span>, <span class='no'>ftype</span>, <span class='no'>trt</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='no'>ftime</span>[<span class='no'>ftype</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>]), <span class='kw'>incidence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>returnIC</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>trtOfInterest</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>mean_tmle</span>(<span class='no'>ftime</span>, <span class='no'>ftype</span>, <span class='no'>trt</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='no'>ftime</span>[<span class='no'>ftype</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>]), <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>returnIC</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ftypeOfInterest</span> <span class='kw'>=</span> <span class='fu'>unique</span>(<span class='no'>ftype</span>[<span class='no'>ftype</span> <span class='kw'>!=</span> <span class='fl'>0</span>]),
+  <span class='kw'>trtOfInterest</span> <span class='kw'>=</span> <span class='fu'>unique</span>(<span class='no'>trt</span>), <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>Gcomp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gtol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -111,9 +112,6 @@ be treated as an (unordered) separate type of treatment. Currently, only two uni
       <dt>t0</dt>
       <dd>The time at which to return cumulative incidence estimates. By default this is set
 to <code>max(ftime)</code>.</dd>
-      <dt>incidence</dt>
-      <dd>If <code>TRUE</code> the function return estimates of cumulative incidence. If 
-<code>FALSE</code> the function returns esimtates of survival.</dd>
       <dt>adjustVars</dt>
       <dd>A data.frame of adjustment variables that will be used in estimating the 
 conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.</dd>
@@ -162,16 +160,22 @@ use calls to <code>timepoints</code> to obtain estimates at times other than <co
 for more information.</dd>
       <dt>ftypeOfInterest</dt>
       <dd>An input specifying what failure types to compute estimates of incidence for. 
-The default value is <code>&quot;all&quot;</code>, which computes estimates for values <code>unique(ftype)</code>. Can alternatively
+The default value computes estimates for values <code>unique(ftype)</code>. Can alternatively
 be set to a vector of values found in <code>ftype</code>.</dd>
       <dt>trtOfInterest</dt>
       <dd>An input specifying which levels of <code>trt</code> are of interest. The default value
-is <code>&quot;all&quot;</code>, which computes estimates for values <code>unique(trt)</code>. Can alternatively be set to a 
+computes estimates for values <code>unique(trt)</code>. Can alternatively be set to a 
 vector of values found in <code>trt</code>.</dd>
       <dt>bounds</dt>
       <dd>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</dd>
       <dt>verbose</dt>
       <dd>A boolean indicating whether the function should print messages to indicate progress.</dd>
+      <dt>Gcomp</dt>
+      <dd>A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
+estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
+super learner is used to estimate failure and censoring mechanisms.</dd>
+      <dt>gtol</dt>
+      <dd>The truncation level of predicted censoring survival to handle positivity violations.</dd>
       <dt>...</dt>
       <dd>Other arguments. Not currently used.</dd>
     </dl>
@@ -218,7 +222,7 @@ If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
 <span class='co'># fit mean_tmle object with glm estimators for treatment, censoring, and failure</span>
 <span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>mean_tmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
-<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='output co'>#&gt; <span class='warning'>Warning: prediction from a rank-deficient fit may be misleading</span></div><div class='input'>
+<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='error'>Error in rep(1:nrow(dat), t0.mod): invalid &#39;times&#39; argument</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
