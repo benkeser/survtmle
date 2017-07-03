@@ -193,8 +193,7 @@ checkInputs <- function(ftime,
 			for(z in trtOfInterest){
 				if(t0 > max(ftime[ftype == j & trt == z])){
 					warning(paste0("t0 larger than last observed endpoint of ftype=",j,
-					               "and trt=",z,". Hazard-based TMLE is extrapolating to ",
-					               "estimate incidence at this t0."))
+					               " and trt=",z,". Hazard assumed to be zero beyond last observed failure.")
 				}
 			}
 		}
