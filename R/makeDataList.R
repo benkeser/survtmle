@@ -68,15 +68,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
   
   # subsequent elements used for prediction
   for(i in 1:ntrt){
-    t0.mod <- t0 
-    # if requested failure time is larger than last observed in this 
-    # treatment arm then only go out to final observed failure time
-    # to avoid extrapolating
-    if(t0 > max(dat$ftime[dat$trt == uniqtrt[i]])){
-      t0.mod <- max(dat$ftime[dat$trt == uniqtrt[i]])
-    }
-    dataList[[i+1]] <- dat[sort(rep(1:nrow(dat),t0.mod)),]
-    dataList[[i+1]]$t <- rep(1:t0.mod,n)
+    dataList[[i+1]] <- dat[sort(rep(1:nrow(dat),t0)),]
+    dataList[[i+1]]$t <- rep(1:t0,n)
     for(j in J){
       typejEvents <- dat$id[which(dat$ftype==j)]
       eval(parse(text=paste("dataList[[i+1]]$N",j," <- 0",sep="")))
@@ -87,7 +80,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     dataList[[i+1]]$C[dataList[[i+1]]$id %in% censEvents & dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1
     dataList[[i+1]]$trt <- uniqtrt[i]
     # so all indicators pass
-    dataList[[i+1]]$ftime <- t0.mod
+    dataList[[i+1]]$ftime <- t0
     
     if(!is.null(bounds)){
       suppressMessages(
