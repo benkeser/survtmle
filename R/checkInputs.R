@@ -104,6 +104,11 @@ checkInputs <- function(ftime,
 		stop("trt with more than 2 unique values not yet supported.")
 	}
 
+	# check that trt is vector
+	if(!is.vector(trt)){
+		stop("trt must be a vector")
+	}
+
 	# check for reserved names in columns of adjustVars
 	if(any(colnames(adjustVars) == "t")){
 		stop("t is a reserved name for survtmle. Please rename column in adjustVars.")
@@ -188,7 +193,7 @@ checkInputs <- function(ftime,
 			for(z in trtOfInterest){
 				if(t0 > max(ftime[ftype == j & trt == z])){
 					warning(paste0("t0 larger than last observed endpoint of ftype=",j,
-					               "and trt=",z,". Hazard-based TMLE is extrapolating to",
+					               "and trt=",z,". Hazard-based TMLE is extrapolating to ",
 					               "estimate incidence at this t0."))
 				}
 			}
