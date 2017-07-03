@@ -56,7 +56,7 @@ updateVariables <- function(
     # TO DO: change this to static memory allocation
     Fj.t0.allZ <- vector(mode="list",length=ntrt)
     for(i in 1:ntrt){
-      t0.mod <- dataList[[i]]$ftime[1] 
+      t0.mod <- dataList[[i+1]]$ftime[1] 
       eval(parse(text=paste("Fj.t0.allZ[[i]] <- dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0.mod]",sep="")))
     }
     
