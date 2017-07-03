@@ -75,8 +75,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     if(t0 > max(dat$ftime[dat$trt == i])){
       t0.mod <- max(dat$ftime[dat$trt == i])
     }
-    dataList[[i+1]] <- dat[sort(rep(1:nrow(dat),t0)),]
-    dataList[[i+1]]$t <- rep(1:t0,n)
+    dataList[[i+1]] <- dat[sort(rep(1:nrow(dat),t0.mod)),]
+    dataList[[i+1]]$t <- rep(1:t0.mod,n)
     for(j in J){
       typejEvents <- dat$id[which(dat$ftype==j)]
       eval(parse(text=paste("dataList[[i+1]]$N",j," <- 0",sep="")))
