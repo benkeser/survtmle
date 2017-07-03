@@ -72,8 +72,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     # if requested failure time is larger than last observed in this 
     # treatment arm then only go out to final observed failure time
     # to avoid extrapolating
-    if(t0 > max(dat$ftime[dat$trt == i])){
-      t0.mod <- max(dat$ftime[dat$trt == i])
+    if(t0 > max(dat$ftime[dat$trt == uniqtrt[i]])){
+      t0.mod <- max(dat$ftime[dat$trt == uniqtrt[i]])
     }
     dataList[[i+1]] <- dat[sort(rep(1:nrow(dat),t0.mod)),]
     dataList[[i+1]]$t <- rep(1:t0.mod,n)
