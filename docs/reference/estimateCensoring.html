@@ -98,7 +98,8 @@ or <code>SL.ctime</code> as predictors.</p>
     
 
     <pre><span class='fu'>estimateCensoring</span>(<span class='no'>dataList</span>, <span class='no'>adjustVars</span>, <span class='no'>t0</span>, <span class='kw'>SL.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gtol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -129,6 +130,8 @@ use calls to <code>timepoints</code> to obtain estimates at times other than <co
 for more information.</dd>
       <dt>verbose</dt>
       <dd>A boolean indicating whether the function should print messages to indicate progress.</dd>
+      <dt>gtol</dt>
+      <dd>The truncation level of predicted censoring survival to handle positivity violations.</dd>
       <dt>...</dt>
       <dd>Other arguments. Not currently used.</dd>
     </dl>

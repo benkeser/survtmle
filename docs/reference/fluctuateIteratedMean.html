@@ -109,7 +109,7 @@ at the observed data points.</p>
     
 
     <pre><span class='fu'>fluctuateIteratedMean</span>(<span class='no'>wideDataList</span>, <span class='no'>t</span>, <span class='no'>uniqtrt</span>, <span class='no'>whichJ</span>, <span class='no'>allJ</span>, <span class='no'>t0</span>,
-  <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>Gcomp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -127,6 +127,9 @@ computed.</dd>
       <dt>t0</dt>
       <dd>The timepoint at which <code>survtmle</code> was called to evaluate. Needed only because
 the naming convention for the regression if <code>t==t0</code> is different than if <code>t!=t0</code>.</dd>
+      <dt>Gcomp</dt>
+      <dd>A boolean indicating whether <code>mean_tmle</code> was called to evaluate the G-computation
+estimator, in which case this function does nothing but relabel columns.</dd>
       <dt>bounds</dt>
       <dd>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</dd>
       <dt>...</dt>
