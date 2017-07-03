@@ -54,15 +54,15 @@ updateVariables <- function(
   # calculate CIF at time t0
   for(j in ofInterestJ){
     # TO DO: change this to static memory allocation
-    Fj.t0.allZ <- NULL
+    Fj.t0.allZ <- vector(mode="list",length=ntrt)
     for(i in 1:ntrt){
-      Fj.t0.allZ <- cbind(Fj.t0.allZ, eval(parse(text=paste("dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0]",sep=""))))
+      Fj.t0.allZ[[i]] <- eval(parse(text=paste("dataList[[i+1]]$F",j,".t[dataList[[i+1]]$t==t0]",sep="")))
     }
     
     dataList <- lapply(dataList, function(x,j,uniqtrt,Fj.t0.allZ){
       for(i in 1:length(uniqtrt)){
         ind <- tapply(X=x$id,INDEX=x$id,FUN=NULL)
-        eval(parse(text=paste("x$F",j,".z",uniqtrt[i],".t0 <- Fj.t0.allZ[ind,",i,"]",sep="")))
+        eval(parse(text=paste("x$F",j,".z",uniqtrt[i],".t0 <- Fj.t0.allZ[[i]][ind]",sep="")))
       }
       x
     },j=j,uniqtrt=uniqtrt,Fj.t0.allZ=Fj.t0.allZ)
