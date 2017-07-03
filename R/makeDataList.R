@@ -87,8 +87,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
       ) 
     }else{
       for(j in J){
-        eval(parse(text=paste("dataList[[",i,"+1]]$l",j," <- .Machine()$double.eps",sep="")))
-        eval(parse(text=paste("dataList[[",i,"+1]]$u",j," <- 1-.Machine()$double.eps",sep="")))
+        eval(parse(text=paste("dataList[[",i,"+1]]$l",j," <- .Machine$double.eps",sep="")))
+        eval(parse(text=paste("dataList[[",i,"+1]]$u",j," <- 1-.Machine$double.eps",sep="")))
       }
     }
   }
