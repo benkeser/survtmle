@@ -275,7 +275,12 @@ checkInputs <- function(ftime,
 	}
 
 	# check format of bound inputs
-	
+	if(!(is.null(bounds))){
+		if(!any(colnames(bounds) == "t")){
+			stop("bounds should have a column named 't' containing a row for each value 1:t0")
+		}
+	}
+
 	# return clean variables
 	return(list(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 	            glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime, 

@@ -49,7 +49,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
       }else{
         eval(parse(text=paste0("boundFormat$l",j," <- 0")))
       }
-      if(paste("u",j,sep="") %in% names(bounds[[j]])){
+      if(paste("u",j,sep="") %in% names(bounds)){
         eval(parse(text=paste0("boundFormat$u",j," <- bounds[,paste0('u',",j,")]")))
       }else{
         eval(parse(text=paste0("boundFormat$u",j," <- 0")))
