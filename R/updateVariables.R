@@ -21,8 +21,6 @@
 #' but with updated columns corresponding with estimated cumulative incidence at each time
 #' and estimated "clever covariates" at each time. 
 #' 
-#' @export
-
 
 updateVariables <- function(
   dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...

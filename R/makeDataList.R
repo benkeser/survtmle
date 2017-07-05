@@ -17,7 +17,6 @@
 #' @param bounds More description to be added soon. 
 #' @param ... Other arguments. Not currently used. 
 #' 
-#' @export 
 #' @importFrom plyr join
 #' 
 #' @return A list of \code{data.frame} objects as described above. 
@@ -43,17 +42,17 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
   dataList[[1]]$t <- orduniqftime[as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]),".",fixed=TRUE))[seq(2,n.row.ii*2,2)]))+1]
 
   if(!is.null(bounds)){
-    boundFormat <- data.frame(t=bounds[[1]]$t)
+    boundFormat <- data.frame(t=bounds$t)
     for(j in J){
-      if(paste("l",j,sep="") %in% names(bounds[[j]])){
-        eval(parse(text=paste("boundFormat$l",j," <- bounds[[j]]$l",j,sep="")))
+      if(paste("l",j,sep="") %in% colnames(bounds)){
+        eval(parse(text=paste0("boundFormat$l",j," <- bounds[,paste0(l",j,")]")))
       }else{
-        eval(parse(text=paste("boundFormat$l",j," <- 0",sep="")))
+        eval(parse(text=paste0("boundFormat$l",j," <- 0")))
       }
       if(paste("u",j,sep="") %in% names(bounds[[j]])){
-        eval(parse(text=paste("boundFormat$u",j," <- bounds[[j]]$u",j,sep="")))
+        eval(parse(text=paste0("boundFormat$u",j," <- bounds[,paste0(u",j,")]")))
       }else{
-        eval(parse(text=paste("boundFormat$u",j," <- 1",sep="")))
+        eval(parse(text=paste0("boundFormat$u",j," <- 0")))
       }
     }
     suppressMessages(
@@ -72,8 +71,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     dataList[[i+1]]$t <- rep(1:t0,n)
     for(j in J){
       typejEvents <- dat$id[which(dat$ftype==j)]
-      eval(parse(text=paste("dataList[[i+1]]$N",j," <- 0",sep="")))
-      eval(parse(text=paste("dataList[[i+1]]$N",j,"[dataList[[i+1]]$id %in% typejEvents &  dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1",sep="")))
+      eval(parse(text=paste0("dataList[[i+1]]$N",j," <- 0")))
+      eval(parse(text=paste0("dataList[[i+1]]$N",j,"[dataList[[i+1]]$id %in% typejEvents &  dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1")))
     }
     censEvents <- dat$id[which(dat$ftype==0)]
     dataList[[i+1]]$C <- 0
@@ -84,7 +83,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     
     if(!is.null(bounds)){
       suppressMessages(
-        dataList[[i+1]] <- join(x=dataList[[i+1]],y=boundFormat,type="left")
+        dataList[[i+1]] <- plyr::join(x=dataList[[i+1]],y=boundFormat,type="left")
       ) 
     }else{
       for(j in J){

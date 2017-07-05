@@ -41,11 +41,9 @@
 #' @param bounds A list of bounds... TODO: Add more description here.
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 
-
 #' @importFrom stats as.formula predict model.matrix optim glm
 #' @importFrom SuperLearner SuperLearner
 #' 
-#' @export
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
 #' but with additional columns corresponding to the hazard, pseudo-hazard, and the total hazard for

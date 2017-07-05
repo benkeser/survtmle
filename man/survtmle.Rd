@@ -12,29 +12,27 @@ survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE, gtol = 0.001)
 }
 \arguments{
-\item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
-censored observations should have a non-missing value for \code{ftime} while 
-\code{ftype} should be set to 0.}
+\item{ftime}{A numeric vector of failure times. Right-censored observations should have corresponding 
+\code{ftype} set to 0.}
 
-\item{ftype}{A numeric vector indicating the type of failure with type 0 reserved for 
-right censored observations. Each unique value will be treated as an (unordered) separate
+\item{ftype}{A numeric vector indicating the type of failure. Observations with \code{ftype=0} are treated 
+as a right-censored observation. Each unique value besides zero is treated as a separate
 type of failure.}
 
 \item{trt}{A numeric vector indicating observed treatment assignment. Each unique value will 
-be treated as an (unordered) separate type of treatment. Currently, only two unique values of 
-\code{trt} are supported.}
+be treated as a different type of treatment. Currently, only two unique values are supported.}
 
 \item{adjustVars}{A data.frame of adjustment variables that will be used in estimating the 
 conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.}
 
 \item{t0}{The time at which to return cumulative incidence estimates. By default this is set
-to \code{max(ftime)}.}
+to \code{max(ftime[ftype >0])}.}
 
-\item{SL.ftime}{A character vector or list specification to be passed to the \code{SL.library} argument 
+\item{SL.ftime}{A character vector or list specification to be passed to the \code{SL.library} option 
 in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
-condtional mean). See \code{?SuperLearner} for more information on how to specify valid 
+iterated mean). See \code{?SuperLearner} for more information on how to specify valid 
 \code{SuperLearner} libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called \code{"trt"} and \code{names(adjustVars)}.}
+with the input variables, which will be called \code{"trt"}, \code{names(adjustVars)}, and \code{"t"} (if \code{method="hazard"}).}
 
 \item{SL.ctime}{A character vector or list specification to be passed to the \code{SL.library} argument 
 in the call to \code{SuperLearner} for the estimate of the conditional hazard for censoring. It is expected 
@@ -42,35 +40,34 @@ that the wrappers used in the library will play nicely with the input variables,
 called \code{"trt"} and \code{names(adjustVars)}.}
 
 \item{SL.trt}{A character vector or list specification to be passed to the \code{SL.library} argument 
-in the call to \code{SuperLearner} for the estimate of the conditional probabiltiy of treatment.
+in the call to \code{SuperLearner} for the estimate of the conditional probability of treatment.
 It is expected that the wrappers used in the library will play nicely
 with the input variables, which will be \code{names(adjustVars)}.}
 
 \item{glm.ftime}{A character specification of the right-hand side of the equation passed to the
-\code{formula} option of a call to \code{glm} for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"} to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+\code{formula} option of a call to \code{glm} for the outcome regression. Ignored if \code{SL.ftime} is not equal to \code{NULL}. 
+Use \code{"trt"} to specify the treatment in this formula (see examples). The formula can additionally include any variables found in 
 \code{names(adjustVars)}.}
 
 \item{glm.ctime}{A character specification of the right-hand side of the equation passed to the
 \code{formula} option of a call to \code{glm} for the estimate of the conditional hazard for 
-censoring. Ignored if \code{SL.ctime != NULL}. Use \code{"trt"} to specify the treatment 
+censoring. Ignored if \code{SL.ctime} is not equal to \code{NULL}. Use \code{"trt"} to specify the treatment 
 in this formula (see examples). The formula can additionally include any variables found in 
 \code{names(adjustVars)}.}
 
 \item{glm.trt}{A character specification of the right-hand side of the equation passed to the
-\code{formula} option of a call to \code{glm} for the estimate of the conditional probabiltiy of 
-treatment. Ignored if \code{SL.trt != NULL}. By default set to "1", corresponding to using empirical
+\code{formula} option of a call to \code{glm} for the estimate of the conditional probability of 
+treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. By default set to "1", corresponding to using empirical
 estimates of each value of \code{trt}. The formula can include any variables found in 
 \code{names(adjustVars)}.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence curve estimates. These are
-needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
+needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
 unless the user is sure these estimates will not be needed later.}
 
 \item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
 objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
-use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
+use \code{timepoints} to obtain estimates of incidence at times other than \code{t0}. See \code{?timepoints}
 for more information.}
 
 \item{ftypeOfInterest}{An input specifying what failure types to compute estimates of incidence for. 
@@ -89,13 +86,17 @@ The latter specification has no guarantee of convergence in finite samples. The 
 influenced by the stopping criteria specified in the \code{tol}. Future versions may implement a closed 
 form version of this hazard-based estimator.}
 
-\item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
+\item{bounds}{A \code{data.frame} of bounds on the conditional hazard function (if \code{method = "hazard"}) or
+on the iterated conditional means (if \code{method = "mean"}). The \code{data.frame} should have a column
+named \code{"t"} that includes values \code{1:t0}. The other columns should be names \code{paste0("l",j)} and
+\code{paste0("u",j)} for each unique failure type label j, denoting lower and upper bounds, respectively. See examples.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+\item{verbose}{A boolean indicating whether the function should print messages to indicate progress. If \code{SuperLearner}
+is called internally, this option will additionally be passed to \code{SuperLearner}.}
 
-\item{tol}{The stopping criteria when \code{method="hazard"}. The algorithm will continue performing
-targeting updates to the initial estimators until the empirical mean of the efficient influence function
-is smaller than \code{tol}. The default (\code{1/length(ftime)}) is a sensible value. Larger values can
+\item{tol}{The stopping criteria when \code{method="hazard"}. The TMLE algorithm performs
+updates to the initial estimators until the empirical mean of the efficient influence function
+is smaller than \code{tol} or until \code{maxIter} iterations have been completed. The default (\code{1/length(ftime)}) is a sensible value. Larger values can
 be used in situations where convergence of the algorithm is an issue; however, this may result in 
 large finite-sample bias.}
 
@@ -104,46 +105,37 @@ algorithm will iterate until either the empirical mean of the efficient influenc
 is smaller than \code{tol} or until \code{maxIter} iterations have been completed.}
 
 \item{Gcomp}{A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
-estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
-super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.}
+estimator with no targeting step). Theory does not support inference for the Gcomp estimator if 
+super learner is used to estimate failure and censoring distributions. The Gcomp is only implemented if \code{method="mean"}.}
 
-\item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
+\item{gtol}{The truncation level of predicted censoring survival. Setting to larger values can help 
+performance in data sets with practical positivity violations.}
 }
 \value{
 An object of class \code{survtmle}.
-
-call The call to \code{survtmle}.
-
-est A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
-and \code{trtOfInterest}.
-
-var A covariance matrix of all the point estimates
-
-meanIC The empirical mean of the efficient influence function at the estimated, fluctuated
-nuisance parameters. If all goes well, each value should be small. If
-\code{method="hazard"} then each value should be less than \code{tol}. If code{method="mean"}
-then should be on the order of \code{1e-7}.
-
-ic The efficient influence function at the estimated, fluctuated nuisance parameters,
-evaluated on each of the observations (summed over all times). These may be used to perform
-post-hoc comparisons. More details coming.
-
-ftimeMod If \code{returnModels=TRUE} the fit object(s) for the call to \code{glm} or 
+\describe{
+\item{call}{The call to \code{survtmle}.}
+\item{est}{A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
+and \code{trtOfInterest}.}
+\item{var}{A covariance matrix for the point estimates.}
+\item{meanIC}{The empirical mean of the efficient influence function at the estimated, targeted
+nuisance parameters. Each value should be small or the user will be warned that excessive finite-sample bias may exist in the point estimates.}
+\item{ic}{The efficient influence function at the estimated, fluctuated nuisance parameters,
+evaluated on each of the observations. These are used to construct confidence intervals for post-hoc comparisons.}
+\item{ftimeMod}{If \code{returnModels=TRUE} the fit object(s) for the call to \code{glm} or 
 \code{SuperLearner} for the outcome regression models. If \code{method="mean"} this will be a list
 of length \code{length(ftypeOfInterest)} each of length \code{t0} (one regression for each
 failure type and for each time point). If \code{method="hazard"} this will be a list of length
-\code{length(ftypeOfInterest)} with one model corresponding with the (pseudo-)hazard for each
-cause of failure. If \code{returnModels=FALSE}, this will equal \code{NULL}.
-
-ctimeMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
-\code{SuperLearner} for the censoring hazard regression model.  
-If \code{returnModels=FALSE}, this will equal \code{NULL}.
-
-trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
-\code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
-If \code{returnModels=FALSE}, this will equal \code{NULL}.
-
-t0 The timepoint the function was evaluated at.
+\code{length(ftypeOfInterest)} with one fit corresponding to the hazard for each
+cause of failure. If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
+\item{ctimeMod}{If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
+\code{SuperLearner} for the pooled hazard regression model for the censoring distribution.  
+If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
+\item{trtMod}{If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
+\code{SuperLearner} for the conditional probability of \code{trt} regression model. 
+If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
+\item{t0}{The timepoint at which the function was evaluated.}
+}
 }
 \description{
 This function estimates the marginal cumulative incidence for failures of
@@ -194,6 +186,29 @@ SL.ftime = c("SL.glm","SL.mean","SL.step"),
 SL.ctime = c("SL.glm","SL.mean","SL.step"), 
 method="hazard", returnModels = TRUE)
 # fit4
+## Examples with bounded TMLE
+# Fit 5
+# repeat Fit 1, but now specifying bounds on the iterated conditional means
+fit5 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+glm.trt = "W1 + W2", 
+glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+method="mean", 
+# one type of failure so bounds should have columns 't','l1',and 'u1'
+bounds = data.frame(t=1:5,l1=rep(0.01,5),u1=rep(0.9,5)))
+# fit5
+# Fit 6
+# repeat Fit 10 using the bounded hazard method
+
+# make a data.frame of bounds in proper format
+# one type of failure so bounds should have columns 't','l1',and 'u1'
+# and contain t=1:t0 
+bf1 <- data.frame(t=1:5,l1=rep(0.01,5),u1=rep(0.9,5))
+fit6 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+glm.trt = "W1 + W2", 
+glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+method="mean", 
+bounds = bf1)
+# fit6
 
 ## Multiple failure type examples
 # simulate data
@@ -205,47 +220,62 @@ adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
 ftime <- round(1 + runif(n,1,4) - trt + adjustVars$W1 + adjustVars$W2)
 ftype <- round(runif(n,0,2))
 
-# Fit 5
+# Fit 7
 # fit a survtmle object with glm estimators for treatment, censoring, and failure
 # using the "mean" method
-fit5 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-glm.trt = "W1 + W2", 
-glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-method="mean", returnModels = TRUE)
-# fit5
-
-# Fit 6
-# fit an survtmle object with SuperLearner estimators for failure and censoring
-# and empirical estimators for treatment (default) using the "mean" method
-fit6 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-SL.ftime = c("SL.glm","SL.mean","SL.step"), 
-SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-method="mean", returnModels = TRUE)
-# fit6
-
-# Fit 7
-# repeat Fit 5 using the "hazard" method 
 fit7 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 glm.trt = "W1 + W2", 
 glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-method="hazard", returnModels = TRUE)
+method="mean")
 # fit7
 
 # Fit 8
-# repeat Fit 6 using the "hazard" method
+# fit an survtmle object with SuperLearner estimators for failure and censoring
+# and empirical estimators for treatment (default) using the "mean" method
 fit8 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-method="hazard", returnModels = TRUE)
-# fit8 
+method="mean")
+# fit8
 
 # Fit 9
-# repeat Fit 5, but only return estimates for ftype = 1
+# repeat Fit 7 using the "hazard" method 
 fit9 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 glm.trt = "W1 + W2", 
 glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-method="mean", returnModels = TRUE, ftypeOfInterest = 1)
+method="hazard", returnModels = TRUE)
 # fit9
 
-# TODO: Add bounds example
+# Fit 10
+# repeat Fit 8 using the "hazard" method
+fit10 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+SL.ftime = c("SL.glm","SL.mean","SL.step"), 
+SL.ctime = c("SL.glm","SL.mean","SL.step"), 
+method="hazard", returnModels = TRUE)
+# fit10 
+
+# Fit 11
+# repeat Fit 7, but only return estimates for ftype = 1
+fit11 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+glm.trt = "W1 + W2", 
+glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+method="mean", returnModels = TRUE, ftypeOfInterest = 1)
+# fit11
+
+# Fit 12 
+# repeat Fit 7, but include bounds
+
+# make a data.frame of bounds in proper format
+# two types of failure that are labeled with ftype = 1
+# and ftype = 2, so bounds should have columns 't','l1', 'u1',
+# 'l2', and 'u2'.
+bf2 <- data.frame(t=1:5,l1=rep(0.01,5),u1=rep(0.9,5),l2=rep(0.02,5),u2=rep(0.5,5))
+
+fit12 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+glm.trt = "W1 + W2", 
+glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+method="mean", returnModels = TRUE, 
+# two failure types, so bounds should have columns 't','l1','u1','l2', and 'u2'
+bounds = bf2)
+# fit12
 }

@@ -13,8 +13,6 @@
 #' The default value is 10 and the option is ignored if \code{bins != "default"}
 #' 
 #' @return A vector of binned failure times
-#'
-#' @export
 #' 
 #' @examples
 #' ftime <- runif(100,0,10)

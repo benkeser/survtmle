@@ -47,7 +47,6 @@
 #' @importFrom stats as.formula predict model.matrix optim glm
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
 #' 
-#' @export
 #' 
 #' @return The function then returns a list that is exactly the same as the input \code{wideDataList}, 
 #' but with a column named \code{Qj.t} added to it, which is the estimated conditional mean of 

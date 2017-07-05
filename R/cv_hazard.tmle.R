@@ -9,8 +9,8 @@
 #' @param ftime A numeric vector of failure times. Missing values or zero values
 #' are not supported. Right censored observations should have a non-missing value for \code{ftime} while 
 #' \code{ftype} should be set to 0. 
-#' @param ftype A numeric vector indicating the type of failure with type 0 reserved for 
-#' right censored observations. Each unique value will be treated as an (unordered) separate
+#' @param ftype A numeric vector indicating the type of failure. Observations with \code{ftype=0} are treated 
+#' as a right-censored observation. Each unique value besides zero is treated as a separate
 #' type of failure.
 #' @param trt A numeric vector indicating observed treatment assignment. Each unique value will 
 #' be treated as an (unordered) separate type of treatment. Currently, only two unique values of 
@@ -25,7 +25,7 @@
 #' @param validFolds A \code{list} of \code{vectors} indicating which observations were in the 
 #' validation fold for each of the \code{survtmleFits}. 
 #' @param returnIC A boolean indicating whether to return vectors of influence curve estimates. These are
-#' needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
+#' needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
 #' unless the user is sure these estimates will not be needed later. 
 #' @param returnModels A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
 #' objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
@@ -68,11 +68,10 @@
 #' \code{SuperLearner} for the censoring hazard regression model.  
 #' If \code{returnModels=FALSE}, this will equal \code{NULL}.
 #' @return trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
-#' \code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
+#' \code{SuperLearner} for the conditional probability of \code{trt} regression model. 
 #' If \code{returnModels=FALSE}, this will equal \code{NULL}.
 #'   
 #' 
-#' @export
 #' 
 
 cv_hazard_tmle <- function(

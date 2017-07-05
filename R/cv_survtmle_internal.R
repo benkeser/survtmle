@@ -3,11 +3,10 @@
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using cross-validated targeted minimum loss-based estimation. More description to come...
 #' 
-#' @param ftime A numeric vector of failure times. Missing values are not supported. Right 
-#' censored observations should have a non-missing value for \code{ftime} while 
-#' \code{ftype} should be set to 0. 
-#' @param ftype A numeric vector indicating the type of failure with type 0 reserved for 
-#' right censored observations. Each unique value will be treated as an (unordered) separate
+#' @param ftime A numeric vector of failure times. Right-censored observations should have corresponding 
+#' \code{ftype} set to 0.
+#' @param ftype A numeric vector indicating the type of failure. Observations with \code{ftype=0} are treated 
+#' as a right-censored observation. Each unique value besides zero is treated as a separate
 #' type of failure.
 #' @param trt A numeric vector indicating observed treatment assignment. Each unique value will 
 #' be treated as an (unordered) separate type of treatment. Currently, only two unique values of 
@@ -22,7 +21,7 @@
 #' @param validFolds A \code{list} of \code{vectors} indicating which observations were in the 
 #' validation fold for each of the \code{survtmleFits}. 
 #' @param returnIC A boolean indicating whether to return vectors of influence curve estimates. These are
-#' needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
+#' needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
 #' unless the user is sure these estimates will not be needed later. 
 #' @param ftypeOfInterest An input specifying what failure types to compute estimates of incidence for. 
 #' The default value is \code{"all"}, which computes estimates for values \code{unique(ftype)}. Can alternatively
@@ -54,33 +53,33 @@
 #' 
 #' 
 #' @return An object of class \code{cv_survtmle}.
-#' @return call The call to \code{cv_survtmle}.
-#' @return est A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
-#' and \code{trtOfInterest}.
-#' @return var A covariance matrix of all the point estimates
-#' @return meanIC The empirical mean of the efficient influence function at the estimated, fluctuated
+#' \describe{
+#' \item{call}{The call to \code{cv_survtmle}.}
+#' \item{est}{A numeric vector of point estimates -- one for each combination of \code{ftypeOfInterest}
+#' and \code{trtOfInterest}.}
+#' \item{var}{A covariance matrix of all the point estimates.}
+#' \item{meanIC}{The empirical mean of the efficient influence function at the estimated, fluctuated
 #' nuisance parameters. If all goes well, each value should be small. If
 #' \code{method="hazard"} then each value should be less than \code{tol}. If code{method="mean"}
-#' then should be on the order of \code{1e-7}. 
-#' @return ic The efficient influence function at the estimated, fluctuated nuisance parameters,
+#' then should be on the order of \code{1e-7}.}
+#' \item{ic}{The efficient influence function at the estimated, fluctuated nuisance parameters,
 #' evaluated on each of the observations (summed over all times). These may be used to perform
-#' post-hoc comparisons. More details coming. 
-#' @return ftimeMod If \code{returnModels=TRUE} the fit object(s) for the call to \code{glm} or 
+#' post-hoc comparisons.}
+#' \item{ftimeMod}{If \code{returnModels=TRUE} the fit object(s) for the call to \code{glm} or 
 #' \code{SuperLearner} for the outcome regression models. If \code{method="mean"} this will be a list
 #' of length \code{length(ftypeOfInterest)} each of length \code{t0} (one regression for each
 #' failure type and for each time point). If \code{method="hazard"} this will be a list of length
 #' \code{length(ftypeOfInterest)} with one model corresponding with the (pseudo-)hazard for each
-#' cause of failure. If \code{returnModels=FALSE}, this will equal \code{NULL}.
-#' @return ctimeMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
+#' cause of failure. If \code{returnModels=FALSE}, this will equal \code{NULL}.}
+#' \item{ctimeMod}{If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
 #' \code{SuperLearner} for the censoring hazard regression model.  
-#' If \code{returnModels=FALSE}, this will equal \code{NULL}.
-#' @return trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
-#' \code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
-#' If \code{returnModels=FALSE}, this will equal \code{NULL}.
-#' @return t0 The timepoint the function was evaluated at. 
+#' If \code{returnModels=FALSE}, this will equal \code{NULL}.}
+#' \item{trtMod}{If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
+#' \code{SuperLearner} for the conditional probability of \code{trt} regression model. 
+#' If \code{returnModels=FALSE}, this will equal \code{NULL}.}
+#' \item{t0}{The timepoint the function was evaluated at.}
+#' }
 #' 
-#' @export
-
 cv_survtmle_internal <- function(
   ftime, 
   ftype,

@@ -22,7 +22,6 @@
 #' of X in \code{ofInterestJ} and each value of Z in \code{uniqtrt}. These are the sum over
 #' all time points of the estimated efficient influence function evaluated at that observation.
 #' 
-#' @export
 
 
 getHazardInfluenceCurve <- function(

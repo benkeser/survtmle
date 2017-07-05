@@ -35,7 +35,7 @@
 #' @importFrom stats as.formula predict model.matrix optim glm
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
 #' 
-#' @export 
+#' 
 #' 
 #' @examples
 #' # make fake data frame, the internal call to this function will 

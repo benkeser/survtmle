@@ -14,8 +14,8 @@ cv_hazard_tmle(ftime, ftype, trt, t0, incidence = TRUE, adjustVars = NULL,
 are not supported. Right censored observations should have a non-missing value for \code{ftime} while 
 \code{ftype} should be set to 0.}
 
-\item{ftype}{A numeric vector indicating the type of failure with type 0 reserved for 
-right censored observations. Each unique value will be treated as an (unordered) separate
+\item{ftype}{A numeric vector indicating the type of failure. Observations with \code{ftype=0} are treated 
+as a right-censored observation. Each unique value besides zero is treated as a separate
 type of failure.}
 
 \item{trt}{A numeric vector indicating observed treatment assignment. Each unique value will 
@@ -37,7 +37,7 @@ conditional treatment, censoring, and failure (hazard or conditional mean) proba
 validation fold for each of the \code{survtmleFits}.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence curve estimates. These are
-needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
+needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
 unless the user is sure these estimates will not be needed later.}
 
 \item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
@@ -94,7 +94,7 @@ ctimeMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} o
 If \code{returnModels=FALSE}, this will equal \code{NULL}.
 
 trtMod If \code{returnModels=TRUE} the fit object for the call to \code{glm} or 
-\code{SuperLearner} for the conditioanl probability of \code{trt} regression model. 
+\code{SuperLearner} for the conditional probability of \code{trt} regression model. 
 If \code{returnModels=FALSE}, this will equal \code{NULL}.
 }
 \description{

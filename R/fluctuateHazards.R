@@ -34,7 +34,6 @@
 #' @importFrom Matrix Diagonal
 #' @importFrom stats optim
 #' 
-#' @export
 
 
 fluctuateHazards <- function(

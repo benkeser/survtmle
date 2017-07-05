@@ -12,12 +12,11 @@ checkInputs(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE)
 }
 \arguments{
-\item{ftime}{A numeric vector of failure times. Missing values are not supported. Right 
-censored observations should have a non-missing value for \code{ftime} while 
-\code{ftype} should be set to 0.}
+\item{ftime}{A numeric vector of failure times. Right-censored observations should have corresponding 
+\code{ftype} set to 0.}
 
-\item{ftype}{A numeric vector indicating the type of failure with type 0 reserved for 
-right censored observations. Each unique value will be treated as an (unordered) separate
+\item{ftype}{A numeric vector indicating the type of failure. Observations with \code{ftype=0} are treated 
+as a right-censored observation. Each unique value besides zero is treated as a separate
 type of failure.}
 
 \item{trt}{A numeric vector indicating observed treatment assignment. Each unique value will 
@@ -42,7 +41,7 @@ that the wrappers used in the library will play nicely with the input variables,
 called \code{"trt"} and \code{names(adjustVars)}.}
 
 \item{SL.trt}{A character vector or list specification to be passed to the \code{SL.library} argument 
-in the call to \code{SuperLearner} for the estimate of the conditional probabiltiy of treatment.
+in the call to \code{SuperLearner} for the estimate of the conditional probability of treatment.
 It is expected that the wrappers used in the library will play nicely
 with the input variables, which will be \code{names(adjustVars)}.}
 
@@ -59,13 +58,13 @@ in this formula (see examples). The formula can additionally include any variabl
 \code{names(adjustVars)}.}
 
 \item{glm.trt}{A character specification of the right-hand side of the equation passed to the
-\code{formula} option of a call to \code{glm} for the estimate of the conditional probabiltiy of 
+\code{formula} option of a call to \code{glm} for the estimate of the conditional probability of 
 treatment. Ignored if \code{SL.trt != NULL}. By default set to "1", corresponding to using empirical
 estimates of each value of \code{trt}. The formula can include any variables found in 
 \code{names(adjustVars)}.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence curve estimates. These are
-needed for some post-hoc comarisons, so it is recommended to leave as \code{TRUE} (the default)
+needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
 unless the user is sure these estimates will not be needed later.}
 
 \item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
@@ -106,6 +105,9 @@ is smaller than \code{tol} or until \code{maxIter} iterations have been complete
 \item{Gcomp}{A boolean indicating whether to compute the G-computation estimator (i.e., a substitution
 estimator with no targeting step). Note, theory does not support inference for the Gcomp estimator if using 
 super learner is used to estimate failure and censoring mechanisms. Only implemented if \code{method="mean"}.}
+}
+\value{
+Options to be passed to \code{mean_tmle} or \code{hazard_tmle}.
 }
 \description{
 Check the input values of function parameters for errors

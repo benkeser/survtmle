@@ -39,7 +39,6 @@
 #' estimator, in which case this function does nothing but relabel columns. 
 #' @param ... Other arguments. Not currently used. 
 #' 
-#' @export 
 #' @importFrom stats as.formula optim glm
 #' @importFrom Matrix Diagonal
 #' 

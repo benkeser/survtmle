@@ -38,7 +38,6 @@
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
 #' @param ... Other arguments. Not currently used. 
 #' 
-#' @export
 #' 
 #' @importFrom stats as.formula predict glm 
 #' @importFrom SuperLearner SuperLearner

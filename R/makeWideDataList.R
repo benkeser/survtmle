@@ -18,7 +18,6 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param ... Other arguments. Not currently used. 
 #' 
-#' @export 
 #' 
 #' @importFrom stats reshape
 #' 
