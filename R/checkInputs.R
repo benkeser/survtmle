@@ -274,6 +274,8 @@ checkInputs <- function(ftime,
 		SL.trt <- SL.ctime <- SL.ftime <- NULL
 	}
 
+	# check format of bound inputs
+	
 	# return clean variables
 	return(list(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 	            glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime, 
