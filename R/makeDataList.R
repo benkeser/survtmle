@@ -45,12 +45,12 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     boundFormat <- data.frame(t=bounds$t)
     for(j in J){
       if(paste("l",j,sep="") %in% colnames(bounds)){
-        eval(parse(text=paste0("boundFormat$l",j," <- bounds[,paste0(l",j,")]")))
+        eval(parse(text=paste0("boundFormat$l",j," <- bounds[,paste0(l,",j,")]")))
       }else{
         eval(parse(text=paste0("boundFormat$l",j," <- 0")))
       }
       if(paste("u",j,sep="") %in% names(bounds[[j]])){
-        eval(parse(text=paste0("boundFormat$u",j," <- bounds[,paste0(u",j,")]")))
+        eval(parse(text=paste0("boundFormat$u",j," <- bounds[,paste0(u,",j,")]")))
       }else{
         eval(parse(text=paste0("boundFormat$u",j," <- 0")))
       }
