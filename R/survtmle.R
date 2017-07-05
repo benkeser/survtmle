@@ -12,7 +12,7 @@
 #' ## Single failure type examples
 #' # simulate data
 #' set.seed(1234)
-#' n <- 100
+#' n <- 200
 #' trt <- rbinom(n,1,0.5)
 #' adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
 #' 
@@ -25,7 +25,7 @@
 #' fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean", returnModels = TRUE)
+#' method="mean", t0=6)
 #' # fit1
 #' 
 #' # Fit 2
@@ -34,7 +34,7 @@
 #' fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-#' method="mean", returnModels = TRUE)
+#' method="mean", t0=6)
 #' # fit2
 #' 
 #' # Fit 3
@@ -42,7 +42,7 @@
 #' fit3 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="hazard", returnModels = TRUE)
+#' method="hazard", t0=6)
 #' # fit3
 #' 
 #' # Fit 4
@@ -50,27 +50,30 @@
 #' fit4 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-#' method="hazard", returnModels = TRUE)
+#' method="hazard", t0=6)
 #' # fit4
 #' ## Examples with bounded TMLE
+#' 
+#' 
+#' # make a data.frame of bounds in proper format
+#' # one type of failure so bounds should have columns 't','l1',and 'u1'
+#' # and contain t=1:t0 
+#' bf1 <- data.frame(t=1:6,l1=rep(0.01,6),u1=rep(0.99,6))
+#' 
 #' # Fit 5
 #' # repeat Fit 1, but now specifying bounds on the iterated conditional means
 #' fit5 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean", 
+#' method="mean", t0=6,
 #' # one type of failure so bounds should have columns 't','l1',and 'u1'
-#' bounds = data.frame(t=1:8,l1=rep(0.01,8),u1=rep(0.9,8)))
+#' bounds = data.frame(t=1:6,l1=rep(0.01,6),u1=rep(0.99,6)))
 #' # fit5
 #' # Fit 6
 #' # repeat Fit 10 using the bounded hazard method
 #' 
-#' # make a data.frame of bounds in proper format
-#' # one type of failure so bounds should have columns 't','l1',and 'u1'
-#' # and contain t=1:t0 
-#' bf1 <- data.frame(t=1:5,l1=rep(0.01,5),u1=rep(0.9,5))
 #' fit6 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-#' glm.trt = "W1 + W2", 
+#' glm.trt = "W1 + W2", t0=6,
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 #' method="mean", 
 #' bounds = bf1)
@@ -92,7 +95,7 @@
 #' fit7 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean")
+#' method="mean",t0=6)
 #' # fit7
 #' 
 #' # Fit 8
@@ -101,7 +104,7 @@
 #' fit8 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-#' method="mean")
+#' method="mean",t0=6)
 #' # fit8
 #' 
 #' # Fit 9
@@ -109,7 +112,7 @@
 #' fit9 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="hazard", returnModels = TRUE)
+#' method="hazard", t0=6)
 #' # fit9
 #' 
 #' # Fit 10
@@ -117,7 +120,7 @@
 #' fit10 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
 #' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
-#' method="hazard", returnModels = TRUE)
+#' method="hazard", t0=6)
 #' # fit10 
 #' 
 #' # Fit 11
@@ -125,7 +128,7 @@
 #' fit11 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean", returnModels = TRUE, ftypeOfInterest = 1)
+#' method="mean", t0=6, ftypeOfInterest = 1)
 #' # fit11
 #' 
 #' # Fit 12 
@@ -135,13 +138,12 @@
 #' # two types of failure that are labeled with ftype = 1
 #' # and ftype = 2, so bounds should have columns 't','l1', 'u1',
 #' # 'l2', and 'u2'.
-#' bf2 <- data.frame(t=1:5,l1=rep(0.01,5),u1=rep(0.9,5),l2=rep(0.02,5),u2=rep(0.5,5))
+#' bf2 <- data.frame(t=1:6,l1=rep(0.01,6),u1=rep(0.99,6),l2=rep(0.02,6),u2=rep(0.99,6))
 #' 
 #' fit12 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 #' glm.trt = "W1 + W2", 
 #' glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-#' method="mean", returnModels = TRUE, 
-#' # two failure types, so bounds should have columns 't','l1','u1','l2', and 'u2'
+#' method="mean", t0=6, 
 #' bounds = bf2)
 #' # fit12
 
