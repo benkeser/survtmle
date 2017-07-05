@@ -71,6 +71,7 @@
 #' is smaller than \code{tol} or until \code{maxIter} iterations have been completed. 
 #' @param gtol The truncation level of predicted censoring survival. Setting to larger values can help 
 #' performance in data sets with practical positivity violations. 
+#' @param ... Other options. Not currently used.
 #' 
 #' 
 #' @return An object of class \code{survtmle}.

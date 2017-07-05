@@ -68,7 +68,7 @@
 #' super learner is used to estimate failure and censoring distributions. The Gcomp is only implemented if \code{method="mean"}.
 #' @param gtol The truncation level of predicted censoring survival. Setting to larger values can help 
 #' performance in data sets with practical positivity violations. 
-#' 
+#' @param ... Other options. Not currently used.
 #' 
 #' @return An object of class \code{survtmle}.
 #' \describe{

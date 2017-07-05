@@ -14,14 +14,6 @@
 #' 
 #' @return A vector of binned failure times
 #' 
-#' @examples
-#' ftime <- runif(100,0,10)
-#' # first do default binning
-#' binned.ftime <- bin_ftime(ftime = ftime)
-#' table(binned.ftime)
-#' # now specify own cutpoints
-#' binned.ftime2 <- bin_ftime(ftime = ftime, bins = c(2,5,8))
-#' table(binned.ftime)
 
 bin_ftime <- function(ftime, bins="default", nKnots=10){
   n <- length(ftime)

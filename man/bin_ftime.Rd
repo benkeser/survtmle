@@ -25,12 +25,3 @@ discretizes into \code{nKnots} number of discrete times. By default the bins
 will be evenly spaced, but users can also input their own cutpoints through the
 \code{bins} argument.
 }
-\examples{
-ftime <- runif(100,0,10)
-# first do default binning
-binned.ftime <- bin_ftime(ftime = ftime)
-table(binned.ftime)
-# now specify own cutpoints
-binned.ftime2 <- bin_ftime(ftime = ftime, bins = c(2,5,8))
-table(binned.ftime)
-}

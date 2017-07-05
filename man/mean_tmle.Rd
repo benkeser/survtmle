@@ -92,6 +92,8 @@ super learner is used to estimate failure and censoring distributions. The Gcomp
 
 \item{gtol}{The truncation level of predicted censoring survival. Setting to larger values can help 
 performance in data sets with practical positivity violations.}
+
+\item{...}{Other options. Not currently used.}
 }
 \value{
 An object of class \code{survtmle}.

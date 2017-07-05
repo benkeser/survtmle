@@ -96,6 +96,8 @@ is smaller than \code{tol} or until \code{maxIter} iterations have been complete
 
 \item{gtol}{The truncation level of predicted censoring survival. Setting to larger values can help 
 performance in data sets with practical positivity violations.}
+
+\item{...}{Other options. Not currently used.}
 }
 \value{
 An object of class \code{survtmle}.
