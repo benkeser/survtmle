@@ -50,19 +50,3 @@ Currently only two unique values of treatment are acceptable. By default the fun
 will compute estimates of the condtional probability of \code{trt==max(trt)} and 
 compute the probability of \code{trt==min(trt)} as one minus this probability.
 }
-\examples{
-# make fake data frame, the internal call to this function will 
-# have more columns, but this is all that is needed for illustration
-dat <- data.frame(trt = rbinom(100,1,0.5))
-adjustVars <- data.frame(W1 = rnorm(100), W2 = rnorm(100))
-
-# call to estimateTreatment using glm
-fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, glm.trt = "W1 + W2")
-# head(fit.trt$dat)
-
-# call to estimateTreatment using SuperLearner
-fit.trt <- estimateTreatment(dat = dat, adjustVars = adjustVars, 
-SL.trt = c("SL.mean","SL.glm","SL.step"))
-# head(fit.trt$dat)
-
-}
