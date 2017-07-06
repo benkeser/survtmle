@@ -43,7 +43,7 @@ test_that("hazard_tmle with no censoring works as expected", {
 	glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
 	method="hazard", t0=6, returnModels = TRUE)
 
-	expect_equal(fit1$ctimeMod,"No censoring observed")
+	expect_true(fit1$ctimeMod[1]=="No censoring observed")
 	expect_equal(class(fit1$ctimeMod), "noCens")
 	expect_true(!any(is.na(fit1$est)))
 })
