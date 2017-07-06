@@ -53,12 +53,6 @@
 estimateHazards <- function(dataList, J, adjustVars,
                             SL.ftime = NULL, glm.ftime = NULL,
                             returnModels, bounds, verbose, ...){
-  # check for missing inputs
-  if(is.null(SL.ftime) & is.null(glm.ftime)){
-    warning("Super Learner library and glm formula for events not specified. Proceeding 
-            with empirical estimates")
-    glm.ftime <- "trt*factor(t)"
-  }
   ftimeMod <- vector(mode="list",length=length(J))
   names(ftimeMod) <- paste0("J",J)
 

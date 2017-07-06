@@ -1,5 +1,6 @@
 library(survtmle)
 library(survival)
+library(cmprsk)
 context("Testing hazard_tmle function")
 
 test_that("hazard_tmle with bounds of (0,1) gives same results as unbounded with one failure type", {
@@ -81,6 +82,40 @@ test_that("hazard_tmle and mean_tmle equal kaplan-meier with no covariates", {
 	expect_equal(km,as.numeric(fit1$est))
 	expect_equal(km,as.numeric(fit2$est))
 })
+
+test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
+	set.seed(1234)
+	n <- 500
+	trt <- rbinom(n,1,0.5)
+	adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
+	
+	ftime <- round(runif(n,0,4)) + 1
+	ftype <- round(runif(n,0,1)) +  round(runif(n,0,1))
+	
+	# hazard fit
+
+	suppressWarnings(
+	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "1", 
+	glm.ftime = paste0("trt + ",paste0("I(t==",1:max(ftime),")",collapse="+"),"+",paste0("I(trt*t==",1:max(ftime),")",collapse="+")),
+	glm.ctime = paste0("trt + ",paste0("I(t==",1:max(ftime),")",collapse="+"),"+",paste0("I(trt*t==",1:max(ftime),")",collapse="+")), 
+	method="hazard", t0=5)
+	)
+	# mean fit
+	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "1", 
+	glm.ftime = "trt", 
+	glm.ctime = "trt", 
+	method="mean", t0=5)
+
+	# compare to kaplan meier
+	aj <- cuminc(ftime = ftime, fstatus = ftype, group = trt)
+	fit.aj <- timepoints(aj,5)
+
+	expect_equal(as.numeric(fit.aj$est),as.numeric(fit1$est))
+	expect_equal(as.numeric(fit.aj$est),as.numeric(fit2$est))
+})
+
 
 test_that("hazard_tmle with glm and super learner with only glm give same answers", {
 	set.seed(1234)

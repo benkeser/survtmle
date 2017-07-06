@@ -20,7 +20,8 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    survival
+    survival,
+    cmprsk
 License: MIT + file LICENSE
 URL: https://github.com/benkeser/survtmle
 Encoding: UTF-8
