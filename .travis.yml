@@ -3,6 +3,11 @@ branches:
   - master
   - develop
 
+env:
+  global:
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
+
 language: r
 sudo: required
 cache: packages
@@ -17,7 +22,7 @@ r_github_packages:
   - jimhester/covr
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R'))"
 
 notifications:
   email:
