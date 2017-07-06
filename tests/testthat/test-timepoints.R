@@ -22,7 +22,7 @@ test_that("hazard_tmle and mean_tmle timepoints equal kaplan-meier with no covar
 	method="hazard", t0=5, returnModels = TRUE)
 	)
 	suppressWarnings(
-		tp.fit1 <- timepoints(fit1, times = 1:5)
+		tp.fit1 <- survtmle::timepoints(fit1, times = 1:5)
 	)
 	est.fit1 <- Reduce(cbind,lapply(tp.fit1,"[[","est"))
 	# mean fit
@@ -60,7 +60,7 @@ test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
 	method="hazard", t0=5, returnModels = TRUE)
 	)
 	suppressWarnings(
-		tp.fit1 <- timepoints(fit1, times = 1:5)
+		tp.fit1 <- survtmle::timepoints(fit1, times = 1:5)
 	)
 	est.fit1 <- Reduce(cbind,lapply(tp.fit1,"[[","est"))
 	# mean fit
