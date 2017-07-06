@@ -92,6 +92,10 @@
 #' \code{SuperLearner} for the conditional probability of \code{trt} regression model. 
 #' If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
 #' \item{t0}{The timepoint at which the function was evaluated.}
+#' \item{ftime}{The numeric vector of failure times used in the fit.}
+#' \item{ftype}{The numeric vector of failure types used in the fit.}
+#' \item{trt}{The numeric vector of treatment assignments used in the fit.}
+#' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'    
 #' 
@@ -241,7 +245,8 @@ mean_tmle <- function(
   row.names(var) <- colnames(var) <- rowNames
   
   out <- list(est=est,var=var, meanIC=meanIC, ic=infCurves, trtMod=trtMod,
-              ftimeMod=ftimeMod,ctimeMod=ctimeMod)
+              ftimeMod=ftimeMod,ctimeMod=ctimeMod,
+              ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars)
   class(out) <- "survtmle"
   return(out) 
 }

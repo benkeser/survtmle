@@ -104,6 +104,10 @@
 #' \code{SuperLearner} for the conditional probability of \code{trt} regression model. 
 #' If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
 #' \item{t0}{The timepoint at which the function was evaluated.}
+#' \item{ftime}{The numeric vector of failure times used in the fit.}
+#' \item{ftype}{The numeric vector of failure types used in the fit.}
+#' \item{trt}{The numeric vector of treatment assignments used in the fit.}
+#' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #' @export
 #' 
@@ -334,7 +338,11 @@ survtmle <- function(
     est=tmle.fit$est, var=tmle.fit$var,
     meanIC=tmle.fit$meanIC, ic=tmle.fit$ic,
     ftimeMod=tmle.fit$ftimeMod, ctimeMod=tmle.fit$ctimeMod,
-    trtMod=tmle.fit$trtMod, t0=t0
+    trtMod=tmle.fit$trtMod, t0=t0,
+    ftime = tmle.fit$ftime, 
+    ftype = tmle.fit$ftype, 
+    trt = tmle.fit$trt, 
+    adjustVars = tmle.fit$adjustVars
   )
   class(out) <- "survtmle"
   out
