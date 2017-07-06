@@ -5,6 +5,7 @@
 ^\.gitignore$
 ^\.gitmodules$
 ^\README\.md$
+^\Makefile$
 ^cran-comments\.md$
 ^\.git$
 ^paper$

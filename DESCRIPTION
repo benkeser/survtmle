@@ -1,7 +1,7 @@
 Package: survtmle
 Title: Compute targeted minimum loss-based estimates in right-censored survival
     settings
-Version: 0.0.5
+Version: 0.1.0
 Authors@R: as.person(c(
   "David Benkeser <benkeser@emory.edu> [aut, cre, cph]",
   "Nima Hejazi <nhejazi@berkeley.edu> [aut]"
@@ -14,8 +14,8 @@ Imports:
     SuperLearner,
     Matrix,
     plyr,
-    ggplot2,
-    tidyr
+    tidyr,
+    ggplot2
 Suggests:
     testthat,
     knitr,

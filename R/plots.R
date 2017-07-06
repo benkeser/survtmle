@@ -1,5 +1,5 @@
-#' plot.tp.survtmle
-#' 
+utils::globalVariables(c("value", "group"))
+
 #' Plot results of cumulative incidence estimates from survtmle
 #'
 #' Plotting for both raw and smoothened estimates, the latter by isotonic
@@ -50,7 +50,7 @@ plot.tp.survtmle <- function(x, ..., t0, type = c("smooth", "raw")) {
     plot_in <- est_in
   } else if (type == "smooth") {
     iso <- apply(est, 1, function(y) {
-      tmp <- stats::isoreg(y = y, x = seq_len(t_0))
+      tmp <- stats::isoreg(y = y, x = seq_len(t0))
       tmp$yf
     })
     iso_est <- as.data.frame(cbind(iso, seq_len(t0)))
