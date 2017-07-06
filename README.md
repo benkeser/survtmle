@@ -21,10 +21,16 @@ Description
 Installation
 ------------
 
-You can install a stable release of `survtmle` from GitHub with:
+You can install a stable release of `survtmle` from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/) with:
 
 ``` r
 devtools::install_github("benkeser/survtmle")
+```
+
+For standard use, we recommend installing the package from [CRAN](https://cran.r-project.org/) (an initial release will be coming soon) via
+
+``` r
+install.packages("survtmle")
 ```
 
 ------------------------------------------------------------------------

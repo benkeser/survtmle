@@ -5,7 +5,9 @@
 ^\.gitignore$
 ^\.gitmodules$
 ^\README\.md$
+^coverage\.R$
 ^\Makefile$
+^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^\.git$
 ^paper$
