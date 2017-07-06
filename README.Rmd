@@ -59,6 +59,7 @@ estimates with a very simple, simulated data set.
 library(survtmle)
 set.seed(341796)
 
+# simulate data
 n <- 100
 t_0 <- 100
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
@@ -68,10 +69,14 @@ C <- rgeom(n, plogis(-6 + W$W1)) + 1
 ftime <- pmin(T, C)
 ftype <- as.numeric(ftime == T)
 
+# apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
                 adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
                 trt = A, glm.ctime = "W1 + t", method = "hazard",
                 verbose = TRUE,  t0 = t_0, maxIter = 2)
+
+# quick look at the output object
+fit
 ```
 
 ---

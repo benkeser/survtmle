@@ -37,9 +37,10 @@ This minimal example shows how to use `survtmle` to obtain cumulative incidence 
 ``` r
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 0.0.5
+#> Version: 0.1.0
 set.seed(341796)
 
+# simulate data
 n <- 100
 t_0 <- 100
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
@@ -49,11 +50,26 @@ C <- rgeom(n, plogis(-6 + W$W1)) + 1
 ftime <- pmin(T, C)
 ftype <- as.numeric(ftime == T)
 
+# apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
                 adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
                 trt = A, glm.ctime = "W1 + t", method = "hazard",
                 verbose = TRUE,  t0 = t_0, maxIter = 2)
-#> TMLE Iteration  1   :  2e-04 4e-04
+#> Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
+#> glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'
+#> TMLE Iteration  1   :  4e-04 -7e-04
+
+# quick look at the output object
+fit
+#> $est
+#>          [,1]
+#> 0 1 0.9996696
+#> 1 1 0.7704521
+#> 
+#> $var
+#>               0 1           1 1
+#> 0 1  1.838504e-06 -2.361568e-06
+#> 1 1 -2.361568e-06  1.174079e-03
 ```
 
 ------------------------------------------------------------------------
