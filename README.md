@@ -35,6 +35,13 @@ install.packages("survtmle")
 
 ------------------------------------------------------------------------
 
+Issues
+------
+
+If you encounter any bugs or have any specific feature requests, please [file an issue](https://github.com/benkeser/survtmle/issues).
+
+------------------------------------------------------------------------
+
 Example
 -------
 
