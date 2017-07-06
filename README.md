@@ -21,8 +21,6 @@ output: github_document
 __Authors:__ [David Benkeser](https://www.benkeserstatistics.com/) & [Nima
 Hejazi](http://nimahejazi.org)
 
----
-
 ## Description
 
 `survtmle` is an R package designed to use Targeted Minimum Loss-Based
@@ -31,8 +29,6 @@ right-censored survival settings with and without competing risks, including
 vaccine sieve analysis. This tool also provides facilities for computing and
 obtaining inference for the use of data adaptive target parameters in such
 settings.
-
----
 
 ## Installation
 
@@ -43,8 +39,6 @@ You can install a stable release of `survtmle` from GitHub with:
 devtools::install_github("benkeser/survtmle")
 ```
 
----
-
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
@@ -53,8 +47,6 @@ This is a basic example which shows you how to solve a common problem:
 ```r
 ## basic example code
 ```
-
----
 
 ## License
 
