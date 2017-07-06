@@ -6,6 +6,7 @@
 #' @param parm A numeric vector indicating which indices of \code{object$est} to
 #' return confidence intervals for (default is to return all).
 #' @param level The confidence level requested. 
+#' @param ... Other arguments. Not currently used. 
 #' 
 #' @return A matrix with columns giving the lower and upper confidence limits
 #' for each parameter. These will be labelled as (1-level)/2 and 1 - (1-level)/2 in % 
@@ -32,7 +33,7 @@
 #' ci <- confint(fit1)
 #' # ci
 
-confint.survtmle <- function(object, parm = 1:length(object$est), level = 0.95){
+confint.survtmle <- function(object, parm = 1:length(object$est), level = 0.95, ...){
 	estVec <- object$est[parm]
 	ses <- sqrt(diag(object$var)[parm])
 	a <- (1 - level)/2

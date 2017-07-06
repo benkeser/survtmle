@@ -5,7 +5,7 @@
 \title{confint.survtmle}
 \usage{
 \method{confint}{survtmle}(object, parm = 1:length(object$est),
-  level = 0.95)
+  level = 0.95, ...)
 }
 \arguments{
 \item{object}{An object of class \code{survtmle}.}
@@ -14,6 +14,8 @@
 return confidence intervals for (default is to return all).}
 
 \item{level}{The confidence level requested.}
+
+\item{...}{Other arguments. Not currently used.}
 }
 \value{
 A matrix with columns giving the lower and upper confidence limits
