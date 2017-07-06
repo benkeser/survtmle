@@ -28,6 +28,26 @@ test_that("hazard_tmle with bounds of (0,1) gives same results as unbounded with
 	expect_true(all(abs(fit1$est - fit2$est) < 1e-5))
 })
 
+test_that("hazard_tmle with no censoring works as expected", {
+	set.seed(1234)
+	n <- 200
+	trt <- rbinom(n,1,0.5)
+	adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
+	
+	ftime <- round(1 + runif(n,1,4) - trt + adjustVars$W1 + adjustVars$W2)
+	ftype <- rep(1,n)
+	
+	# fit with no bounds
+	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "W1 + W2", 
+	glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+	method="hazard", t0=6, returnModels = TRUE)
+
+	expect_equal(fit1$ctimeMod,"No censoring observed")
+	expect_equal(class(fit1$ctimeMod), "noCens")
+	expect_true(!any(is.na(fit1$est)))
+})
+
 test_that("hazard_tmle with bad bounds gives good result", {
 	# setwd("~/Dropbox/R")
 	# devtools::build("survtmle")
