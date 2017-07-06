@@ -37,7 +37,7 @@ adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 glm.trt = "W1 + W2", 
 glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-method="mean", t0=6)
+method="mean", t0=4)
 # get confidence intervals
 ci <- confint(fit1)
 # ci
