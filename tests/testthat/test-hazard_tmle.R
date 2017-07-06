@@ -110,7 +110,7 @@ test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
 
 	# compare to kaplan meier
 	aj <- cuminc(ftime = ftime, fstatus = ftype, group = trt)
-	fit.aj <- timepoints(aj,5)
+	fit.aj <- cmprsk::timepoints(aj,5)
 
 	expect_equal(as.numeric(fit.aj$est),as.numeric(fit1$est))
 	expect_equal(as.numeric(fit.aj$est),as.numeric(fit2$est))
