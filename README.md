@@ -89,7 +89,7 @@ tpfit <- timepoints(fit, times = seq_len(t_0))
 #> TMLE Iteration  1   :  -0.0017 -1e-04
 
 # examine plot of cumulative incidences
-plot(tpfit, t0 = t_0, type = "smooth")
+plot(tpfit, type = "smooth")
 ```
 
 <img src="README-example-1.png" style="display: block; margin: auto;" />
