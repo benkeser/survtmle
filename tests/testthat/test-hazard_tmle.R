@@ -117,7 +117,7 @@ test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
 })
 
 
-test_that("hazard_tmle with glm and super learner with only glm give same answers", {
+test_that("hazard_tmle with glm and super learner with only glm give same answers (one failure type)", {
 	set.seed(1234)
 	n <- 200
 	trt <- rbinom(n,1,0.5)
@@ -125,6 +125,32 @@ test_that("hazard_tmle with glm and super learner with only glm give same answer
 	
 	ftime <- round(1 + runif(n,1,4) - trt + adjustVars$W1 + adjustVars$W2)
 	ftype <- round(runif(n,0,1))
+	
+	# fit with super learner
+	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	SL.trt = "SL.glm", 
+	SL.ftime = "SL.glm", SL.ctime = "SL.glm",
+	method="hazard", t0=6)
+	
+
+	# fit with glm
+	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "W1 + W2", 
+	glm.ftime = "trt + W1 + W2 + t", glm.ctime = "trt + W1 + W2 + t", 
+	method="hazard", t0=6)
+
+	# should have roughly same point estimates
+	expect_equal(fit1$est,fit2$est)
+})
+
+test_that("hazard_tmle with glm and super learner with only glm give same answers (two failure types)", {
+	set.seed(1234)
+	n <- 200
+	trt <- rbinom(n,1,0.5)
+	adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
+	
+	ftime <- round(1 + runif(n,1,4) - trt + adjustVars$W1 + adjustVars$W2)
+	ftype <- round(runif(n,0,1)) + round(runif(n,0,1))
 	
 	# fit with super learner
 	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
