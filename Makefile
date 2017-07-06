@@ -1,4 +1,4 @@
 TITLE = README
 
 md:
-	Rscript -e "knitr::knit('$(TITLE).Rmd')"
+	Rscript -e "rmarkdown::render('$(TITLE).Rmd')"
