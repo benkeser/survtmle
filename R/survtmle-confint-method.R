@@ -18,7 +18,7 @@
 #' set.seed(1234)
 #' n <- 100
 #' ftime <- round(runif(n,1,4))
-#' ftype <- round(runif(n,0,2)) + rbinom(n,1,0.25)
+#' ftype <- round(runif(n,0,2))
 #' trt <- rbinom(n,1,0.5) 
 #' adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 #' 
