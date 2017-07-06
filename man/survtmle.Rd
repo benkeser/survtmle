@@ -135,6 +135,10 @@ If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
 \code{SuperLearner} for the conditional probability of \code{trt} regression model. 
 If \code{returnModels=FALSE}, this entry will be \code{NULL}.}
 \item{t0}{The timepoint at which the function was evaluated.}
+\item{ftime}{The numeric vector of failure times used in the fit.}
+\item{ftype}{The numeric vector of failure types used in the fit.}
+\item{trt}{The numeric vector of treatment assignments used in the fit.}
+\item{adjustVars}{The data.frame of failure times used in the fit.}
 }
 }
 \description{

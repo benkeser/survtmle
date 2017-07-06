@@ -82,7 +82,12 @@ timepoints <- function(object,times,returnModels=FALSE){
   }else if(!ftglm & callList$method=="hazard"){
     funOpts$SL.ftime <- object$ftimeMod
   }
-  
+  # add in failure times, types, trt, and adjust
+  funOpts$ftime <- object$ftime
+  funOpts$ftype <- object$ftype
+  funOpts$trt <- object$trt
+  funOpts$adjustVars <- object$adjustVars
+
   outList <- vector(mode="list",length=length(times))
   ct <- 0
   for(i in times){
