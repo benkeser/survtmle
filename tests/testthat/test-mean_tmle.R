@@ -42,6 +42,7 @@ test_that("mean_tmle with glm and super learner with only glm give same answers"
 	SL.trt = "SL.glm", 
 	SL.ftime = "SL.glm", SL.ctime = "SL.glm",
 	method="mean", t0=6)
+	
 
 	# fit with glm
 	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
