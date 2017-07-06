@@ -43,7 +43,7 @@ This minimal example shows how to use `survtmle` to obtain cumulative incidence 
 ``` r
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 0.1.0
+#> Version: 0.1.1
 set.seed(341796)
 
 # simulate data

@@ -8,8 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-",
-  fig.align = "center"
+  fig.path = "README-"
 )
 ```
 
@@ -64,7 +63,7 @@ install.packages("survtmle")
 This minimal example shows how to use `survtmle` to obtain cumulative incidence
 estimates with a very simple, simulated data set.
 
-```{r example}
+```{r example, fig.align='center'}
 library(survtmle)
 set.seed(341796)
 
