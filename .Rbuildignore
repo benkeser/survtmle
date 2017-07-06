@@ -4,7 +4,8 @@
 ^codecov\.yml$
 ^\.gitignore$
 ^\.gitmodules$
-^\README\.md$
+^README\.md$
+^README\.html$
 ^coverage\.R$
 ^\Makefile$
 ^CONTRIBUTING\.md$

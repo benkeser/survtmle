@@ -28,8 +28,6 @@ utils::globalVariables(c("value", "group"))
 #'
 #' @method plot tp.survtmle
 #'
-#' @examples
-#'
 plot.tp.survtmle <- function(x, ..., t0, type = c("smooth", "raw")) {
 
   # check that input for type is appropriate
