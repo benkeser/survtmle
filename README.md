@@ -9,10 +9,14 @@ R/`survtmle`
 
 **Authors:** [David Benkeser](https://www.benkeserstatistics.com/) & [Nima Hejazi](http://nimahejazi.org)
 
+------------------------------------------------------------------------
+
 Description
 -----------
 
 `survtmle` is an R package designed to use Targeted Minimum Loss-Based Estimation (TMLE) to compute marginal cumulative incidence estimates in right-censored survival settings with and without competing risks, including vaccine sieve analysis. This tool also provides facilities for computing and obtaining inference for the use of data adaptive target parameters in such settings.
+
+------------------------------------------------------------------------
 
 Installation
 ------------
@@ -23,14 +27,36 @@ You can install a stable release of `survtmle` from GitHub with:
 devtools::install_github("benkeser/survtmle")
 ```
 
+------------------------------------------------------------------------
+
 Example
 -------
 
-This is a basic example which shows you how to solve a common problem:
+This minimal example shows how to use `survtmle` to obtain cumulative incidence estimates with a very simple, simulated data set.
 
 ``` r
-## basic example code
+library(survtmle)
+#> survtmle: Targeted Learning for Survival Analysis
+#> Version: 0.0.5
+set.seed(341796)
+
+n <- 100
+t_0 <- 100
+W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
+A <- rbinom(n, 1, 0.5)
+T <- rgeom(n,plogis(-4 + W$W1 * W$W2 - A)) + 1
+C <- rgeom(n, plogis(-6 + W$W1)) + 1
+ftime <- pmin(T, C)
+ftype <- as.numeric(ftime == T)
+
+fit <- survtmle(ftime = ftime, ftype = ftype,
+                adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
+                trt = A, glm.ctime = "W1 + t", method = "hazard",
+                verbose = TRUE,  t0 = t_0, maxIter = 2)
+#> TMLE Iteration  1   :  2e-04 4e-04
 ```
+
+------------------------------------------------------------------------
 
 License
 -------
