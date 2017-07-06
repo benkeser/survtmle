@@ -4,18 +4,13 @@
 \alias{plot.tp.survtmle}
 \title{Plot results of cumulative incidence estimates from survtmle}
 \usage{
-\method{plot}{tp.survtmle}(x, ..., t0, type = c("smooth", "raw"))
+\method{plot}{tp.survtmle}(x, ..., type = c("smooth", "raw"))
 }
 \arguments{
 \item{x}{object of class \code{tp.survtmle} as produced by a sequence of
 appropriate calls to \code{survtmle} and \code{timepoints}}
 
 \item{...}{additional arguments passed \code{plot} as necessary}
-
-\item{t0}{numeric indicating the last time point until which estimates are
-desired, as originally passed in a call to \code{survtmle}. NOTE: this
-is a workaround and should be deprecated soon, when \code{survtmle}
-and \code{tp.survtmle} classes are re-written to store t0.}
 
 \item{type}{character describing whether to provide a plot of raw or
 smoothened point estimates, with the latter being computed by a call

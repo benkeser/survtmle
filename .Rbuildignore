@@ -6,7 +6,6 @@
 ^\.gitmodules$
 ^README\.md$
 ^README\.html$
-^coverage\.R$
 ^\Makefile$
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
