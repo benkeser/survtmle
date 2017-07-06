@@ -30,6 +30,3 @@ object of class \code{ggplot} containing a lines plot of the raw or
 Plotting for both raw and smoothened estimates, the latter by isotonic
 regression of the raw point estimates, of cumulative incidence.
 }
-\examples{
-
-}
