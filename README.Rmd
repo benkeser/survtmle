@@ -4,7 +4,13 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
 
 # R/`survtmle`
 
@@ -38,8 +44,7 @@ settings.
 
 You can install a stable release of `survtmle` from GitHub with:
 
-
-```r
+```{r gh-installation, eval = FALSE}
 devtools::install_github("benkeser/survtmle")
 ```
 
@@ -49,8 +54,7 @@ devtools::install_github("benkeser/survtmle")
 
 This is a basic example which shows you how to solve a common problem:
 
-
-```r
+```{r example}
 ## basic example code
 ```
 

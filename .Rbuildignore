@@ -12,3 +12,5 @@
 ^debug$
 ^paper_JSS$
 ^\.Rproj\.user$
+^README\.Rmd$
+^README-.*\.png$
