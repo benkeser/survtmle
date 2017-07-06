@@ -13,7 +13,9 @@ Depends:
 Imports:
     SuperLearner,
     Matrix,
-    plyr
+    plyr,
+    ggplot2,
+    tidyr
 Suggests:
     testthat,
     knitr,

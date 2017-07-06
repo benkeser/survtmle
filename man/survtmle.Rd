@@ -6,10 +6,11 @@
 \usage{
 survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
-  glm.ctime = NULL, glm.trt = "1", returnIC = TRUE, returnModels = TRUE,
-  ftypeOfInterest = unique(ftype[ftype != 0]), trtOfInterest = unique(trt),
-  method = "hazard", bounds = NULL, verbose = FALSE,
-  tol = 1/(length(ftime)), maxIter = 100, Gcomp = FALSE, gtol = 0.001)
+  glm.ctime = NULL, glm.trt = NULL, returnIC = TRUE,
+  returnModels = TRUE, ftypeOfInterest = unique(ftype[ftype != 0]),
+  trtOfInterest = unique(trt), method = "hazard", bounds = NULL,
+  verbose = FALSE, tol = 1/(length(ftime)), maxIter = 100,
+  Gcomp = FALSE, gtol = 0.001)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Right-censored observations should have corresponding 
@@ -57,8 +58,7 @@ in this formula (see examples). The formula can additionally include any variabl
 
 \item{glm.trt}{A character specification of the right-hand side of the equation passed to the
 \code{formula} option of a call to \code{glm} for the estimate of the conditional probability of 
-treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. By default set to "1", corresponding to using empirical
-estimates of each value of \code{trt}. The formula can include any variables found in 
+treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. The formula can include any variables found in 
 \code{names(adjustVars)}.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence curve estimates. These are

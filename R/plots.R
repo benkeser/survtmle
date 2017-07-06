@@ -1,3 +1,5 @@
+#' plot.tp.survtmle
+#' 
 #' Plot results of cumulative incidence estimates from survtmle
 #'
 #' Plotting for both raw and smoothened estimates, the latter by isotonic

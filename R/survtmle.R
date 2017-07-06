@@ -38,8 +38,7 @@
 #' \code{names(adjustVars)}. 
 #' @param glm.trt A character specification of the right-hand side of the equation passed to the
 #' \code{formula} option of a call to \code{glm} for the estimate of the conditional probability of 
-#' treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. By default set to "1", corresponding to using empirical
-#' estimates of each value of \code{trt}. The formula can include any variables found in 
+#' treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. The formula can include any variables found in 
 #' \code{names(adjustVars)}. 
 #' @param returnIC A boolean indicating whether to return vectors of influence curve estimates. These are
 #' needed for some post-hoc comparisons, so it is recommended to leave as \code{TRUE} (the default)
@@ -260,7 +259,7 @@ survtmle <- function(
   SL.trt=NULL,
   glm.ftime=NULL,
   glm.ctime=NULL,
-  glm.trt="1",
+  glm.trt=NULL,
   returnIC=TRUE,
   returnModels=TRUE,
   ftypeOfInterest=unique(ftype[ftype!=0]),
