@@ -8,7 +8,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "README-",
+  fig.align = "center"
 )
 ```
 
@@ -69,7 +70,7 @@ set.seed(341796)
 
 # simulate data
 n <- 100
-t_0 <- 5
+t_0 <- 10
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
 A <- rbinom(n, 1, 0.5)
 T <- rgeom(n,plogis(-4 + W$W1 * W$W2 - A)) + 1
