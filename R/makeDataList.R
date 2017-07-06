@@ -57,7 +57,14 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
     }
     suppressMessages(
       dataList[[1]] <- plyr::join(x=dataList[[1]],y=boundFormat,type="left")
-    )  
+    )
+    # if any bounds are missing, add in 0 and 1
+    for(j in J){
+      tmp <- is.na(dataList[[1]][,paste0("l",j)])
+      dataList[[1]][tmp,paste0("l",j)] <- 0
+      tmp <- is.na(dataList[[1]][,paste0("u",j)])
+      dataList[[1]][tmp,paste0("u",j)] <- 1
+    }
   }else{
     for(j in J){
       eval(parse(text=paste("dataList[[1]]$l",j," <- 0",sep="")))
