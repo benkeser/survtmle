@@ -2,7 +2,7 @@ library(survtmle)
 library(survival)
 library(cmprsk)
 context("Testing timepoints function")
-
+browser()
 ###############################################################################
 
 test_that("hazard_tmle and mean_tmle timepoints equal Kaplan-Meier without covariates", {
