@@ -48,7 +48,7 @@ set.seed(341796)
 
 # simulate data
 n <- 100
-t_0 <- 100
+t_0 <- 5
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
 A <- rbinom(n, 1, 0.5)
 T <- rgeom(n,plogis(-4 + W$W1 * W$W2 - A)) + 1
@@ -63,20 +63,31 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 verbose = TRUE,  t0 = t_0, maxIter = 2)
 #> Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 #> glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'
-#> TMLE Iteration  1   :  4e-04 -7e-04
+#> TMLE Iteration  1   :  -3e-04 0
 
 # quick look at the output object
 fit
 #> $est
-#>          [,1]
-#> 0 1 0.9996696
-#> 1 1 0.7704521
+#>           [,1]
+#> 0 1 0.04075620
+#> 1 1 0.05723282
 #> 
 #> $var
 #>               0 1           1 1
-#> 0 1  1.838504e-06 -2.361568e-06
-#> 1 1 -2.361568e-06  1.174079e-03
+#> 0 1  4.461611e-04 -4.934060e-06
+#> 1 1 -4.934060e-06  6.117357e-04
+
+# extract cumulative incidence at each time point
+tpfit <- timepoints(fit, times = seq_len(t_0))
+#> TMLE Iteration  1   :  0 0 
+#> TMLE Iteration  1   :  -3e-04 0 
+#> TMLE Iteration  1   :  -6e-04 0
+
+# examine plot of cumulative incidences
+plot(tpfit, t0 = t_0, type = "smooth")
 ```
+
+![](README-example-1.png)
 
 ------------------------------------------------------------------------
 
