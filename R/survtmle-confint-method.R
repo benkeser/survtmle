@@ -12,7 +12,7 @@
 #' (by default 2.5% and 97.5%).
 #' 
 #' @export
-#' 
+#' @importFrom stats qnorm
 #' @examples
 #' # simulate data
 #' set.seed(1234)
@@ -37,7 +37,7 @@ confint.survtmle <- function(object, parm = 1:length(object$est), level = 0.95){
 	ses <- sqrt(diag(object$var)[parm])
 	a <- (1 - level)/2
     a <- c(a, 1 - a)
-    fac <- qnorm(a)
+    fac <- stats::qnorm(a)
     pct <- format.perc(a, 3)
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,pct))
     ci[] <- estVec + ses %o% fac
