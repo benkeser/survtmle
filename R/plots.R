@@ -1,5 +1,3 @@
-utils::globalVariables(c("value", "group"))
-
 #' Plot results of cumulative incidence estimates from survtmle
 #'
 #' Plotting for both raw and smoothened estimates, the latter by isotonic
@@ -58,7 +56,7 @@ plot.tp.survtmle <- function(x, ..., t0, type = c("smooth", "raw")) {
     plot_in <- iso_est_in
   }
   p <- ggplot2::ggplot(data = plot_in,
-                       ggplot2::aes(x = t, y = value, colour = group)
+                       ggplot2::aes(x = t, y =~ value, colour =~ group)
                       )
   p <- p + ggplot2::geom_line()
   p <- p + ggplot2::xlab("time point")
