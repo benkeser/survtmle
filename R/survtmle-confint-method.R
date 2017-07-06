@@ -11,7 +11,6 @@
 #' for each parameter. These will be labelled as (1-level)/2 and 1 - (1-level)/2 in % 
 #' (by default 2.5% and 97.5%).
 #' 
-#' @importFrom stats format.perc
 #' @export
 #' 
 #' @examples
@@ -39,9 +38,21 @@ confint.survtmle <- function(object, parm = 1:length(object$est), level = 0.95){
 	a <- (1 - level)/2
     a <- c(a, 1 - a)
     fac <- qnorm(a)
-    pct <- stats:::format.perc(a, 3)
+    pct <- format.perc(a, 3)
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,pct))
     ci[] <- estVec + ses %o% fac
     row.names(ci) <- row.names(object$est)[parm]
     ci
+}
+
+#' format.perc
+#' 
+#' Copied from stats package.
+#' 
+#' @param probs Probabilities
+#' @param digits Number of digits to round to
+
+format.perc <- function (probs, digits){
+    paste(format(100 * probs, trim = TRUE, 
+                 scientific = FALSE, digits = digits), "%")
 }
