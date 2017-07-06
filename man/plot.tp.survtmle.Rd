@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot.tp.survtmle}
 \alias{plot.tp.survtmle}
-\title{plot.tp.survtmle}
+\title{Plot results of cumulative incidence estimates from survtmle}
 \usage{
 \method{plot}{tp.survtmle}(x, ..., t0, type = c("smooth", "raw"))
 }
@@ -27,9 +27,6 @@ object of class \code{ggplot} containing a lines plot of the raw or
         time points of interest.
 }
 \description{
-Plot results of cumulative incidence estimates from survtmle
-}
-\details{
 Plotting for both raw and smoothened estimates, the latter by isotonic
 regression of the raw point estimates, of cumulative incidence.
 }

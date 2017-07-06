@@ -228,14 +228,14 @@ checkInputs <- function(ftime,
 	}
 	if(!is.null(glm.ctime)){
 		tryCatch({
-			tmp <- as.formula(paste0("C ~",glm.trt))
+			tmp <- as.formula(paste0("C ~",glm.ctime))
 		},error=function(e){
 			stop("glm.ctime formula appears to be invalid.")
 		})
 	}
 	if(!is.null(glm.ftime)){
 		tryCatch({
-			tmp <- as.formula(paste0("N ~",glm.trt))
+			tmp <- as.formula(paste0("N ~",glm.ftime))
 		},error=function(e){
 			stop("glm.ftime formula appears to be invalid.")
 		})
