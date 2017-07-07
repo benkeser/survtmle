@@ -122,14 +122,37 @@ fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.h
 
 <span class="co"># extract cumulative incidence at each time point</span>
 tpfit &lt;-<span class="st"> </span><span class="kw"><a href="reference/timepoints.html">timepoints</a></span>(fit, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
-<span class="co">#&gt; TMLE Iteration  1   :  0 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -6e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -0.0017 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -9e-04 -2e-04 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -5e-04 -2e-04 </span>
+<span class="co">#&gt; Warning in if (cglm) {: the condition has length &gt; 1 and only the first</span>
+<span class="co">#&gt; element will be used</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  0 0</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -6e-04 0</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -0.0017 0</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -9e-04 -2e-04</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
+<span class="co">#&gt; TMLE Iteration  1   :  -5e-04 -2e-04</span>
+<span class="co">#&gt; Warning in if (glm.ctime != "No censoring observed") {: the condition has</span>
+<span class="co">#&gt; length &gt; 1 and only the first element will be used</span>
 <span class="co">#&gt; TMLE Iteration  1   :  -0.0017 -1e-04</span>
+
+<span class="co"># examine output object produced by the timepoints function</span>
 <span class="kw">print</span>(tpfit)
 <span class="co">#&gt; $est</span>
 <span class="co">#&gt;              t1         t2         t3         t4         t5         t6</span>

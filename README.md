@@ -74,14 +74,37 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
 
 # extract cumulative incidence at each time point
 tpfit <- timepoints(fit, times = seq_len(t_0))
-#> TMLE Iteration  1   :  0 0 
-#> TMLE Iteration  1   :  -3e-04 0 
-#> TMLE Iteration  1   :  -6e-04 0 
-#> TMLE Iteration  1   :  -3e-04 0 
-#> TMLE Iteration  1   :  -0.0017 0 
-#> TMLE Iteration  1   :  -9e-04 -2e-04 
-#> TMLE Iteration  1   :  -5e-04 -2e-04 
+#> Warning in if (cglm) {: the condition has length > 1 and only the first
+#> element will be used
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  0 0
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -3e-04 0
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -6e-04 0
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -3e-04 0
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -0.0017 0
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -9e-04 -2e-04
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  -5e-04 -2e-04
+#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
+#> length > 1 and only the first element will be used
 #> TMLE Iteration  1   :  -0.0017 -1e-04
+
+# examine output object produced by the timepoints function
 print(tpfit)
 #> $est
 #>              t1         t2         t3         t4         t5         t6
