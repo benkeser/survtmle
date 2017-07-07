@@ -44,6 +44,7 @@
 #' allTimes$t1
 #' # look at results for time 2 
 #' allTimes$t2
+#'
 
 timepoints <- function(object,times,returnModels=FALSE){
   if(is.null(object$trtMod))
