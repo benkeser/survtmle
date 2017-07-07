@@ -235,7 +235,7 @@ checkInputs <- function(ftime,
 		})
 	}
 	if(!is.null(glm.ctime)){
-		if(glm.ctime != "No censoring observed"){
+		if(all(glm.ctime != "No censoring observed")){
 			tryCatch({
 				tmp <- as.formula(paste0("C ~",glm.ctime))
 			},error=function(e){
