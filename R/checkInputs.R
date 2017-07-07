@@ -100,6 +100,16 @@ checkInputs <- function(ftime,
   tol=1/(length(ftime)),
   maxIter=100,
   Gcomp = FALSE){
+  	# check for NULL values
+	if(sum(is.null(ftime))>0 | sum(is.null(ftype))>0 | sum(is.null(trt))>0){
+		stop("NULL values in ftime, ftype, trt, and adjustVars not allowed")
+	}
+
+	# check for missing values
+	if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0){
+		stop("Missing values in ftime, ftype, trt, and adjustVars not supported.")
+	}
+
 	# check that trt is vector
 	if(!is.vector(trt)){
 		stop("trt must be a vector")
@@ -117,10 +127,6 @@ checkInputs <- function(ftime,
 	# check for reserved names in columns of adjustVars
 	if(any(colnames(adjustVars) == "t")){
 		stop("t is a reserved name for survtmle. Please rename column in adjustVars.")
-	}
-	# check for missing values
-	if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0){
-		stop("Missing values in ftime, ftype, trt, and adjustVars not supported.")
 	}
 
 	if(!is.null(adjustVars)){
@@ -152,10 +158,6 @@ checkInputs <- function(ftime,
 	# is not equal to unique(trt).
 	if(!all(unique(ftypeOfInterest) == unique(ftypeOfInterest)) & method=="hazard"){
 		stop("Hazard implementation is not yet functional when ftypeOfInterest does not include all unique values of trt")
-	}
-	# check that all failure types of interest are observed
-	if(!(all(ftypeOfInterest %in% ftype))){
-		stop("At least one ftypeOfInterest not observed. Remove from ftypeOfInterest and try again.")
 	}
 
 	# check that all trt of interest are observed

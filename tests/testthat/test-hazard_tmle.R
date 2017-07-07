@@ -49,6 +49,18 @@ test_that("hazard_tmle with no censoring works as expected", {
 	expect_true(fit1$ctimeMod[1]=="No censoring observed")
 	expect_equal(class(fit1$ctimeMod), "noCens")
 	expect_true(!any(is.na(fit1$est)))
+
+	# fit with no bounds
+	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "W1 + W2", 
+	glm.ftime = "trt + W1 + W2 + t", SL.ctime = "SL.glm", 
+	method="hazard", t0=3)
+	# call with timepoints
+	tp.fit2 <- timepoints(fit2,times=1:3)
+
+	expect_true(fit2$ctimeMod[1]=="No censoring observed")
+	expect_equal(class(fit2$ctimeMod), "noCens")
+	expect_true(!any(is.na(fit2$est)))
 })
 
 test_that("hazard_tmle with bad bounds gives good result", {

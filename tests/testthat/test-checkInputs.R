@@ -3,22 +3,36 @@ library(survival)
 library(cmprsk)
 context("Testing checkInputs function")
 
-test_that("checkInputs errors with bad treatment inputs", {
+test_that("checkInputs errors with bad inputs", {
   ftime <- rep(10,3)
   ftype <- rep(10,3)
   trt <- 1:3
+  # too many trt levels
   expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
                      adjustVars = NULL, glm.trt = "1",
                      glm.ftime = "1",
                      glm.ctime = "1"))
+  # wrong trt format
   trt <- cbind(1,2,2)
   expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
                    adjustVars = NULL, glm.trt = "1",
                    glm.ftime = "1",
                    glm.ctime = "1"))
+  # no events observed prior to t0
+  trt <- c(1,1,0)
+  expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
+                 adjustVars = NULL, glm.trt = "1",
+                 glm.ftime = "1",
+                 glm.ctime = "1",t0=3)) 
+  # adjustVars has column 't'
+  expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
+               adjustVars = data.frame(t=1:3), glm.trt = "1",
+               glm.ftime = "1",
+               glm.ctime = "1"))   
+
 })
 
-test_that("NAs throw errors", {
+test_that("NAs/NULLs throw errors", {
   ftime <- rep(10,3)
   ftime[3] <- NA
   ftype <- rep(10,3)
@@ -27,6 +41,24 @@ test_that("NAs throw errors", {
                      adjustVars = NULL, glm.trt = "1",
                      glm.ftime = "1",
                      glm.ctime = "1"))
+  # add a NULL
+  ftime[3] <- NULL
+  expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
+                   adjustVars = NULL, glm.trt = "1",
+                   glm.ftime = "1",
+                   glm.ctime = "1"))
+  # add missing in adjustVars
+  ftime[3] <- 10
+  expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
+                     adjustVars = data.frame(grbg = c(NA,1,1)), glm.trt = "1",
+                     glm.ftime = "1",
+                     glm.ctime = "1"))
+  # no observed events in trt arm
+  expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
+                 adjustVars = NULL, glm.trt = "1",
+                 glm.ftime = "1",
+                 glm.ctime = "1", ftypeOfInterest = 1))
+  
 })
 
 test_that("ftime < 0 throw errors", {

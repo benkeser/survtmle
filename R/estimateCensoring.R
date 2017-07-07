@@ -59,32 +59,32 @@ estimateCensoring <- function(
   gtol = 1e-3, 
   ...
 ){
-    include <- !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C!=1 & dataList[[1]]$t < t0) & 
-     !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C==1 & dataList[[1]]$t==t0)
-  
-    # if no SL library is specified, the code defaults to the specific GLM form
-    if(is.null(SL.ctime)){
-     if(!("glm" %in% class(glm.ctime))){
+  include <- !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C!=1 & dataList[[1]]$t < t0) & 
+   !(dataList[[1]]$t==dataList[[1]]$ftime & dataList[[1]]$C==1 & dataList[[1]]$t==t0)
+
+  # if no SL library is specified, the code defaults to the specific GLM form
+  if(is.null(SL.ctime)){
+    if(!("glm" %in% class(glm.ctime))){
       if(!all(dataList[[1]]$C == 0)){
-       ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
-       ctimeMod <- glm(as.formula(ctimeForm), 
-                       data=dataList[[1]][include,],
-                       family="binomial")
-       ctimeMod <- cleanglm(ctimeMod)
+        ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
+        ctimeMod <- glm(as.formula(ctimeForm), 
+                        data=dataList[[1]][include,],
+                        family="binomial")
+        ctimeMod <- cleanglm(ctimeMod)
       }else{
         dataList <- lapply(dataList, function(x){
-        x$G_dC <- 1; x
-      })
-      ctimeMod <- "No censoring observed"
-      class(ctimeMod) <- "noCens"
-     }
+          x$G_dC <- 1; x
+        })
+        ctimeMod <- "No censoring observed"
+        class(ctimeMod) <- "noCens"
+      }
     }else{
-       ctimeMod <- glm.ctime
+      ctimeMod <- glm.ctime
     }
     # as long as there are some observed censoring events,
     # get predictions from ctimeMod
     if(all(class(ctimeMod) != "noCens")){
-       dataList <- lapply(dataList, function(x){
+      dataList <- lapply(dataList, function(x){
         g_dC <- rep(1, length(x[,1]))
         if(t0!=1){
           # temporarily replace time with t-1
@@ -105,11 +105,11 @@ estimateCensoring <- function(
       dataList <- lapply(dataList, function(x){
         x$G_dC <- 1; x
       })
-     }
-    }else{
-     if(class(SL.ctime) != "SuperLearner"){
-       if(!all(dataList[[1]]$C==0)){
-         ctimeMod <- SuperLearner(Y=dataList[[1]]$C[include],
+    }
+  }else{
+    if(class(SL.ctime) != "SuperLearner"){
+      if(!all(dataList[[1]]$C==0)){
+        ctimeMod <- SuperLearner(Y=dataList[[1]]$C[include],
           X=dataList[[1]][include,c("t", "trt", names(adjustVars))],
           id=dataList[[1]]$id[include],
           family="binomial",
@@ -123,11 +123,11 @@ estimateCensoring <- function(
         ctimeMod <- "No censoring observed"
         class(ctimeMod) <- "noCens"
       }
-     }else{ # if inputted SLlibrary.time is Super Learner object, just use that one
+    }else{ # if inputted SLlibrary.time is Super Learner object, just use that one
         ctimeMod <- SL.ctime
-     } 
-     if(class(ctimeMod) != "noCens"){
-       dataList <- lapply(dataList, function(x){
+    } 
+    if(class(ctimeMod) != "noCens"){
+      dataList <- lapply(dataList, function(x){
         g_dC <- rep(1, nrow(x))
         if(t0!=1){
           # temporarily replace time with t-1
@@ -145,24 +145,24 @@ estimateCensoring <- function(
         x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
         x
       })
-     }else{
+    }else{
       dataList <- lapply(dataList, function(x){
         x$G_dC <- 1
         x
       })
-     }
-   }
-   # truncate small propensities at gtol
-   dataList <- lapply(dataList,function(x){
+    }
+  }
+  # truncate small propensities at gtol
+  dataList <- lapply(dataList,function(x){
     x$G_dC[x$G_dC < gtol]  <- gtol 
     x
-   })
+  })
 
-   out <- list(dataList = dataList,
-               ctimeMod = if(returnModels)
-                 ctimeMod
+  out <- list(dataList = dataList,
+              ctimeMod = if(returnModels)
+                  ctimeMod
                 else
-                 NULL)
-   return(out)
+                  NULL)
+  return(out)
 }
 

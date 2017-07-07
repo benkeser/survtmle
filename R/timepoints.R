@@ -68,6 +68,7 @@ timepoints <- function(object,times,returnModels=FALSE){
   # used glm for censoring?
   if(cglm){
     funOpts$glm.ctime <- object$ctimeMod
+    funOpts$SL.ctime <- NULL
   }else{
     funOpts$SL.ctime <- object$ctimeMod
   }
