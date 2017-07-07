@@ -256,7 +256,7 @@ checkInputs <- function(ftime,
 	}
 	# check that one of glm.ftime or SL.ftime is specified
 	if(is.null(glm.ftime) & is.null(SL.ftime)){
-		warning("glm.ftime and SL.ftime not specified. Proceeding with empirical estimates.")
+		warning("glm.ftime and SL.ftime not specified. Computing empirical estimates.")
 		if(method == "hazard"){
 			glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))					
 		}else{
@@ -265,7 +265,7 @@ checkInputs <- function(ftime,
 	}	
 	# check that one of glm.ctime or SL.ctime is specified
 	if(is.null(glm.ctime) & is.null(SL.ctime)){
-		warning("glm.ctime and SL.ctime not specified. Proceeding with unadjusted estimates.")
+		warning("glm.ctime and SL.ctime not specified. Computing unadjusted estimates.")
 		glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))
 	}	
 
