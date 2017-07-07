@@ -5,7 +5,7 @@
 \title{updateVariables}
 \usage{
 updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
-  cvSieve = FALSE, ...)
+  ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}
@@ -23,9 +23,7 @@ updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
-
-\item{cvSieve}{A boolean indicating whether the function should compute clever covariates for
+\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.
 the cross-validated sieve effect parameter.}
 
 \item{...}{Other arguments. Not currently used.}

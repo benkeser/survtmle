@@ -24,7 +24,7 @@
 #' @param ntrt The number of \code{trt} values of interest. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
-#' @param cvSieve A boolean indicating whether to fluctuate towards estimation of a cross-validated sieve effect.
+# #' @param cvSieve A boolean indicating whether to fluctuate towards estimation of a cross-validated sieve effect.
 #' @param ... Other arguments. Not currently used. 
 #' 
 #' @return The function returns a list that is exactly the same as the input \code{dataList}, 
@@ -37,7 +37,7 @@
 
 
 fluctuateHazards <- function(
-  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...
+  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, ...
 ){
   eps <- NULL
   for(z in uniqtrt){
@@ -61,26 +61,16 @@ fluctuateHazards <- function(
       x
     }, j=j,allJ=allJ)
 
-#    if(length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))>1){
-      fluc.mod <- stats::optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
-                        fn=LogLikelihood_offset, 
-                        Y=dataList[[1]]$thisOutcome, 
-                        H=suppressWarnings(
-                          as.matrix(Matrix::Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
-                          ),
-                        offset=dataList[[1]]$thisOffset,    
-                        method="BFGS",gr=grad_offset,
-                        control=list(reltol=1e-7,maxit=50000))
-#    }else{
-    #   fluc.mod <- optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
-    #                     fn=LogLikelihood_offset, 
-    #                     Y=dataList[[1]]$thisOutcome, 
-    #                     H=as.matrix(Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)])),
-    #                     offset=dataList[[1]]$thisOffset,    
-    #                     method="Brent",lower=-1000,upper=1000,
-    #                     control=list(reltol=1e-12,maxit=50000))
-    # }
-    
+    fluc.mod <- stats::optim(par=rep(0,length(c(cleverCovariatesNotSelf,cleverCovariatesSelf))), 
+                      fn=LogLikelihood_offset, 
+                      Y=dataList[[1]]$thisOutcome, 
+                      H=suppressWarnings(
+                        as.matrix(Matrix::Diagonal(x=dataList[[1]]$thisScale)%*%as.matrix(dataList[[1]][,c(cleverCovariatesNotSelf,cleverCovariatesSelf)]))
+                        ),
+                      offset=dataList[[1]]$thisOffset,    
+                      method="BFGS",gr=grad_offset,
+                      control=list(reltol=1e-7,maxit=50000))
+
     if(fluc.mod$convergence!=0){
       warning("Fluctuation convergence failure. Using with initial estimates. Proceed with caution")
       beta <- rep(0, length(fluc.mod$par))
@@ -97,8 +87,8 @@ fluctuateHazards <- function(
       
     # update variables based on new haz
     dataList <- updateVariables(dataList=dataList, allJ=allJ, ofInterestJ=ofInterestJ, 
-                                nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0,
-                                cvSieve = cvSieve)
+                                nJ=nJ, uniqtrt=uniqtrt, ntrt=ntrt, verbose=verbose, t0=t0)
+                                # cvSieve = cvSieve)
     }
   }
   attr(dataList,"fluc") <- eps

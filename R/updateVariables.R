@@ -13,7 +13,7 @@
 #' @param ntrt The number of \code{trt} values of interest. 
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate. 
 #' @param verbose A boolean indicating whether the function should print messages to indicate progress.
-#' @param cvSieve A boolean indicating whether the function should compute clever covariates for
+# #' @param cvSieve A boolean indicating whether the function should compute clever covariates for
 #' the cross-validated sieve effect parameter. 
 #' @param ... Other arguments. Not currently used. 
 #' 
@@ -23,15 +23,8 @@
 #' 
 
 updateVariables <- function(
-  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, cvSieve = FALSE, ...
+  dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose, ...
 ){
-  #---------------------------------------------------------------------------------------------------------
-  # now there's a problem computing survival probabilities
-  # because dataList[[1]] might not have a row for every time point
-  # so we'll first need to compute it in dataList[[2]] and dataList[[3]]
-  # and then merge the results into dataList[[1]] on time, id, and trt
-  # TO DO: This.
-  #---------------------------------------------------------------------------------------------------------
   dataList[2:(ntrt+1)] <- lapply(dataList[2:(ntrt+1)], function(x, allJ){
     # total hazard
     Q_dot <- rowSums(cbind(rep(0,nrow(x)), x[,paste0("Q",allJ,"Haz")]))
@@ -83,8 +76,6 @@ updateVariables <- function(
                          by = c("id","t","trt"))
   }
   
-#---------------------------------------------------------------------------------------------------------
-
   dataList <- lapply(dataList, function(x,allJ){
     for(j in allJ){
       if(length(allJ)>1){
@@ -99,7 +90,7 @@ updateVariables <- function(
   
   
   # set up clever covariates needed for fluctuation
-  if(!cvSieve){
+  # if(!cvSieve){
     dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
       for(z in uniqtrt){
         for(j in ofInterestJ){
@@ -109,24 +100,24 @@ updateVariables <- function(
       }
       x
     },ofInterestJ=ofInterestJ,uniqtrt=uniqtrt)
-  }else{
-    dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
-      # placebo match
-      x$H1.jSelf.z0 <- 1/x$F1.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z0.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
-      x$H1.jNotSelf.z0 <- 1/x$F1.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z0.t0 - x$F1.t)/c(x$S.t))
-      # vaccine match
-      x$H1.jSelf.z1 <- -1/x$F1.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z1.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
-      x$H1.jNotSelf.z1 <- -1/x$F1.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z1.t0 - x$F1.t)/c(x$S.t))
-      # placebo mismatch
-      x$H2.jSelf.z0 <- -1/x$F2.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z0.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
-      x$H2.jNotSelf.z0 <- -1/x$F2.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z0.t0 - x$F2.t)/c(x$S.t))
-      # vaccine mismatch 
-      x$H2.jSelf.z1 <- 1/x$F2.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z1.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
-      x$H2.jNotSelf.z1 <- 1/x$F2.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z1.t0 - x$F2.t)/c(x$S.t))
+  # }else{
+  #   dataList <- lapply(dataList, function(x,ofInterestJ,uniqtrt){
+  #     # placebo match
+  #     x$H1.jSelf.z0 <- 1/x$F1.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z0.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
+  #     x$H1.jNotSelf.z0 <- 1/x$F1.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z0.t0 - x$F1.t)/c(x$S.t))
+  #     # vaccine match
+  #     x$H1.jSelf.z1 <- -1/x$F1.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot1) * ((x$t<t0)*(1-(x$F1.z1.t0 - x$F1.t)/c(x$S.t)) + (x$t==t0))
+  #     x$H1.jNotSelf.z1 <- -1/x$F1.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot1) * ((x$t<t0)*(x$F1.z1.t0 - x$F1.t)/c(x$S.t))
+  #     # placebo mismatch
+  #     x$H2.jSelf.z0 <- -1/x$F2.z0.t0 * (x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z0.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
+  #     x$H2.jNotSelf.z0 <- -1/x$F2.z0.t0 * -(x$ftime>=x$t & x$trt==0)/(x$g_0*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z0.t0 - x$F2.t)/c(x$S.t))
+  #     # vaccine mismatch 
+  #     x$H2.jSelf.z1 <- 1/x$F2.z1.t0 * (x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) * (1-x$hazNot2) * ((x$t<t0)*(1-(x$F2.z1.t0 - x$F2.t)/c(x$S.t)) + (x$t==t0))
+  #     x$H2.jNotSelf.z1 <- 1/x$F2.z1.t0 * -(x$ftime>=x$t & x$trt==1)/(x$g_1*x$G_dC) *(1-x$hazNot2) * ((x$t<t0)*(x$F2.z1.t0 - x$F2.t)/c(x$S.t))
 
-      x
-    })
+  #     x
+  #   })
 
-  }
+  # }
   dataList
 }
