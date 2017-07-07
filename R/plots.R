@@ -73,7 +73,7 @@ plot.tp.survtmle <- function(x, ..., type = c("smooth", "raw")) {
   p <- ggplot2::ggplot(data = plot_in,
                        ggplot2::aes(x = t, y = value, colour = group)
                       )
-  p <- p + ggplot2::geom_line()
+  p <- p + ggplot2::geom_step()
   p <- p + ggplot2::xlab("Time")
   p <- p + ggplot2::ylab("Cumulative Incidence Estimate")
   p <- p + ggplot2::ggtitle(paste("Cumulative Incidence Amongst Groups",
