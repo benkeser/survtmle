@@ -42,13 +42,13 @@ test_that("NAs/NULLs throw errors", {
                      glm.ftime = "1",
                      glm.ctime = "1"))
   # add a NULL
-  ftime[3] <- NULL
+  ftime <- NULL
   expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
                    adjustVars = NULL, glm.trt = "1",
                    glm.ftime = "1",
                    glm.ctime = "1"))
   # add missing in adjustVars
-  ftime[3] <- 10
+  ftime <- rep(10,3)
   expect_error(survtmle(ftime = ftime, ftype = ftype, trt = trt,
                      adjustVars = data.frame(grbg = c(NA,1,1)), glm.trt = "1",
                      glm.ftime = "1",
@@ -58,7 +58,7 @@ test_that("NAs/NULLs throw errors", {
                  adjustVars = NULL, glm.trt = "1",
                  glm.ftime = "1",
                  glm.ctime = "1", ftypeOfInterest = 1))
-  
+
 })
 
 test_that("ftime < 0 throw errors", {
