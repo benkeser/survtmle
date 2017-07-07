@@ -232,12 +232,14 @@ checkInputs <- function(ftime,
 			stop("glm.trt formula appears to be invalid.")
 		})
 	}
-	if(!is.null(glm.ctime) & glm.ctime != "No censoring observed"){
-		tryCatch({
-			tmp <- as.formula(paste0("C ~",glm.ctime))
-		},error=function(e){
-			stop("glm.ctime formula appears to be invalid.")
-		})
+	if(!is.null(glm.ctime)){
+		if(glm.ctime != "No censoring observed"){
+			tryCatch({
+				tmp <- as.formula(paste0("C ~",glm.ctime))
+			},error=function(e){
+				stop("glm.ctime formula appears to be invalid.")
+			})
+		}
 	}
 	if(!is.null(glm.ftime)){
 		tryCatch({
