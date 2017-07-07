@@ -52,7 +52,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds=NULL,...){
       if(paste("u",j,sep="") %in% names(bounds)){
         eval(parse(text=paste0("boundFormat$u",j," <- bounds[,paste0('u',",j,")]")))
       }else{
-        eval(parse(text=paste0("boundFormat$u",j," <- 0")))
+        eval(parse(text=paste0("boundFormat$u",j," <- 1")))
       }
     }
     suppressMessages(

@@ -114,33 +114,13 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, Gc
         x
       })
       
-      if(length(cleverCovariates)>1){
-        #           fluc.mod <- optim(par=rep(0,length(cleverCovariates)), 
-        #                             fn=LogLikelihood_offset, 
-        #                             Y=wideDataList[[1]]$thisOutcome[include], 
-        #                             H=as.matrix(Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
-        #                                           as.matrix(wideDataList[[1]][include,cleverCovariates])),
-        #                             offset=wideDataList[[1]]$thisOffset[include],
-        #                             method="BFGS",gr=grad_offset,
-        #                             control=list(reltol=1e-12, maxit=50000))
-        #           
-        fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
-                          fn=LogLikelihood_offset, 
-                          Y=wideDataList[[1]]$thisOutcome[include], 
-                          H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
-                          offset=wideDataList[[1]]$thisOffset[include],
-                          method="BFGS",gr=grad_offset,
-                          control=list(reltol=1e-7, maxit=50000))
-      }else{
-        fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
-                          fn=LogLikelihood_offset, 
-                          Y=wideDataList[[1]]$thisOutcome[include], 
-                          H=as.matrix(Matrix::Diagonal(x=wideDataList[[1]]$thisScale[include])%*%
-                                        as.matrix(wideDataList[[1]][include,cleverCovariates])),
-                          offset=wideDataList[[1]]$thisOffset[include],
-                          method="Brent",lower=-1000,upper=1000,
-                          control=list(reltol=1e-7, maxit=50000))
-      }
+      fluc.mod <- stats::optim(par=rep(0,length(cleverCovariates)), 
+                        fn=LogLikelihood_offset, 
+                        Y=wideDataList[[1]]$thisOutcome[include], 
+                        H=as.matrix(wideDataList[[1]][include,cleverCovariates]),
+                        offset=wideDataList[[1]]$thisOffset[include],
+                        method="BFGS",gr=grad_offset,
+                        control=list(reltol=1e-7, maxit=50000))
       
       if(fluc.mod$convergence!=0){
         stop("fluctuation convergence failure")
