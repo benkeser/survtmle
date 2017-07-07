@@ -136,8 +136,8 @@
 #' # fit an survtmle object with SuperLearner estimators for failure and censoring
 #' # and empirical estimators for treatment (default) using the "mean" method
 #' fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-#' SL.ftime = c("SL.glm","SL.mean","SL.step"), 
-#' SL.ctime = c("SL.glm","SL.mean","SL.step"), 
+#' SL.ftime = c("SL.mean"), 
+#' SL.ctime = c("SL.mean"), 
 #' method="mean", t0=6)
 #' fit2
 #'

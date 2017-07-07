@@ -38,6 +38,24 @@ ftype <- round(runif(n,0,1))
 ```
 
 ```{r survtmle_examples_sim}
+# Fit 1
+# fit a survtmle object with glm estimators for treatment, censoring, and failure
+# using the "mean" method
+fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+glm.trt = "W1 + W2", 
+glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+method="mean", t0=6)
+fit1
+
+# Fit 2
+# fit an survtmle object with SuperLearner estimators for failure and censoring
+# and empirical estimators for treatment (default) using the "mean" method
+fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+SL.ftime = c("SL.glm","SL.mean","SL.step"), 
+SL.ctime = c("SL.glm","SL.mean","SL.step"), 
+method="mean", t0=6)
+fit2
+
 # Fit 3
 fit3 <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
                  adjustVars = adjustVars,
