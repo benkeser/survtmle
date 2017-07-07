@@ -193,6 +193,8 @@ test_that("hazard_tmle with glm and super learner with only glm give same answer
 	SL.ftime = "SL.glm", SL.ctime = "SL.glm",
 	method="hazard", t0=6)
 	
+	# fit timepoints
+	tp.fit1 <- timepoints(fit1, times = 1:3)
 
 	# fit with glm
 	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
