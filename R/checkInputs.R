@@ -100,14 +100,13 @@ checkInputs <- function(ftime,
   tol=1/(length(ftime)),
   maxIter=100,
   Gcomp = FALSE){
-
-	if(length(unique(trt))>2){
-		stop("trt with more than 2 unique values not yet supported.")
-	}
-
 	# check that trt is vector
 	if(!is.vector(trt)){
 		stop("trt must be a vector")
+	}
+
+	if(length(unique(trt))>2){
+		stop("trt with more than 2 unique values not yet supported.")
 	}
 
 	# check for reserved names in columns of adjustVars
@@ -115,8 +114,14 @@ checkInputs <- function(ftime,
 		stop("t is a reserved name for survtmle. Please rename column in adjustVars.")
 	}
 	# check for missing values
-	if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0 | sum(is.na(adjustVars))>0){
-		stop("Missing values in ftime, ftype, trt, or adjustVars not supported.")
+	if(sum(is.na(ftime))>0 | sum(is.na(ftype))>0 | sum(is.na(trt))>0){
+		stop("Missing values in ftime, ftype, trt, and adjustVars not supported.")
+	}
+
+	if(!is.null(adjustVars)){
+		if(sum(is.na(adjustVars))>0){
+			stop("Missing values in ftime, ftype, trt, and adjustVars not supported.")
+		}
 	}
 
 	# check for G-comp for hazard
@@ -158,8 +163,8 @@ checkInputs <- function(ftime,
 	}
 
 	# check if adjustVars is data.frame
-	if(!is.data.frame(adjustVars)){
-		stop("adjustVars should be a data.frame.")
+	if(!is.data.frame(adjustVars) & !is.null(adjustVars)){
+		stop("adjustVars should be a data.frame or NULL.")
 	}
 
 	# check if method is known
