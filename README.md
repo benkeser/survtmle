@@ -74,11 +74,8 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
 
 # extract cumulative incidence at each time point
 tpfit <- timepoints(fit, times = seq_len(t_0))
-#> Warning in if (cglm) {: the condition has length > 1 and only the first
-#> element will be used
 #> Warning in if (glm.ctime != "No censoring observed") {: the condition has
 #> length > 1 and only the first element will be used
-
 #> Warning in if (glm.ctime != "No censoring observed") {: the condition has
 #> length > 1 and only the first element will be used
 #> TMLE Iteration  1   :  0 0
