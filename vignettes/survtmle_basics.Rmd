@@ -21,6 +21,10 @@ learning via the `SuperLearner` package.
 
 ## Simple Examples
 
+```{r load_pkg}
+library(survtmle)
+```
+
 ```{r sim_data}
 ## Single failure type examples
 # simulate data
