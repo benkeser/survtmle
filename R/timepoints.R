@@ -51,7 +51,7 @@ timepoints <- function(object,times,returnModels=FALSE){
     stop("object must have returnModels=TRUE")
   
   callList <- as.list(object$call)[-1]
-  cglm <- any(class(object$ctimeMod)=="glm") | (class(object$ctimeMod) == "noCens")
+  cglm <- any(class(object$ctimeMod)=="glm") | any(class(object$ctimeMod) == "noCens")
   tglm <- any(class(object$trtMod)=="glm")
   ftglm <- ifelse(callList$method=="hazard",
                   any(class(object$ftimeMod[[1]])=="glm"),
