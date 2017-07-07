@@ -151,3 +151,29 @@ test_that("stability check if few events at t0 executes", {
 	expect_true(is.numeric(fit1$est))
 })
 
+test_that("Gcomp estimator runs and gives same point estimates if censoring doesn't depend on adjustVars", {
+	set.seed(1234)
+	n <- 100
+	trt <- rbinom(n,1,0.5)
+	adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
+	
+	ftime <- round(runif(n,1,4))
+	ftype <- round(runif(n,0,1)) + round(runif(n,0,1))
+	
+	# fit G comp
+	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "1", 
+	glm.ftime = "trt + W1 + W2", glm.ctime = "1", 
+	method="mean", t0=3, Gcomp = TRUE)
+
+	# fit tmle
+	fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "1", 
+	glm.ftime = "trt + W1 + W2", glm.ctime = "1", 
+	method="mean", t0=3)
+
+	# should have roughly same point estimates
+	expect_equal(as.numeric(fit1$est),as.numeric(fit2$est))
+})
+
+
