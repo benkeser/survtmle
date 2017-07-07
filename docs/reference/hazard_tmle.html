@@ -98,29 +98,26 @@ However, power users could, in theory, make calls directly to this function.</p>
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>ftime</dt>
-      <dd>A numeric vector of failure times. Missing values or zero values
-are not supported. Right censored observations should have a non-missing value for <code>ftime</code> while 
-<code>ftype</code> should be set to 0.</dd>
+      <dd>A numeric vector of failure times. Right-censored observations should have corresponding 
+<code>ftype</code> set to 0.</dd>
       <dt>ftype</dt>
-      <dd>A numeric vector indicating the type of failure with type 0 reserved for 
-right censored observations. Each unique value will be treated as an (unordered) separate
+      <dd>A numeric vector indicating the type of failure. Observations with <code>ftype=0</code> are treated 
+as a right-censored observation. Each unique value besides zero is treated as a separate
 type of failure.</dd>
       <dt>trt</dt>
       <dd>A numeric vector indicating observed treatment assignment. Each unique value will 
-be treated as an (unordered) separate type of treatment. Currently, only two unique values of 
-<code>trt</code> are supported.</dd>
+be treated as a different type of treatment. Currently, only two unique values are supported.</dd>
       <dt>t0</dt>
       <dd>The time at which to return cumulative incidence estimates. By default this is set
-to <code>max(ftime)</code>.</dd>
+to <code>max(ftime[ftype &gt;0])</code>.</dd>
       <dt>adjustVars</dt>
       <dd>A data.frame of adjustment variables that will be used in estimating the 
 conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.</dd>
       <dt>SL.ftime</dt>
-      <dd>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). See <code>?SuperLearner</code> for more information on how to specify valid 
+      <dd>A character vector or list specification to be passed to the <code>SL.library</code> option 
+in the call to <code>SuperLearner</code> for the cause-specific hazards. See <code>?SuperLearner</code> for more information on how to specify valid 
 <code>SuperLearner</code> libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called <code>&quot;trt&quot;</code> and <code>names(adjustVars)</code>.</dd>
+with the input variables, which will be called <code>&quot;trt&quot;</code>, <code>names(adjustVars)</code>, and <code>&quot;t&quot;</code> (if <code>method=&quot;hazard&quot;</code>).</dd>
       <dt>SL.ctime</dt>
       <dd>A character vector or list specification to be passed to the <code>SL.library</code> argument 
 in the call to <code>SuperLearner</code> for the estimate of the conditional hazard for censoring. It is expected 
@@ -128,86 +125,96 @@ that the wrappers used in the library will play nicely with the input variables,
 called <code>&quot;trt&quot;</code> and <code>names(adjustVars)</code>.</dd>
       <dt>SL.trt</dt>
       <dd>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the estimate of the conditional probabiltiy of treatment.
+in the call to <code>SuperLearner</code> for the estimate of the conditional probability of treatment.
 It is expected that the wrappers used in the library will play nicely
 with the input variables, which will be <code>names(adjustVars)</code>.</dd>
       <dt>glm.ftime</dt>
       <dd>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>&quot;trt&quot;</code> to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+<code>formula</code> option of a call to <code>glm</code> for the outcome regression. Ignored if <code>SL.ftime</code> is not equal to <code>NULL</code>. 
+Use <code>&quot;trt&quot;</code> to specify the treatment in this formula (see examples). The formula can additionally include any variables found in 
 <code>names(adjustVars)</code>.</dd>
       <dt>glm.ctime</dt>
       <dd>A character specification of the right-hand side of the equation passed to the
 <code>formula</code> option of a call to <code>glm</code> for the estimate of the conditional hazard for 
-censoring. Ignored if <code>SL.ctime != NULL</code>. Use <code>&quot;trt&quot;</code> to specify the treatment 
+censoring. Ignored if <code>SL.ctime</code> is not equal to <code>NULL</code>. Use <code>&quot;trt&quot;</code> to specify the treatment 
 in this formula (see examples). The formula can additionally include any variables found in 
 <code>names(adjustVars)</code>.</dd>
       <dt>glm.trt</dt>
       <dd>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the estimate of the conditional probabiltiy of 
-treatment. Ignored if <code>SL.trt != NULL</code>. By default set to &quot;1&quot;, corresponding to using empirical
-estimates of each value of <code>trt</code>. The formula can include any variables found in 
+<code>formula</code> option of a call to <code>glm</code> for the estimate of the conditional probability of 
+treatment. Ignored if <code>SL.trt</code> is not equal to <code>NULL</code>. The formula can include any variables found in 
 <code>names(adjustVars)</code>.</dd>
       <dt>returnIC</dt>
       <dd>A boolean indicating whether to return vectors of influence curve estimates. These are
-needed for some post-hoc comarisons, so it is recommended to leave as <code>TRUE</code> (the default)
+needed for some post-hoc comparisons, so it is recommended to leave as <code>TRUE</code> (the default)
 unless the user is sure these estimates will not be needed later.</dd>
       <dt>returnModels</dt>
       <dd>A boolean indicating whether to return the <code>SuperLearner</code> or <code>glm</code> 
 objects used to estimate the nuisance parameters. Must be set to <code>TRUE</code> if the user plans to 
-use calls to <code>timepoints</code> to obtain estimates at times other than <code>t0</code>. See <code>?timepoints</code>
+use <code>timepoints</code> to obtain estimates of incidence at times other than <code>t0</code>. See <code>?timepoints</code>
 for more information.</dd>
       <dt>ftypeOfInterest</dt>
       <dd>An input specifying what failure types to compute estimates of incidence for. 
-The default value is <code>&quot;all&quot;</code>, which computes estimates for values <code>unique(ftype)</code>. Can alternatively
+The default value computes estimates for values <code>unique(ftype)</code>. Can alternatively
 be set to a vector of values found in <code>ftype</code>.</dd>
       <dt>trtOfInterest</dt>
       <dd>An input specifying which levels of <code>trt</code> are of interest. The default value
-is <code>&quot;all&quot;</code>, which computes estimates for values <code>unique(trt)</code>. Can alternatively be set to a 
+computes estimates for values <code>unique(trt)</code>. Can alternatively be set to a 
 vector of values found in <code>trt</code>.</dd>
       <dt>bounds</dt>
-      <dd>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</dd>
+      <dd>A <code>data.frame</code> of bounds on the conditional hazard function. The <code>data.frame</code> should have a column
+named <code>&quot;t&quot;</code> that includes values <code>1:t0</code>. The other columns should be names <code>paste0(&quot;l&quot;,j)</code> and
+<code>paste0(&quot;u&quot;,j)</code> for each unique failure type label j, denoting lower and upper bounds, respectively. See examples.</dd>
       <dt>verbose</dt>
-      <dd>A boolean indicating whether the function should print messages to indicate progress.</dd>
+      <dd>A boolean indicating whether the function should print messages to indicate progress. If <code>SuperLearner</code>
+is called internally, this option will additionally be passed to <code>SuperLearner</code>.</dd>
       <dt>tol</dt>
-      <dd>The stopping criteria for the fluctuation step. The algorithm will continue performing
-targeting updates to the initial estimators until the empirical mean of the efficient influence function
-is smaller than <code>tol</code>. The default (<code>1/length(ftime)</code>) is a sensible value. Larger values can
+      <dd>The stopping criteria. The TMLE algorithm performs
+updates to the initial estimators until the empirical mean of the efficient influence function
+is smaller than <code>tol</code> or until <code>maxIter</code> iterations have been completed. The default (<code>1/length(ftime)</code>) is a sensible value. Larger values can
 be used in situations where convergence of the algorithm is an issue; however, this may result in 
-finite-sample bias.</dd>
+large finite-sample bias.</dd>
       <dt>maxIter</dt>
-      <dd>A maximum number of iterations for the algorithm when <code>method=&quot;hazard&quot;</code>. The 
+      <dd>The maximum number of iterations for the algorithm. The 
 algorithm will iterate until either the empirical mean of the efficient influence function
 is smaller than <code>tol</code> or until <code>maxIter</code> iterations have been completed.</dd>
       <dt>gtol</dt>
-      <dd>The truncation level of predicted censoring survival to handle positivity violations.</dd>
+      <dd>The truncation level of predicted censoring survival. Setting to larger values can help 
+performance in data sets with practical positivity violations.</dd>
       <dt>...</dt>
-      <dd>Other arguments. Not currently used.</dd>
+      <dd>Other options. Not currently used.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>est A numeric vector of point estimates -- one for each combination of <code>ftypeOfInterest</code>
-and <code>trtOfInterest</code>.</p>
-    <p>var A covariance matrix of all the point estimates</p>
-    <p>meanIC The empirical mean of the efficient influence function at the estimated, fluctuated
-nuisance parameters. If all goes well, each value should be less than <code>tol</code>.</p>
-    <p>ic The efficient influence function at the estimated, fluctuated nuisance parameters,
-evaluated on each of the observations (summed over all times). These may be used to perform
-post-hoc comparisons. More details coming.</p>
-    <p>ftimeMod If <code>returnModels=TRUE</code> the fit object(s) for the call to <code>glm</code> or 
+    <p>An object of class <code>survtmle</code>.
+<dl class='dl-horizontal'>
+<dt>call</dt><dd>The call to <code>survtmle</code>.</dd>
+<dt>est</dt><dd>A numeric vector of point estimates -- one for each combination of <code>ftypeOfInterest</code>
+and <code>trtOfInterest</code>.</dd>
+<dt>var</dt><dd>A covariance matrix for the point estimates.</dd>
+<dt>meanIC</dt><dd>The empirical mean of the efficient influence function at the estimated, targeted
+nuisance parameters. Each value should be small or the user will be warned that excessive finite-sample bias may exist in the point estimates.</dd>
+<dt>ic</dt><dd>The efficient influence function at the estimated, fluctuated nuisance parameters,
+evaluated on each of the observations. These are used to construct confidence intervals for post-hoc comparisons.</dd>
+<dt>ftimeMod</dt><dd>If <code>returnModels=TRUE</code> the fit object(s) for the call to <code>glm</code> or 
 <code>SuperLearner</code> for the outcome regression models. If <code>method=&quot;mean&quot;</code> this will be a list
 of length <code>length(ftypeOfInterest)</code> each of length <code>t0</code> (one regression for each
 failure type and for each time point). If <code>method=&quot;hazard&quot;</code> this will be a list of length
-<code>length(ftypeOfInterest)</code> with one model corresponding with the (pseudo-)hazard for each
-cause of failure. If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
-    <p>ctimeMod If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
-<code>SuperLearner</code> for the censoring hazard regression model.  
-If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
-    <p>trtMod If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
-<code>SuperLearner</code> for the conditioanl probability of <code>trt</code> regression model. 
-If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
+<code>length(ftypeOfInterest)</code> with one fit corresponding to the hazard for each
+cause of failure. If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</dd>
+<dt>ctimeMod</dt><dd>If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
+<code>SuperLearner</code> for the pooled hazard regression model for the censoring distribution.  
+If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</dd>
+<dt>trtMod</dt><dd>If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
+<code>SuperLearner</code> for the conditional probability of <code>trt</code> regression model. 
+If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</dd>
+<dt>t0</dt><dd>The timepoint at which the function was evaluated.</dd>
+<dt>ftime</dt><dd>The numeric vector of failure times used in the fit.</dd>
+<dt>ftype</dt><dd>The numeric vector of failure types used in the fit.</dd>
+<dt>trt</dt><dd>The numeric vector of treatment assignments used in the fit.</dd>
+<dt>adjustVars</dt><dd>The data.frame of failure times used in the fit.</dd>
+</dl></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -226,8 +233,7 @@ If <code>returnModels=FALSE</code>, this will equal <code>NULL</code>.</p>
 <span class='co'># fit hazard_tmle object with glm estimators for treatment, censoring, and failure</span>
 <span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>hazard_tmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
 <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
-<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='error'>Error in rep(1:nrow(dat), t0.mod): invalid &#39;times&#39; argument</span></div><div class='input'>
-</div></pre>
+<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

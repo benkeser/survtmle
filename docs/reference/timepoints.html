@@ -124,12 +124,41 @@ timepoints specified and the size of the super learner library.</dd>
 
 <span class='co'># fit an initial survtmle object with t0=max(ftime)</span>
 <span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='survtmle.html'>survtmle</a></span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='error'>Error in rep(1:nrow(dat), t0.mod): invalid &#39;times&#39; argument</span></div><div class='input'>
+<span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='co'># call timepoints to get cumulative incidence estimates at each timepoint</span>
-<span class='no'>allTimes</span> <span class='kw'>&lt;-</span> <span class='fu'>timepoints</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>fm</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in timepoints(object = fm, times = 1:4, returnModels = FALSE): object &#39;fm&#39; not found</span></div><div class='input'>
+<span class='no'>allTimes</span> <span class='kw'>&lt;-</span> <span class='fu'>timepoints</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>fm</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
 <span class='co'># look at results for time 1</span>
-<span class='fu'>class</span>(<span class='no'>allTimes</span>$<span class='no'>t1</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;allTimes&#39; not found</span></div><div class='input'><span class='no'>allTimes</span>$<span class='no'>t1</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;allTimes&#39; not found</span></div><div class='input'><span class='co'># look at results for time 2 </span>
-<span class='no'>allTimes</span>$<span class='no'>t2</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;allTimes&#39; not found</span></div></pre>
+<span class='fu'>class</span>(<span class='no'>allTimes</span>$<span class='no'>t1</span>)</div><div class='output co'>#&gt; [1] &quot;survtmle&quot;</div><div class='input'><span class='no'>allTimes</span>$<span class='no'>t1</span></div><div class='output co'>#&gt; $est
+#&gt;           [,1]
+#&gt; 0 1 0.11420933
+#&gt; 1 1 0.08893310
+#&gt; 0 2 0.09813023
+#&gt; 1 2 0.02051795
+#&gt; 
+#&gt; $var
+#&gt;               0 1           1 1           0 2           1 2
+#&gt; 0 1  1.851155e-03  3.343729e-05 -1.918862e-04 -4.921541e-06
+#&gt; 1 1  3.343729e-05  1.679328e-03 -1.913208e-05 -3.350074e-05
+#&gt; 0 2 -1.918862e-04 -1.913208e-05  1.933470e-03  5.318150e-09
+#&gt; 1 2 -4.921541e-06 -3.350074e-05  5.318150e-09  3.632602e-04
+#&gt; </div><div class='input'><span class='co'># look at results for time 2 </span>
+<span class='no'>allTimes</span>$<span class='no'>t2</span></div><div class='output co'>#&gt; $est
+#&gt;          [,1]
+#&gt; 0 1 0.2725236
+#&gt; 1 1 0.2440495
+#&gt; 0 2 0.1758847
+#&gt; 1 2 0.2003141
+#&gt; 
+#&gt; $var
+#&gt;               0 1           1 1           0 2           1 2
+#&gt; 0 1  4.513203e-03  6.160159e-05 -9.378340e-04  5.297656e-05
+#&gt; 1 1  6.160159e-05  4.270541e-03 -8.875712e-05 -1.167929e-03
+#&gt; 0 2 -9.378340e-04 -8.875712e-05  3.664619e-03  1.676504e-05
+#&gt; 1 2  5.297656e-05 -1.167929e-03  1.676504e-05  3.802279e-03
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

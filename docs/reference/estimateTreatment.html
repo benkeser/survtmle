@@ -131,19 +131,6 @@ the conditional probability (given <code>adjustVars</code>) of <code>trt==max(tr
 object. Otherwise, <code>NULL</code></p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># make fake data frame, the internal call to this function will </span>
-<span class='co'># have more columns, but this is all that is needed for illustration</span>
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>trt</span> <span class='kw'>=</span> <span class='fu'>rbinom</span>(<span class='fl'>100</span>,<span class='fl'>1</span>,<span class='fl'>0.5</span>))
-<span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='fl'>100</span>), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='fl'>100</span>))
-
-<span class='co'># call to estimateTreatment using glm</span>
-<span class='no'>fit.trt</span> <span class='kw'>&lt;-</span> <span class='fu'>estimateTreatment</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>)
-<span class='co'># head(fit.trt$dat)</span>
-
-<span class='co'># call to estimateTreatment using SuperLearner</span>
-<span class='no'>fit.trt</span> <span class='kw'>&lt;-</span> <span class='fu'>estimateTreatment</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-<span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.mean"</span>,<span class='st'>"SL.glm"</span>,<span class='st'>"SL.step"</span>))</div><div class='output co'>#&gt; <span class='message'>Loading required package: nnls</span></div><div class='input'><span class='co'># head(fit.trt$dat)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -151,9 +138,7 @@ object. Otherwise, <code>NULL</code></p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

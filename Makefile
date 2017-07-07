@@ -1,6 +1,9 @@
 md:
 	r -e "rmarkdown::render('README.Rmd')"
 
+site:
+	r -e "pkgdown::build_site()"
+
 check:
 	r -e "devtools::check()"
 
