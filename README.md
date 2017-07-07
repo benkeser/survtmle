@@ -74,38 +74,20 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
 
 # extract cumulative incidence at each time point
 tpfit <- timepoints(fit, times = seq_len(t_0))
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  0 0
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -3e-04 0
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -6e-04 0
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -3e-04 0
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -0.0017 0
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -9e-04 -2e-04
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
-#> TMLE Iteration  1   :  -5e-04 -2e-04
-#> Warning in if (glm.ctime != "No censoring observed") {: the condition has
-#> length > 1 and only the first element will be used
+#> TMLE Iteration  1   :  0 0 
+#> TMLE Iteration  1   :  -3e-04 0 
+#> TMLE Iteration  1   :  -6e-04 0 
+#> TMLE Iteration  1   :  -3e-04 0 
+#> TMLE Iteration  1   :  -0.0017 0 
+#> TMLE Iteration  1   :  -9e-04 -2e-04 
+#> TMLE Iteration  1   :  -5e-04 -2e-04 
 #> TMLE Iteration  1   :  -0.0017 -1e-04
 
 # examine output object produced by the timepoints function
 print(tpfit)
 #> $est
 #>              t1         t2         t3         t4         t5         t6
-#> 0 1 0.032997470 0.02429619 0.03646452 0.04867155 0.04076233 0.11147399
+#> 0 1 0.032997470 0.02429619 0.03646452 0.04867155 0.04076233 0.11147398
 #> 1 1 0.008014555 0.01727758 0.02571549 0.03401515 0.05722310 0.05131788
 #>             t7         t8         t9        t10
 #> 0 1 0.10375280 0.11522782 0.18040243 0.26644929
