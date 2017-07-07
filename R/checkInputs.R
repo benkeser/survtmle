@@ -280,19 +280,18 @@ checkInputs <- function(ftime,
 	}else{
 		if(all(apply(adjustVars, 2, function(x){length(unique(x))==1}))){
 			warning("Columns of adjustVars are constantly valued. Computing unadjusted estimates.")
+			if(is.null(glm.trt)){
+				glm.trt <- "1"	
+			}
+			if(is.null(glm.ctime)){
+				glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))			
+			}
+			if(is.null(glm.ftime)){
+				glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
+			}
+			SL.trt <- SL.ctime <- SL.ftime <- NULL
+			# add in dummy adjustVars so nothing else complains about NULL
 		}
-		if(is.null(glm.trt)){
-			glm.trt <- "1"	
-		}
-		if(is.null(glm.ctime)){
-			glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))			
-		}
-		if(is.null(glm.ftime)){
-			glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
-		}
-		SL.trt <- SL.ctime <- SL.ftime <- NULL
-		# add in dummy adjustVars so nothing else complains about NULL
-		adjustVars <- data.frame(dummy = rep(1,length(ftime)))
 	}
 
 	# check format of bound inputs
