@@ -51,7 +51,7 @@ timepoints <- function(object,times,returnModels=FALSE){
     stop("object must have returnModels=TRUE")
   
   callList <- as.list(object$call)[-1]
-  cglm <- any(class(object$ctimeMod)=="glm")
+  cglm <- any(class(object$ctimeMod)=="glm") | (class(object$ctimeMod) == "noCens")
   tglm <- any(class(object$trtMod)=="glm")
   ftglm <- ifelse(callList$method=="hazard",
                   any(class(object$ftimeMod[[1]])=="glm"),
@@ -94,10 +94,15 @@ timepoints <- function(object,times,returnModels=FALSE){
   for(i in times){
     ct <- ct+1
     funOpts$t0 <- i
-    if(i != object$t0){
-      outList[[ct]] <- do.call("survtmle",args=funOpts)
+    if(all(object$ftime[object$ftype > 0] > i)){
+      outList[[ct]] <- list(est = rep(0,length(object$est)),
+                            var = matrix(NA, nrow = length(object$est), ncol = length(object$est)))
     }else{
-      outList[[ct]] <- object
+      if(i != object$t0){
+        outList[[ct]] <- do.call("survtmle",args=funOpts)
+      }else{
+        outList[[ct]] <- object
+      }
     }
   }
   names(outList) <- paste0("t",times)

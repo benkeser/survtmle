@@ -105,6 +105,11 @@ checkInputs <- function(ftime,
 		stop("trt must be a vector")
 	}
 
+	# check that not all failures are < t0
+	if(all(ftime[ftype > 0] > t0)){
+		stop("No observed events by t0.")
+	}
+
 	if(length(unique(trt))>2){
 		stop("trt with more than 2 unique values not yet supported.")
 	}
@@ -227,7 +232,7 @@ checkInputs <- function(ftime,
 			stop("glm.trt formula appears to be invalid.")
 		})
 	}
-	if(!is.null(glm.ctime)){
+	if(!is.null(glm.ctime) & glm.ctime != "No censoring observed"){
 		tryCatch({
 			tmp <- as.formula(paste0("C ~",glm.ctime))
 		},error=function(e){

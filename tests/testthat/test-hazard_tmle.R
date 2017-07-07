@@ -40,8 +40,11 @@ test_that("hazard_tmle with no censoring works as expected", {
 	# fit with no bounds
 	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
 	glm.trt = "W1 + W2", 
-	glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
+	glm.ftime = "trt + W1 + W2 + t", glm.ctime = "trt + W1 + W2 + t", 
 	method="hazard", t0=6, returnModels = TRUE)
+
+	# call with timepoints
+	tp.fit1 <- timepoints(fit1,times=1:3)
 
 	expect_true(fit1$ctimeMod[1]=="No censoring observed")
 	expect_equal(class(fit1$ctimeMod), "noCens")

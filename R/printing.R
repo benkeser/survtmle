@@ -26,8 +26,8 @@ print.survtmle <- function(x, ...) {
 #'
 #' The print method for a timepoints object of class \code{tp.survtmle}
 #'
-#' @param x An object of class \code{tp.survtmle}
-#' @param ... Other options (not currently used)
+#' @param x An object of class \code{tp.survtmle}.
+#' @param ... Other options (not currently used).
 #'
 #' @return Prints the estimates of cumulative incidence and the diagonal
 #'         of the estimated covariance matrix.
@@ -38,7 +38,6 @@ print.survtmle <- function(x, ...) {
 #'
 
 print.tp.survtmle <- function(x, ...) {
-
   # extract basic information from input `tp.survtmle` object
   len_groups <- as.numeric(unique(lapply(lapply(x, FUN = `[[`, "est"),
                                          FUN = length)))
@@ -60,7 +59,7 @@ print.tp.survtmle <- function(x, ...) {
   colnames(vars_only) <- paste0("t", seq_len(ncol(vars_only)))
 
   # create output object as list to match `print.cuminc` for class from `cmprsk`
-  out <- list(est_only, vars_only)
-  names(out) <- c("est", "var")
-  return(out)
+  out <- list(est = est_only, var = vars_only)
+
+  print(out)
 }

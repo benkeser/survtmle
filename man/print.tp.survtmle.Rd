@@ -7,9 +7,9 @@
 \method{print}{tp.survtmle}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \code{tp.survtmle}}
+\item{x}{An object of class \code{tp.survtmle}.}
 
-\item{...}{Other options (not currently used)}
+\item{...}{Other options (not currently used).}
 }
 \value{
 Prints the estimates of cumulative incidence and the diagonal
