@@ -14,7 +14,7 @@ R/`survtmle`
 Description
 -----------
 
-`survtmle` is an R package designed to use Targeted Minimum Loss-Based Estimation (TMLE) to compute marginal cumulative incidence estimates in right-censored survival settings with and without competing risks, including vaccine sieve analysis. This tool also provides facilities for computing and obtaining inference for the use of data adaptive target parameters in such settings.
+`survtmle` is an R package designed to use targeted minimum loss-based estimation (TMLE) to compute covariate-adjusted marginal cumulative incidence estimates in right-censored survival settings with and without competing risks. The estimates can leverage ensemble machine learning via the `SuperLearner` package.
 
 ------------------------------------------------------------------------
 
