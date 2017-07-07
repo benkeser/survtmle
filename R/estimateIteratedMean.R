@@ -57,13 +57,6 @@
 estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                  SL.ftime=NULL, glm.ftime=NULL,verbose,
                                  returnModels=FALSE, bounds=NULL,...){
-  
-  if(is.null(SL.ftime) & is.null(glm.ftime)){
-    warning("Super Learner library and glm formula not specified. Proceeding 
-            with empirical estimates")
-    glm.ftime <- "trt*factor(t)"
-  }
-  
   ## determine who to include in estimation
   include <- rep(TRUE, nrow(wideDataList[[1]]))
   if(t!=1){

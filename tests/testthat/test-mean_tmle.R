@@ -130,3 +130,24 @@ test_that("mean_tmle with one ftypeOfInterest and one trtOfInterest gives same a
 	# should have roughly same point estimates
 	expect_true(abs(fit1$est[1]-fit2$est[1]) < 1e-4)
 })
+
+test_that("stability check if few events at t0 executes", {
+	set.seed(1234)
+	n <- 100
+	trt <- rbinom(n,1,0.5)
+	adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n,0,2)))
+	
+	ftime <- round(runif(n-1,1,4))
+	ftime <- c(ftime, 5)
+	ftype <- round(runif(n,0,1)) + round(runif(n,0,1))
+	
+	# fit with super learner
+	fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	glm.trt = "1", 
+	SL.ftime = "SL.glm", glm.ctime = "trt + W1 + W2",
+	method="mean", t0=5)
+
+	# should have roughly same point estimates
+	expect_true(is.numeric(fit1$est))
+})
+
