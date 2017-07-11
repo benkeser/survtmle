@@ -65,8 +65,9 @@ ftype <- as.numeric(ftime == T)
 
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
-                adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
-                trt = A, glm.ctime = "W1 + t", method = "hazard",
+                trt = A, adjustVars = W,
+                glm.ftime = "I(W1*W2) + trt + t",
+                glm.ctime = "W1 + t", method = "hazard",
                 verbose = TRUE,  t0 = t_0, maxIter = 2)
 #> Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 #> glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'
@@ -102,7 +103,7 @@ print(tpfit)
 #> 1 1 0.0006198923 0.0009695247 0.0009425824 0.0009515562 0.0009578375
 
 # examine plot of cumulative incidences
-plot(tpfit, type = "smooth")
+plot(tpfit)
 ```
 
 <img src="README-example-1.png" style="display: block; margin: auto;" />

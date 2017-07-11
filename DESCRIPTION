@@ -6,6 +6,7 @@ Authors@R: as.person(c(
     "David Benkeser <benkeser@emory.edu> [aut, cre, cph]",
     "Nima Hejazi <nhejazi@berkeley.edu> [aut]"
   ))
+Maintainer: David Benkeser <benkeser@emory.edu>
 Description: Tools that facilitate the computation of marginal cumulative
     incidence estimates in survival settings with and without competing risks.
 Depends:
@@ -21,7 +22,8 @@ Suggests:
     knitr,
     rmarkdown,
     survival,
-    cmprsk
+    cmprsk,
+    tibble
 License: MIT + file LICENSE
 URL: https://github.com/benkeser/survtmle
 BugReports: https://github.com/benkeser/survtmle/issues
