@@ -82,7 +82,7 @@ In practice, we may wish to adjust for covariates when computing estimates of th
 
 This adjustment may be accomplished using logistic regression through the `glm.trt` and `glm.ctime` arguments, respectively. The `glm.trt` argument should be a valid right-hand-side formula specification based on `colnames(adjustVars)`. The `glm.ctime` argument should be a valid right-hand-side formula specification based on `colnames(adjustVars)`, `"trt"`, and `"t"` used to model the hazard function for censoring. By including `"trt"` and `"t"`, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call `survtmle` again, now adjusting for covariates in the treatment and censoring fits. 
 
-```{r example_glm_mean}
+```{r example_glm_mean_2}
 # Fit 2: Use GLM-based estimators for failure, treatment, and censoring w/ "mean" method
 fit2 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
@@ -335,7 +335,7 @@ There is some subtlety involved to properly leveraging this facility. Recall tha
 
 We demonstrate the use of `timepoints` below based on the following simulated data.
 
-```{r sim_data}
+```{r sim_data_2}
 set.seed(1234)
 n <- 200
 t_0 <- 6
@@ -347,7 +347,7 @@ ftype <- round(runif(n, 0, 1))
 
 Imagine that we would like cumulative incidence estimates at times `1:t_0` based on `fit2` above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called `fit2` the option `returnModels` was set to its default value `FALSE`. Thus, we must refit this object setting the function to return the model fits. 
 
-```{r example_glm_mean_2}
+```{r example_glm_mean_3}
 # Refit fit 2 returning models
 fit2_rm <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
