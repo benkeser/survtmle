@@ -4,7 +4,7 @@
 \alias{plot.tp.survtmle}
 \title{Plot results of cumulative incidence estimates from survtmle}
 \usage{
-\method{plot}{tp.survtmle}(x, ..., type = c("smooth", "raw"))
+\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"))
 }
 \arguments{
 \item{x}{object of class \code{tp.survtmle} as produced by a sequence of
@@ -12,18 +12,18 @@ appropriate calls to \code{survtmle} and \code{timepoints}}
 
 \item{...}{additional arguments passed \code{plot} as necessary}
 
-\item{type}{character describing whether to provide a plot of raw or
-smoothened point estimates, with the latter being computed by a call
-to \code{stats::isoreg}}
+\item{type}{character describing whether to provide a plot of raw ("raw") or
+monotonic ("iso") estimates in the resultant step function plot, with
+the latter being computed by a call to \code{stats::isoreg}}
 }
 \value{
-object of class \code{ggplot} containing a lines plot of the raw or
-        smoothened point estimates of cumulative incidence across a series of
-        time points of interest.
+object of class \code{ggplot} containing a step function plot of the
+       raw or smoothened point estimates of cumulative incidence across a
+       series of time points of interest.
 }
 \description{
-Plotting for both raw and smoothened estimates, the latter by isotonic
-regression of the raw point estimates, of cumulative incidence.
+Step funciton plots for both raw and smoothed (monotonic) estimates, the
+latter by isotonic regression of the raw estimates, of cumulative incidence.
 }
 \examples{
 library(survtmle)
@@ -43,6 +43,6 @@ suppressWarnings(
                   verbose = TRUE,  t0 = t_0, maxIter = 2)
 )
 tpfit <- timepoints(fit, times = seq_len(t_0))
-plot(tpfit, type = "smooth")
+plot(tpfit)
 
 }

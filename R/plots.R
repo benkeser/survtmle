@@ -92,7 +92,7 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
   p <- p + ggplot2::xlab("Time")
   p <- p + ggplot2::ylab("Cumulative Incidence Estimate")
   p <- p + ggplot2::ggtitle(paste("Cumulative Incidence Amongst Groups",
-                                  ifelse(type == "smooth",
+                                  ifelse(type == "iso",
                                          "\n (smoothed by isotonic regression)",
                                          "\n (raw estimates)")
                                   )
