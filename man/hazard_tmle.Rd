@@ -2,7 +2,7 @@
 % Please edit documentation in R/hazard.tmle.R
 \name{hazard_tmle}
 \alias{hazard_tmle}
-\title{hazard_tmle}
+\title{TMLE for Cause-Specific Hazard Functions}
 \usage{
 hazard_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]),
   adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,

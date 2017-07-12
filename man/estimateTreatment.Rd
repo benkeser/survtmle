@@ -2,51 +2,55 @@
 % Please edit documentation in R/estimateTreatment.R
 \name{estimateTreatment}
 \alias{estimateTreatment}
-\title{estimateTreatment}
+\title{Estimate Treatment Mechanisms}
 \usage{
 estimateTreatment(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
   returnModels = FALSE, verbose = FALSE, gtol = 0.001, ...)
 }
 \arguments{
-\item{dat}{An object of class \code{data.frame}. Must have named column \code{trt}.}
+\item{dat}{An object of class \code{data.frame}. Must have named column
+\code{trt}.}
 
-\item{adjustVars}{An object of class \code{data.frame} that will be used either as the 
-\code{data} argument in a call to \code{glm} or as the \code{X} object in a call to 
+\item{adjustVars}{An object of class \code{data.frame} that will be used
+either as the \code{data} argument in a call to \code{glm} or as the
+\code{X} object in a call to \code{SuperLearner}.}
+
+\item{glm.trt}{A character formula for the right-hand side of \code{formula}
+in a call to \code{glm}. See \code{?survtmle} for more documentation.
+Alternatively, this could be an object of class \code{glm} (as in
+calls to this function via \code{timepoints}), in which case
+predictions are obtained using this object with no new fitting.}
+
+\item{SL.trt}{A valid specification of the \code{SL.library} option of a call
+to \code{SuperLearner}. See \code{?survtmle} for more documentation.
+Alternatively, this could be an object of class \code{SuperLearner}
+(as in calls to this function via \code{timepoints}), in which case
+predictions are obtained using this object with no new fitting.}
+
+\item{returnModels}{A boolean indicating whether fitted model objects should
+be returned.}
+
+\item{verbose}{A boolean passed to the \code{verbose} option of the call to
 \code{SuperLearner}.}
 
-\item{glm.trt}{A character formula for the right-hand side of the \code{formula} in a
-call to \code{glm}. See \code{?survtmle} for more documentation. Alternatively, 
-this could be an object of class \code{glm} (as in calls to this function via 
-\code{timepoints}), in which case predictions are obtained using this object
-with no new fitting.}
-
-\item{SL.trt}{A valid specification of the \code{SL.library} option of a call to 
-\code{SuperLearner}. See \code{?survtmle} for more documentation. Alternatively, 
-this could be an object of class \code{SuperLearner} (as in calls to this function via 
-\code{timepoints}), in which case predictions are obtained using this object
-with no new fitting.}
-
-\item{returnModels}{A boolean indicating whether fitted model objects should be returned.}
-
-\item{verbose}{A boolean passed to the \code{verbose} option of the call to 
-\code{SuperLearner}.}
-
-\item{gtol}{The truncation level of predicted trt probabilities to handle positivity violations.}
+\item{gtol}{The truncation level of predicted trt probabilities to handle
+positivity violations.}
 
 \item{...}{Other arguments. Not currently used}
 }
 \value{
-dat The input \code{data.frame} object with two added columns corresponding with
-the conditional probability (given \code{adjustVars}) of \code{trt==max(trt)} and 
-\code{trt==min(trt)}.
+dat The input \code{data.frame} object with two added columns
+        corresponding with the conditional probability (given
+        \code{adjustVars}) of \code{trt==max(trt)} and \code{trt==min(trt)}.
 
-trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or \code{SuperLearner}
-object. Otherwise, \code{NULL}
+trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or
+        \code{SuperLearner} object. Otherwise, \code{NULL}
 }
 \description{
-This function computes the conditional probability of having \code{trt} for each 
-specified level either using \code{glm} or \code{SuperLearner}. 
-Currently only two unique values of treatment are acceptable. By default the function
-will compute estimates of the condtional probability of \code{trt==max(trt)} and 
-compute the probability of \code{trt==min(trt)} as one minus this probability.
+This function computes the conditional probability of having \code{trt} for
+each specified level either using \code{glm} or \code{SuperLearner}.
+Currently only two unique values of treatment are acceptable. By default the
+function will compute estimates of the condtional probability of
+\code{trt == max(trt)} and compute the probability of \code{trt == min(trt)}
+as one minus this probability.
 }

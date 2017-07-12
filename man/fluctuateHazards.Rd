@@ -2,7 +2,7 @@
 % Please edit documentation in R/fluctuateHazards.R
 \name{fluctuateHazards}
 \alias{fluctuateHazards}
-\title{fluctuateHazards}
+\title{Fluctuation for the Method of Cause-Specific Hazards}
 \usage{
 fluctuateHazards(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
   ...)

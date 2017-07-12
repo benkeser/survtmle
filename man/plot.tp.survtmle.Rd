@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot.tp.survtmle}
 \alias{plot.tp.survtmle}
-\title{Plot results of cumulative incidence estimates from survtmle}
+\title{Plot Results of Cumulative Incidence Estimates}
 \usage{
 \method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"))
 }

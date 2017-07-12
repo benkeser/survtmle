@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeWideDataList.R
 \name{makeWideDataList}
 \alias{makeWideDataList}
-\title{makeWideDataList}
+\title{Convert Long Form Data to List of Wide Form Data}
 \usage{
 makeWideDataList(dat, allJ, uniqtrt, adjustVars, dataList, t0, ...)
 }
@@ -13,11 +13,12 @@ makeWideDataList(dat, allJ, uniqtrt, adjustVars, dataList, t0, ...)
 
 \item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
 
-\item{adjustVars}{A data.frame of adjustment variables that will be used in estimating the 
-conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.}
+\item{adjustVars}{A data.frame of adjustment variables that will be used in
+estimating the conditional treatment, censoring, and failure (hazard
+or conditional mean) probabilities.}
 
-\item{dataList}{A list of long format \code{data.frame} objects. See \code{?makeDataList} for 
-more details on formatting.}
+\item{dataList}{A list of long format \code{data.frame} objects. See
+\code{?makeDataList} for more details on formatting.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
@@ -27,11 +28,13 @@ more details on formatting.}
 A list of \code{data.frame} objects as described above.
 }
 \description{
-The function takes a \code{data.frame} and \code{list} consisting of
-short and long format right-censored failure times. The function reshapes the long format into 
-the wide format needed for calls to \code{mean_tmle}. The list returned by the function
-will have number of entries equal to \code{length(trtOfInterest) + 1}. The first will 
-contain the observed \code{trt} columns and will set \code{C.t} (the censoring counting process)
-equal to the observed value of censoring. The subsequent entries will set \code{trt} equal to 
-each level of \code{trtOfInterest} and set \code{C.t} to zero for everyone.
+The function takes a \code{data.frame} and \code{list} consisting of short
+and long format right-censored failure times. The function reshapes the long
+format into the wide format needed for calls to \code{mean_tmle}. The list
+returned by the function will have number of entries equal to
+\code{length(trtOfInterest) + 1}. The first will contain the observed
+\code{trt} columns and will set \code{C.t} (the censoring counting process)
+equal to the observed value of censoring. The subsequent entries will set
+\code{trt} equal to each level of \code{trtOfInterest} and set \code{C.t} to
+zero for everyone.
 }

@@ -1,5 +1,5 @@
-#' mean_tmle
-#' 
+#' TMLE for G-Computation of Cumulative Incidence
+#'
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using targeted minimum loss-based estimation based on the 
 #' G-computation representation of cumulative incidence. The function is called

@@ -1,4 +1,4 @@
-#' hazard_tmle
+#' TMLE for Cause-Specific Hazard Functions
 #' 
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using targeted minimum loss-based estimation based on the 

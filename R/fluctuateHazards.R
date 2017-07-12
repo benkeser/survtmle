@@ -1,4 +1,4 @@
-#' fluctuateHazards
+#' Fluctuation for the Method of Cause-Specific Hazards
 #' 
 #' This function performs a fluctuation of an initial estimate of the cause-specific
 #' hazard functions using a call to \code{glm} (i.e., a logistic submodel) or a call to

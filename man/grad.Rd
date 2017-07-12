@@ -2,7 +2,7 @@
 % Please edit documentation in R/grad.R
 \name{grad}
 \alias{grad}
-\title{grad}
+\title{Gradient for Logistic Regression}
 \usage{
 grad(beta, Y, X)
 }

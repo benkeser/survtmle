@@ -1,6 +1,6 @@
 utils::globalVariables(c("value", "group"))
 
-#' Plot results of cumulative incidence estimates from survtmle
+#' Plot Results of Cumulative Incidence Estimates
 #'
 #' Step funciton plots for both raw and smoothed (monotonic) estimates, the
 #' latter by isotonic regression of the raw estimates, of cumulative incidence.

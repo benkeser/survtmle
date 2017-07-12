@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimateIteratedMean.R
 \name{estimateIteratedMean}
 \alias{estimateIteratedMean}
-\title{estimateIteratedMean}
+\title{Estimation for the Method of Iterated Means}
 \usage{
 estimateIteratedMean(wideDataList, t, whichJ, allJ, t0, adjustVars,
   SL.ftime = NULL, glm.ftime = NULL, verbose, returnModels = FALSE,
@@ -13,62 +13,73 @@ estimateIteratedMean(wideDataList, t, whichJ, allJ, t0, adjustVars,
 
 \item{t}{The timepoint at which to compute the iterated mean.}
 
-\item{whichJ}{Numeric value indicating the cause of failure for which regression should be 
-computed.}
+\item{whichJ}{Numeric value indicating the cause of failure for which
+regression should be computed.}
 
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
-\item{t0}{The timepoint at which \code{survtmle} was called to evaluate. Needed only because
-the naming convention for the regression if \code{t==t0} is different than if \code{t!=t0}.}
+\item{t0}{The timepoint at which \code{survtmle} was called to evaluate.
+Needed only because the naming convention for the regression if
+\code{t == t0} is different than if \code{t != t0}.}
 
-\item{adjustVars}{Object of class \code{data.frame} that contains the variables to adjust 
-for in the regression.}
+\item{adjustVars}{Object of class \code{data.frame} that contains the
+variables to adjust for in the regression.}
 
-\item{SL.ftime}{A character vector or list specification to be passed to the \code{SL.library} argument 
-in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
-condtional mean). See \code{?SuperLearner} for more information on how to specify valid 
-\code{SuperLearner} libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called \code{"trt"} and \code{names(adjustVars)}.}
+\item{SL.ftime}{A character vector or list specification to be passed to the
+\code{SL.library} argument in the call to \code{SuperLearner} for the
+outcome regression (either cause-specific hazards or condtional mean).
+See \code{?SuperLearner} for more information on how to specify valid
+\code{SuperLearner} libraries. It is expected that the wrappers used
+in the library will play nicely with the input variables, which will
+be called \code{"trt"} and \code{names(adjustVars)}.}
 
-\item{glm.ftime}{A character specification of the right-hand side of the equation passed to the
-\code{formula} option of a call to \code{glm} for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"} to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+\item{glm.ftime}{A character specification of the right-hand side of the
+equation passed to the \code{formula} option of a call to \code{glm}
+for the outcome regression (either cause-specific hazards or
+condtional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
+to specify the treatment in this formula (see examples). The formula
+can additionally include any variables found in
 \code{names(adjustVars)}.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+\item{verbose}{A boolean indicating whether the function should print
+messages to indicate progress.}
 
-\item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
-objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
-use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
-for more information.}
+\item{returnModels}{A boolean indicating whether to return the
+\code{SuperLearner} or \code{glm} objects used to estimate the
+nuisance parameters. Must be set to \code{TRUE} if the user plans to
+use calls to \code{timepoints} to obtain estimates at times other than
+\code{t0}. See \code{?timepoints} for more information.}
 
-\item{bounds}{A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX}
+\item{bounds}{A list of bounds to be used when performing the outcome
+regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.}
 
 \item{...}{Other arguments. Not currently used.}
 }
 \value{
-The function then returns a list that is exactly the same as the input \code{wideDataList}, 
-but with a column named \code{Qj.t} added to it, which is the estimated conditional mean of 
-\code{Qj.star.t+1} evaluated at the each of the rows of each \code{data.frame} in 
-\code{wideDataList}.
+The function then returns a list that is exactly the same as the
+        input \code{wideDataList}, but with a column named \code{Qj.t} added
+        to it, which is the estimated conditional mean of \code{Qj.star.t+1}
+        evaluated at the each of the rows of each \code{data.frame} in
+        \code{wideDataList}.
 }
 \description{
-This function computes an estimate of the G-computation regression at 
-a specified time \code{t} using either \code{glm} or \code{SuperLearner}. The 
-structure of the function is specific to how it is called within \code{mean_tmle}.
-In particular, \code{wideDataList} must have a very specific structure for this 
-function to run properly. The list should consist of \code{data.frame} objects. The first should
-have all rows set to their observed value of \code{trt}. The remaining should 
-in turn have all rows set to each value of \code{trtOfInterest} in the
-\code{survtmle} call. Currently the code requires each \code{data.frame} to have
-named columns for each name in \code{names(adjustVars)}, as well as a column named
-\code{trt}. It must also have a columns named \code{Nj.Y} where j corresponds with the
-numeric values input in \code{allJ}. These are the indicators of failure due to the various
-causes before time \code{t} and are necessary for determining who to include in the 
-regression. Similarly, each \code{data.frame} should have a column call \code{C.Y} 
-where Y is again \code{t-1}, so that right censored observations are not included in
-the regressions. The function will fit a regression with \code{Qj.star.t+1} (also needed as
-a column in \code{wideDataList}) on functions of \code{trt} and \code{names(adjustVars)}
+This function computes an estimate of the G-computation regression at a
+specified time \code{t} using either \code{glm} or \code{SuperLearner}. The
+structure of the function is specific to how it is called within
+\code{mean_tmle}. In particular, \code{wideDataList} must have a very
+specific structure for this function to run properly. The list should consist
+of \code{data.frame} objects. The first should have all rows set to their
+observed value of \code{trt}. The remaining should in turn have all rows set
+to each value of \code{trtOfInterest} in the \code{survtmle} call. Currently
+the code requires each \code{data.frame} to have named columns for each name
+in \code{names(adjustVars)}, as well as a column named \code{trt}. It must
+also have a columns named \code{Nj.Y} where j corresponds with the numeric
+values input in \code{allJ}. These are the indicators of failure due to the
+various causes before time \code{t} and are necessary for determining who to
+include in the regression. Similarly, each \code{data.frame} should have a
+column call \code{C.Y} where Y is again \code{t - 1}, so that right censored
+observations are not included in the regressions. The function will fit a
+regression with \code{Qj.star.t+1} (also needed as a column in
+\code{wideDataList}) on functions of \code{trt} and \code{names(adjustVars)}
 as specified by \code{glm.ftime} or \code{SL.ftime}.
 }

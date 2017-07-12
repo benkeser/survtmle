@@ -2,7 +2,7 @@
 % Please edit documentation in R/fluctuateIteratedMean.R
 \name{fluctuateIteratedMean}
 \alias{fluctuateIteratedMean}
-\title{fluctuateIteratedMean}
+\title{Fluctuation for the Method of Iterated Means}
 \usage{
 fluctuateIteratedMean(wideDataList, t, uniqtrt, whichJ, allJ, t0,
   Gcomp = FALSE, bounds = NULL, ...)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mean.tmle.R
 \name{mean_tmle}
 \alias{mean_tmle}
-\title{mean_tmle}
+\title{TMLE for G-Computation of Cumulative Incidence}
 \usage{
 mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), adjustVars = NULL,
   SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,

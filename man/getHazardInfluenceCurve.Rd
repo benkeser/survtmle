@@ -2,7 +2,7 @@
 % Please edit documentation in R/getHazardInfluenceCurve.R
 \name{getHazardInfluenceCurve}
 \alias{getHazardInfluenceCurve}
-\title{getHazardInfluenceCurve}
+\title{Extract Influence Curve for Estimated Hazard Functions}
 \usage{
 getHazardInfluenceCurve(dataList, dat, allJ, ofInterestJ, nJ, uniqtrt, t0,
   verbose, ...)

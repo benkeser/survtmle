@@ -1,5 +1,5 @@
-#' fluctuateIteratedMean
-#' 
+#' Fluctuation for the Method of Iterated Means
+#'
 #' This function performs a fluctuation of an initial estimate of the G-computation regression at 
 #' a specified time \code{t} using a call to \code{glm} (i.e., a logistic submodel) or a call to
 #' \code{optim} (if bounds are specified). The structure of the function is specific to how it is 

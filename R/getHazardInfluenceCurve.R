@@ -1,5 +1,5 @@
-#' getHazardInfluenceCurve
-#' 
+#' Extract Influence Curve for Estimated Hazard Functions
+#'
 #' This function computes the hazard-based efficient influence curve at the final
 #' estimate of the fluctuated cause-specific hazard functions and evaluates 
 #' it on the observed data. The influence-function is computed on the long-format data
