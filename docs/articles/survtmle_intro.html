@@ -75,7 +75,7 @@
       <h1>Targeted Learning for Survival Analysis with Competing Risks</h1>
                         <h4 class="author">David Benkeser &amp; Nima Hejazi</h4>
             
-            <h4 class="date">2017-07-11</h4>
+            <h4 class="date">2017-07-12</h4>
           </div>
 
     
@@ -84,26 +84,25 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <code>survtmle</code> package is designed to use targeted minimum loss-based estimation (TMLE) to compute covariate-adjusted marginal cumulative incidence estimates in right-censored survival settings with and without competing risks. In order to allow flexibility of modeling, the estimates can leverage ensemble machine learning via the <a href="https://cran.r-project.org/web/packages/SuperLearner/index.html"><code>SuperLearner</code></a> package.</p>
+<p>The <code>survtmle</code> package is designed to use targeted minimum loss-based estimation (TMLE) to compute baseline covariate-adjusted estimates of marginal cumulative incidence in right-censored survival settings with (and without) competing risks. The package facilitates flexible modeling to adjust for covariates through the use of ensemble machine learning via the <a href="https://cran.r-project.org/web/packages/SuperLearner/index.html"><code>SuperLearner</code></a> package.</p>
 <hr>
 </div>
-<div id="simulation" class="section level2">
+<div id="single-failure-type" class="section level2">
 <h2 class="hasAnchor">
-<a href="#simulation" class="anchor"></a>Simulation</h2>
-<p>We’ll proceed by examining the use of <code>survtmle</code> in a variety of simple examples. First, let’s load the package:</p>
+<a href="#single-failure-type" class="anchor"></a>Single failure type</h2>
+<p>We examine the use of <code>survtmle</code> in a variety of simple examples. The package can be loaded as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survtmle)</code></pre></div>
 <pre><code>## survtmle: Targeted Learning for Survival Analysis</code></pre>
 <pre><code>## Version: 0.1.2</code></pre>
-<p>Before diving into how we might harness the machinery of the <code>survtmle</code> package, we’ll simulate a simple data set with a single failure type:</p>
+<p>We simulate a simple data with no censoring and a single cause of failure to illustrate the machinery of the <code>survtmle</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 n &lt;-<span class="st"> </span><span class="dv">200</span>
-t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>  <span class="co"># time point at which to return cumulative incidence estimates</span>
+t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>
 trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
 adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
 ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
 ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</code></pre></div>
-<p>The very simple data structure that we simulated (the <code>tibble</code>, <code>d</code>) contains a set of adjustment (or “baseline”) covariates (<code>adjustVars</code>); a treatment variable (<code>trt</code>) denoting the intervention of interest; a failure time (<code>ftime</code>), a simple function of the treatment and adjustment variables with added noise (a Uniform random variable); and a failure type (<code>ftype</code>), merely denoting an observed cause of failure, unrelated to the failure time. In all following examples, we will estimate cumulative incidence for each of the groups at an arbitrary time point (<code>t_0</code>).</p>
-<p>Let’s examine just the first few rows of the observed data set:</p>
+<p>The simple data structure contains a set of baseline covariates (<code>adjustVars</code>), a binary treatment variable (<code>trt</code>), a failure time that is a function of the treatment, adjustment variables, and a random error (<code>ftime</code>), and a failure type (<code>ftype</code>), which denotes the cause of failure (0 means no failure, 1 means failure). The first few rows of data can be viewed as follows.</p>
 <pre><code>## # A tibble: 200 x 5
 ##    ftype ftime   trt    W1    W2
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -119,107 +118,292 @@ ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="k
 ## 10     0     4     1     1     1
 ## # ... with 190 more rows</code></pre>
 <hr>
-</div>
-<div id="using-the-g-computation-method" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-the-g-computation-method" class="anchor"></a>Using the G-computation method</h2>
-<p>We are now ready to make use of <code>survtmle</code> to flexibly assess the differences in survival between the groups designated by the failure type variable above.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 1: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
+<div id="using-the-method-of-iterated-means" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-method-of-iterated-means" class="anchor"></a>Using the method of iterated means</h3>
+<div id="covariate-adjustment-via-logistic-regression" class="section level4">
+<h4 class="hasAnchor">
+<a href="#covariate-adjustment-via-logistic-regression" class="anchor"></a>Covariate adjustment via logistic regression</h4>
+<p>A common goal is to compare the incidence of failure at a fixed time between the two treatment groups. Covariate adjustment is often desirable in this comparison to improve efficiency <span class="citation">(Moore and Laan 2009)</span>. This covariate adjustment may be facilitated by estimating a series of iterated covariate-conditional means <span class="citation">(J. M. Robins 1999,<span class="citation">Bang and Robins (2005)</span>,<span class="citation">Laan and Gruber (2012)</span>)</span>. The final iterated covariate-conditional mean is marginalized over the empirical distribution of baseline covariates to obtain an estimate of the marginal cumulative incidence.</p>
+<p>Here, we invoke the eponymous <code>survtmle</code> function to compute the iterated mean-based (<code>method = "mean"</code>) covariate-adjusted estimates of the cumulative incidence at time six (<code>t0=6</code>) in each of the treatment groups using quasi-logistic regression (formula specified via <code>glm.ftime</code>) to estimate the iterated means. The <code>glm.ftime</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code> and <code>"trt"</code>. Here we use a simple main terms regression.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 1: Use GLM-based estimators for failure w/ "mean" method</span>
 fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
+<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
+## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
+<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
+## glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit1</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5667312
+## 1 1 0.7353291
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0031770491 0.0002159195
+## 1 1 0.0002159195 0.0022831146</code></pre>
+<p>Internally, <code>survtmle</code> estimates the covariate-conditional treatment probability (via <code>glm.trt</code> or <code>SL.trt</code>, see below) and covariate-conditional censoring distribution (via <code>glm.ctime</code> or <code>SL.ctime</code>, see below). In the above example, the treatment probability does not depend on covariates (as in e.g., a randomized trial) and so we did not specify a way to adjust for covariates in estimating the treatment probability. In this case, <code>survtmle</code> sets <code>glm.trt = "1"</code>, which corresponds with empirical estimates of treatment probability, and sets <code>glm.ctime</code> to be equivalent to the Kaplan-Meier censoring distribution estimates.</p>
+<p>In practice, we may wish to adjust for covariates when computing estimates of the covariate-conditional treatment and censoring probabilities. In observational studies, the distribution of treatment may differ by measured covariates, while in almost any study (including randomized trials) it is possible that censoring differs by covariates. Thus, we often wish to adjust for covariates to account for measured confounders of treatment receipt and censoring.</p>
+<p>This adjustment may be accomplished using logistic regression through the <code>glm.trt</code> and <code>glm.ctime</code> arguments, respectively. The <code>glm.trt</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>. The <code>glm.ctime</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>, <code>"trt"</code>, and <code>"t"</code> used to model the hazard function for censoring. By including <code>"trt"</code> and <code>"t"</code>, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call <code>survtmle</code> again, now adjusting for covariates in the treatment and censoring fits.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 2: Use GLM-based estimators for failure, treatment, and censoring w/ "mean" method</span>
+fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
+                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit2</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5657950
+## 1 1 0.7411658
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0029470633 0.0002170549
+## 1 1 0.0002170549 0.0016411250</code></pre>
+</div>
+<div id="covariate-adjustment-via-super-learner" class="section level4">
+<h4 class="hasAnchor">
+<a href="#covariate-adjustment-via-super-learner" class="anchor"></a>Covariate adjustment via super learner</h4>
+<p>While we can certainly use logistic regression to model the treatment, censoring, and iterated means, a large benefit afforded by the <code>survtmle</code> package is how it leverages <code>SuperLearner</code> ensemble machine learning to estimate these quantities in a more flexible manner. The super learner method is a generalization of stacked regression <span class="citation">(Breiman 1996)</span> that uses cross-validation to select the best-performing estimator from a library of candidate estimators <span class="citation">(Laan, Polley, and Hubbard 2007)</span>. Many popular machine learning algorithms have been implemented in the <a href="https://cran.r-project.org/web/packages/SuperLearner/index.html"><code>SuperLearner</code></a>.</p>
+<p>To utilize <code>SuperLearner</code> estimates, we can utilize options <code>SL.trt</code>, <code>SL.ctime</code>, and <code>SL.ftime</code> to estimate conditional treatment, censoring, and iterated means, respectively. See <code>?SuperLearner</code> for details on options for correctly specifying a super learner library and see <code>listWrappers()</code> to print the methods implemented in the <code>SuperLearner</code> package. Here we demonstrate a call to <code>survtmle</code> using a simple library that includes simple algorithms that are included in base <code>R</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 3: SuperLearner estimators for treatment, failure, and censoring.</span>
+fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
+<pre><code>## Loading required package: nnls</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5541546
+## 1 1 0.7140480
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0027940998 0.0001872402
+## 1 1 0.0001872402 0.0017399509</code></pre>
+<p><strong>Remark:</strong> Invoking <code>survtmle</code> with <code>method = "mean"</code> and <code>SL.ftime</code> requires fitting a super learner <em>for each time point</em> from <code>1:t0</code>. If there are many unique time points observed in the data, this can become a computationally intensive process. In such cases, we recommend either redefining the <code>ftime</code> variable to pool across time points <em>or</em> using <code>method = "hazard"</code> (see below).</p>
+<hr>
+</div>
+</div>
+<div id="using-the-method-of-cause-specific-hazards" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-method-of-cause-specific-hazards" class="anchor"></a>Using the method of cause-specific hazards</h3>
+<p>An alternative method to the iterated mean-based TMLE for estimating cumulative incidence is based on estimated the (cause-specific) hazard function. This estimator is implemented by specifying <code>method = "hazard"</code> in a call to <code>survtmle</code>. Just as with <code>method="mean"</code>, we can use either <code>glm.</code> or <code>SL.</code> to adjust for covariates. However, now the <code>glm.ftime</code> formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazards over time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 4: GLM estimators for treatment, censoring, and failure w/ "hazard" method</span>
+<span class="co"># Note the inclusion of 't' in the formula for glm.ftime. </span>
+fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,
+                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,
+                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit4</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5864610
+## 1 1 0.7788141
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0028138563 0.0002638809
+## 1 1 0.0002638809 0.0018133124</code></pre>
+<p>Here’s an example using super learner.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 5: SuperLearner estimators for failure and censoring, alongside empirical</span>
+<span class="co">#        estimators for treatment (the default) using the "hazard" method.</span>
+<span class="co">#        Note that the super learner for ftime is also adjusting for time.</span>
+fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit5</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5836815
+## 1 1 0.7634571
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0026784034 0.0002269052
+## 1 1 0.0002269052 0.0020455780</code></pre>
+<p><strong>Remark:</strong> The TMLE algorithm for the hazard-based estimator differs from the iterated mean-based TMLE. In particular, the algorithm is iterative and has no guarantee of convergence. While we have not identified instances where convergence is a serious problem, we encourage users to submit any such situations to <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>. The stopping criteria for the iteration may be adjusted via <code>tol</code> and <code>maxIter</code> options. Increasing <code>tol</code> or decreasing <code>maxIter</code> will lead to faster convergence; however, it is recommended that <code>tol</code> be set no larger than <code>1/sqrt(length(ftime))</code>. If <code>maxIter</code> is reached without convergence, one should check that <code>fit$meanIC</code> are all less than <code>1/sqrt(length(ftime))</code>.</p>
+<hr>
+</div>
+</div>
+<div id="multiple-failure-types" class="section level2">
+<h2 class="hasAnchor">
+<a href="#multiple-failure-types" class="anchor"></a>Multiple failure types</h2>
+<p>In all of the preceding examples, we have restricted our attention to the case where there is only a single failure type of interest. Now we consider more scenarios where we observe multiple failure types. First, we simulate data with two types of failure.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+n &lt;-<span class="st"> </span><span class="dv">200</span>
+trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
+adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
+ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
+ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</code></pre></div>
+<p>This simulated data structure is similar to the single failure type data; however, now<br>
+the failure type variable (<code>ftype</code>) now contains two distinct types of failure (with 0 still reserved for no failure).</p>
+<pre><code>## # A tibble: 200 x 5
+##    ftype ftime   trt    W1    W2
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     0     5     0     1     1
+##  2     2     4     1     1     1
+##  3     1     4     1     0     2
+##  4     1     6     1     1     2
+##  5     1     4     1     1     1
+##  6     1     3     1     1     0
+##  7     0     7     0     0     2
+##  8     1     3     0     0     0
+##  9     1     4     1     0     1
+## 10     1     4     1     1     1
+## # ... with 190 more rows</code></pre>
+<p>When multiple failure types are present, a common goal is to compare the cumulative incidence of a particular failure type at a fixed time between the two treatment groups, while accounting for the fact that participants may fail due to other failure types. Covariate adjustment is again desirable to improve efficiency and account for measured confounders of treatment and censoring.</p>
+<div id="using-the-method-of-iterated-means-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-method-of-iterated-means-1" class="anchor"></a>Using the method of iterated means</h3>
+<div id="covariate-adjustment-via-logistic-regression-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#covariate-adjustment-via-logistic-regression-1" class="anchor"></a>Covariate adjustment via logistic regression</h4>
+<p>The call to invoke <code>survtmle</code> is exactly the same as in the single failure type case.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 6: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
+fit6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit1</code></pre></div>
+fit6</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5660495
-## 1 1 0.7412935
+## 0 1 0.4229114
+## 1 1 0.6029411
+## 0 2 0.2517493
+## 1 2 0.2968020
+## 
+## $var
+##               0 1           1 1           0 2           1 2
+## 0 1  3.518965e-03  2.105261e-05 -1.689263e-03  5.957709e-05
+## 1 1  2.105261e-05  3.227379e-03 -2.396184e-05 -2.382514e-03
+## 0 2 -1.689263e-03 -2.396184e-05  2.544764e-03  7.728650e-05
+## 1 2  5.957709e-05 -2.382514e-03  7.728650e-05  2.615476e-03</code></pre>
+<p>The output object contains cumulative incidence estimates for each of the four groups defined by the two failure types and treatments.</p>
+<p>There are sometimes failure types that are not of direct interest to out study. Because <code>survtmle</code> invoked with <code>method="mean"</code> computes an estimate of the cumulative incidence of each failure type separately, we can save on computation time by specifying which failure types we care about via the <code>ftypeOfInterest</code> option.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 7: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
+fit7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
+                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
+                 <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)
+fit7</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.4229114
+## 1 1 0.6029411
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0042149062 0.0002205963
-## 1 1 0.0002205963 0.0023100990</code></pre>
-<p>Above, we invoke the eponymous <code>survtmle</code> function to estimate the differences in survival between the two groups defined by the failure type. In this very simple setup, we only make use of GLMs, estimating the treatment mechanism (via the <code>trt</code> argument) as a linear function of the adjustment variables (<code>W1</code> and <code>W2</code>) and both the failure time and censoring time as linear functions of the treatment and adjustment covariates. Additionally, we specify the <code>mean</code> method to use a targeted minimum loss-based estimator based on the G-computation formula of <span class="citation">Bang and Robins (2005)</span>.</p>
-<p>While we can certainly use GLMs to model our treatment mechanism as well as our failure and censoring times (as we did above), a major flexibility afforded by <code>survtmle</code> is the leveraging of the <code>SuperLearner</code> ensemble learning algorithm to estimate these quantities in a nonparametric manner.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 2: SuperLearner estimators for failure and censoring, alongside empirical</span>
-<span class="co">#        estimators for treatment (the default) using the "mean" method</span>
-fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+## 0 1 3.518965e-03 2.105261e-05
+## 1 1 2.105261e-05 3.227379e-03</code></pre>
+</div>
+<div id="covariate-adjustment-via-super-learner-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#covariate-adjustment-via-super-learner-1" class="anchor"></a>Covariate adjustment via super learner</h4>
+<p>As before, we can use the <code>SuperLearner</code> ensemble learning algorithm to adjust for covariates in multiple failure type settings as well.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 8: SuperLearner estimators for failure and censoring and empirical</span>
+<span class="co">#        estimators for treatment (default) using the "mean" method.</span>
+fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
-## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
-<pre><code>## Loading required package: nnls</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit2</code></pre></div>
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit8</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5486394
-## 1 1 0.6962562
+## 0 1 0.4347158
+## 1 1 0.6060303
+## 0 2 0.2501808
+## 1 2 0.2751184
 ## 
 ## $var
-##              0 1          1 1
-## 0 1 0.0029392806 0.0001605295
-## 1 1 0.0001605295 0.0018713076</code></pre>
-<p>In the above formulation, we invoke the <code>survtmle</code> function in largely the same manner as before, the principal difference being that we now provide a library of estimation algorithms to be used in fitting the failure and censoring, as opposed to specifying a functional form as was necessary with GLMs. In this case, the <code>SuperLearner</code> ensemble learning algorithm is used to combine the algorithms in the specified library, generating predictions that are “optimal” based on an appropriate loss function. Essentially, the SuperLearner algorithm performs stacked regression <span class="citation">(Breiman 1996)</span> using a set of specified nonparametric regression procedures (i.e., machine learning algorithms). The interested reader is invited to consult <span class="citation">van der Laan, Polley, and Hubbard (2007)</span> for details about the SuperLearner algorithm as well as <span class="citation">van der Laan and Rose (2011)</span> and <span class="citation">van der Laan and Rose (2017)</span> for a treatment of the central role this algorithm plays in targeted learning.</p>
-<hr>
+##               0 1           1 1           0 2           1 2
+## 0 1  2.689783e-03  2.060343e-05 -1.301778e-03  4.322551e-05
+## 1 1  2.060343e-05  2.514412e-03 -6.451645e-06 -1.707281e-03
+## 0 2 -1.301778e-03 -6.451645e-06  2.059196e-03  6.360288e-05
+## 1 2  4.322551e-05 -1.707281e-03  6.360288e-05  1.954279e-03</code></pre>
+<p><strong>Remark:</strong> As with single failure type, the <code>method = "mean"</code> call to <code>survtmle</code> may be computationally intensive with many time points. This is especially true when there are additionally multiple failure types, as the function must repeat these calls to <code>SuperLearner</code> separately for each type of failure. In this case, calls to <code>survtmle</code> could be parallelized with one call to <code>survtmle</code> for each type of failure specifying <code>ftypeOfInterest</code>.</p>
 </div>
-<div id="using-the-method-of-cause-specific-hazards" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-the-method-of-cause-specific-hazards" class="anchor"></a>Using the method of cause-specific hazards</h2>
-<p>When using <code>survtmle</code>, we need not rely on TMLEs that invoke the G-computation formula as we did when invoking <code>method = "mean"</code> above. Rather, <code>survtmle</code> also contains a <code>method = "harzard"</code> specification, which allows the estimates to be obtained by way of an iterative algorithm using the cause-specific hazard functions. The current implementation of this particular specification has no guarantee of convergence in finite samples, though it may eventually be replaced by a closed-form version.</p>
-<p>We can invoke the hazard-specific estimation procedure with GLMs as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 3: GLM estimators for treatment, censoring, and failure w/ "hazard" method</span>
-fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+</div>
+<div id="using-the-method-of-cause-specific-hazards-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-method-of-cause-specific-hazards-1" class="anchor"></a>Using the method of cause-specific hazards</h3>
+<div id="covariate-adjustment-via-logistic-regression-2" class="section level4">
+<h4 class="hasAnchor">
+<a href="#covariate-adjustment-via-logistic-regression-2" class="anchor"></a>Covariate adjustment via logistic regression</h4>
+<p>The TMLE based on cause-specific hazards can also be used to compute cumulative incidence estimates in settings with multiple failure types. As above, the <code>glm.ftime</code> formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazard of each failure type over time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 9: same as Fit 8 above, but using the "hazard" method</span>
+fit9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit3</code></pre></div>
+fit9</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.6011438
-## 1 1 0.7696831
+## 0 1 0.4590612
+## 1 1 0.6314466
+## 0 2 0.2659013
+## 1 2 0.2751953
 ## 
 ## $var
-##              0 1          1 1
-## 0 1 0.0049822981 0.0001630668
-## 1 1 0.0001630668 0.0031109841</code></pre>
-<p>The above is quite similar to “Fit 1” – our first example using GLM-based estimators for the treatment mechanism as well as the failure and censoring times. The only difference here comes from invoking <code>method = "hazard"</code> instead of <code>method = "mean"</code>, which, as noted above, relies on the cause-specific hazard for estimation, rather than the G-computation formula.</p>
-<p>We can also use the method of cause-specific hazards with the <code>SuperLearner</code> algorithm to obtain our estimates nonparametrically – without being forced to specify constrained functional forms using GLMs. Let’s try that out now:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 4: SuperLearner estimators for failure and censoring, alongside empirical</span>
-<span class="co">#        estimators for treatment (the default) using the "hazard" method</span>
-fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
-## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit4</code></pre></div>
+##               0 1           1 1           0 2           1 2
+## 0 1  3.516292e-03 -1.629697e-03  5.883916e-05 -4.525266e-05
+## 1 1 -1.629697e-03  2.505506e-03 -5.379741e-05  8.922855e-05
+## 0 2  5.883916e-05 -5.379741e-05  3.877006e-03 -3.037918e-03
+## 1 2 -4.525266e-05  8.922855e-05 -3.037918e-03  3.410066e-03</code></pre>
+<p>We can also leverage the <code>SuperLearner</code> algorithm when using the method of cause-specific hazards with multiple failure types of interest.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 10: same as Fit 7 above, but using the "hazard" method</span>
+fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                  <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
+                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit10</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5854866
-## 1 1 0.7570647
+## 0 1 0.4561936
+## 1 1 0.6098020
+## 0 2 0.2895448
+## 1 2 0.2627577
 ## 
 ## $var
-##              0 1          1 1
-## 0 1 0.0027030819 0.0002137453
-## 1 1 0.0002137453 0.0020991797</code></pre>
-<p>Just as in the second example (“Fit 2” in the previous section), we rely on the <code>SuperLearner</code> algorithm to flexibly model the failure and censoring times, passing in a library of nonparametric regression procedures to be stacked to produce optimal predictions. Unlike in that example, we now invoke the method of cause-specific hazards (<code>method = "hazard"</code>).</p>
-<hr>
+##               0 1           1 1           0 2           1 2
+## 0 1  2.599773e-03 -1.309696e-03  4.811715e-05  5.362138e-05
+## 1 1 -1.309696e-03  2.011762e-03 -1.172315e-05  6.302634e-05
+## 0 2  4.811715e-05 -1.172315e-05  3.036662e-03 -2.161558e-03
+## 1 2  5.362138e-05  6.302634e-05 -2.161558e-03  2.523458e-03</code></pre>
+<p>As with the iterated-mean based TMLE, we can obtain estimates of cumulative incidence of only certain failure types (via <code>ftypeOfInterest</code>); however, this does not necessarily result in faster computation, as it did in the case above. In situations where the convergence of the algorithm is an issue, it may be useful to invoke multiple calls to <code>survtmle</code> with singular <code>ftypeOfInterest</code>. If such convergence issues arise, please contact us at <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>.</p>
 </div>
-<div id="bounded-tmles" class="section level2">
+</div>
+</div>
+<div id="estimation-in-bounded-models" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bounded-tmles" class="anchor"></a>Bounded TMLEs</h2>
-<p>In the preceding two sections, we examined the simplest ways by which <code>survtmle</code> can be invoked. In the four examples contained therein, we saw two major choies left to the user: (1) whether to rely on GLMs, which require the specification of functional forms for several quantities of interest, or to use <code>SuperLearner</code> to estimate such quantities nonparametrically using stacked regression; and (2) whether to rely on TMLEs using the G-computation formula or to obtain estimates by using the method of cause-specific hazards.</p>
-<p>Now, we will examine several complex examples, with an eye towards demonstrating the advanced functionality that <code>survtmle</code> provides.</p>
-<p>…Background on bounded TMLEs…</p>
-<p>We can create bounded TMLEs by specifying a <code>data.frame</code> that contains columns denoted “t”, “l1”, and “u1”, which specify the set of times of interest, as well as lower and upper bounds, respectively, on the iterated conditional mean (for <code>method = "mean")</code> or the conditional hazard function (for <code>method = "hazard"</code>).</p>
-<p>Let us specify the <code>data.frame</code> of bounds for a simple example:</p>
+<a href="#estimation-in-bounded-models" class="anchor"></a>Estimation in bounded models</h2>
+<p>In certain situations, we have knowledge that the incidence of an event is bounded below/above for every strata in the population. It is possible to incorporate these bounds into the TMLE estimation procedure to ensure that any resulting estimate of cumulative incidence is compatible with these bounds. Please refer to <span class="citation">Benkeser, Carone, and Gilbert (2017)</span> for more on bounded TMLEs and their potential benefits.</p>
+<p>Bounds can be passed to <code>survtmle</code> by creating a <code>data.frame</code> that contains columns with specific names. In particular, there should be a column named <code>"t"</code>. There should additionally be columns for the lower and upper bound for each type of failure. For example if there is only one type of failure (<code>ftype = 1</code> or <code>ftype = 0</code>) then the bounds <code>data.frame</code> can contain columns <code>"l1"</code>, and <code>"u1"</code> denote the lower and upper bounds, respectively, on the iterated conditional mean (for <code>method = "mean"</code>) or the conditional hazard function (for <code>method = "hazard"</code>). If there are two types of failure (<code>ftype = 1</code>, <code>ftype = 2</code>, or <code>ftype = 0</code>) then there can additionally be columns <code>"l2"</code> and <code>"u2"</code> denoting the lower and upper bounds, respectively, on the iterated conditional mean for type two failures (for <code>method = "mean"</code>) or the conditional cause-specific hazard function for type two failures (for <code>method = "hazard"</code>).</p>
+<p>Here is a simple example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bf1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>), <span class="dt">l1 =</span> <span class="kw">rep</span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>))
 bf1</code></pre></div>
 <pre><code>##   t   l1   u1
@@ -229,177 +413,30 @@ bf1</code></pre></div>
 ## 4 4 0.01 0.99
 ## 5 5 0.01 0.99
 ## 6 6 0.01 0.99</code></pre>
-<p>The above <code>data.frame</code> contains the lower and upper bounds (“l1” and “u1”, respectively) to be used with the conditional mean or hazard (whichever we choose to invoke with <code>survtmle</code>) for the failure type (<code>ftype</code>) of interest, denoted “1”. Note that bounds must be provided for each failure type of interest (here we only have one such failure type, so we need only provide as many bounds).</p>
-<p>Now that we have specified our bounds, we can invoke <code>survtmle</code>. We’ll do this by essentially repeating our first example (“Fit 1”), using GLM estimators. The major difference here is that we restrict the iterated conditional mean to follow the bounds specified above.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 5: Fit 1, but now specifying bounds on the iterated conditional means</span>
-fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+<p>Now that we have specified our bounds, we can invoke <code>survtmle</code> repeating our first example (“Fit 1”), but now restricting the iterated conditional means to follow the bounds specified above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 11: Fit 2, but now specifying bounds on the iterated conditional means</span>
+fit11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
                  <span class="dt">bounds =</span> bf1)
-fit5</code></pre></div>
-<pre><code>## $est
-##          [,1]
-## 0 1 0.5658378
-## 1 1 0.7413279
-## 
-## $var
-##              0 1          1 1
-## 0 1 0.0042119035 0.0002210213
-## 1 1 0.0002210213 0.0023097007</code></pre>
-<p>The substantive difference here is that, as noted above, we have bounded our estimate of the iterated conditional mean for the failure type of interest. While we have demonstrated this using a TMLE based on the G-computation formula <code>method = "mean"</code>, the same procedure could be applied when invoking the estimation procedure using the method of cause-specific hazards.</p>
-<hr>
-</div>
-<div id="assessing-multiple-failure-types" class="section level2">
-<h2 class="hasAnchor">
-<a href="#assessing-multiple-failure-types" class="anchor"></a>Assessing Multiple Failure Types</h2>
-<p>In all of the preceding examples, we have restricted our attention to rather simplistic cases – those where there is only a single failure type of interest. Now, let us consider more realistic (and complex!) scenarios where we observe multiple failure types.</p>
-<p>We’ll start by simulating a data set with multiple failure types:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">100</span>
-t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>
-trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
-adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
-ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
-ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</code></pre></div>
-<p>In the above, our simulated data structure is quite similar to the simpler data set that we simulated at the beginning of the present document. The only notable difference is that the failure time variable (again, <code>ftype</code>) now contains <code>r length(unique(ftype))</code> distinct types of failure.</p>
-<p>It’s good practice to start with a cursory examination of our data so we’ll do just that.</p>
-<pre><code>## # A tibble: 100 x 5
-##    ftype ftime   trt    W1    W2
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1     1     4     0     0     1
-##  2     1     6     1     1     1
-##  3     2     4     1     0     1
-##  4     2     4     1     0     2
-##  5     1     5     1     0     1
-##  6     0     3     1     0     1
-##  7     2     4     0     0     1
-##  8     0     6     0     0     1
-##  9     1     3     1     0     0
-## 10     1     5     1     0     2
-## # ... with 90 more rows</code></pre>
-<p>We can now proceed to invoking the <code>survtmle</code> function to estimate differences in cumulative incidence in this more complex scenario. We’ll start by applying the GLM approach that we saw in several previous examples:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 7: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
-fit7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit7</code></pre></div>
-<pre><code>## $est
-##          [,1]
-## 0 1 0.5376047
-## 1 1 0.6063805
-## 0 2 0.2902382
-## 1 2 0.3773405
-## 
-## $var
-##               0 1           1 1           0 2           1 2
-## 0 1  0.0057678044  0.0000795576 -3.642272e-03 -2.942690e-05
-## 1 1  0.0000795576  0.0056507290  1.215233e-04 -5.467199e-03
-## 0 2 -0.0036422725  0.0001215233  4.872782e-03  5.951417e-06
-## 1 2 -0.0000294269 -0.0054671994  5.951417e-06  6.640219e-03</code></pre>
-<p>Just as in previous examples, we use GLM-based estimators by specifying functional forms for several quantities of interest: the treatment mechanism, the failure time, and the censoring time. We use a TMLE based on the G-computation formula by invoking <code>method = "mean"</code>. As we can see from the output object, we now obtain cumulative incidence estimates for each of the 4 groups defined by the multiple failure types and treatment.</p>
-<p>Just as before, we can also abandon the restrictions placed on us by GLMs (that is, the requirement to specify functional forms for the aforementioned quantities of interest) by stacking nonparametric regression procedures using the <code>SuperLearner</code> ensemble learning algorithm. Let’s try that out below:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 8: SuperLearner estimators for failure and censoring and empirical</span>
-<span class="co">#        estimators for treatment (default) using the "mean" method</span>
-fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
-## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit8</code></pre></div>
-<pre><code>## $est
-##          [,1]
-## 0 1 0.5447975
-## 1 1 0.5683637
-## 0 2 0.2871888
-## 1 2 0.3431602
-## 
-## $var
-##               0 1           1 1           0 2           1 2
-## 0 1  5.143804e-03  7.637143e-06 -3.271772e-03 -2.883737e-06
-## 1 1  7.637143e-06  5.029601e-03  1.644025e-06 -4.249492e-03
-## 0 2 -3.271772e-03  1.644025e-06  4.265433e-03 -6.978842e-06
-## 1 2 -2.883737e-06 -4.249492e-03 -6.978842e-06  4.723240e-03</code></pre>
-<p>Just as before, using the nonparametric approach we obtain slightly different estimates (relative to the GLM case) of the cumulative incidence across the combinations of failure types of interest and treatment.</p>
-<p>As was the case when we had a single failure type of interest, we can also leverage the method of cause-specific hazards when we have multiple such failure types. We invoke the procedure exactly as we did before using GLMs:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 9: same as Fit 7 above, but using the "hazard" method</span>
-fit9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## Warning in hazard_tmle(ftime = clean$ftime, ftype = clean$ftype, trt =
-## clean$trt, : TMLE fluctuations did not converge. Check that meanIC is
-## adequately small and proceed with caution.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit9</code></pre></div>
-<pre><code>## $est
-##          [,1]
-## 0 1 0.5426655
-## 1 1 0.5891886
-## 0 2 0.2783585
-## 1 2 0.3565178
-## 
-## $var
-##               0 1           1 1           0 2           1 2
-## 0 1  6.469106e-03 -4.082243e-03  4.726400e-05 -5.768001e-05
-## 1 1 -4.082243e-03  5.030050e-03  5.346433e-05 -6.384787e-05
-## 0 2  4.726400e-05  5.346433e-05  9.150187e-03 -8.599396e-03
-## 1 2 -5.768001e-05 -6.384787e-05 -8.599396e-03  8.943710e-03</code></pre>
-<p>We can also leverage the <code>SuperLearner</code> algorithm when using the method of cause-specific hazards with multiple failure types of interest. This is done essentially the same way as in the case of a single failure type:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 10: same as Fit 8 above, but using the "hazard" method</span>
-fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
-## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
-<pre><code>## Warning in hazard_tmle(ftime = clean$ftime, ftype = clean$ftype, trt =
-## clean$trt, : TMLE fluctuations did not converge. Check that meanIC is
-## adequately small and proceed with caution.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit10</code></pre></div>
-<pre><code>## $est
-##          [,1]
-## 0 1 0.5494984
-## 1 1 0.5948570
-## 0 2 0.2683959
-## 1 2 0.3546066
-## 
-## $var
-##               0 1           1 1           0 2           1 2
-## 0 1  5.257412e-03 -3.499796e-03  6.033578e-05 -5.885244e-05
-## 1 1 -3.499796e-03  4.138338e-03  5.113174e-05 -3.823377e-05
-## 0 2  6.033578e-05  5.113174e-05  6.025102e-03 -5.346442e-03
-## 1 2 -5.885244e-05 -3.823377e-05 -5.346442e-03  5.770696e-03</code></pre>
-<p>When there are multiple failure types of interest, we can also very easily obtain estimates for only a single failure type. This is done by indicating the failure type of which we desire estimates with the optional <code>ftypeOfInterest</code> argument. This is done like so</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 11: same as Fit 7 above, but now only return estimates for ftype = 1</span>
-fit11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                  <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)
 fit11</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5376047
-## 1 1 0.6063805
+## 0 1 0.4230616
+## 1 1 0.6028624
+## 0 2 0.2517208
+## 1 2 0.2967996
 ## 
 ## $var
-##              0 1          1 1
-## 0 1 0.0057678044 0.0000795576
-## 1 1 0.0000795576 0.0056507290</code></pre>
+##               0 1           1 1           0 2           1 2
+## 0 1  3.517185e-03  2.107583e-05 -1.688921e-03  5.968034e-05
+## 1 1  2.107583e-05  3.228259e-03 -2.394680e-05 -2.382745e-03
+## 0 2 -1.688921e-03 -2.394680e-05  2.544824e-03  7.730107e-05
+## 1 2  5.968034e-05 -2.382745e-03  7.730107e-05  2.615547e-03</code></pre>
 <p>When there are multiple failure types of interest, we can still provide bounds for the iterated conditional means (or the conditional hazard function, whichever is appropriate based on our specification of the <code>method</code> argument).</p>
-<p>In such cases, we must specify bounds associated with each of the failure types of interest. Since we now have 2 such failure types, we must specify just as many bounds:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># need to make a data.frame of bounds in proper format two types of failure that</span>
 <span class="co"># are labeled with ftype = 1 and ftype = 2, so bounds should have columns 't',</span>
 <span class="co"># 'l1', 'u1', 'l2', and 'u2'.</span>
@@ -416,7 +453,7 @@ bf2</code></pre></div>
 ## 5 5 0.01 0.99 0.02 0.99
 ## 6 6 0.01 0.99 0.02 0.99</code></pre>
 <p>Now, we invoke <code>survtmle</code>, passing in the specified bounds using the appropriate argument:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 12: same as Fit 7 above, but now include bounds</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 12: same as Fit 5 above, but now include bounds</span>
 fit12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                   <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
                   <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
@@ -427,36 +464,104 @@ fit12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survt
 fit12</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5375305
-## 1 1 0.6063561
-## 0 2 0.2904554
-## 1 2 0.3782845
+## 0 1 0.4230616
+## 1 1 0.6028624
+## 0 2 0.2524880
+## 1 2 0.2995662
 ## 
 ## $var
 ##               0 1           1 1           0 2           1 2
-## 0 1  5.767775e-03  7.979253e-05 -3.640610e-03 -2.906808e-05
-## 1 1  7.979253e-05  5.651563e-03  1.225822e-04 -5.467546e-03
-## 0 2 -3.640610e-03  1.225822e-04  4.883753e-03  5.150747e-06
-## 1 2 -2.906808e-05 -5.467546e-03  5.150747e-06  6.695540e-03</code></pre>
-<p>Having thoroughly examined the major options available in the <code>survtmle</code> function, let us proceed to inspect a few of the utility functions the package provides.</p>
+## 0 1  3.517185e-03  2.107583e-05 -1.695712e-03  6.011004e-05
+## 1 1  2.107583e-05  3.228259e-03 -2.426839e-05 -2.393105e-03
+## 0 2 -1.695712e-03 -2.426839e-05  2.554253e-03  7.964879e-05
+## 1 2  6.011004e-05 -2.393105e-03  7.964879e-05  2.640192e-03</code></pre>
+<p><strong>Remark 1:</strong> Please see the discussion in <span class="citation">Benkeser, Carone, and Gilbert (2017)</span> on how to select bounds for these procedures. Note that poorly chosen bounds can lead to instability in the estimation procedure.</p>
+<p><strong>Remark 2:</strong> While it is theoretically possible to use super learner to perform bounded estimation, many of the implemented algorithms are not currently designed to respect bounds. Nevertheless, it is possible to write one’s own algorithms to incorporate such bounds. However, for the sake of stability, we have restricted the bounded implementation to <code>glm</code> based covariate-adjustment.</p>
 <hr>
 </div>
 <div id="utility-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#utility-functions" class="anchor"></a>Utility functions</h2>
-<ul>
-<li>Brief look at <code>timepoints</code>
-</li>
-<li>Brief look at <code>plot.tp.survtmle</code>
-</li>
-</ul>
-<hr>
+<div id="estimating-cumulative-incidence-curves" class="section level3">
+<h3 class="hasAnchor">
+<a href="#estimating-cumulative-incidence-curves" class="anchor"></a>Estimating cumulative incidence curves</h3>
+<p>The <code>survtmle</code> function provides the function <code>timepoints</code> to compute the estimated cumulative incidence over multiple timepoints. This function is invoked after an initial call to <code>survtmle</code> with option <code>returnModels = TRUE</code>. By setting this option, the <code>timepoints</code> function is able to recycle fits for the conditional treatment probability, censoring distribution, and, in the case of <code>method = "hazard"</code>, the hazard fits. Thus, invoking <code>timepoints</code> is faster than making repeated calls to <code>survtmle</code> with different <code>t0</code>.</p>
+<p>There is some subtlety involved to properly leveraging this facility. Recall that the censoring distribution fit (and cause-specific hazard fit) pools over all time points. Thus, in order to most efficiently use <code>timepoints</code>, the initial call to <code>survtmle</code> should be made setting option <code>t0</code> equal to the final timepoint at which one wants estimates of cumulative incidence. This allows these hazard fitting procedures to utilize all of the data to estimate the conditional hazard function.</p>
+<p>We demonstrate the use of <code>timepoints</code> below based on the following simulated data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+n &lt;-<span class="st"> </span><span class="dv">200</span>
+t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>
+trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
+adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
+ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
+ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</code></pre></div>
+<p>Imagine that we would like cumulative incidence estimates at times <code>1:t_0</code> based on <code>fit2</code> above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called <code>fit2</code> the option <code>returnModels</code> was set to its default value <code>FALSE</code>. Thus, we must refit this object setting the function to return the model fits.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Refit fit 2 returning models</span>
+fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
+                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>, 
+                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)
+fit2_rm</code></pre></div>
+<pre><code>## $est
+##          [,1]
+## 0 1 0.5657950
+## 1 1 0.7411658
+## 
+## $var
+##              0 1          1 1
+## 0 1 0.0029470633 0.0002170549
+## 1 1 0.0002170549 0.0016411250</code></pre>
+<p>Now we can call <code>timepoints</code> to return estimates of cumulative incidence at each time <code>1:t_0</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="dv">1</span><span class="op">:</span>t_<span class="dv">0</span>)
+<span class="co"># print the object</span>
+tp.fit2</code></pre></div>
+<pre><code>## $est
+##   t1         t2         t3        t4        t5        t6
+## 1  0 0.01616033 0.08976902 0.1610393 0.3918143 0.5657950
+## 2  0 0.07450353 0.18960097 0.4279096 0.5784108 0.7411658
+## 
+## $var
+##   t1           t2           t3          t4          t5          t6
+## 1 NA 0.0001427635 0.0007369614 0.001131293 0.002291745 0.002947063
+## 2 NA 0.0006741195 0.0015590438 0.002276863 0.002277642 0.001641125</code></pre>
+<p>Internally, <code>timepoints</code> is making calls to <code>survtmle</code>, but is passing in the fitted treatment and censoring fits from <code>fit2_rm$trtMod</code> and <code>fit2_rm$ctimeMod</code>. However, for <code>method="mean"</code> the function is still fitting the iterated means separately for each time required by the call to <code>timepoints</code>. Thus, the call to <code>timepoints</code> may be quite slow if <code>method = "mean"</code>, <code>SL.ftime</code> is specified (as opposed to <code>glm.ftime</code>), and/or many times are passed in via <code>times</code>. Future implementations may attempt to avoid this extra model fitting. For now, if many times are required, we recommend using <code>method = "hazard"</code>, which is able to recycle all of the model fits. Below is an example of this.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Refit Fit 4 returning models </span>
+fit4_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
+                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
+                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
+                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,
+                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,
+                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
+                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)
+<span class="co"># call timepoints based on this fit</span>
+tp.fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit4_rm, <span class="dt">times =</span> <span class="dv">1</span><span class="op">:</span>t_<span class="dv">0</span>)
+<span class="co"># print the object</span>
+tp.fit4</code></pre></div>
+<pre><code>## $est
+##   t1         t2         t3        t4        t5        t6
+## 1  0 0.03457851 0.09883419 0.2215276 0.3966049 0.5864610
+## 2  0 0.07816849 0.20103813 0.3901823 0.6014791 0.7788141
+## 
+## $var
+##   t1           t2          t3          t4          t5          t6
+## 1 NA 0.0001481315 0.000799149 0.001273434 0.002852316 0.002813856
+## 2 NA 0.0007267294 0.001906479 0.003232722 0.003374974 0.001813312</code></pre>
+<p>There is a plotting method available for <code>timepoints</code> to plot cumulative incidence over time in each treatment group and for each failure type.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot raw cumulative incidence</span>
+<span class="kw">plot</span>(tp.fit4, <span class="dt">type =</span> <span class="st">"raw"</span>)</code></pre></div>
+<p><img src="survtmle_intro_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<p>Because the cumulative incidence function is being invoked pointwise, it is possible that the resulting curve is not monotone. However, it is possible to show that projecting this curve onto a monotone function via isotonic regression results in an estimate with identical asymptotic properties to the pointwise estimate. Therefore, we additionally provide an option <code>type = "iso"</code> (the default) that provides these smoothed curves.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot smoothed cumulative incidence</span>
+<span class="kw">plot</span>(tp.fit4)</code></pre></div>
 </div>
-<div id="applied-data-analysis-practical" class="section level2">
+</div>
+<div id="section" class="section level2">
 <h2 class="hasAnchor">
-<a href="#applied-data-analysis-practical" class="anchor"></a>Applied Data Analysis Practical</h2>
-<p>Coming soon…</p>
-<hr>
+<a href="#section" class="anchor"></a><img src="survtmle_intro_files/figure-html/unnamed-chunk-6-1.png" width="672">
+</h2>
 </div>
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
@@ -487,8 +592,8 @@ fit12</code></pre></div>
 ## [16] lazyeval_0.2.0      rprojroot_1.2       digest_0.6.12      
 ## [19] Matrix_1.2-10       purrr_0.2.2.9000    tidyr_0.6.3.9000   
 ## [22] ggplot2_2.2.1.9000  glue_1.1.1          evaluate_0.10.1    
-## [25] rmarkdown_1.6       stringi_1.1.5       compiler_3.4.1     
-## [28] scales_0.4.1.9002   backports_1.1.0</code></pre>
+## [25] rmarkdown_1.6       labeling_0.3        stringi_1.1.5      
+## [28] compiler_3.4.1      scales_0.4.1.9002   backports_1.1.0</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -496,19 +601,25 @@ fit12</code></pre></div>
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
 <div id="ref-bang2005doubly">
-<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4). Wiley Online Library: 962–73.</p>
+<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4). Wiley Online Library: 962–73. doi:<a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x">10.1111/j.1541-0420.2005.00377.x</a>.</p>
+</div>
+<div id="ref-benkeser2017improved">
+<p>Benkeser, David, Marco Carone, and Peter B Gilbert. 2017. “Improved Estimation of the Cumulative Incidence of Rare Outcomes.” <em>Statistics in Medicine</em>. Wiley Online Library. doi:<a href="https://doi.org/10.1002/sim.7337">10.1002/sim.7337</a>.</p>
 </div>
 <div id="ref-breiman1996stacked">
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64.</p>
+<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64. doi:<a href="https://doi.org/10.1007/BF00117832">10.1007/BF00117832</a>.</p>
 </div>
-<div id="ref-vdl2011targeted">
-<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
+<div id="ref-vdlgruber:2012:ijb">
+<p>Laan, Mark J van der, and Susan Gruber. 2012. “Targeted Minimum Loss Based Estimation of Causal Effects of Multiple Time Point Interventions.” Journal Article. <em>The International Journal of Biostatistics</em> 8 (1): 1–34. doi:<a href="https://doi.org/10.1515/1557-4679.1370">10.1515/1557-4679.1370</a>.</p>
 </div>
-<div id="ref-vdl2017targeted">
-<p>———. 2017. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
+<div id="ref-vdlpolley:2007:statappgenetics">
+<p>Laan, Mark J van der, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” Journal Article. <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1): 1–23. doi:<a href="https://doi.org/10.2202/1544-6115.1309">10.2202/1544-6115.1309</a>.</p>
 </div>
-<div id="ref-vdl2007super">
-<p>van der Laan, Mark J, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1).</p>
+<div id="ref-moore2009increasing">
+<p>Moore, Kelly L, and Mark J van der Laan. 2009. “Increasing Power in Randomized Trials with Right Censored Outcomes Through Covariate Adjustment.” <em>Journal of Biopharmaceutical Statistics</em> 19 (6). Taylor &amp; Francis: 1099–1131. doi:<a href="https://doi.org/10.1080/10543400903243017">10.1080/10543400903243017</a>.</p>
+</div>
+<div id="ref-robins1999ltmle">
+<p>Robins, Jamie M. 1999. “Robust Estimation in Sequentially Ignorable Missing Data and Causal Inference Models.” Proceedings of the American Statistical Association Section on Bayesian Statistical Science. <a href="http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf" class="uri">http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf</a>.</p>
 </div>
 </div>
 </div>
@@ -521,13 +632,11 @@ fit12</code></pre></div>
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#simulation">Simulation</a></li>
-      <li><a href="#using-the-g-computation-method">Using the G-computation method</a></li>
-      <li><a href="#using-the-method-of-cause-specific-hazards">Using the method of cause-specific hazards</a></li>
-      <li><a href="#bounded-tmles">Bounded TMLEs</a></li>
-      <li><a href="#assessing-multiple-failure-types">Assessing Multiple Failure Types</a></li>
+      <li><a href="#single-failure-type">Single failure type</a></li>
+      <li><a href="#multiple-failure-types">Multiple failure types</a></li>
+      <li><a href="#estimation-in-bounded-models">Estimation in bounded models</a></li>
       <li><a href="#utility-functions">Utility functions</a></li>
-      <li><a href="#applied-data-analysis-practical">Applied Data Analysis Practical</a></li>
+      <li><a href="#section"><img src="survtmle_intro_files/figure-html/unnamed-chunk-6-1.png" width="672"></a></li>
       <li><a href="#session-information">Session Information</a></li>
       <li><a href="#references">References</a></li>
       </ul>

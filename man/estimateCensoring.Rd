@@ -2,63 +2,73 @@
 % Please edit documentation in R/estimateCensoring.R
 \name{estimateCensoring}
 \alias{estimateCensoring}
-\title{estimateCensoring}
+\title{Estimate Censoring Mechanisms}
 \usage{
 estimateCensoring(dataList, adjustVars, t0, SL.ctime = NULL,
   glm.ctime = NULL, returnModels = FALSE, verbose = TRUE, gtol = 0.001,
   ...)
 }
 \arguments{
-\item{dataList}{A list of \code{data.frame} objects as described in \code{?makeDataList}.}
+\item{dataList}{A list of \code{data.frame} objects as described in
+\code{?makeDataList}.}
 
-\item{adjustVars}{Object of class \code{data.frame} that contains the variables to adjust 
-for in the regression.}
+\item{adjustVars}{Object of class \code{data.frame} that contains the
+variables to adjust for in the regression.}
 
-\item{t0}{The timepoint at which \code{survtmle} was called to evaluate. Needed only because
-the naming convention for the regression if \code{t==t0} is different than if \code{t!=t0}.}
+\item{t0}{The timepoint at which \code{survtmle} was called to evaluate.
+Needed only because the naming convention for the regression if
+\code{t == t0} is different than if \code{t != t0}.}
 
-\item{SL.ctime}{A character vector or list specification to be passed to the \code{SL.library} argument 
-in the call to \code{SuperLearner} for the outcome regression (either cause-specific hazards or 
-condtional mean). See \code{?SuperLearner} for more information on how to specify valid 
-\code{SuperLearner} libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called \code{"trt"} and \code{names(adjustVars)}.}
+\item{SL.ctime}{A character vector or list specification to be passed to the
+\code{SL.library} argument in the call to \code{SuperLearner} for the
+outcome regression (either cause-specific hazards or condtional mean).
+See \code{?SuperLearner} for more information on how to specify valid 
+\code{SuperLearner} libraries. It is expected that the wrappers used
+in the library will play nicely with the input variables, which will
+be called \code{"trt"} and \code{names(adjustVars)}.}
 
-\item{glm.ctime}{A character specification of the right-hand side of the equation passed to the
-\code{formula} option of a call to \code{glm} for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if \code{SL.ctime != NULL}. Use \code{"trt"} to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+\item{glm.ctime}{A character specification of the right-hand side of the
+equation passed to the \code{formula} option of a call to \code{glm}
+for the outcome regression (either cause-specific hazards or
+condtional mean). Ignored if \code{SL.ctime != NULL}. Use \code{"trt"}
+to specify the treatment in this formula (see examples). The formula
+can additionally include any variables found in
 \code{names(adjustVars)}.}
 
-\item{returnModels}{A boolean indicating whether to return the \code{SuperLearner} or \code{glm} 
-objects used to estimate the nuisance parameters. Must be set to \code{TRUE} if the user plans to 
-use calls to \code{timepoints} to obtain estimates at times other than \code{t0}. See \code{?timepoints}
-for more information.}
+\item{returnModels}{A boolean indicating whether to return the
+\code{SuperLearner} or \code{glm} objects used to estimate the
+nuisance parameters. Must be set to \code{TRUE} if the user plans to
+use calls to \code{timepoints} to obtain estimates at times other than
+\code{t0}. See \code{?timepoints} for more information.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+\item{verbose}{A boolean indicating whether the function should print
+messages to indicate progress.}
 
-\item{gtol}{The truncation level of predicted censoring survival to handle positivity violations.}
+\item{gtol}{The truncation level of predicted censoring survival to handle
+positivity violations.}
 
 \item{...}{Other arguments. Not currently used.}
 }
 \value{
-The function returns a list that is exactly the same as the input \code{dataList}, 
-but with a column named \code{G_dC} added to it, which is the estimated conditional survival 
-distribution for the censoring variable evaluated at the each of the rows of each 
-\code{data.frame} in \code{dataList}.
+The function returns a list that is exactly the same as the input
+        \code{dataList}, but with a column named \code{G_dC} added to it,
+        which is the estimated conditional survival distribution for the
+        censoring variable evaluated at the each of the rows of each
+        \code{data.frame} in \code{dataList}.
 }
 \description{
-This function computes an estimate of the hazard for censoring 
-using either \code{glm} or \code{SuperLearner} based on log-likelihood loss. The function
-then computes the censoring survival distribution based on these estimates. The 
-structure of the function is specific to how it is called within \code{survtmle}.
-In particular, \code{dataList} must have a very specific structure for this 
-function to run properly. The list should consist of \code{data.frame} objects. 
-The first will have the number of rows for each observation
-equal to the \code{ftime} corresponding to that observation. The subsequent entries will
-have \code{t0} rows for each observation and will set \code{trt} column equal to each value
-of \code{trtOfInterest} in turn. One of these columns must be named
-\code{C} that is a counting process for the right-censoring variable. 
-The function will fit a regression with \code{C} as the outcome and 
-functions of \code{trt} and \code{names(adjustVars)} as specified by \code{glm.ctime} 
-or \code{SL.ctime} as predictors.
+Computes an estimate of the hazard for censoring using either \code{glm} or
+\code{SuperLearner} based on log-likelihood loss. The function then computes
+the censoring survival distribution based on these estimates. The structure
+of the function is specific to how it is called within \code{survtmle}. In
+particular, \code{dataList} must have a very specific structure for this
+function to run properly. The list should consist of \code{data.frame}
+objects. The first will have the number of rows for each observation equal to
+the \code{ftime} corresponding to that observation. The subsequent entries
+will have \code{t0} rows for each observation and will set \code{trt} column
+equal to each value of \code{trtOfInterest} in turn. One of these columns
+must be named \code{C} that is a counting process for the right-censoring
+variable. The function will fit a regression with \code{C} as the outcome and
+functions of \code{trt} and \code{names(adjustVars)} as specified by
+\code{glm.ctime} or \code{SL.ctime} as predictors.
 }

@@ -131,41 +131,31 @@ ftype &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ftime <sp
 <span class="co"># apply survtmle for estimation</span>
 fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                 <span class="dt">trt =</span> A, <span class="dt">adjustVars =</span> W,
+                <span class="dt">glm.trt =</span> <span class="st">"1"</span>,
                 <span class="dt">glm.ftime =</span> <span class="st">"I(W1*W2) + trt + t"</span>,
-                <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>,
-                <span class="dt">verbose =</span> <span class="ot">TRUE</span>,  <span class="dt">t0 =</span> t_<span class="dv">0</span>, <span class="dt">maxIter =</span> <span class="dv">2</span>)
-<span class="co">#&gt; Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :</span>
-<span class="co">#&gt; glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</span>
-<span class="co">#&gt; TMLE Iteration  1   :  -9e-04 1e-04</span>
+                <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>, 
+                <span class="dt">t0 =</span> t_<span class="dv">0</span>)
 
 <span class="co"># extract cumulative incidence at each time point</span>
 tpfit &lt;-<span class="st"> </span><span class="kw"><a href="reference/timepoints.html">timepoints</a></span>(fit, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
-<span class="co">#&gt; TMLE Iteration  1   :  0 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -6e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -3e-04 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -0.0017 0 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -9e-04 -2e-04 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -5e-04 -2e-04 </span>
-<span class="co">#&gt; TMLE Iteration  1   :  -0.0017 -1e-04</span>
 
 <span class="co"># examine output object produced by the timepoints function</span>
 <span class="kw">print</span>(tpfit)
 <span class="co">#&gt; $est</span>
 <span class="co">#&gt;              t1         t2         t3         t4         t5         t6</span>
-<span class="co">#&gt; 0 1 0.032997470 0.02429619 0.03646452 0.04867155 0.04076233 0.11147399</span>
-<span class="co">#&gt; 1 1 0.008014555 0.01727758 0.02571549 0.03401515 0.05722310 0.05131788</span>
+<span class="co">#&gt; 0 1 0.032997470 0.06492788 0.09582530 0.12572293 0.15465313 0.18264737</span>
+<span class="co">#&gt; 1 1 0.008014555 0.01603567 0.02406256 0.03209448 0.04013064 0.04817027</span>
 <span class="co">#&gt;             t7         t8         t9        t10</span>
-<span class="co">#&gt; 0 1 0.10375280 0.11522782 0.18040243 0.26644929</span>
-<span class="co">#&gt; 1 1 0.07233118 0.08266406 0.07688998 0.07278289</span>
+<span class="co">#&gt; 0 1 0.20973629 0.23594966 0.26131640 0.28586459</span>
+<span class="co">#&gt; 1 1 0.05621257 0.06425675 0.07230203 0.08034761</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $var</span>
 <span class="co">#&gt;               t1           t2           t3           t4           t5</span>
-<span class="co">#&gt; 0 1 4.565496e-04 0.0004508117 0.0004457730 0.0004420009 0.0004461814</span>
-<span class="co">#&gt; 1 1 2.111604e-06 0.0003335335 0.0003191353 0.0003058917 0.0006114673</span>
-<span class="co">#&gt;               t6           t7           t8           t9          t10</span>
-<span class="co">#&gt; 0 1 0.0012230239 0.0012205672 0.0011840986 0.0019516376 0.0031229308</span>
-<span class="co">#&gt; 1 1 0.0006198923 0.0009695247 0.0009425824 0.0009515562 0.0009578375</span>
+<span class="co">#&gt; 0 1 4.565496e-04 0.0005099637 0.0004951975 0.0004852183 0.0005862762</span>
+<span class="co">#&gt; 1 1 2.111604e-06 0.0003345475 0.0003208485 0.0003079889 0.0006317931</span>
+<span class="co">#&gt;               t6           t7           t8           t9         t10</span>
+<span class="co">#&gt; 0 1 0.0012883360 0.0013743743 0.0012847990 0.0020298371 0.003137739</span>
+<span class="co">#&gt; 1 1 0.0006229943 0.0009761833 0.0009544762 0.0009534062 0.000956650</span>
 
 <span class="co"># examine plot of cumulative incidences</span>
 <span class="kw">plot</span>(tpfit)</code></pre></div>

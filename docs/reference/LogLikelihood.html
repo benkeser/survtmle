@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LogLikelihood — LogLikelihood • survtmle</title>
+<title>Log-Likelihood — LogLikelihood • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,12 +95,11 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>LogLikelihood</h1>
+    <h1>Log-Likelihood</h1>
     </div>
 
     
-    <p>A function that computes the log-likelihood for a model. Used by 
-<code>optim</code> on occasion.</p>
+    <p>Computes the log-likelihood for a model. Used by <code>optim</code> on occasion.</p>
     
 
     <pre class="usage"><span class='fu'>LogLikelihood</span>(<span class='no'>beta</span>, <span class='no'>X</span>, <span class='no'>Y</span>)</pre>
@@ -110,15 +109,15 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>beta</th>
-      <td><p>A vector of coefficients in a logistic glm</p></td>
+      <td><p>A vector of coefficients in a logistic GLM.</p></td>
     </tr>
     <tr>
       <th>X</th>
-      <td><p>The design matrix</p></td>
+      <td><p>The design matrix.</p></td>
     </tr>
     <tr>
       <th>Y</th>
-      <td><p>The outcome</p></td>
+      <td><p>The outcome.</p></td>
     </tr>
     </table>
     

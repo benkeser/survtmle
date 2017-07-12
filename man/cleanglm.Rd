@@ -2,19 +2,17 @@
 % Please edit documentation in R/cleanglm.R
 \name{cleanglm}
 \alias{cleanglm}
-\title{cleanglm}
+\title{Clean up outputs from GLM}
 \usage{
 cleanglm(cm)
 }
 \arguments{
-\item{cm}{An object of class \code{glm}}
+\item{cm}{An object of class \code{glm}.}
 }
 \value{
-An object of class \code{glm} but with unnecessary 
-output removed.
+An object of class \code{glm} but with unnecessary output removed.
 }
 \description{
-This function removes superfluous output from the call
-to \code{glm} that is not needed to perform later 
-predictions. It is applied as a space saving technique.
+Removes superfluous output from the call to \code{glm} that is not needed to
+perform later predictions. It is applied as a space saving technique.
 }

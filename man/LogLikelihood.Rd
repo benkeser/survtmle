@@ -2,21 +2,20 @@
 % Please edit documentation in R/LogLikelihood.R
 \name{LogLikelihood}
 \alias{LogLikelihood}
-\title{LogLikelihood}
+\title{Log-Likelihood}
 \usage{
 LogLikelihood(beta, X, Y)
 }
 \arguments{
-\item{beta}{A vector of coefficients in a logistic glm}
+\item{beta}{A vector of coefficients in a logistic GLM.}
 
-\item{X}{The design matrix}
+\item{X}{The design matrix.}
 
-\item{Y}{The outcome}
+\item{Y}{The outcome.}
 }
 \value{
 Numeric of the summed negative log-likelihood loss over observations.
 }
 \description{
-A function that computes the log-likelihood for a model. Used by 
-\code{optim} on occasion.
+Computes the log-likelihood for a model. Used by \code{optim} on occasion.
 }

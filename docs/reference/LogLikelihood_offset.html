@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LogLikelihood_offset — LogLikelihood_offset • survtmle</title>
+<title>Log-Likelihood Offset — LogLikelihood_offset • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,13 +95,12 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>LogLikelihood_offset</h1>
+    <h1>Log-Likelihood Offset</h1>
     </div>
 
     
-    <p>A function that computes the log-likelihood for a logistic regression
-model with an offset. Used by 
-<code>optim</code> on occasion.</p>
+    <p>Computes the log-likelihood for a logistic regression model with an offset.
+Used by <code>optim</code> on occasion.</p>
     
 
     <pre class="usage"><span class='fu'>LogLikelihood_offset</span>(<span class='no'>beta</span>, <span class='no'>Y</span>, <span class='no'>H</span>, <span class='no'>offset</span>)</pre>
@@ -111,19 +110,19 @@ model with an offset. Used by
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>beta</th>
-      <td><p>A vector of coefficients in a logistic glm</p></td>
+      <td><p>A vector of coefficients in a logistic GLM.</p></td>
     </tr>
     <tr>
       <th>Y</th>
-      <td><p>The outcome vector</p></td>
+      <td><p>A vector of the outcome.</p></td>
     </tr>
     <tr>
       <th>H</th>
-      <td><p>The covariate matrix</p></td>
+      <td><p>The matrix of covariates.</p></td>
     </tr>
     <tr>
       <th>offset</th>
-      <td><p>The offset vector</p></td>
+      <td><p>The vector of offsets.</p></td>
     </tr>
     </table>
     
