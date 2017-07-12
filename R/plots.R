@@ -58,6 +58,8 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
   times <- objects(x)
   times_labels <- stringr::str_sub(times, 2, stringr::str_length(times))
   times_labs <- as.numeric(unclass(times_labels))
+  # reorder
+  times_labs <- times_labs[order(times_labs)]
 
   if(type == "raw") {
     est_in <- as.data.frame(cbind(t(est), times_labs))
