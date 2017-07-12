@@ -94,8 +94,6 @@ print(tpfit)
 
 # examine plot of cumulative incidences
 plot(tpfit)
-#> Warning in cbind(t(as.matrix(iso)), times_labs): number of rows of result
-#> is not a multiple of vector length (arg 2)
 ```
 
 <img src="README-example-1.png" style="display: block; margin: auto;" />
