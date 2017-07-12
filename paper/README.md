@@ -1,3 +1,0 @@
-# software paper
-
-> description...

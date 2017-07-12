@@ -27,6 +27,10 @@ package.
 We'll proceed by examining the use of `survtmle` in a variety of simple
 examples. First, let's load the package:
 
+```{r core_pkgs, echo=FALSE}
+library(tibble)
+```
+
 ```{r load_pkg}
 library(survtmle)
 ```
@@ -56,7 +60,7 @@ at an arbitrary time point (`t_0`).
 Let's examine just the first few rows of the observed data set:
 
 ```{r view_data, echo=FALSE}
-d <- tibble::as_tibble(cbind(ftype, ftime, trt, adjustVars))
+d <- as_data_frame(cbind(ftype, ftime, trt, adjustVars))
 d
 ```
 

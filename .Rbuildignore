@@ -10,7 +10,6 @@
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^\.git$
-^paper$
 ^docs$
 ^debug$
 ^paper_JSS$
