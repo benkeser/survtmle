@@ -72,7 +72,7 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
       tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
       tmp$yf
     })
-    iso_est <- as.data.frame(cbind(t(as.matrix(iso)), times_labs))
+    iso_est <- as.data.frame(cbind(as.matrix(iso), times_labs))
     colnames(iso_est) <- c(gsub(" ", "/",
                                 colnames(iso_est)[seq_len(ncol(iso_est) - 1)]),
                            "t")

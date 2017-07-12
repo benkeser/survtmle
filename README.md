@@ -66,44 +66,36 @@ ftype <- as.numeric(ftime == T)
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
                 trt = A, adjustVars = W,
+                glm.trt = "1",
                 glm.ftime = "I(W1*W2) + trt + t",
-                glm.ctime = "W1 + t", method = "hazard",
-                verbose = TRUE,  t0 = t_0, maxIter = 2)
-#> Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
-#> glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'
-#> TMLE Iteration  1   :  -9e-04 1e-04
+                glm.ctime = "W1 + t", method = "hazard", 
+                t0 = t_0)
 
 # extract cumulative incidence at each time point
 tpfit <- timepoints(fit, times = seq_len(t_0))
-#> TMLE Iteration  1   :  0 0 
-#> TMLE Iteration  1   :  -3e-04 0 
-#> TMLE Iteration  1   :  -6e-04 0 
-#> TMLE Iteration  1   :  -3e-04 0 
-#> TMLE Iteration  1   :  -0.0017 0 
-#> TMLE Iteration  1   :  -9e-04 -2e-04 
-#> TMLE Iteration  1   :  -5e-04 -2e-04 
-#> TMLE Iteration  1   :  -0.0017 -1e-04
 
 # examine output object produced by the timepoints function
 print(tpfit)
 #> $est
 #>              t1         t2         t3         t4         t5         t6
-#> 0 1 0.032997470 0.02429619 0.03646452 0.04867155 0.04076233 0.11147399
-#> 1 1 0.008014555 0.01727758 0.02571549 0.03401515 0.05722310 0.05131788
+#> 0 1 0.032997470 0.06492788 0.09582530 0.12572293 0.15465313 0.18264737
+#> 1 1 0.008014555 0.01603567 0.02406256 0.03209448 0.04013064 0.04817027
 #>             t7         t8         t9        t10
-#> 0 1 0.10375280 0.11522782 0.18040243 0.26644929
-#> 1 1 0.07233118 0.08266406 0.07688998 0.07278289
+#> 0 1 0.20973629 0.23594966 0.26131640 0.28586459
+#> 1 1 0.05621257 0.06425675 0.07230203 0.08034761
 #> 
 #> $var
 #>               t1           t2           t3           t4           t5
-#> 0 1 4.565496e-04 0.0004508117 0.0004457730 0.0004420009 0.0004461814
-#> 1 1 2.111604e-06 0.0003335335 0.0003191353 0.0003058917 0.0006114673
-#>               t6           t7           t8           t9          t10
-#> 0 1 0.0012230239 0.0012205672 0.0011840986 0.0019516376 0.0031229308
-#> 1 1 0.0006198923 0.0009695247 0.0009425824 0.0009515562 0.0009578375
+#> 0 1 4.565496e-04 0.0005099637 0.0004951975 0.0004852183 0.0005862762
+#> 1 1 2.111604e-06 0.0003345475 0.0003208485 0.0003079889 0.0006317931
+#>               t6           t7           t8           t9         t10
+#> 0 1 0.0012883360 0.0013743743 0.0012847990 0.0020298371 0.003137739
+#> 1 1 0.0006229943 0.0009761833 0.0009544762 0.0009534062 0.000956650
 
 # examine plot of cumulative incidences
 plot(tpfit)
+#> Warning in cbind(t(as.matrix(iso)), times_labs): number of rows of result
+#> is not a multiple of vector length (arg 2)
 ```
 
 <img src="README-example-1.png" style="display: block; margin: auto;" />
