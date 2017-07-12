@@ -60,7 +60,9 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL, re
       }else{
         trtMod <- glm.trt
       }
+      suppressWarnings(
       pred <- predict(trtMod,type="response")
+      )
       eval(parse(text=paste0("dat$g_",max(dat$trt), "<- pred")))
       eval(parse(text=paste0("dat$g_",min(dat$trt), "<- 1-pred")))
     }

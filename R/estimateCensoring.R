@@ -90,7 +90,9 @@ estimateCensoring <- function(
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
+          suppressWarnings(
           g_dC <- 1-predict(ctimeMod, newdata=x, type="response")
+          )
           # put time back to normal
           x$t <- x$t + 1
           # replace any observations with t = 1 
@@ -134,8 +136,10 @@ estimateCensoring <- function(
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
           g_dC <- 
+          suppressWarnings(
             1-predict(ctimeMod, newdata=x[,c("t", "trt", names(adjustVars))],
                       onlySL=TRUE)[[1]]
+          )
           # put time back to normal
           x$t <- x$t + 1
           # replace any observations with t = 1 

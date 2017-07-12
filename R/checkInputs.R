@@ -267,7 +267,7 @@ checkInputs <- function(ftime,
 	}	
 	# check that one of glm.ctime or SL.ctime is specified
 	if(is.null(glm.ctime) & is.null(SL.ctime)){
-		warning("glm.ctime and SL.ctime not specified. Computing unadjusted estimates.")
+		warning("glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.")
 		glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))
 	}	
 

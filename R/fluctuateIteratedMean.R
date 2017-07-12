@@ -79,7 +79,9 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0, Gc
       )
       # get predictions back
       wideDataList <- lapply(wideDataList, function(x,t){
-        eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- predict(flucMod, newdata=x,type='response')",sep="")))
+        suppressWarnings(
+          eval(parse(text=paste("x$Q",whichJ,"star.",t,"<- predict(flucMod, newdata=x,type='response')",sep="")))
+        )
         x
       },t=t)
     }else{
