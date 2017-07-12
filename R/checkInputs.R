@@ -185,7 +185,7 @@ checkInputs <- function(ftime,
 	}
 
 	# check if time enters as a factor in glm.ftime or glm.ctime
-	if(!is.null(glm.ftime) & !any(class(glm.ftime)=="glm") & method == "hazard"){
+	if(!is.null(glm.ftime) & !is.list(glm.ftime) & method == "hazard"){
 		if(grepl("factor(t)", glm.ftime)){
 			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
 		}
