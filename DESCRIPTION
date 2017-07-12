@@ -8,7 +8,8 @@ Authors@R: as.person(c(
   ))
 Maintainer: David Benkeser <benkeser@emory.edu>
 Description: Tools that facilitate the computation of marginal cumulative
-    incidence estimates in survival settings with and without competing risks.
+    incidence estimates in survival settings with and without competing risks,
+    within the framework of Targeted Learning.
 Depends:
     R (>= 3.0.0)
 Imports:
