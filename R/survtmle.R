@@ -161,8 +161,8 @@ survtmle <- function(
   method="hazard",
   bounds=NULL,
   verbose=FALSE,
-  tol=1/(length(ftime)),
-  maxIter=100,
+  tol=1/(sqrt(length(ftime))),
+  maxIter=10,
   Gcomp = FALSE,
   gtol = 1e-3
 ){

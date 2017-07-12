@@ -89,7 +89,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         Qmod <- stats::glm(as.formula(Qform), family="binomial", data=wideDataList[[1]][include,])
       
         wideDataList <- lapply(wideDataList, function(x, whichJ, t){
-          eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x, type='response')",sep="")))
+          suppressWarnings(
+            eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x, type='response')",sep="")))
+          )
           x
         },t=t,whichJ=whichJ)
       })
@@ -124,8 +126,10 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
           suppressWarnings({
             Qmod <- stats::glm(stats::as.formula(paste0(outcomeName," ~ trt")), data=wideDataList[[1]][include,])
             wideDataList <- lapply(wideDataList, function(x, whichJ, t){
+              suppressWarnings(
              eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,
                                    ")) * predict(Qmod,newdata=data.frame(trt=x$trt))",sep="")))
+             )
              x
             },t=t,whichJ=whichJ)
           })
@@ -153,7 +157,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                family="binomial",verbose=verbose)
         )
         wideDataList <- lapply(wideDataList, function(x, whichJ, t){
-          eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x[,c('trt',names(adjustVars))], onlySL=TRUE)$pred",sep="")))
+          suppressWarnings(
+            eval(parse(text=paste("x$Q",whichJ,".",t," <- x$N",whichJ,".",t-1," + (1-(x$NnotJ.",t-1,"+ x$N",whichJ,".",t-1,")) * predict(Qmod, newdata=x[,c('trt',names(adjustVars))], onlySL=TRUE)$pred",sep="")))
+          )
           x
         },t=t,whichJ=whichJ)
       }

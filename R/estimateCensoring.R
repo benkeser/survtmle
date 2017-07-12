@@ -14,7 +14,7 @@
 #' variable. The function will fit a regression with \code{C} as the outcome and
 #' functions of \code{trt} and \code{names(adjustVars)} as specified by
 #' \code{glm.ctime} or \code{SL.ctime} as predictors.
-#' 
+#'
 #' @param dataList A list of \code{data.frame} objects as described in
 #'        \code{?makeDataList}.
 #' @param adjustVars Object of class \code{data.frame} that contains the
@@ -99,7 +99,11 @@ estimateCensoring <- function(dataList,
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
-          g_dC <- 1-predict(ctimeMod, newdata = x, type = "response")
+
+          suppressWarnings(
+            g_dC <- 1-predict(ctimeMod, newdata = x, type = "response")
+          )
+
           # put time back to normal
           x$t <- x$t + 1
           # replace any observations with t = 1 
@@ -144,15 +148,20 @@ estimateCensoring <- function(dataList,
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
           g_dC <- 
-            1 - predict(ctimeMod, newdata=x[,c("t", "trt", names(adjustVars))],
-                        onlySL=TRUE)[[1]]
+
+            suppressWarnings(
+            1 - predict(ctimeMod, newdata = x[, c("t", "trt",
+                                                  names(adjustVars))],
+                        onlySL = TRUE)[[1]]
+          )
+
           # put time back to normal
           x$t <- x$t + 1
-          # replace any observations with t = 1 
+          # replace any observations with t = 1
           # to avoid extrapolation at t = 0
           g_dC[x$t == 1] <- 1
         }
-        x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN=cumprod)))
+        x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN = cumprod)))
         x
       })
     } else {

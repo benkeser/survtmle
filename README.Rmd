@@ -86,9 +86,10 @@ ftype <- as.numeric(ftime == T)
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
                 trt = A, adjustVars = W,
+                glm.trt = "1",
                 glm.ftime = "I(W1*W2) + trt + t",
-                glm.ctime = "W1 + t", method = "hazard",
-                verbose = TRUE,  t0 = t_0, maxIter = 2)
+                glm.ctime = "W1 + t", method = "hazard", 
+                t0 = t_0)
 
 # extract cumulative incidence at each time point
 tpfit <- timepoints(fit, times = seq_len(t_0))

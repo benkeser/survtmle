@@ -222,20 +222,16 @@ checkInputs <- function(ftime,
   }
 
   # check if time enters as a factor in glm.ftime or glm.ctime
-  if(!is.null(glm.ftime) & !any(class(glm.ftime) == "glm") &
-     method == "hazard") {
-    if(grepl("factor(t)", glm.ftime)) {
-      stop("Time can only be modeled as a factor in hazard implementation if
-	   there are observed endpoints at every time 1:t0.")
-    }
-  }
- 
-  if(!is.null(glm.ctime) & !any(class(glm.ctime) == "glm")) {
-    if(grepl("factor(t)", glm.ctime)) {
-      stop("Time can only be modeled as a factor in hazard implementation if
-	   there are observed endpoints at every time 1:t0.")
-    }
-  }
+	if(!is.null(glm.ftime) & !is.list(glm.ftime) & method == "hazard"){
+		if(grepl("factor(t)", glm.ftime)){
+			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
+		}
+	}
+	if(!is.null(glm.ctime) & !any(class(glm.ctime)=="glm")){
+		if(grepl("factor(t)", glm.ctime)){
+			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
+		}
+	}
 
   # warn if no events at t0
   if(method == "hazard") {
@@ -250,112 +246,131 @@ checkInputs <- function(ftime,
     }
   }
 
-	if(t0 > max(ftime[ftype > 0]) & method == "mean"){
-		warning("t0 larger than last observed endpoint. Mean-based TMLE assumes constant incidence between last observed failure type and this time.")
-	}
+  if(t0 > max(ftime[ftype > 0]) & method == "mean") {
+    warning("t0 larger than last observed endpoint. Mean-based TMLE assumes
+	    constant incidence between last observed failure type and this
+	    time."
+	   )
+  }
 
-	# check if both glm and SL are specified 
-	if(!(is.null(glm.trt)) & !(is.null(SL.trt))){
-		warning("glm.trt and SL.trt specified. Proceeding with SL.trt")
-		glm.trt <- NULL
-	}
-	if(!(is.null(glm.ftime)) & !(is.null(SL.ftime))){
-		warning("glm.ftime and SL.ftime specified. Proceeding with SL.ftime")
-		glm.ftime <- NULL
-	}
-	if(!(is.null(glm.ctime)) & !(is.null(SL.ctime))){
-		warning("glm.ctime and SL.ctime specified. Proceeding with SL.ctime")
-		glm.ctime <- NULL
-	}
-	# check glm formulas
-	if(!is.null(glm.trt)){
-		tryCatch({
-			tmp <- as.formula(paste0("trt ~",glm.trt))
-		},error=function(e){
-			stop("glm.trt formula appears to be invalid.")
-		})
-	}
-	if(!is.null(glm.ctime)){
-		if(all(glm.ctime != "No censoring observed")){
-			tryCatch({
-				tmp <- as.formula(paste0("C ~",glm.ctime))
-			},error=function(e){
-				stop("glm.ctime formula appears to be invalid.")
-			})
-		}
-	}
-	if(!is.null(glm.ftime)){
-		tryCatch({
-			tmp <- as.formula(paste0("N ~",glm.ftime))
-		},error=function(e){
-			stop("glm.ftime formula appears to be invalid.")
-		})
-	}
+  # check if both glm and SL are specified
+  if(!(is.null(glm.trt)) & !(is.null(SL.trt))) {
+    warning("glm.trt and SL.trt specified. Proceeding with SL.trt")
+    glm.trt <- NULL
+  }
+  if(!(is.null(glm.ftime)) & !(is.null(SL.ftime))) {
+    warning("glm.ftime and SL.ftime specified. Proceeding with SL.ftime")
+    glm.ftime <- NULL
+  }
+  if(!(is.null(glm.ctime)) & !(is.null(SL.ctime))) {
+    warning("glm.ctime and SL.ctime specified. Proceeding with SL.ctime")
+    glm.ctime <- NULL
+  }
+  # check glm formulas
+  if(!is.null(glm.trt)) {
+    tryCatch({
+      tmp <- as.formula(paste0("trt ~", glm.trt))
+    }, error = function(e) {
+      stop("glm.trt formula appears to be invalid.")
+    })
+  }
+  if(!is.null(glm.ctime)) {
+    if(all(glm.ctime != "No censoring observed")) {
+      tryCatch({
+	tmp <- as.formula(paste0("C ~", glm.ctime))
+      }, error = function(e) {
+	stop("glm.ctime formula appears to be invalid.")
+      })
+    }
+  }
+  if(!is.null(glm.ftime)) {
+    tryCatch({
+      tmp <- as.formula(paste0("N ~", glm.ftime))
+    }, error = function(e) {
+      stop("glm.ftime formula appears to be invalid.")
+    })
+  }
 
-	# check that one of glm.trt or SL.trt is specified
-	if(is.null(glm.trt) & is.null(SL.trt)){
-		warning("glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'")
-		glm.trt <- "1"
-	}
-	# check that one of glm.ftime or SL.ftime is specified
-	if(is.null(glm.ftime) & is.null(SL.ftime)){
-		warning("glm.ftime and SL.ftime not specified. Computing empirical estimates.")
-		if(method == "hazard"){
-			glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))					
-		}else{
-			glm.ftime <- "trt"
-		}
-	}	
-	# check that one of glm.ctime or SL.ctime is specified
-	if(is.null(glm.ctime) & is.null(SL.ctime)){
-		warning("glm.ctime and SL.ctime not specified. Computing unadjusted estimates.")
-		glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))
-	}	
+  # check that one of glm.trt or SL.trt is specified
+  if(is.null(glm.trt) & is.null(SL.trt)) {
+    warning("glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'")
+    glm.trt <- "1"
+  }
+  # check that one of glm.ftime or SL.ftime is specified
+  if(is.null(glm.ftime) & is.null(SL.ftime)) {
+    warning("glm.ftime and SL.ftime not specified. Computing empirical estimates.")
+    if(method == "hazard") {
+      glm.ftime <- paste0("-1 + ", paste0("I(t == ", unique(ftime[ftype > 0]),
+					  ")", collapse = "+"), "+",
+			  paste0("I(trt*t == ", unique(ftime[ftype > 0]), ")",
+				 collapse = "+"))
+    } else {
+      glm.ftime <- "trt"
+    }
+  }
+  # check that one of glm.ctime or SL.ctime is specified
+  if(is.null(glm.ctime) & is.null(SL.ctime)) {
+    warning("glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.")
+    glm.ctime <- paste0("-1 + ", paste0("I(t == ", unique(ftime[ftype == 0]),
+					")", collapse = "+"), "+",
+			paste0("I(trt*t == ", unique(ftime[ftype == 0]), ")",
+			       collapse="+"))
+  }
 
-	# if covariates are null
-	if(is.null(adjustVars)){
-		warning("adjustVars = NULL. Computing unadjusted estimates.")
-		if(is.null(glm.trt)){
-			glm.trt <- "1"	
-		}
-		if(is.null(glm.ctime)){
-			glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))			
-		}
-		if(is.null(glm.ftime)){
-			glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
-		}
-		SL.trt <- SL.ctime <- SL.ftime <- NULL
-		# add in dummy adjustVars so nothing else complains about NULL
-		adjustVars <- data.frame(dummy = rep(1,length(ftime)))
-	}else{
-		if(all(apply(adjustVars, 2, function(x){length(unique(x))==1}))){
-			warning("Columns of adjustVars are constantly valued. Computing unadjusted estimates.")
-			if(is.null(glm.trt)){
-				glm.trt <- "1"	
-			}
-			if(is.null(glm.ctime)){
-				glm.ctime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype==0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype==0]),")",collapse="+"))			
-			}
-			if(is.null(glm.ftime)){
-				glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
-			}
-			SL.trt <- SL.ctime <- SL.ftime <- NULL
-			# add in dummy adjustVars so nothing else complains about NULL
-		}
-	}
+  # if covariates are null
+  if(is.null(adjustVars)) {
+    warning("adjustVars = NULL. Computing unadjusted estimates.")
+    if(is.null(glm.trt)) {
+      glm.trt <- "1"
+    }
+    if(is.null(glm.ctime)) {
+      glm.ctime <- paste0("-1 + ", paste0("I(t == ", unique(ftime[ftype == 0]),
+					  ")", collapse = "+"), "+",
+			  paste0("I(trt*t == ", unique(ftime[ftype == 0]), ")",
+				 collapse = "+"))
+    }
+    if(is.null(glm.ftime)) {
+      glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
+    }
+    SL.trt <- SL.ctime <- SL.ftime <- NULL
+    # add in dummy adjustVars so nothing else complains about NULL
+    adjustVars <- data.frame(dummy = rep(1,length(ftime)))
+    } else {
+    if(all(apply(adjustVars, 2, function(x){length(unique(x)) == 1}))) {
+      warning("Columns of adjustVars are constantly valued. Computing unadjusted estimates.")
+      if(is.null(glm.trt)) {
+	glm.trt <- "1"
+      }
+      if(is.null(glm.ctime)) {
+	glm.ctime <- paste0("-1 + ", paste0("I(t == ",
+					    unique(ftime[ftype == 0]), ")",
+					    collapse = "+"), "+",
+			    paste0("I(trt*t == ", unique(ftime[ftype == 0]),
+				   ")", collapse = "+"))
+      }
+      if(is.null(glm.ftime)) {
+	glm.ftime <- paste0("-1 + ", paste0("I(t == ", unique(ftime[ftype > 0]),
+					    ")", collapse = "+"), "+",
+			    paste0("I(trt*t == ", unique(ftime[ftype > 0]), ")",
+				   collapse = "+"))
+      }
+      SL.trt <- SL.ctime <- SL.ftime <- NULL
+      # add in dummy adjustVars so nothing else complains about NULL
+    }
+  }
 
-	# check format of bound inputs
-	if(!(is.null(bounds))){
-		if(!any(colnames(bounds) == "t")){
-			stop("bounds should have a column named 't' containing a row for each value 1:t0.")
-		}
-		# if(!(all(1:t0 %in% bounds$t))){
-		# 	stop("bounds should have one row for each time 1:t0.")
-		# }
-	}
+  # check format of bound inputs
+  if(!(is.null(bounds))) {
+    if(!any(colnames(bounds) == "t")) {
+      stop("bounds should have a column named 't' containing a row for each value 1:t0.")
+    }
+    # if(!(all(1:t0 %in% bounds$t))){
+    # stop("bounds should have one row for each time 1:t0.")
+    # }
+  }
 
-	# return clean variables
-	return(list(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-	            glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime, 
-	            glm.ctime = glm.ctime, SL.ftime = SL.ftime, SL.ctime = SL.ctime))
+  # return clean variables
+  return(list(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
+	      glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime,
+	      glm.ctime = glm.ctime, SL.ftime = SL.ftime, SL.ctime = SL.ctime))
 }
