@@ -13,19 +13,18 @@ vignette: >
 ## Introduction
 
 The `survtmle` package is designed to use targeted minimum loss-based estimation
-(TMLE) to compute covariate-adjusted marginal cumulative incidence estimates in
-right-censored survival settings with and without competing risks. In order to
-allow flexibility of modeling, the estimates can leverage ensemble machine
-learning via the
+(TMLE) to compute baseline covariate-adjusted estimates of marginal cumulative incidence in
+right-censored survival settings with (and without) competing risks. The package facilitates
+flexible modeling to adjust for covariates through the use of ensemble machine learning via the
 [`SuperLearner`](https://cran.r-project.org/web/packages/SuperLearner/index.html)
 package.
 
 ---
 
-## Simulation
+## Single failure type
 
-We'll proceed by examining the use of `survtmle` in a variety of simple
-examples. First, let's load the package:
+We examine the use of `survtmle` in a variety of simple
+examples. The package can be loaded as follows:
 
 ```{r core_pkgs, echo=FALSE}
 library(tibble)
@@ -35,29 +34,23 @@ library(tibble)
 library(survtmle)
 ```
 
-Before diving into how we might harness the machinery of the `survtmle` package,
-we'll simulate a simple data set with a single failure type:
+We simulate a simple data with no censoring and a single cause of failure to illustrate
+the machinery of the `survtmle` package. 
 
 ```{r sim_data}
 set.seed(1234)
 n <- 200
-t_0 <- 6  # time point at which to return cumulative incidence estimates
+t_0 <- 6
 trt <- rbinom(n, 1, 0.5)
 adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n, 0, 2)))
 ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
 ftype <- round(runif(n, 0, 1))
 ```
 
-The very simple data structure that we simulated (the `tibble`, `d`) contains a
-set of adjustment (or "baseline") covariates (`adjustVars`); a treatment
-variable (`trt`) denoting the intervention of interest; a failure time
-(`ftime`), a simple function of the treatment and adjustment variables with
-added noise (a Uniform random variable); and a failure type (`ftype`), merely
-denoting an observed cause of failure, unrelated to the failure time. In all
-following examples, we will estimate cumulative incidence for each of the groups
-at an arbitrary time point (`t_0`).
-
-Let's examine just the first few rows of the observed data set:
+The simple data structure contains a set of baseline covariates (`adjustVars`), 
+a binary treatment variable (`trt`), a failure time that is a function of the treatment, adjustment variables, and a random error (`ftime`), and a failure type (`ftype`), which denotes
+the cause of failure (0 means no failure, 1 means failure). The first few rows of data 
+can be viewed as follows. 
 
 ```{r view_data, echo=FALSE}
 d <- as_data_frame(cbind(ftype, ftime, trt, adjustVars))
@@ -66,253 +59,183 @@ d
 
 ---
 
-## Using the G-computation method
+### Using the method of iterated means
 
-We are now ready to make use of `survtmle` to flexibly assess the differences in
-survival between the groups designated by the failure type variable above.
+#### Covariate adjustment via logistic regression
+
+A common goal is to compare the incidence of failure at a fixed time between the two treatment groups. Covariate adjustment is often desirable in this comparison to improve efficiency [@moore2009increasing]. This covariate adjustment may be facilitated by estimating a series of iterated covariate-conditional means [@robins1999ltmle,@bang2005doubly,@vdlgruber:2012:ijb]. The final iterated covariate-conditional mean is marginalized over the empirical distribution of baseline covariates to obtain an estimate of the marginal cumulative incidence. 
+
+Here, we invoke the eponymous `survtmle` function to compute the iterated mean-based (`method = "mean"`)  covariate-adjusted estimates of the cumulative incidence at time six (`t0=6`) in each of the treatment groups using quasi-logistic regression (formula specified via `glm.ftime`) to estimate the iterated means. The `glm.ftime` argument should be a valid right-hand-side formula specification based on `colnames(adjustVars)` and `"trt"`. Here we use a simple main terms regression. 
 
 ```{r example_glm_mean}
-# Fit 1: GLM estimators for treatment, censoring, and failure w/ "mean" method
+# Fit 1: Use GLM-based estimators for failure w/ "mean" method
 fit1 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
-                 glm.trt = "W1 + W2",
                  glm.ftime = "trt + W1 + W2",
-                 glm.ctime = "trt + W1 + W2",
                  method = "mean", t0 = t_0)
 fit1
 ```
 
-Above, we invoke the eponymous `survtmle` function to estimate the differences
-in survival between the two groups defined by the failure type. In this very
-simple setup, we only make use of GLMs, estimating the treatment mechanism (via
-the `trt` argument) as a linear function of the adjustment variables (`W1` and
-`W2`) and both the failure time and censoring time as linear functions of the
-treatment and adjustment covariates. Additionally, we specify the `mean` method
-to use a targeted minimum loss-based estimator based on the G-computation
-formula of @bang2005doubly.
+Internally, `survtmle` estimates the covariate-conditional treatment probability (via `glm.trt` or `SL.trt`, see below) and covariate-conditional censoring distribution (via `glm.ctime` or `SL.ctime`, see below). In the above example, the treatment probability does not depend on covariates (as in e.g., a randomized trial) and so we did not specify a way to adjust for covariates in estimating the treatment probability. In this case, `survtmle` sets `glm.trt = "1"`, which corresponds with empirical estimates of treatment probability, and sets `glm.ctime` to be equivalent to the Kaplan-Meier censoring distribution estimates. 
 
-While we can certainly use GLMs to model our treatment mechanism as well as our
-failure and censoring times (as we did above), a major flexibility afforded by
-`survtmle` is the leveraging of the `SuperLearner` ensemble learning algorithm
-to estimate these quantities in a nonparametric manner.
+In practice, we may wish to adjust for covariates when computing estimates of the covariate-conditional treatment and censoring probabilities. In observational studies, the distribution of treatment may differ by measured covariates, while in almost any study (including randomized trials) it is possible that censoring differs by covariates. Thus, we often wish to adjust for covariates to account for measured confounders of treatment receipt and censoring. 
 
-```{r example_sl_mean}
-# Fit 2: SuperLearner estimators for failure and censoring, alongside empirical
-#        estimators for treatment (the default) using the "mean" method
+This adjustment may be accomplished using logistic regression through the `glm.trt` and `glm.ctime` arguments, respectively. The `glm.trt` argument should be a valid right-hand-side formula specification based on `colnames(adjustVars)`. The `glm.ctime` argument should be a valid right-hand-side formula specification based on `colnames(adjustVars)`, `"trt"`, and `"t"` used to model the hazard function for censoring. By including `"trt"` and `"t"`, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call `survtmle` again, now adjusting for covariates in the treatment and censoring fits. 
+
+```{r example_glm_mean}
+# Fit 2: Use GLM-based estimators for failure, treatment, and censoring w/ "mean" method
 fit2 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
-                 SL.ftime = c("SL.glm","SL.mean","SL.step"),
-                 SL.ctime = c("SL.glm","SL.mean","SL.step"),
+                 glm.trt = "W1 + W2",
+                 glm.ctime = "W1 + trt + t + I(t^2)",
+                 glm.ftime = "trt + W1 + W2",
                  method = "mean", t0 = t_0)
 fit2
 ```
 
-In the above formulation, we invoke the `survtmle` function in largely the same
-manner as before, the principal difference being that we now provide a library
-of estimation algorithms to be used in fitting the failure and censoring, as
-opposed to specifying a functional form as was necessary with GLMs. In this
-case, the `SuperLearner` ensemble learning algorithm is used to combine the
-algorithms in the specified library, generating predictions that are "optimal"
-based on an appropriate loss function. Essentially, the SuperLearner algorithm
-performs stacked regression [@breiman1996stacked] using a set of specified
-nonparametric regression procedures (i.e., machine learning algorithms). The
-interested reader is invited to consult @vdl2007super for details about the
-SuperLearner algorithm as well as @vdl2011targeted and @vdl2017targeted for a
-treatment of the central role this algorithm plays in targeted learning.
+#### Covariate adjustment via super learner
 
----
+While we can certainly use logistic regression to model the treatment, censoring, and
+iterated means, a large benefit afforded by the `survtmle` package is how it leverages `SuperLearner` ensemble machine learning to estimate these quantities in a more flexible manner. The super learner method is a generalization of stacked regression [@breiman1996stacked] that uses cross-validation to select the best-performing estimator from a library of candidate estimators [@vdlpolley:2007:statappgenetics]. Many popular machine learning
+algorithms have been implemented in the [`SuperLearner`](https://cran.r-project.org/web/packages/SuperLearner/index.html). 
 
-## Using the method of cause-specific hazards
+To utilize `SuperLearner` estimates, we can utilize options `SL.trt`, `SL.ctime`, and `SL.ftime` to estimate conditional treatment, censoring, and iterated means, respectively. See `?SuperLearner` for details on options for correctly specifying a super learner library and see `listWrappers()` to print the methods implemented in the `SuperLearner` package. Here we demonstrate a call to `survtmle` using a simple library that includes simple algorithms that are included in base `R`.  
 
-When using `survtmle`, we need not rely on TMLEs that invoke the G-computation
-formula as we did when invoking `method = "mean"` above. Rather, `survtmle`
-also contains a `method = "harzard"` specification, which allows the estimates
-to be obtained by way of an iterative algorithm using the cause-specific hazard
-functions. The current implementation of this particular specification has no
-guarantee of convergence in finite samples, though it may eventually be replaced
-by a closed-form version.
-
-We can invoke the hazard-specific estimation procedure with GLMs as follows:
-
-```{r example_glm_hazard}
-# Fit 3: GLM estimators for treatment, censoring, and failure w/ "hazard" method
+```{r example_sl_mean}
+# Fit 3: SuperLearner estimators for treatment, failure, and censoring.
 fit3 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
-                 glm.trt = "W1 + W2",
-                 glm.ftime = "trt + W1 + W2",
-                 glm.ctime = "trt + W1 + W2",
-                 method = "hazard", t0 = t_0)
+                 SL.trt = c("SL.glm","SL.mean","SL.step"),
+                 SL.ftime = c("SL.glm","SL.mean","SL.step"),
+                 SL.ctime = c("SL.glm","SL.mean","SL.step"),
+                 method = "mean", t0 = t_0)
 fit3
 ```
 
-The above is quite similar to "Fit 1" -- our first example using GLM-based
-estimators for the treatment mechanism as well as the failure and censoring
-times. The only difference here comes from invoking `method = "hazard"` instead
-of `method = "mean"`, which, as noted above, relies on the cause-specific hazard
-for estimation, rather than the G-computation formula.
+**Remark:** Invoking `survtmle` with `method = "mean"` and `SL.ftime` requires fitting a super learner *for each time point* from `1:t0`. If there are many unique time points observed in the data, this can become a computationally intensive process. In such cases, we recommend either redefining the `ftime` variable to pool across time points *or* using `method = "hazard"` (see below). 
 
-We can also use the method of cause-specific hazards with the `SuperLearner`
-algorithm to obtain our estimates nonparametrically -- without being forced to
-specify constrained functional forms using GLMs. Let's try that out now:
+---
 
-```{r example_sl_hazard}
-# Fit 4: SuperLearner estimators for failure and censoring, alongside empirical
-#        estimators for treatment (the default) using the "hazard" method
+### Using the method of cause-specific hazards
+
+An alternative method to the iterated mean-based TMLE for estimating cumulative incidence is based on estimated the (cause-specific) hazard function. This estimator is implemented by  specifying `method = "hazard"` in a call to `survtmle`. Just as with `method="mean"`, we can use either `glm.` or `SL.` to adjust for covariates. However, now the `glm.ftime` formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazards over time. 
+
+```{r example_glm_hazard}
+# Fit 4: GLM estimators for treatment, censoring, and failure w/ "hazard" method
+# Note the inclusion of 't' in the formula for glm.ftime. 
 fit4 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
-                 SL.ftime = c("SL.glm","SL.mean","SL.step"),
-                 SL.ctime = c("SL.glm","SL.mean","SL.step"),
+                 glm.trt = "W1 + W2",
+                 glm.ftime = "trt + W1 + W2 + t + I(t^2)",
+                 glm.ctime = "trt + W1 + W2*t",
                  method = "hazard", t0 = t_0)
 fit4
 ```
 
-Just as in the second example ("Fit 2" in the previous section), we rely on the
-`SuperLearner` algorithm to flexibly model the failure and censoring times,
-passing in a library of nonparametric regression procedures to be stacked to
-produce optimal predictions. Unlike in that example, we now invoke the method of
-cause-specific hazards (`method = "hazard"`).
+Here's an example using super learner. 
 
----
-
-## Bounded TMLEs
-
-In the preceding two sections, we examined the simplest ways by which `survtmle`
-can be invoked. In the four examples contained therein, we saw two major choies
-left to the user: (1) whether to rely on GLMs, which require the specification
-of functional forms for several quantities of interest, or to use `SuperLearner`
-to estimate such quantities nonparametrically using stacked regression; and (2)
-whether to rely on TMLEs using the G-computation formula or to obtain estimates
-by using the method of cause-specific hazards.
-
-Now, we will examine several complex examples, with an eye towards demonstrating
-the advanced functionality that `survtmle` provides.
-
-...Background on bounded TMLEs...
-
-We can create bounded TMLEs by specifying a `data.frame` that contains columns
-denoted "t", "l1", and "u1", which specify the set of times of interest, as well
-as lower and upper bounds, respectively, on the iterated conditional mean (for
-`method = "mean")` or the conditional hazard function (for `method = "hazard"`).
-
-Let us specify the `data.frame` of bounds for a simple example:
-
-```{r bounded_tmle}
-bf1 <- data.frame(t = seq_len(t_0), l1 = rep(0.01, t_0), u1 = rep(0.99, t_0))
-bf1
-```
-
-The above `data.frame` contains the lower and upper bounds ("l1" and "u1",
-respectively) to be used with the conditional mean or hazard (whichever we
-choose to invoke with `survtmle`) for the failure type (`ftype`) of interest,
-denoted "1". Note that bounds must be provided for each failure type of interest
-(here we only have one such failure type, so we need only provide as many
-bounds).
-
-Now that we have specified our bounds, we can invoke `survtmle`. We'll do this
-by essentially repeating our first example ("Fit 1"), using GLM estimators. The
-major difference here is that we restrict the iterated conditional mean to
-follow the bounds specified above.
-
-```{r example_glm_mean_bounded}
-# Fit 5: Fit 1, but now specifying bounds on the iterated conditional means
+```{r example_sl_hazard}
+# Fit 5: SuperLearner estimators for failure and censoring, alongside empirical
+#        estimators for treatment (the default) using the "hazard" method.
+#        Note that the super learner for ftime is also adjusting for time.
 fit5 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
-                 glm.trt = "W1 + W2",
-                 glm.ftime = "trt + W1 + W2",
-                 glm.ctime = "trt + W1 + W2",
-                 method = "mean", t0 = t_0,
-                 bounds = bf1)
+                 SL.trt = c("SL.glm","SL.mean","SL.step"),
+                 SL.ftime = c("SL.glm","SL.mean","SL.step"),
+                 SL.ctime = c("SL.glm","SL.mean","SL.step"),
+                 method = "hazard", t0 = t_0)
 fit5
 ```
 
-The substantive difference here is that, as noted above, we have bounded our
-estimate of the iterated conditional mean for the failure type of interest.
-While we have demonstrated this using a TMLE based on the G-computation formula
-`method = "mean"`, the same procedure could be applied when invoking the
-estimation procedure using the method of cause-specific hazards.
+**Remark:** The TMLE algorithm for the hazard-based estimator differs from the iterated mean-based TMLE. In particular, the algorithm is iterative and has no guarantee of convergence. While we have not identified instances where convergence is a serious problem, we encourage users to submit any such situations to <benkeser@emory.edu>. The stopping criteria for the iteration may be adjusted via `tol` and `maxIter` options. Increasing `tol` or decreasing `maxIter` will lead to faster convergence; however, it is recommended that `tol` be set no larger than `1/sqrt(length(ftime))`. If `maxIter` is reached without convergence, one should check that `fit$meanIC` are all less than `1/sqrt(length(ftime))`. 
 
 ---
 
-## Assessing Multiple Failure Types
+## Multiple failure types
 
-In all of the preceding examples, we have restricted our attention to rather
-simplistic cases -- those where there is only a single failure type of interest.
-Now, let us consider more realistic (and complex!) scenarios where we observe
-multiple failure types.
-
-We'll start by simulating a data set with multiple failure types:
+In all of the preceding examples, we have restricted our attention to the case where there is only a single failure type of interest. Now we consider more scenarios where we observe
+multiple failure types. First, we simulate data with two types of failure. 
 
 ```{r simulate_mult_data}
 set.seed(1234)
-n <- 100
-t_0 <- 6
+n <- 200
 trt <- rbinom(n, 1, 0.5)
 adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n, 0, 2)))
 ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
 ftype <- round(runif(n, 0, 2))
 ```
 
-In the above, our simulated data structure is quite similar to the simpler data
-set that we simulated at the beginning of the present document. The only notable
-difference is that the failure time variable (again, `ftype`) now contains `r
-length(unique(ftype))` distinct types of failure.
-
-It's good practice to start with a cursory examination of our data so we'll do
-just that.
+This simulated data structure is similar to the single failure type data; however, now  
+the failure type variable (`ftype`) now contains two distinct types of failure (with 0 still reserved for no failure).
 
 ```{r examine_mult_data, echo=FALSE}
 dm <- tibble::as_tibble(cbind(ftype, ftime, trt, adjustVars))
 dm
 ```
 
-We can now proceed to invoking the `survtmle` function to estimate differences
-in cumulative incidence in this more complex scenario. We'll start by applying
-the GLM approach that we saw in several previous examples:
+When multiple failure types are present, a common goal is to compare the cumulative incidence of a particular failure type at a fixed time between the two treatment groups, while accounting for the fact that participants may fail due to other failure types. Covariate adjustment is again desirable to improve efficiency and account for measured confounders of treatment and censoring.
+
+### Using the method of iterated means
+
+#### Covariate adjustment via logistic regression
+
+The call to invoke `survtmle` is exactly the same as in the single failure type case.
 
 ```{r example_glm_mean_multftypes}
+# Fit 6: GLM estimators for treatment, censoring, and failure w/ "mean" method
+fit6 <- survtmle(ftime = ftime, ftype = ftype,
+                 trt = trt, adjustVars = adjustVars,
+                 glm.trt = "W1 + W2",
+                 glm.ftime = "trt + W1 + W2",
+                 glm.ctime = "trt + W1 + W2",
+                 method = "mean", t0 = t_0)
+fit6
+```
+
+The output object contains cumulative incidence estimates for each of the
+four groups defined by the two failure types and treatments. 
+
+There are sometimes failure types that are not of direct interest to out study. Because `survtmle` invoked with `method="mean"` computes an estimate of the cumulative incidence of each failure type separately, we can save on computation time by specifying which failure types we care about via the `ftypeOfInterest` option. 
+
+```{r example_glm_mean_multftypes_ftypeOfInterest}
 # Fit 7: GLM estimators for treatment, censoring, and failure w/ "mean" method
 fit7 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
                  glm.trt = "W1 + W2",
                  glm.ftime = "trt + W1 + W2",
                  glm.ctime = "trt + W1 + W2",
-                 method = "mean", t0 = t_0)
+                 method = "mean", t0 = t_0,
+                 ftypeOfInterest = 1)
 fit7
 ```
 
-Just as in previous examples, we use GLM-based estimators by specifying
-functional forms for several quantities of interest: the treatment mechanism,
-the failure time, and the censoring time. We use a TMLE based on the
-G-computation formula by invoking `method = "mean"`. As we can see from the
-output object, we now obtain cumulative incidence estimates for each of the
-`r length(fit7$est)` groups defined by the multiple failure types and treatment.
+#### Covariate adjustment via super learner
 
-Just as before, we can also abandon the restrictions placed on us by GLMs (that
-is, the requirement to specify functional forms for the aforementioned
-quantities of interest) by stacking nonparametric regression procedures using
-the `SuperLearner` ensemble learning algorithm. Let's try that out below:
+As before, we can use the `SuperLearner` ensemble learning algorithm to adjust for covariates in multiple failure type settings as well. 
 
 ```{r example_sl_mean_multftypes}
 # Fit 8: SuperLearner estimators for failure and censoring and empirical
-#        estimators for treatment (default) using the "mean" method
+#        estimators for treatment (default) using the "mean" method.
 fit8 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
+                 SL.trt = c("SL.glm","SL.mean","SL.step"),
                  SL.ftime = c("SL.glm","SL.mean","SL.step"),
                  SL.ctime = c("SL.glm","SL.mean","SL.step"),
                  method = "mean", t0 = t_0)
 fit8
 ```
 
-Just as before, using the nonparametric approach we obtain slightly different
-estimates (relative to the GLM case) of the cumulative incidence across the
-combinations of failure types of interest and treatment.
+**Remark:** As with single failure type, the `method = "mean"` call to `survtmle` may be computationally intensive with many time points. This is especially true when there are additionally multiple failure types, as the function must repeat these calls to `SuperLearner` separately for each type of failure. In this case, calls to `survtmle` could be parallelized with one call to `survtmle` for each type of failure specifying `ftypeOfInterest`. 
 
-As was the case when we had a single failure type of interest, we can also
-leverage the method of cause-specific hazards when we have multiple such failure
-types. We invoke the procedure exactly as we did before using GLMs:
+
+### Using the method of cause-specific hazards 
+
+#### Covariate adjustment via logistic regression
+
+The TMLE based on cause-specific hazards can also be used to compute cumulative incidence estimates in settings with multiple failure types. As above, the `glm.ftime` formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazard of each failure type over time. 
 
 ```{r example_glm_hazard_multftypes}
-# Fit 9: same as Fit 7 above, but using the "hazard" method
+# Fit 9: same as Fit 8 above, but using the "hazard" method
 fit9 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
                  glm.trt = "W1 + W2",
@@ -323,43 +246,52 @@ fit9
 ```
 
 We can also leverage the `SuperLearner` algorithm when using the method of
-cause-specific hazards with multiple failure types of interest. This is done
-essentially the same way as in the case of a single failure type:
+cause-specific hazards with multiple failure types of interest.
 
 ```{r example_sl_hazard_multftypes}
-# Fit 10: same as Fit 8 above, but using the "hazard" method
+# Fit 10: same as Fit 7 above, but using the "hazard" method
 fit10 <- survtmle(ftime = ftime, ftype = ftype,
                   trt = trt, adjustVars = adjustVars,
+                  SL.trt = c("SL.glm","SL.mean","SL.step"),
                   SL.ftime = c("SL.glm","SL.mean","SL.step"),
                   SL.ctime = c("SL.glm","SL.mean","SL.step"),
                   method = "hazard", t0 = t_0)
 fit10
 ```
 
-When there are multiple failure types of interest, we can also very easily
-obtain estimates for only a single failure type. This is done by indicating the
-failure type of which we desire estimates with the optional `ftypeOfInterest`
-argument. This is done like so
+As with the iterated-mean based TMLE, we can obtain estimates of cumulative incidence of only certain failure types (via `ftypeOfInterest`); however, this does not necessarily result in faster computation, as it did in the case above. In situations where the convergence of the algorithm is an issue, it may be useful to invoke multiple calls to `survtmle` with singular `ftypeOfInterest`. If such convergence issues arise, please contact us at <benkeser@emory.edu>.
 
-```{r}
-# Fit 11: same as Fit 7 above, but now only return estimates for ftype = 1
+
+## Estimation in bounded models
+
+In certain situations, we have knowledge that the incidence of an event is bounded below/above for every strata in the population. It is possible to incorporate these bounds into the TMLE estimation procedure to ensure that any resulting estimate of cumulative incidence is compatible with these bounds. Please refer to @benkeser2017improved for more on bounded TMLEs and their potential benefits. 
+
+Bounds can be passed to `survtmle` by creating a `data.frame` that contains columns with specific names. In particular, there should be a column named `"t"`. There should additionally be columns for the lower and upper bound for each type of failure. For example if there is only one type of failure (`ftype = 1` or `ftype = 0`) then the bounds `data.frame` can contain columns `"l1"`, and `"u1"` denote the lower and upper bounds, respectively, on the iterated conditional mean (for `method = "mean"`) or the conditional hazard function (for `method = "hazard"`). If there are two types of failure (`ftype = 1`, `ftype = 2`, or `ftype = 0`) then there can additionally be columns `"l2"` and `"u2"` denoting the lower and upper bounds, respectively, on the iterated conditional mean for type two failures (for `method = "mean"`) or the conditional cause-specific hazard function for type two failures (for `method = "hazard"`).
+
+Here is a simple example.
+
+```{r bounded_tmle}
+bf1 <- data.frame(t = seq_len(t_0), l1 = rep(0.01, t_0), u1 = rep(0.99, t_0))
+bf1
+```
+
+Now that we have specified our bounds, we can invoke `survtmle` repeating our first example ("Fit 1"), but now restricting the iterated conditional means to follow the bounds specified above.
+
+```{r example_glm_mean_bounded}
+# Fit 11: Fit 2, but now specifying bounds on the iterated conditional means
 fit11 <- survtmle(ftime = ftime, ftype = ftype,
-                  trt = trt, adjustVars = adjustVars,
-                  glm.trt = "W1 + W2",
-                  glm.ftime = "trt + W1 + W2",
-                  glm.ctime = "trt + W1 + W2",
-                  method = "mean", t0 = t_0,
-                  ftypeOfInterest = 1)
+                 trt = trt, adjustVars = adjustVars,
+                 glm.trt = "W1 + W2",
+                 glm.ftime = "trt + W1 + W2",
+                 glm.ctime = "trt + W1 + W2",
+                 method = "mean", t0 = t_0,
+                 bounds = bf1)
 fit11
 ```
 
 When there are multiple failure types of interest, we can still provide bounds
 for the iterated conditional means (or the conditional hazard function,
 whichever is appropriate based on our specification of the `method` argument).
-
-In such cases, we must specify bounds associated with each of the failure types
-of interest. Since we now have `r length(unique(ftype)) - 1` such failure types,
-we must specify just as many bounds:
 
 ```{r}
 # need to make a data.frame of bounds in proper format two types of failure that
@@ -376,7 +308,7 @@ Now, we invoke `survtmle`, passing in the specified bounds using the appropriate
 argument:
 
 ```{r}
-# Fit 12: same as Fit 7 above, but now include bounds
+# Fit 12: same as Fit 5 above, but now include bounds
 fit12 <- survtmle(ftime = ftime, ftype = ftype,
                   trt = trt, adjustVars = adjustVars,
                   glm.trt = "W1 + W2",
@@ -387,23 +319,85 @@ fit12 <- survtmle(ftime = ftime, ftype = ftype,
 fit12
 ```
 
-Having thoroughly examined the major options available in the `survtmle`
-function, let us proceed to inspect a few of the utility functions the package
-provides.
+**Remark 1:** Please see the discussion in @benkeser2017improved on how to select bounds for these procedures. Note that poorly chosen bounds can lead to instability in the estimation procedure. 
+
+**Remark 2:** While it is theoretically possible to use super learner to perform bounded estimation, many of the implemented algorithms are not currently designed to respect bounds. Nevertheless, it is possible to write one's own algorithms to incorporate such bounds. However, for the sake of stability, we have restricted the bounded implementation to `glm` based covariate-adjustment. 
 
 ---
 
 ## Utility functions
 
-* Brief look at `timepoints`
-* Brief look at `plot.tp.survtmle`
+### Estimating cumulative incidence curves
 
----
+The `survtmle` function provides the function `timepoints` to compute the estimated cumulative incidence over multiple timepoints. This function is invoked after an initial call to `survtmle` with option `returnModels = TRUE`. By setting this option, the `timepoints` function is able to recycle fits for the conditional treatment probability, censoring distribution, and, in the case of `method = "hazard"`, the hazard fits. Thus, invoking `timepoints` is faster than making repeated calls to `survtmle` with different `t0`.
 
-## Applied Data Analysis Practical
+There is some subtlety involved to properly leveraging this facility. Recall that the censoring distribution fit (and cause-specific hazard fit) pools over all time points. Thus, in order to most efficiently use `timepoints`, the initial call to `survtmle` should be made setting option `t0` equal to the final timepoint at which one wants estimates of cumulative incidence. This allows these hazard fitting procedures to utilize all of the data to estimate the conditional hazard function. 
 
-Coming soon...
+We demonstrate the use of `timepoints` below based on the following simulated data.
 
+```{r sim_data}
+set.seed(1234)
+n <- 200
+t_0 <- 6
+trt <- rbinom(n, 1, 0.5)
+adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n, 0, 2)))
+ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
+ftype <- round(runif(n, 0, 1))
+```
+
+Imagine that we would like cumulative incidence estimates at times `1:t_0` based on `fit2` above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called `fit2` the option `returnModels` was set to its default value `FALSE`. Thus, we must refit this object setting the function to return the model fits. 
+
+```{r example_glm_mean_2}
+# Refit fit 2 returning models
+fit2_rm <- survtmle(ftime = ftime, ftype = ftype,
+                 trt = trt, adjustVars = adjustVars,
+                 glm.trt = "W1 + W2",
+                 glm.ctime = "W1 + trt + t + I(t^2)",
+                 glm.ftime = "trt + W1 + W2",
+                 method = "mean", t0 = t_0, 
+                 returnModels = TRUE)
+fit2_rm
+```
+
+Now we can call `timepoints` to return estimates of cumulative incidence at each time
+`1:t_0`. 
+
+```{r}
+tp.fit2 <- timepoints(fit2_rm, times = 1:t_0)
+# print the object
+tp.fit2
+```
+
+Internally, `timepoints` is making calls to `survtmle`, but is passing in the fitted treatment and censoring fits from `fit2_rm$trtMod` and `fit2_rm$ctimeMod`. However, for `method="mean"` the function is still fitting the iterated means separately for each time required by the call to `timepoints`. Thus, the call to `timepoints` may be quite slow if `method = "mean"`, `SL.ftime` is specified (as opposed to `glm.ftime`), and/or many times are passed in via `times`. Future implementations may attempt to avoid this extra model fitting. For now, if many times are required, we recommend using `method = "hazard"`, which is able to recycle all of the model fits. Below is an example of this. 
+
+```{r}
+# Refit Fit 4 returning models 
+fit4_rm <- survtmle(ftime = ftime, ftype = ftype,
+                 trt = trt, adjustVars = adjustVars,
+                 glm.trt = "W1 + W2",
+                 glm.ftime = "trt + W1 + W2 + t + I(t^2)",
+                 glm.ctime = "trt + W1 + W2*t",
+                 method = "hazard", t0 = t_0,
+                 returnModels = TRUE)
+# call timepoints based on this fit
+tp.fit4 <- timepoints(fit4_rm, times = 1:t_0)
+# print the object
+tp.fit4
+```
+
+There is a plotting method available for `timepoints` to plot cumulative incidence over time in each treatment group and for each failure type.
+
+```{r}
+# plot raw cumulative incidence
+plot(tp.fit4, type = "raw")
+```
+
+Because the cumulative incidence function is being invoked pointwise, it is possible that the resulting curve is not monotone. However, it is possible to show that projecting this curve onto a monotone function via isotonic regression results in an estimate with identical asymptotic properties to the pointwise estimate. Therefore, we additionally provide an option `type = "iso"` (the default) that provides these smoothed curves. 
+
+```{r}
+# plot smoothed cumulative incidence
+plot(tp.fit4)
+```
 ---
 
 ## Session Information
