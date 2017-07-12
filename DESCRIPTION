@@ -16,6 +16,7 @@ Imports:
     Matrix,
     plyr,
     tidyr,
+    stringr,
     ggplot2
 Suggests:
     testthat,
