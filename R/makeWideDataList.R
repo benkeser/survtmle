@@ -65,21 +65,13 @@ makeWideDataList <- function(dat,
 
   for(z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
   
-
-    # eval(parse(text = paste("wideDataList$'", z, "'$trt <-", z,
-                                            # sep = "")))
   wideDataList <- lapply(wideDataList, function(x){
     # make clever covariates
     for(z in uniqtrt) {
       for(t in 1:t0) {
-        # eval(parse(text = paste("x$H", z, ".", t, " <- (x$trt==", z, " & x$C.",
-        #                         t - 1, "==0) / (x$G_dC.", t, "*x$g_", z, ".",
-        #                         t, ")", sep = "")))
         x[[paste0("H",z,".",t)]] <- 
           (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x[[paste0("g_",z,".",t)]])
       }
-      # eval(parse(text = paste("x$H", z, ".", 0, " <- (x$trt == ", z,
-      #                         ") / (x$g_", z, ".", 1, ")", sep = "")))
         x[[paste0("H",z,".0")]] <- (x$trt==z) / x[[paste0("g_",z,".",t)]]
     }
     x

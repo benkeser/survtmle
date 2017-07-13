@@ -36,10 +36,6 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
     for(j in ofInterestJ) {
       # calculate CIF at time t
-      # eval(parse(text = paste("x$F", j, ".t <- unlist(by(x[,",
-      #                         "paste0('Q',j,'Haz')",
-      #                         "]*S.tminus1, x$id, FUN = cumsum))",
-      #                         sep = "")))
       x[[paste0("F",j,".t")]] <- unlist(by(x[,paste0("Q",j,"Haz")]*S.tminus1,x$id,FUN=cumsum))
     }
     x
@@ -51,18 +47,12 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     Fj.t0.allZ <- vector(mode = "list", length = ntrt)
     for(i in 1:ntrt) {
       t0.mod <- dataList[[i + 1]]$ftime[1]
-      # eval(parse(text = paste("Fj.t0.allZ[[i]] <- dataList[[i+1]]$F", j,
-      #                         ".t[dataList[[i+1]]$t == t0.mod]",
-      #                         sep = "")))
       Fj.t0.allZ[[i]] <- dataList[[i+1]][[paste0("F",j,".t")]][dataList[[i+1]]$t==t0.mod]
     }
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
       for(i in seq_along(uniqtrt)) {
         ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
-        # eval(parse(text = paste("x$F", j, ".z", uniqtrt[i],
-        #                         ".t0 <- Fj.t0.allZ[[i]][ind]",
-        #                         sep = "")))
         x[[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind]
       }
       x
@@ -99,15 +89,9 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   dataList <- lapply(dataList, function(x, allJ) {
     for(j in allJ) {
       if(length(allJ) > 1) {
-        # eval(parse(text = paste("x$hazNot", j,
-        #                         " <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',allJ[allJ != j],'Haz')]))",
-        #                         sep = "")))
         x[[paste0("hazNot",j)]] <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',allJ[allJ != j],'Haz')]))
-        # eval(parse(text = paste("x$hazNot", j, "[x$hazNot", j,
-        #                         "==1] <- 1-.Machine$double.neg.eps", sep = "")))
         x[[paste0("hazNot",j)]][x[[paste0("hazNot",j)]]==1] <- 1-.Machine$double.neg.eps
       } else {
-        # eval(parse(text = paste("x$hazNot", j, " <- 0", sep = "")))
         x[[paste0("hazNot",j)]] <- 0
       }
     }
@@ -119,21 +103,10 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
     for(z in uniqtrt) {
       for(j in ofInterestJ) {
-        # eval(parse(text = paste("x$H", j, ".jSelf.z", z,
-        #                         "<- (x$ftime>=x$t & x$trt==", z, ")/(x$g_", z,
-        #                         "*x$G_dC) * (1-x$hazNot", j,
-        #                         ") * ((x$t<t0)*(1-(x$F", j, ".z", z,
-        #                         ".t0 - x$F", j, ".t)/c(x$S.t)) + (x$t==t0))",
-        #                         sep = "")))
         x[[paste0("H", j, ".jSelf.z", z)]] <- 
           (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_",z)]]*x$G_dC) * 
             (1-x[[paste0("hazNot",j)]]) * ((x$t < t0) * (1-(x[[paste0("F",j,".z",z,".t0")]]-
                 x[[paste0("F",j,".t")]])/c(x$S.t) + x$t==t0))
-          # eval(parse(text = paste("x$H", j, ".jNotSelf.z", z,
-          #                         "<- -(x$ftime>=x$t & x$trt==", z, ")/(x$g_",
-          #                         z, "*x$G_dC) *(1-x$hazNot", j,
-          #                         ") * ((x$t<t0)*(x$F", j, ".z", z, ".t0 - x$F",
-          #                         j, ".t)/c(x$S.t))", sep = "")))
           x[[paste0("H", j, ".jNotSelf.z", z)]] <- 
             - (x$ftime >= x$t & x$trt ==z)/(x[[paste0("g_",z)]]*x$G_dC) * 
               (1-x[[paste0("hazNot",j)]]) * ((x$t < t0)*(x[[paste0("F",j,".z",z,".t0")]] - 

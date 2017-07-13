@@ -73,13 +73,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   if(t != 1) {
     for(j in allJ) {
       # exclude previously failed subjects
-      # eval(parse(text = paste("include[wideDataList[[1]]$N", j, ".", t-1,
-      #                         "==1] <- FALSE", sep = "")))
       include[wideDataList[[1]][[paste0("N",j,".",t-1)]]==1] <- FALSE
     }
     # exclude previously censored subjects
-    # eval(parse(text = paste("include[wideDataList[[1]]$C.", t-1,
-    #                         "==1] <- FALSE", sep = "")))
     include[wideDataList[[1]][[paste0("C.",t-1)]]==1] <- FALSE
   }
 
@@ -90,13 +86,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   ## create an indicator of any failure prior to t
   wideDataList <- lapply(wideDataList, function(x, t){
     if(length(allJ) > 1) {
-      # eval(parse(text = paste("x$NnotJ.", t - 1,
-      #                         " <- rowSums(cbind(rep(0, nrow(x)), x[, paste0('N', allJ[allJ != whichJ], '.', t - 1)]))",
-      #                         sep = "")))
       x[[paste0("NnotJ.",t-1)]] <- 
         rowSums(cbind(rep(0, nrow(x)), x[, paste0('N', allJ[allJ != whichJ], '.', t - 1)]))
     } else {
-      # eval(parse(text = paste("x$NnotJ.", t - 1, " <- 0", sep = "")))
       x[[paste0("NnotJ.",t-1)]] <- 0
     }
     x
@@ -118,11 +110,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
 
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
-            # eval(parse(text = paste("x$Q", whichJ, ".", t, " <- x$N", whichJ,
-            #                         ".", t - 1, "+ (1-(x$NnotJ.", t - 1,
-            #                         "+ x$N", whichJ, ".", t - 1,
-            #                         ")) * predict(Qmod, newdata = x, type = 'response')",
-            #                         sep = "")))
             x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
                 predict(Qmod,newdata=x,type="response")
           )
@@ -132,13 +119,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     } else { # with bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
       X <- model.matrix(as.formula(Qform), data = wideDataList[[1]][include, ])
-
-      # Ytilde <- eval(parse(text = paste("(wideDataList[[1]][include, outcomeName] - wideDataList[[1]]$l",
-      #                                   whichJ, ".", t, "[include])",
-      #                                   " / (wideDataList[[1]]$u", whichJ, ".",
-      #                                   t, "[include] - wideDataList[[1]]$l",
-      #                                   whichJ, ".", t, "[include])",
-      #                                   sep = "")))
       Ytilde <- (wideDataList[[1]][include,outcomeName] - wideDataList[[1]][[lj.t]][include])/
         (wideDataList[[1]][[uj.t]][include] - wideDataList[[1]][[lj.t]][include])
       Qmod <- optim(par = rep(0, ncol(X)), fn = LogLikelihood, Y = Ytilde,
@@ -147,11 +127,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       beta <- Qmod$par
       wideDataList <- lapply(wideDataList, function(x, j, t) {
         newX <- model.matrix(as.formula(Qform), data = x)
-        # eval(parse(text = paste("x$Q", j, ".", t, " <- x$N", whichJ, ".", t - 1,
-        #                         " + (1 - (x$NnotJ.", t - 1, "+ x$N", whichJ,
-        #                         ".", t - 1, ")) * (plogis(newX %*% beta) * (x$u",
-        #                         j, ".", t, "- x$l", j, ".", t,") + x$l", j, ".",
-        #                         t ,")", sep = "")))
         x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
           (plogis(newX%*%beta)*(x[[uj.t]]-x[[lj.t]]) + x[[lj.t]])
 
@@ -174,11 +149,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                data = wideDataList[[1]][include, ])
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
-             # eval(parse(text = paste("x$Q", whichJ, ".", t, " <- x$N", whichJ,
-             #                         ".", t - 1, " + (1 - (x$NnotJ.", t - 1,
-             #                         "+ x$N", whichJ, ".", t - 1,
-             #                       ")) * predict(Qmod, newdata = data.frame(trt = x$trt))",
-             #                       sep = "")))
               x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]])*
                 predict(Qmod,newdata=data.frame(trt=x$trt))
              )
@@ -197,11 +167,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                                verbose = verbose)
           )
           wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
-            # eval(parse(text = paste("x$Q", whichJ, ".", t, " <- x$N", whichJ,
-            #                         ".", t - 1, " + (1-(x$NnotJ.", t - 1,
-            #                         "+ x$N", whichJ, ".", t - 1,
-            #                         ")) * predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred",
-            #                         sep = "")))
             x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
             x
@@ -218,11 +183,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         )
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
-            # eval(parse(text = paste("x$Q", whichJ, ".", t, " <- x$N", whichJ,
-            #                         ".", t - 1, " + (1 - (x$NnotJ.", t - 1,
-            #                         "+ x$N", whichJ, ".", t - 1,
-            #                         ")) * predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred",
-            #                         sep = "")))
             x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[Nj.tm1]]-x[[NnotJ.tm1]])*
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
           )
