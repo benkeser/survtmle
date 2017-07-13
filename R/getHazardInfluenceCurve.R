@@ -32,28 +32,37 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
                                     uniqtrt, t0, verbose, ...) {
   for(z in uniqtrt) {
     for(j in ofInterestJ) {
-      eval(parse(text = paste("dat$margF", j, ".z", z,
-                              ".t0 <- mean(dataList[[1]]$F", j, ".z", z,
-                              ".t0[dataList[[1]]$t==min(dataList[[1]]$t)])",
-                              sep = "")))
-      eval(parse(text = paste("dat$F", j, ".z", z , ".t0 <- dataList[[1]]$F",
-                              j, ".z", z,
-                              ".t0[dataList[[1]]$t==min(dataList[[1]]$t)]",
-                              sep = "")))
+      # eval(parse(text = paste("dat$margF", j, ".z", z,
+      #                         ".t0 <- mean(dataList[[1]]$F", j, ".z", z,
+      #                         ".t0[dataList[[1]]$t==min(dataList[[1]]$t)])",
+      #                         sep = "")))
+      dat[[paste0("margF",j,".z",z,".t0")]] <- 
+        mean(dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)])
+      # eval(parse(text = paste("dat$F", j, ".z", z , ".t0 <- dataList[[1]]$F",
+      #                         j, ".z", z,
+      #                         ".t0[dataList[[1]]$t==min(dataList[[1]]$t)]",
+      #                         sep = "")))
+      dat[[paste0("F",j,".z",z,".t0")]] <- 
+        dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)]
       thisD <- NULL
       for(jTild in allJ) {
-        thisD <- eval(parse(text = paste("cbind(thisD, dataList[[1]]$H", j,
-                                         ".j", ifelse(jTild == j, "Self",
-                                                      "NotSelf"), ".z", z,
-                                         "/(1-dataList[[1]]$hazNot", j,
-                                         ")*(dataList[[1]]$N", jTild,
-                                         " - dataList[[1]]$Q", jTild, "Haz))",
-                                         sep = "")))
+        H <- paste0("H",j,".j",ifelse(jTild==j,"Self","NotSelf"),".z",z)
+        # thisD <- eval(parse(text = paste("cbind(thisD, dataList[[1]]$H", j,
+        #                                  ".j", ifelse(jTild == j, "Self",
+        #                                               "NotSelf"), ".z", z,
+        #                                  "/(1-dataList[[1]]$hazNot", j,
+        #                                  ")*(dataList[[1]]$N", jTild,
+        #                                  " - dataList[[1]]$Q", jTild, "Haz))",
+        #                                  sep = "")))
+        thisD <- cbind(thisD, dataList[[1]][[H]])/(1-dataList[[1]][[paste0("hazNot",j)]])*
+                      (dataList[[1]][[paste0("N",jTild)]]) - dataList[[1]][[paste0("Q",jTild,"Haz")]]))
       }
-      eval(parse(text = paste("dat$D.j", j, ".z", z,
-                              " <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN=sum)) + ",
-                              "dat$F", j, ".z", z, ".t0 - dat$margF", j, ".z",
-                              z, ".t0", sep = "")))
+      # eval(parse(text = paste("dat$D.j", j, ".z", z,
+      #                         " <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN=sum)) + ",
+      #                         "dat$F", j, ".z", z, ".t0 - dat$margF", j, ".z",
+      #                         z, ".t0", sep = "")))
+      dat[[paste0("D.j",j,".z",z)]] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN=sum)) +
+          dat[[paste0("F",j,".z",z,".t0")]] - dat[[paste0("margF",j,".z",z,".t0")]]
     }
   }
   return(dat)

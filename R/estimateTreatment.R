@@ -57,9 +57,12 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
       } else {
         trtMod <- SL.trt
       }
-      eval(parse(text = paste0("dat$g_", max(dat$trt), "<- trtMod$SL.predict")))
-      eval(parse(text = paste0("dat$g_", min(dat$trt),
-                               "<- 1-trtMod$SL.predict")))
+      # eval(parse(text = paste0("dat$g_", max(dat$trt), "<- trtMod$SL.predict")))
+      dat[[paste0("g_",max(dat$trt))]] <- trtMod$SL.predict
+      # eval(parse(text = paste0("dat$g_", min(dat$trt),
+      #                          "<- 1-trtMod$SL.predict")))
+      dat[[paste0("g_",min(dat$trt))]] <- 1-trtMod$SL.predict
+
     }else if(!is.null(glm.trt) & is.null(SL.trt)) {
       if(!("glm" %in% class(glm.trt))) {
         thisY <- as.numeric(dat$trt == max(dat$trt))
@@ -71,8 +74,10 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
       suppressWarnings(
         pred <- predict(trtMod, type = "response")
       )
-      eval(parse(text = paste0("dat$g_", max(dat$trt), "<- pred")))
-      eval(parse(text = paste0("dat$g_", min(dat$trt), "<- 1 - pred")))
+      # eval(parse(text = paste0("dat$g_", max(dat$trt), "<- pred")))
+      dat[[paste0("g_",max(dat$trt))]] <- pred
+      # eval(parse(text = paste0("dat$g_", min(dat$trt), "<- 1 - pred")))
+      dat[[paste0("g_",min(dat$trt))]] <- 1-pred
     }
   }
 

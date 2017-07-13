@@ -65,22 +65,28 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
   if(t != 1) {
     for(j in allJ) {
       # exclude previously failed subjects
-      eval(parse(text = paste("include[wideDataList[[1]]$N", j, ".", t - 1,
-                              "==1] <- F", sep = "")))
+      # eval(parse(text = paste("include[wideDataList[[1]]$N", j, ".", t - 1,
+      #                         "==1] <- F", sep = "")))
+      include[wideDataList[[1]][[paste0("N",j,".",t-1)]] == 1] <- FALSE
     }
     # exclude previously censored subjects
-    eval(parse(text = paste("include[wideDataList[[1]]$C.", t - 1, "==1] <- F",
-                            sep = "")))
+    # eval(parse(text = paste("include[wideDataList[[1]]$C.", t - 1, "==1] <- F",
+    #                         sep = "")))
+    include[wideDataList[[1]][[paste0("C.",t-1)]]==1] <- FALSE
   }
   if(is.null(bounds)) {
     wideDataList <- lapply(wideDataList, function(x, t) {
       # check for 0's and 1's
-      eval(parse(text = paste("x$Q", whichJ, ".", t, "[x$Q", whichJ, ".", t,
-                              "<.Machine$double.neg.eps] <- .Machine$double.neg.eps",
-                              sep = "")))
-      eval(parse(text = paste("x$Q", whichJ, ".", t, "[x$Q", whichJ, ".", t,
-                              ">1-.Machine$double.neg.eps] <- 1-.Machine$double.neg.eps",
-                              sep = "")))
+      # eval(parse(text = paste("x$Q", whichJ, ".", t, "[x$Q", whichJ, ".", t,
+      #                         "<.Machine$double.neg.eps] <- .Machine$double.neg.eps",
+      #                         sep = "")))
+      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] < .Machine$double.neg.eps] <- 
+        .Machine$double.neg.eps
+      # eval(parse(text = paste("x$Q", whichJ, ".", t, "[x$Q", whichJ, ".", t,
+      #                         ">1-.Machine$double.neg.eps] <- 1-.Machine$double.neg.eps",
+      #                         sep = "")))
+      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] > .Machine$double.neg.eps] <- 
+        1-.Machine$double.neg.eps
       x
     }, t = t)
  
@@ -98,53 +104,65 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       # get predictions back
       wideDataList <- lapply(wideDataList, function(x, t) {
         suppressWarnings(
-          eval(parse(text = paste("x$Q", whichJ, "star.", t,
-                                  "<- predict(flucMod, newdata=x,type='response')",
-                                  sep = "")))
+          # eval(parse(text = paste("x$Q", whichJ, "star.", t,
+          #                         "<- predict(flucMod, newdata=x,type='response')",
+          #                         sep = "")))
+          x[[paste0("Q",whichJ,"star.",t)]] <- predict(flucMod, newdata=x,type='response')
         )
         x
       }, t = t)
     } else {
       # if Gcomp, just skip fluctuation step and assign this
       wideDataList <- lapply(wideDataList, function(x, t) {
-        eval(parse(text = paste("x$Q", whichJ, "star.", t, "<- x$Q", whichJ,
-                                ".", t, sep = "")))
+        # eval(parse(text = paste("x$Q", whichJ, "star.", t, "<- x$Q", whichJ,
+        #                         ".", t, sep = "")))
+        x[[paste0("Q",whichJ,"star.",t)]] <- x[[paste0("Q",whichJ,".",t)]]
         x
       }, t = t)
     }
   } else {
     if(!Gcomp) {
       cleverCovariates <- paste0("H", uniqtrt, ".", t)
-
+      lj.t <- paste0("l",whichJ,".",t)
+      uj.t <- paste0("u",whichJ,".",t)
+      Qtildej.t <- paste0("Qtilde",whichJ,".",t)
+      Nj.tm1 <- paste0("N",whichJ,".",t-1)
+      Qj.t <- paste0("Q",whichJ,".",t)
+      NnotJtm1 <- paste0("NnotJ.",t-1)
       # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x) {
-        eval(parse(text = paste("x$thisOutcome <- (x[,outcomeName] - x$l",
-                                whichJ, ".", t, ")", "/(x$u", whichJ, ".", t,
-                                " - x$l", whichJ, ".", t, ")", sep = "")))
-        eval(parse(text = paste("x$thisScale <- x$u", whichJ, ".", t,
-                                " - wideDataList[[1]]$l", whichJ, ".", t,
-                                sep = "")))
- 
-        eval(parse(text = paste("x$Qtilde", whichJ, ".", t,
-                              " <- x$N", whichJ, ".", t - 1, " + (1-(x$NnotJ.",
-                              t - 1, "+ x$N", whichJ, ".", t - 1, ")) * (x$Q",
-                              whichJ, ".", t, " - x$l", whichJ, ".", t,
-                              ")/x$thisScale",
-                              sep = "")))
- 
-        eval(parse(text = paste("x$Qtilde", whichJ, ".", t, "[x$Qtilde", whichJ,
-                                ".", t,"==0] <- .Machine$double.neg.eps",
-                                sep = "")))
-        eval(parse(text = paste("x$Qtilde", whichJ, ".", t, "[x$Qtilde", whichJ,
-                                ".", t, "==1] <- 1-.Machine$double.neg.eps",
-                                sep = "")))
+        # eval(parse(text = paste("x$thisOutcome <- (x[,outcomeName] - x$l",
+        #                         whichJ, ".", t, ")", "/(x$u", whichJ, ".", t,
+        #                         " - x$l", whichJ, ".", t, ")", sep = "")))
+        x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]])/(x[[uj.t]]-x[[lj.t]])
+
+        # eval(parse(text = paste("x$thisScale <- x$u", whichJ, ".", t,
+        #                         " - wideDataList[[1]]$l", whichJ, ".", t,
+        #                         sep = "")))
+        x[["thisScale"]] <- x[[uj.t]] - x[[lj.t]]
+
+        # eval(parse(text = paste("x$Qtilde", whichJ, ".", t,
+        #                       " <- x$N", whichJ, ".", t - 1, " + (1-(x$NnotJ.",
+        #                       t - 1, "+ x$N", whichJ, ".", t - 1, ")) * (x$Q",
+        #                       whichJ, ".", t, " - x$l", whichJ, ".", t,
+        #                       ")/x$thisScale",
+        #                       sep = "")))
+        x[[Qtildej.t]] <- x[[Nj.tm1]] + (1-x[[NnotJtm1]]-x[[Njtm1]])*
+          (x[[Qj.t]] - x[[lj.t]])/x[["thisScale"]]
+
+        # eval(parse(text = paste("x$Qtilde", whichJ, ".", t, "[x$Qtilde", whichJ,
+        #                         ".", t,"==0] <- .Machine$double.neg.eps",
+        #                         sep = "")))
+        x[[Qtildej.t]][x[[Qtildej.t]]==1] <- 1-.Machine$double.neg.eps
 
         x$thisOffset <- 0
-        eval(parse(text = paste("x$thisOffset[x$NnotJ.", t - 1, " + x$N",
-                                whichJ, ".", t - 1, "==0] <- ",
-                                "qlogis(x$Qtilde", whichJ, ".", t, "[x$NnotJ.",
-                                t - 1, " + x$N", whichJ, ".", t - 1, "==0])",
-                              sep = "")))
+        # eval(parse(text = paste("x$thisOffset[x$NnotJ.", t - 1, " + x$N",
+        #                         whichJ, ".", t - 1, "==0] <- ",
+        #                         "qlogis(x$Qtilde", whichJ, ".", t, "[x$NnotJ.",
+        #                         t - 1, " + x$N", whichJ, ".", t - 1, "==0])",
+        #                       sep = "")))
+        x[[thisOffset]][x[[NnotJtm1]] + x[[Njtm1]]==0] <- 
+          qlogis(x[[Qtildej.t]][x[[NnotJtm1]] + x[[Njtm1]]==0])
         x
       })
 
@@ -163,21 +181,26 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         beta <- fluc.mod$par
 
         wideDataList <- lapply(wideDataList, function(x) {
-          eval(parse(text = paste("x$Q", whichJ, "star.", t, " <- x$N", whichJ,
-                                  ".", t - 1, " + (1 - (x$NnotJ.", t - 1,
-                                  "+ x$N", whichJ, ".", t - 1,
-                                  ")) * (plogis(x$thisOffset + ",
-                                  "as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))",
-                                  "*x$thisScale + x$l", whichJ, ".", t, ")",
-                                  sep = "")))
+          # eval(parse(text = paste("x$Q", whichJ, "star.", t, " <- x$N", whichJ,
+          #                         ".", t - 1, " + (1 - (x$NnotJ.", t - 1,
+          #                         "+ x$N", whichJ, ".", t - 1,
+          #                         ")) * (plogis(x$thisOffset + ",
+          #                         "as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))",
+          #                         "*x$thisScale + x$l", whichJ, ".", t, ")",
+          #                         sep = "")))
+          x[[paste0("Q",whichJ,"star.",t)]] <- x[[Njtm1]] + 
+            (1 - x[[NnotJtm1]] - x[[Njtm1]]==0)* (plogis(x$thisOffset + 
+              as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))*x$thisScale
+            + x[[lj.t]])
           x
         })
       }
     } else {
       wideDataList <- lapply(wideDataList, function(x, t) {
-                               eval(parse(text = paste("x$Q", whichJ, "star.",
-                                                       t, "<- x$Q", whichJ, ".",
-                                                       t, sep = "")))
+                               # eval(parse(text = paste("x$Q", whichJ, "star.",
+                               #                         t, "<- x$Q", whichJ, ".",
+                               #                         t, sep = "")))
+                               x[[paste0("Q",whichJ,"star.",t)]] <- x[[Qj.t]]
           x
         }, t = t)
     }

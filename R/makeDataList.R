@@ -31,10 +31,12 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   # first element used for estimation
   dataList[[1]] <- dat[rep(1:nrow(dat), rankftime), ]
   for(j in J) {
-    eval(parse(text = paste("dataList[[1]]$N", j, " <- 0", sep = "")))
-    eval(parse(text = paste("dataList[[1]]$N", j,
-                            "[cumsum(rankftime)] <- as.numeric(dat$ftype==j)",
-                            sep = "")))
+    # eval(parse(text = paste("dataList[[1]]$N", j, " <- 0", sep = "")))
+    dataList[[1]][[paste0("N",j)]] <- 0
+    # eval(parse(text = paste("dataList[[1]]$N", j,
+    #                         "[cumsum(rankftime)] <- as.numeric(dat$ftype==j)",
+    #                         sep = "")))
+    dataList[[1]][[paste0("N",j)]][cumsum(rankftime)] <- as.numeric(dat$ftype==j)
   }
   dataList[[1]]$C <- 0
   dataList[[1]]$C[cumsum(rankftime)] <- as.numeric(dat$ftype == 0)
@@ -43,8 +45,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   uniqftime <- unique(dat$ftime)
   orduniqftime <- uniqftime[order(uniqftime)]
   row.names(dataList[[1]])[row.names(dataList[[1]]) %in%
-                           paste(row.names(dat))] <- paste(row.names(dat),
-                                                           ".0", sep = "")
+                           paste(row.names(dat))] <- paste0(row.names(dat),".0")
   dataList[[1]]$t <- orduniqftime[as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]), ".",
                                                                    fixed = TRUE))[seq(2, n.row.ii * 2, 2)])) + 1]
 
@@ -52,16 +53,20 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     boundFormat <- data.frame(t = bounds$t)
     for(j in J){
       if(paste("l", j, sep = "") %in% colnames(bounds)) {
-        eval(parse(text = paste0("boundFormat$l", j,
-                                 " <- bounds[, paste0('l',", j, ")]")))
+        # eval(parse(text = paste0("boundFormat$l", j,
+        #                          " <- bounds[, paste0('l',", j, ")]")))
+        boundFormat[[paste0("l",j)]] <- bounds[,paste0("l",j)]
       } else {
-        eval(parse(text = paste0("boundFormat$l", j, " <- 0")))
+        # eval(parse(text = paste0("boundFormat$l", j, " <- 0")))
+        boundFormat[[paste0("l",j)]] <- 0
       }
       if(paste("u", j, sep = "") %in% names(bounds)) {
-        eval(parse(text = paste0("boundFormat$u", j,
-                                 " <- bounds[, paste0('u',", j, ")]")))
+        # eval(parse(text = paste0("boundFormat$u", j,
+        #                          " <- bounds[, paste0('u',", j, ")]")))
+        boundFormat[[paste0("u",j)]] <- bounds[,paste0("u",j)]
       } else {
-        eval(parse(text = paste0("boundFormat$u", j, " <- 1")))
+        # eval(parse(text = paste0("boundFormat$u", j, " <- 1")))
+        boundFormat[[paste0("u",j)]] <- 1
       }
     }
     suppressMessages(
@@ -77,8 +82,10 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     }
   } else {
     for(j in J){
-      eval(parse(text = paste("dataList[[1]]$l", j, " <- 0", sep = "")))
-      eval(parse(text = paste("dataList[[1]]$u", j, " <- 1", sep = "")))
+      # eval(parse(text = paste("dataList[[1]]$l", j, " <- 0", sep = "")))
+      # eval(parse(text = paste("dataList[[1]]$u", j, " <- 1", sep = "")))
+      dataList[[1]][[paste0("l",j)]] <- 0
+      dataList[[1]][[paste0("u",j)]] <- 1
     }
   }
 
@@ -88,10 +95,13 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     dataList[[i + 1]]$t <- rep(1:t0, n)
     for(j in J){
       typejEvents <- dat$id[which(dat$ftype == j)]
-      eval(parse(text = paste0("dataList[[i + 1]]$N", j, " <- 0")))
-      eval(parse(text = paste0("dataList[[i + 1]]$N", j,
-                               "[dataList[[i + 1]]$id %in% typejEvents & ",
-                               "dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1")))
+      # eval(parse(text = paste0("dataList[[i + 1]]$N", j, " <- 0")))
+      dataList[[i+1]][[paste0("N",j)]] <- 0
+      # eval(parse(text = paste0("dataList[[i + 1]]$N", j,
+      #                          "[dataList[[i + 1]]$id %in% typejEvents & ",
+      #                          "dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1")))
+      dataList[[i+1]][[paste0("N",j)]][dataList[[i+1]]$id %in% typejEvents & 
+                                        dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1
     }
     censEvents <- dat$id[which(dat$ftype == 0)]
     dataList[[i + 1]]$C <- 0
@@ -115,10 +125,12 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
       }
     } else {
       for(j in J){
-        eval(parse(text = paste("dataList[[", i, "+1]]$l", j,
-                                " <- .Machine$double.eps", sep = "")))
-        eval(parse(text = paste("dataList[[", i, "+1]]$u", j,
-                                " <- 1-.Machine$double.eps", sep = "")))
+        # eval(parse(text = paste("dataList[[", i, "+1]]$l", j,
+        #                         " <- .Machine$double.eps", sep = "")))
+        dataList[[i+1]][[paste0("l",j)]] <- .Machine$double.eps
+        # eval(parse(text = paste("dataList[[", i, "+1]]$u", j,
+        #                         " <- 1-.Machine$double.eps", sep = "")))
+        dataList[[i+1]][[paste0("u",j)]] <- 1-.Machine$double.eps
       }
     }
   }

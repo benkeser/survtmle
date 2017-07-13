@@ -42,9 +42,9 @@ makeWideDataList <- function(dat,
   colnames(wideDataList[[1]])[1] <- c("trt")
   colnames(wideDataList[[1]])[2:(1 + ncol(adjustVars))] <- names(adjustVars)
   # set Nj0=0 for all j -- makes things easier to run in a loop later
-  eval(parse(text = paste(paste0("wideDataList[[1]]$N", allJ, ".0",
+  eval(parse(text = paste0(paste0("wideDataList[[1]]$N", allJ, ".0",
                                  collapse = "<-"),
-                          "<- wideDataList[[1]]$C.0 <- 0", sep = "")))
+                          "<- wideDataList[[1]]$C.0 <- 0")))
  
   wideDataList[2:length(dataList)] <- lapply(dataList[2:length(dataList)],
                                              function(x) {
@@ -57,25 +57,30 @@ makeWideDataList <- function(dat,
     out[, paste0("C.", 1:t0)] <- 0
     names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
     # set Nj0=0 for all j -- makes things easier to run in a loop later
-    eval(parse(text = paste(paste0("out$N", allJ, ".0", collapse = "<-"),
-                            "<- out$C.0 <- 0", sep = "")))
+    eval(parse(text = paste0(paste0("out$N", allJ, ".0", collapse = "<-"),
+                            "<- out$C.0 <- 0")))
     out
   })
   names(wideDataList) <- c("obs", uniqtrt)
 
-  for(z in uniqtrt) eval(parse(text = paste("wideDataList$'", z, "'$trt <-", z,
-                                            sep = "")))
+  for(z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
+  
 
+    # eval(parse(text = paste("wideDataList$'", z, "'$trt <-", z,
+                                            # sep = "")))
   wideDataList <- lapply(wideDataList, function(x){
     # make clever covariates
     for(z in uniqtrt) {
       for(t in 1:t0) {
-        eval(parse(text = paste("x$H", z, ".", t, " <- (x$trt==", z, " & x$C.",
-                                t - 1, "==0) / (x$G_dC.", t, "*x$g_", z, ".",
-                                t, ")", sep = "")))
+        # eval(parse(text = paste("x$H", z, ".", t, " <- (x$trt==", z, " & x$C.",
+        #                         t - 1, "==0) / (x$G_dC.", t, "*x$g_", z, ".",
+        #                         t, ")", sep = "")))
+        x[[paste0("H",z,".",t)]] <- 
+          (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x[[paste0("g_",z,".",t)]])
       }
-      eval(parse(text = paste("x$H", z, ".", 0, " <- (x$trt == ", z,
-                              ") / (x$g_", z, ".", 1, ")", sep = "")))
+      # eval(parse(text = paste("x$H", z, ".", 0, " <- (x$trt == ", z,
+      #                         ") / (x$g_", z, ".", 1, ")", sep = "")))
+        x[[paste0("H",z,".0")]] <- (x$trt==z) / x[[paste0("g_",z,".",t)]]
     }
     x
   })

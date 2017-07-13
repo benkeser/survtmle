@@ -57,14 +57,19 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
     # calculate offset term and outcome
     dataList <- lapply(dataList, function(x, j, allJ) {
-      eval(parse(text = paste("x$thisScale <- pmin(x$u", j, ",1-x$hazNot", j,
-                              ") - x$l", j, sep = "")))
-      eval(parse(text = paste("x$thisOffset <- qlogis( pmin((x$Q", j,
-                              "Haz - x$l", j,
-                              ") /x$thisScale , 1 - .Machine$double.neg.eps))",
-                              sep = "")))
-      eval(parse(text = paste("x$thisOutcome <- (x$N", j, "- x$l", j,
-                              ") / x$thisScale", sep = "")))
+      # eval(parse(text = paste("x$thisScale <- pmin(x$u", j, ",1-x$hazNot", j,
+      #                         ") - x$l", j, sep = "")))
+      x$thisScale <- pmin(x[[paste0("u",j)]],1-x[[paste0("hazNot",j)]]) - x[[paste0("l",j)]]
+      
+      # eval(parse(text = paste("x$thisOffset <- qlogis( pmin((x$Q", j,
+      #                         "Haz - x$l", j,
+      #                         ") /x$thisScale , 1 - .Machine$double.neg.eps))",
+      #                         sep = "")))
+      x$thisOffset <- qlogis(pmin((x[[paste0("Q",j,"Haz")]] - x[[paste0("l",j)]])/x$thisScale,
+                                  1-.Machine$double.neg.eps))
+      # eval(parse(text = paste("x$thisOutcome <- (x$N", j, "- x$l", j,
+      #                         ") / x$thisScale", sep = "")))
+      x$thisOutcome <- (x[[paste0("N",j)]] - x[[paste0("l",j)]])/x$thisScale
       x
     }, j = j, allJ = allJ)
 
@@ -91,15 +96,25 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     eps <- c(eps, beta)
 
     dataList <- lapply(dataList, function(x, j) {
-      eval(parse(text = paste("x$Q", j, "PseudoHaz[x$trt==", z,
-                              "] <- plogis(x$thisOffset[x$trt==", z,
-                              "] + suppressWarnings(as.matrix(Matrix::Diagonal(x=x$thisScale[x$trt==",
-                              z, "])%*%as.matrix(x[x$trt==", z,
-                              ", c(cleverCovariatesNotSelf, cleverCovariatesSelf)])) %*% as.matrix(beta)))",
-                              sep = "")))
-      eval(parse(text = paste("x$Q", j, "Haz[x$trt==", z, "] <- x$Q", j,
-                              "PseudoHaz[x$trt==", z, "] * x$thisScale[x$trt==",
-                              z, "] + x$l", j,"[x$trt==", z,"]", sep = "")))
+      # eval(parse(text = paste("x$Q", j, "PseudoHaz[x$trt==", z,
+      #                         "] <- plogis(x$thisOffset[x$trt==", z,
+      #                         "] + suppressWarnings(as.matrix(Matrix::Diagonal(x=x$thisScale[x$trt==",
+      #                         z, "])%*%as.matrix(x[x$trt==", z,
+      #                         ", c(cleverCovariatesNotSelf, cleverCovariatesSelf)])) %*% as.matrix(beta)))",
+      #                         sep = "")))
+      x[[paste0("Q",j,"PseudoHaz")]][x$trt==z] <- plogis(x$thisOffset[x$trt==z] + 
+        suppressWarnings(
+          as.matrix(
+            Matrix::Diagonal(x=x$thisScale[x$trt==z])%*%
+                as.matrix(x[x$trt==z,c(cleverCovariatesNotSelf, cleverCovariatesSelf)])
+          )%*% as.matrix(beta)
+        )
+      )
+      # eval(parse(text = paste("x$Q", j, "Haz[x$trt==", z, "] <- x$Q", j,
+      #                         "PseudoHaz[x$trt==", z, "] * x$thisScale[x$trt==",
+      #                         z, "] + x$l", j,"[x$trt==", z,"]", sep = "")))
+      x[[paste0("Q",j,"Haz")]][x$trt==z] <- x[[paste0("Q",j,"PseudoHaz")]][x$trt==z]*
+        x$thisScale[x$trt==z] + x[[paste0("l",j)]][x$trt==z]
       x 
     }, j = j)
 
