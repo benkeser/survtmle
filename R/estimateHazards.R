@@ -51,7 +51,7 @@
 #'        messages to indicate progress.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom stats as.formula predict model.matrix optim glm binomial
 #' @importFrom SuperLearner SuperLearner
 #'
 #'
@@ -113,7 +113,7 @@ estimateHazards <- function(dataList, J, adjustVars,
             # eval(parse(text = paste("x$Q", j, "Haz <- x$Q", j,
             #                         "PseudoHaz * (1 - x$hazLessThan", j, ")",
             #                         sep = "")))
-            x[[paste0("Q",h,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] * (1-x[[paste0("hazLessThan",j)]])
+            x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] * (1-x[[paste0("hazLessThan",j)]])
 
           } else {
             # eval(parse(text = paste("x$hazLessThan", j, " <- 0", sep = "")))
@@ -216,7 +216,7 @@ estimateHazards <- function(dataList, J, adjustVars,
                                X = dataList[[1]][NlessthanJ == 0,
                                                             c('t', 'trt', names(adjustVars))],
                                         id = dataList[[1]]$id[NlessthanJ == 0],
-                                        family = binomial(),
+                                        family = stats::binomial(),
                                         SL.library = SL.ftime,
                                         verbose = verbose)
       } else {

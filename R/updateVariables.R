@@ -63,7 +63,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
         # eval(parse(text = paste("x$F", j, ".z", uniqtrt[i],
         #                         ".t0 <- Fj.t0.allZ[[i]][ind]",
         #                         sep = "")))
-        x[[paste0("F",j,".z",uniqtrt[i]),".t0"]] <- Fj.t0.allZ[[i]][ind]
+        x[[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind]
       }
       x
     }, j = j, uniqtrt = uniqtrt, Fj.t0.allZ = Fj.t0.allZ)

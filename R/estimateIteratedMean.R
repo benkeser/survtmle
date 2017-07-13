@@ -107,7 +107,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   Qtildej.t <- paste0("Qtilde",whichJ,".",t)
   Nj.tm1 <- paste0("N",whichJ,".",t-1)
   Qj.t <- paste0("Q",whichJ,".",t)
-  NnotJtm1 <- paste0("NnotJ.",t-1)
+  NnotJ.tm1 <- paste0("NnotJ.",t-1)
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
@@ -123,7 +123,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
             #                         "+ x$N", whichJ, ".", t - 1,
             #                         ")) * predict(Qmod, newdata = x, type = 'response')",
             #                         sep = "")))
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJtm1]]-x[[Nj.tm1]])*
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
                 predict(Qmod,newdata=x,type="response")
           )
           x
@@ -140,7 +140,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       #                                   whichJ, ".", t, "[include])",
       #                                   sep = "")))
       Ytilde <- (wideDataList[[1]][include,outcomeName] - wideDataList[[1]][[lj.t]][include])/
-        (wideDataList[[uj.t]][include] - wideDataList[[lj.t]][include])
+        (wideDataList[[1]][[uj.t]][include] - wideDataList[[1]][[lj.t]][include])
       Qmod <- optim(par = rep(0, ncol(X)), fn = LogLikelihood, Y = Ytilde,
                     X = X, method = "BFGS", gr = grad,
                     control = list(reltol = 1e-7, maxit = 50000))
@@ -152,7 +152,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         #                         ".", t - 1, ")) * (plogis(newX %*% beta) * (x$u",
         #                         j, ".", t, "- x$l", j, ".", t,") + x$l", j, ".",
         #                         t ,")", sep = "")))
-        x[[Qj.t]] <- x[[NnotJtm1]] + (1-x[[NnotJtm1]]-x[[Nj.tm1]])*
+        x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
           (plogis(newX%*%beta)*(x[[uj.t]]-x[[lj.t]]) + x[[lj.t]])
 
         x
@@ -179,7 +179,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
              #                         "+ x$N", whichJ, ".", t - 1,
              #                       ")) * predict(Qmod, newdata = data.frame(trt = x$trt))",
              #                       sep = "")))
-              x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJtm1]]- x[[Nj.tm1]])*
+              x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]])*
                 predict(Qmod,newdata=data.frame(trt=x$trt))
              )
              x
@@ -202,7 +202,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
             #                         "+ x$N", whichJ, ".", t - 1,
             #                         ")) * predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred",
             #                         sep = "")))
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJtm1]]-x[[Nj.tm1]])*
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
             x
           }, t = t, whichJ = whichJ)
@@ -223,7 +223,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
             #                         "+ x$N", whichJ, ".", t - 1,
             #                         ")) * predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred",
             #                         sep = "")))
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[Nj.tm1]]-x[[NnotJtm1]])*
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[Nj.tm1]]-x[[NnotJ.tm1]])*
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
           )
           x

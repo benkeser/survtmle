@@ -85,7 +85,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       # eval(parse(text = paste("x$Q", whichJ, ".", t, "[x$Q", whichJ, ".", t,
       #                         ">1-.Machine$double.neg.eps] <- 1-.Machine$double.neg.eps",
       #                         sep = "")))
-      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] > .Machine$double.neg.eps] <- 
+      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] > 1-.Machine$double.neg.eps] <- 
         1-.Machine$double.neg.eps
       x
     }, t = t)
@@ -128,7 +128,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       Qtildej.t <- paste0("Qtilde",whichJ,".",t)
       Nj.tm1 <- paste0("N",whichJ,".",t-1)
       Qj.t <- paste0("Q",whichJ,".",t)
-      NnotJtm1 <- paste0("NnotJ.",t-1)
+      NnotJ.tm1 <- paste0("NnotJ.",t-1)
       # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x) {
         # eval(parse(text = paste("x$thisOutcome <- (x[,outcomeName] - x$l",
@@ -147,7 +147,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         #                       whichJ, ".", t, " - x$l", whichJ, ".", t,
         #                       ")/x$thisScale",
         #                       sep = "")))
-        x[[Qtildej.t]] <- x[[Nj.tm1]] + (1-x[[NnotJtm1]]-x[[Njtm1]])*
+        x[[Qtildej.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
           (x[[Qj.t]] - x[[lj.t]])/x[["thisScale"]]
 
         # eval(parse(text = paste("x$Qtilde", whichJ, ".", t, "[x$Qtilde", whichJ,
@@ -161,8 +161,8 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         #                         "qlogis(x$Qtilde", whichJ, ".", t, "[x$NnotJ.",
         #                         t - 1, " + x$N", whichJ, ".", t - 1, "==0])",
         #                       sep = "")))
-        x[[thisOffset]][x[[NnotJtm1]] + x[[Njtm1]]==0] <- 
-          qlogis(x[[Qtildej.t]][x[[NnotJtm1]] + x[[Njtm1]]==0])
+        x$thisOffset[(x[[NnotJ.tm1]] + x[[Nj.tm1]])==0] <- 
+          qlogis(x[[Qtildej.t]][(x[[NnotJ.tm1]] + x[[Nj.tm1]])==0])
         x
       })
 
@@ -188,8 +188,8 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
           #                         "as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))",
           #                         "*x$thisScale + x$l", whichJ, ".", t, ")",
           #                         sep = "")))
-          x[[paste0("Q",whichJ,"star.",t)]] <- x[[Njtm1]] + 
-            (1 - x[[NnotJtm1]] - x[[Njtm1]]==0)* (plogis(x$thisOffset + 
+          x[[paste0("Q",whichJ,"star.",t)]] <- x[[Nj.tm1]] + 
+            (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]])* (plogis(x$thisOffset + 
               as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))*x$thisScale
             + x[[lj.t]])
           x

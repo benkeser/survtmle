@@ -24,7 +24,7 @@ test_that("mean_tmle with bounds of (0,1) gives same results as unbounded with o
 	method="mean", t0=6, bounds = bf)
 
 	# should have roughly same point estimates
-	expect_true(all(abs(fit1$est - fit2$est) < 1e-4))
+	expect_true(all(abs(fit1$est - fit2$est) < 1e-3))
 })
 
 
@@ -102,7 +102,7 @@ test_that("mean_tmle with one ftypeOfInterest and one trtOfInterest gives same a
 	method="mean", t0=3)
 
 	# should have roughly same point estimates
-	expect_true(abs(fit1$est[1]-fit2$est[1]) < 1e-4)
+	expect_true(abs(fit1$est[1]-fit2$est[1]) < 1e-3)
 })
 
 
@@ -128,7 +128,7 @@ test_that("mean_tmle with one ftypeOfInterest and one trtOfInterest gives same a
 	method="mean", t0=3, bounds = data.frame(t=1:3,l1=rep(0,3),u1=rep(0.99,3)))
 
 	# should have roughly same point estimates
-	expect_true(abs(fit1$est[1]-fit2$est[1]) < 1e-4)
+	expect_true(abs(fit1$est[1]-fit2$est[1]) < 1e-3)
 })
 
 test_that("stability check if few events at t0 executes", {

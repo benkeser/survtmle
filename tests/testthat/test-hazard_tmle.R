@@ -25,7 +25,7 @@ test_that("hazard_tmle with bounds of (0,1) gives same results as unbounded with
 	method="hazard", t0=6, bounds = bf)
 
 	# should have roughly same point estimates
-	expect_true(all(abs(fit1$est - fit2$est) < 1e-5))
+	expect_true(all(abs(fit1$est - fit2$est) < 1e-3))
 })
 
 test_that("hazard_tmle with no censoring works as expected", {

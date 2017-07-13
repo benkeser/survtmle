@@ -34,7 +34,7 @@
 #'         covariates" at each time.
 #'
 #' @importFrom Matrix Diagonal
-#' @importFrom stats optim
+#' @importFrom stats optim qlogis
 #'
 
 fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
@@ -65,7 +65,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
       #                         "Haz - x$l", j,
       #                         ") /x$thisScale , 1 - .Machine$double.neg.eps))",
       #                         sep = "")))
-      x$thisOffset <- qlogis(pmin((x[[paste0("Q",j,"Haz")]] - x[[paste0("l",j)]])/x$thisScale,
+      x$thisOffset <- stats::qlogis(pmin((x[[paste0("Q",j,"Haz")]] - x[[paste0("l",j)]])/x$thisScale,
                                   1-.Machine$double.neg.eps))
       # eval(parse(text = paste("x$thisOutcome <- (x$N", j, "- x$l", j,
       #                         ") / x$thisScale", sep = "")))

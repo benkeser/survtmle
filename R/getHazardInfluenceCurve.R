@@ -54,8 +54,8 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
         #                                  ")*(dataList[[1]]$N", jTild,
         #                                  " - dataList[[1]]$Q", jTild, "Haz))",
         #                                  sep = "")))
-        thisD <- cbind(thisD, dataList[[1]][[H]])/(1-dataList[[1]][[paste0("hazNot",j)]])*
-                      (dataList[[1]][[paste0("N",jTild)]]) - dataList[[1]][[paste0("Q",jTild,"Haz")]]))
+        thisD <- cbind(thisD, dataList[[1]][[H]]/(1-dataList[[1]][[paste0("hazNot",j)]])*
+                      (dataList[[1]][[paste0("N",jTild)]] - dataList[[1]][[paste0("Q",jTild,"Haz")]]))
       }
       # eval(parse(text = paste("dat$D.j", j, ".z", z,
       #                         " <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN=sum)) + ",
