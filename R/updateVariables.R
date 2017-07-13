@@ -106,7 +106,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
         x[[paste0("H", j, ".jSelf.z", z)]] <- 
           (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_",z)]]*x$G_dC) * 
             (1-x[[paste0("hazNot",j)]]) * ((x$t < t0) * (1-(x[[paste0("F",j,".z",z,".t0")]]-
-                x[[paste0("F",j,".t")]])/c(x$S.t) + x$t==t0))
+                x[[paste0("F",j,".t")]])/c(x$S.t)) + as.numeric(x$t==t0))
           x[[paste0("H", j, ".jNotSelf.z", z)]] <- 
             - (x$ftime >= x$t & x$trt ==z)/(x[[paste0("g_",z)]]*x$G_dC) * 
               (1-x[[paste0("hazNot",j)]]) * ((x$t < t0)*(x[[paste0("F",j,".z",z,".t0")]] - 
