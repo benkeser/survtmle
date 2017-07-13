@@ -12,8 +12,8 @@ timepoints(object, times, returnModels = FALSE)
 \item{times}{The times to evaluate incidence.}
 
 \item{returnModels}{Should the function return fitted GLM or Super Learner
-models at each time point. If set to \code{TRUE}, memory issues could
-arise depending on the number of time points specified and the size of
+models at each timepoint. If set to \code{TRUE}, memory issues could
+arise depending on the number of timepoints specified and the size of
 the Super Learner library.}
 }
 \value{

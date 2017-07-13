@@ -50,7 +50,7 @@ of \code{data.frame} objects. The first should have all rows set to their
 observed value of \code{trt}. The remaining should in turn have all rows set
 to each value of \code{trtOfInterest} in the \code{survtmle} call. The latter
 will be used to obtain predictions that are then mapped into the estimates of
-the cumulative incidence funciton at \code{t0}. Currently the code requires
+the cumulative incidence function at \code{t0}. Currently the code requires
 each \code{data.frame} to have named columns for each name in
 \code{names(adjustVars)}, as well as a column named \code{trt}. It must also
 have a columns named \code{Nj.Y} where j corresponds with the numeric values

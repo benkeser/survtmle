@@ -33,7 +33,7 @@ default this is set to \code{max(ftime)}.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
-outcome regression (either cause-specific hazards or condtional mean).
+outcome regression (either cause-specific hazards or conditional mean).
 See \code{?SuperLearner} for more information on how to specify valid 
 \code{SuperLearner} libraries. It is expected that the wrappers used
 in the library will play nicely with the input variables, which will
@@ -55,7 +55,7 @@ variables, which will be \code{names(adjustVars)}.}
 \item{glm.ftime}{A character specification of the right-hand side of the
 equation passed to the \code{formula} option of a call to \code{glm}
 for the outcome regression (either cause-specific hazards or
-condtional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
+conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 to specify the treatment in this formula (see examples). The formula
 can additionally include any variables found in
 \code{names(adjustVars)}.}
