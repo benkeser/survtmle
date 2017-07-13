@@ -156,6 +156,8 @@
 #'                     glm.ctime = "trt + W1 + W2",
 #'                     returnModels = TRUE)
 #'
+#' @export
+#'
 
 hazard_tmle <- function(ftime, ftype, trt,
                         t0 = max(ftime[ftype > 0]), adjustVars = NULL,

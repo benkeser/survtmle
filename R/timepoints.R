@@ -1,4 +1,4 @@
-#' timepoints
+#' Evaluate Results over Time Points of Interest
 #'
 #' Wrapper function for \code{survtmle} that takes a fitted \code{survtmle}
 #' object and computes the TMLE estimated incidence for all times specified in

@@ -2,7 +2,7 @@
 % Please edit documentation in R/timepoints.R
 \name{timepoints}
 \alias{timepoints}
-\title{timepoints}
+\title{Evaluate Results over Time Points of Interest}
 \usage{
 timepoints(object, times, returnModels = FALSE)
 }

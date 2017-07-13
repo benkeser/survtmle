@@ -150,6 +150,8 @@
 #'                   glm.ftime = "trt + W1 + W2",
 #'                   glm.ctime = "trt + W1 + W2")
 #'
+#' @export
+#'
 
 mean_tmle <- function(ftime, ftype, trt,
                       t0 = max(ftime[ftype > 0]), adjustVars = NULL,
