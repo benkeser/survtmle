@@ -8,14 +8,16 @@ getHazardInfluenceCurve(dataList, dat, allJ, ofInterestJ, nJ, uniqtrt, t0,
   verbose, ...)
 }
 \arguments{
-\item{dataList}{A list of \code{data.frame} objects. See \code{?makeDataList} for more information.}
+\item{dataList}{A list of \code{data.frame} objects. See \code{?makeDataList}
+for more information.}
 
-\item{dat}{A \code{data.frame} in short form. See \code{?makeDataList} for more information.}
+\item{dat}{A \code{data.frame} in short form. See \code{?makeDataList} for
+more information.}
 
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
-\item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-\code{hazard_tmle}.}
+\item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was
+passed to \code{hazard_tmle}.}
 
 \item{nJ}{The number of unique failure types.}
 
@@ -23,20 +25,23 @@ getHazardInfluenceCurve(dataList, dat, allJ, ofInterestJ, nJ, uniqtrt, t0,
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.}
+\item{verbose}{A boolean indicating whether the function should print
+messages to indicate progress.}
 
 \item{...}{Other arguments. Not currently used.}
 }
 \value{
-An object of class \code{data.frame} with columns \code{D.jX.zZ} added for each value
-of X in \code{ofInterestJ} and each value of Z in \code{uniqtrt}. These are the sum over
-all time points of the estimated efficient influence function evaluated at that observation.
+An object of class \code{data.frame} with columns \code{D.jX.zZ}
+        added for each value of X in \code{ofInterestJ} and each value of Z
+        in \code{uniqtrt}. These are the sum over all time points of the
+        estimated efficient influence function evaluated at that observation.
 }
 \description{
-This function computes the hazard-based efficient influence curve at the final
-estimate of the fluctuated cause-specific hazard functions and evaluates 
-it on the observed data. The influence-function is computed on the long-format data
-but is subsequently summed over all timepoints for each observation and the function
-returns a new short form data set with columns added corresponding to the sum over
-all time points of the estimated efficient influence function evaluated at that observation.
+This function computes the hazard-based efficient influence curve at the
+final estimate of the fluctuated cause-specific hazard functions and
+evaluates it on the observed data. The influence-function is computed on the
+long-format data but is subsequently summed over all timepoints for each
+observation and the function returns a new short form data set with columns
+added corresponding to the sum over all time points of the estimated
+efficient influence function evaluated at that observation.
 }

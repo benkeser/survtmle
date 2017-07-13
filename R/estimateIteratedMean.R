@@ -183,7 +183,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                     ")) * predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred",
                                     sep = "")))
             x
-          },t = t, whichJ = whichJ)
+          }, t = t, whichJ = whichJ)
         }
       } else {
         suppressWarnings(

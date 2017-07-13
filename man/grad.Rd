@@ -18,6 +18,5 @@ Numeric vector of the gradient of the parameter vector
 }
 \description{
 A function that computes the gradient of the for a logistic regression
-model. Used by 
-\code{optim} on occasion.
+model. Used by \code{optim} on occasion.
 }

@@ -7,43 +7,48 @@
 timepoints(object, times, returnModels = FALSE)
 }
 \arguments{
-\item{object}{A fitted \code{survtmle} object with \code{returnModels=TRUE}}
+\item{object}{A fitted \code{survtmle} object with \code{returnModels = TRUE}}
 
 \item{times}{The times to evaluate incidence.}
 
-\item{returnModels}{Should the function return fitted glm/super learner models at each
-timepoint. If set to \code{TRUE}, memory issues could arise depending on the number of 
-timepoints specified and the size of the super learner library.}
+\item{returnModels}{Should the function return fitted GLM or Super Learner
+models at each time point. If set to \code{TRUE}, memory issues could
+arise depending on the number of time points specified and the size of
+the Super Learner library.}
 }
 \value{
-An object of class \code{tp.survtmle} with number of entries equal to 
-\code{length(times)}. Each entry is named "tX", where X denotes a single value of \code{times}.
+An object of class \code{tp.survtmle} with number of entries equal to
+        \code{length(times)}. Each entry is named "tX", where X denotes a
+        single value of \code{times}.
 }
 \description{
-This is a wrapper function for \code{survtmle} that takes a fitted \code{survtmle}
-object and computes the TMLE estimated incidence for all times specified in the 
-\code{times} argument. For this function to work, the original call to \code{survtmle}
-should have been executed with \code{returnModels = TRUE}. This allows the function to
-be more efficient than repeated calls to \code{survtmle} in that \code{timepoints} will
-use fitted censoring (and hazard if \code{method="hazard"} was used in the original call)
-estimates. It is therefore advisable that the vector \code{times} used in the call to 
-\code{timepoints} not include times beyond the time specified in \code{t0} in the original
-call to \code{survtmle}. This can be ensured be making the original call to \code{survtmle}
-with \code{t0 = max(ftime)}.
+Wrapper function for \code{survtmle} that takes a fitted \code{survtmle}
+object and computes the TMLE estimated incidence for all times specified in
+the \code{times} argument. For this function to work, the original call to
+\code{survtmle} should have been executed with \code{returnModels = TRUE}.
+This allows the function to be more efficient than repeated calls to
+\code{survtmle} in that \code{timepoints} will use fitted censoring (and
+hazard if \code{method="hazard"} was used in the original call) estimates. It
+is therefore advisable that the vector \code{times} used in the call to
+\code{timepoints} not include times beyond the time specified in \code{t0} in
+the original call to \code{survtmle}. This can be ensured be making the
+original call to \code{survtmle} with \code{t0 = max(ftime)}.
 }
 \examples{
 # simulate data
 set.seed(1234)
 n <- 100
-ftime <- round(runif(n,1,4))
-ftype <- round(runif(n,0,2))
-trt <- rbinom(n,1,0.5)
+ftime <- round(runif(n, 1, 4))
+ftype <- round(runif(n, 0, 2))
+trt <- rbinom(n, 1, 0.5)
 adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 
 # fit an initial survtmle object with t0=max(ftime)
-fm <- survtmle(ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-glm.trt = "1", glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2", 
-method="mean", returnModels = TRUE)
+fm <- survtmle(ftime = ftime, ftype = ftype,
+               trt = trt, adjustVars = adjustVars,
+               glm.trt = "1", glm.ftime = "trt + W1 + W2",
+               glm.ctime = "trt + W1 + W2", method="mean",
+               returnModels = TRUE)
 
 # call timepoints to get cumulative incidence estimates at each timepoint
 allTimes <- timepoints(object = fm, times = 1:4, returnModels = FALSE)
@@ -51,7 +56,7 @@ allTimes <- timepoints(object = fm, times = 1:4, returnModels = FALSE)
 # look at results for time 1
 class(allTimes$t1)
 allTimes$t1
-# look at results for time 2 
+# look at results for time 2
 allTimes$t2
 
 }

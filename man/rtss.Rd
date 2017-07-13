@@ -4,11 +4,11 @@
 \name{rtss}
 \alias{rtss}
 \title{Mock RTSS/AS01 data set}
-\format{A \code{list} with 10 entries, each a \code{data.frame} with 
-6,890 rows and 18 columns.
+\format{A \code{list} with 10 entries, each a \code{data.frame} with 6,890
+        rows and 18 columns.
 \describe{
   \item{ftime}{number of months until first recorded malaria disease}
-  \item{ftype}{the genotype of sampled malaria parasite 
+  \item{ftype}{the genotype of sampled malaria parasite
   (0 = censored, 1 = CSP matched, 2 = CSP mismatched)}
   \item{vaccine}{vaccine assignment (0 = control vaccine, 1 = vaccine)}
   \item{ageWeeks}{participant's age in weeks at trial enrollment}
@@ -21,19 +21,20 @@
   \item{hemog}{hemoglobin}
   \item{distInpatient}{distance from nearest inpatient clinic}
   \item{distOutpatient}{distance from nearest outpatient clinic}
-  \item{startMonthCat}{study site-specific indicator of rainy (=1) vs. dry (=0) season}
+  \item{startMonthCat}{study site-specific indicator of rainy (=1) versus dry
+                       (=0) season}
   ...
 }}
 \usage{
 rtss
 }
 \description{
-A dataset containing data that is similar in structure to the 
-RTSS/AS01 malaria vaccine trial. Privacy agreements prevent the sharing
-of the real data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA.
-The data set is a \code{list} of 10 simulated multiple outputation draws.
-The covariate data, \code{ftime}, and \code{vaccine} stay the same across
-the data sets; however, the \code{ftype} variable changes, simulating 
-outputed data sets of multiply infected trial participants.
+A dataset containing data that is similar in structure to the RTSS/AS01
+malaria vaccine trial. Privacy agreements prevent the sharing of the real
+data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA. The data set is a
+\code{list} of 10 simulated multiple outputation draws. The covariate data,
+\code{ftime}, and \code{vaccine} stay the same across the data sets; however,
+the \code{ftype} variable changes, simulating output data sets of multiply
+infected trial participants.
 }
 \keyword{datasets}

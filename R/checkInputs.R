@@ -222,16 +222,18 @@ checkInputs <- function(ftime,
   }
 
   # check if time enters as a factor in glm.ftime or glm.ctime
-	if(!is.null(glm.ftime) & !is.list(glm.ftime) & method == "hazard"){
-		if(grepl("factor(t)", glm.ftime)){
-			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
-		}
-	}
-	if(!is.null(glm.ctime) & !any(class(glm.ctime)=="glm")){
-		if(grepl("factor(t)", glm.ctime)){
-			stop("Time can only be modeled as a factor in hazard implementation if there are observed endpoints at every time 1:t0.")
-		}
-	}
+  if(!is.null(glm.ftime) & !is.list(glm.ftime) & method == "hazard") {
+    if(grepl("factor(t)", glm.ftime)) {
+      stop("Time can only be modeled as a factor in hazard implementation if
+	   there are observed endpoints at every time 1:t0.")
+    }
+  }
+  if(!is.null(glm.ctime) & !any(class(glm.ctime) == "glm")) {
+    if(grepl("factor(t)", glm.ctime)) {
+      stop("Time can only be modeled as a factor in hazard implementation if
+	   there are observed endpoints at every time 1:t0.")
+    }
+  }
 
   # warn if no events at t0
   if(method == "hazard") {
@@ -330,7 +332,10 @@ checkInputs <- function(ftime,
 				 collapse = "+"))
     }
     if(is.null(glm.ftime)) {
-      glm.ftime <- paste0("-1 + ",paste0("I(t==",unique(ftime[ftype>0]),")",collapse="+"),"+",paste0("I(trt*t==",unique(ftime[ftype>0]),")",collapse="+"))
+      glm.ftime <- paste0("-1 + ", paste0("I(t==", unique(ftime[ftype > 0]),
+					  ")",collapse = "+"), "+",
+			  paste0("I(trt*t == ", unique(ftime[ftype > 0]), ")",
+				 collapse = "+"))
     }
     SL.trt <- SL.ctime <- SL.ftime <- NULL
     # add in dummy adjustVars so nothing else complains about NULL
@@ -362,7 +367,8 @@ checkInputs <- function(ftime,
   # check format of bound inputs
   if(!(is.null(bounds))) {
     if(!any(colnames(bounds) == "t")) {
-      stop("bounds should have a column named 't' containing a row for each value 1:t0.")
+      stop("bounds should have a column named 't' containing a row for each
+	   value 1:t0.")
     }
     # if(!(all(1:t0 %in% bounds$t))){
     # stop("bounds should have one row for each time 1:t0.")

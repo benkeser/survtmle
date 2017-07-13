@@ -2,7 +2,7 @@
 % Please edit documentation in R/updateVariables.R
 \name{updateVariables}
 \alias{updateVariables}
-\title{updateVariables}
+\title{Update TMLEs for Hazard to Cumulative Incidence}
 \usage{
 updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
   ...)
@@ -12,8 +12,8 @@ updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
 
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
-\item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was passed to 
-\code{hazard_tmle}.}
+\item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was
+passed to \code{hazard_tmle}.}
 
 \item{nJ}{The number of unique failure types.}
 
@@ -23,18 +23,19 @@ updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
 
-\item{verbose}{A boolean indicating whether the function should print messages to indicate progress.
-the cross-validated sieve effect parameter.}
+\item{verbose}{A boolean indicating whether the function should print
+messages to indicate progress.}
 
 \item{...}{Other arguments. Not currently used.}
 }
 \value{
-The function returns a list that is exactly the same as the input \code{dataList}, 
-but with updated columns corresponding with estimated cumulative incidence at each time
-and estimated "clever covariates" at each time.
+The function returns a list that is exactly the same as the input
+        \code{dataList}, but with updated columns corresponding with
+        estimated cumulative incidence at each time and estimated "clever
+        covariates" at each time.
 }
 \description{
-A helper function that maps hazard estimates into estimates of cumulative 
-incidence and updates the "clever covariates" used by the targeted minimum 
+A helper function that maps hazard estimates into estimates of cumulative
+incidence and updates the "clever covariates" used by the targeted minimum
 loss-based estimation fluctuation step.
 }

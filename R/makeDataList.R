@@ -90,7 +90,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
       typejEvents <- dat$id[which(dat$ftype == j)]
       eval(parse(text = paste0("dataList[[i + 1]]$N", j, " <- 0")))
       eval(parse(text = paste0("dataList[[i + 1]]$N", j,
-                               "[dataList[[i + 1]]$id %in% typejEvents & dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1")))
+                               "[dataList[[i + 1]]$id %in% typejEvents & ",
+                               "dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1")))
     }
     censEvents <- dat$id[which(dat$ftype == 0)]
     dataList[[i + 1]]$C <- 0
