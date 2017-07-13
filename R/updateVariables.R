@@ -56,7 +56,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     }
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
-      for(i in seq_len(uniqtrt)) {
+      for(i in seq_along(uniqtrt)) {
         ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
         eval(parse(text = paste("x$F", j, ".z", uniqtrt[i],
                                 ".t0 <- Fj.t0.allZ[[i]][ind]",

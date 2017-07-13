@@ -50,10 +50,10 @@ artifacts:
 notifications:
  - provider: Email
    to:
-     - benkeser@berkeley.edu
+     - benkeser@emory.edu
      - nh@nimahejazi.org
    subject: 'r-appveyor build {{status}}'
    message: "https://ci.appveyor.com/project/benkeser/survtmle"
    on_build_success: false
-   on_build_failure: true
+   on_build_failure: false
    on_build_status_changed: true

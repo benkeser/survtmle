@@ -211,7 +211,7 @@ mean_tmle <- function(ftime, ftype, trt,
   # empty list for Qmod if returnModels
   ftimeMod <- vector(mode = "list", length = length(ofInterestJ))
   names(ftimeMod) <- paste0("J", ofInterestJ)
-  for(j in seq_len(length(ofInterestJ))) {
+  for(j in seq_along(ofInterestJ)) {
     ftimeMod[[j]] <- vector(mode = "list", length = t0)
     names(ftimeMod[[j]]) <- paste0("t", seq_len(t0))
   }
@@ -242,7 +242,7 @@ mean_tmle <- function(ftime, ftype, trt,
   # get point estimate
   est <- rowNames <- NULL
   for(j in ofInterestJ) {
-    for(z in seq_len(length(uniqtrt))) {
+    for(z in seq_along(uniqtrt)) {
       thisEst <- eval(parse(text = paste("mean(wideDataList[[", z + 1, "]]$Q",
                                          j, "star.1)", sep = "")))
       est <- rbind(est, thisEst)
@@ -258,7 +258,7 @@ mean_tmle <- function(ftime, ftype, trt,
 
   # calculate influence function
   for(j in ofInterestJ) {
-    for(z in seq_len(length(uniqtrt))) {
+    for(z in seq_along(uniqtrt)) {
       for(t in t0:1) {
         outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
                               paste("Q", j, "star.", t + 1, sep = ""))
