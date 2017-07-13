@@ -2,7 +2,7 @@ utils::globalVariables(c("value", "group"))
 
 #' Plot Results of Cumulative Incidence Estimates
 #'
-#' Step funciton plots for both raw and smoothed (monotonic) estimates, the
+#' Step function plots for both raw and smoothed (monotonic) estimates, the
 #' latter by isotonic regression of the raw estimates, of cumulative incidence.
 #'
 #' @param x object of class \code{tp.survtmle} as produced by a sequence of
@@ -19,7 +19,7 @@ utils::globalVariables(c("value", "group"))
 #'
 #' @return object of class \code{ggplot} containing a step function plot of the
 #'        raw or smoothened point estimates of cumulative incidence across a
-#'        series of time points of interest.
+#'        series of timepoints of interest.
 #'
 #' @export
 #'
@@ -54,7 +54,7 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
   est <- lapply(x, function(x) {x$est})
   est <- Reduce(cbind, est)
 
-  # extract time points of interest by actual values rather than order
+  # extract timepoints of interest by actual values rather than order
   times <- objects(x)
   times_labels <- stringr::str_sub(times, 2, stringr::str_length(times))
   times_labs <- as.numeric(unclass(times_labels))

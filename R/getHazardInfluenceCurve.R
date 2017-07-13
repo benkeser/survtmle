@@ -5,7 +5,7 @@
 #' evaluates it on the observed data. The influence-function is computed on the
 #' long-format data but is subsequently summed over all timepoints for each
 #' observation and the function returns a new short form data set with columns
-#' added corresponding to the sum over all time points of the estimated
+#' added corresponding to the sum over all timepoints of the estimated
 #' efficient influence function evaluated at that observation.
 #'
 #' @param dataList A list of \code{data.frame} objects. See \code{?makeDataList}
@@ -24,7 +24,7 @@
 #'
 #' @return An object of class \code{data.frame} with columns \code{D.jX.zZ}
 #'         added for each value of X in \code{ofInterestJ} and each value of Z
-#'         in \code{uniqtrt}. These are the sum over all time points of the
+#'         in \code{uniqtrt}. These are the sum over all timepoints of the
 #'         estimated efficient influence function evaluated at that observation.
 #'
 
