@@ -45,7 +45,7 @@
 #'        nothing but re-label columns.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula optim glm
+#' @importFrom stats as.formula optim glm qlogis
 #' @importFrom Matrix Diagonal
 #'
 #' @return The function then returns a list that is exactly the same as the
@@ -73,16 +73,16 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
   if(is.null(bounds)) {
     wideDataList <- lapply(wideDataList, function(x, t) {
       # check for 0's and 1's
-      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] < .Machine$double.neg.eps] <- 
-        .Machine$double.neg.eps
-      x[[paste0("Q",whichJ,".",t)]][x[[paste0("Q",whichJ,".",t)]] > 1-.Machine$double.neg.eps] <- 
-        1-.Machine$double.neg.eps
+      x[[paste0("Q", whichJ, ".", t)]][x[[paste0("Q", whichJ, ".", t)]] <
+                                       .Machine$double.neg.eps] <- .Machine$double.neg.eps
+      x[[paste0("Q", whichJ, ".", t)]][x[[paste0("Q", whichJ, ".", t)]] >
+                                       1 - .Machine$double.neg.eps] <- 1 - .Machine$double.neg.eps
       x
     }, t = t)
  
-    flucForm <- paste(outcomeName, "~ -1 + offset(qlogis(Q", whichJ, ".", t,
-                      ")) +", paste0("H", uniqtrt, ".", t, collapse = "+"),
-                      sep = "")
+    flucForm <- paste(outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
+                      ".", t, ")) +",
+                      paste0("H", uniqtrt, ".", t, collapse = "+"), sep = "")
 
     if(!Gcomp) {
       # fluctuation model
@@ -94,14 +94,15 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       # get predictions back
       wideDataList <- lapply(wideDataList, function(x, t) {
         suppressWarnings(
-          x[[paste0("Q",whichJ,"star.",t)]] <- predict(flucMod, newdata=x,type='response')
+          x[[paste0("Q", whichJ, "star.", t)]] <- predict(flucMod, newdata = x,
+                                                          type = "response")
         )
         x
       }, t = t)
     } else {
       # if Gcomp, just skip fluctuation step and assign this
       wideDataList <- lapply(wideDataList, function(x, t) {
-        x[[paste0("Q",whichJ,"star.",t)]] <- x[[paste0("Q",whichJ,".",t)]]
+        x[[paste0("Q", whichJ, "star.", t)]] <- x[[paste0("Q", whichJ, ".", t)]]
         x
       }, t = t)
     }
@@ -124,7 +125,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
 
         x$thisOffset <- 0
         x$thisOffset[(x[[NnotJ.tm1]] + x[[Nj.tm1]])==0] <- 
-          qlogis(x[[Qtildej.t]][(x[[NnotJ.tm1]] + x[[Nj.tm1]])==0])
+          stats::qlogis(x[[Qtildej.t]][(x[[NnotJ.tm1]] + x[[Nj.tm1]])==0])
         x
       })
 

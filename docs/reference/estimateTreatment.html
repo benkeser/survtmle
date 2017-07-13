@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>estimateTreatment — estimateTreatment • survtmle</title>
+<title>Estimate Treatment Mechanisms — estimateTreatment • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,15 +95,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>estimateTreatment</h1>
+    <h1>Estimate Treatment Mechanisms</h1>
     </div>
 
     
-    <p>This function computes the conditional probability of having <code>trt</code> for each 
-specified level either using <code>glm</code> or <code>SuperLearner</code>. 
-Currently only two unique values of treatment are acceptable. By default the function
-will compute estimates of the condtional probability of <code>trt==max(trt)</code> and 
-compute the probability of <code>trt==min(trt)</code> as one minus this probability.</p>
+    <p>This function computes the conditional probability of having <code>trt</code> for
+each specified level either using <code>glm</code> or <code>SuperLearner</code>.
+Currently only two unique values of treatment are acceptable. By default the
+function will compute estimates of the condtional probability of
+<code>trt == max(trt)</code> and compute the probability of <code>trt == min(trt)</code>
+as one minus this probability.</p>
     
 
     <pre class="usage"><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -114,42 +115,45 @@ compute the probability of <code>trt==min(trt)</code> as one minus this probabil
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>An object of class <code>data.frame</code>. Must have named column <code>trt</code>.</p></td>
+      <td><p>An object of class <code>data.frame</code>. Must have named column
+<code>trt</code>.</p></td>
     </tr>
     <tr>
       <th>adjustVars</th>
-      <td><p>An object of class <code>data.frame</code> that will be used either as the 
-<code>data</code> argument in a call to <code>glm</code> or as the <code>X</code> object in a call to 
-<code>SuperLearner</code>.</p></td>
+      <td><p>An object of class <code>data.frame</code> that will be used
+either as the <code>data</code> argument in a call to <code>glm</code> or as the
+<code>X</code> object in a call to <code>SuperLearner</code>.</p></td>
     </tr>
     <tr>
       <th>glm.trt</th>
-      <td><p>A character formula for the right-hand side of the <code>formula</code> in a
-call to <code>glm</code>. See <code><a href='survtmle.html'>?survtmle</a></code> for more documentation. Alternatively, 
-this could be an object of class <code>glm</code> (as in calls to this function via 
-<code>timepoints</code>), in which case predictions are obtained using this object
-with no new fitting.</p></td>
+      <td><p>A character formula for the right-hand side of <code>formula</code>
+in a call to <code>glm</code>. See <code><a href='survtmle.html'>?survtmle</a></code> for more documentation.
+Alternatively, this could be an object of class <code>glm</code> (as in
+calls to this function via <code>timepoints</code>), in which case
+predictions are obtained using this object with no new fitting.</p></td>
     </tr>
     <tr>
       <th>SL.trt</th>
-      <td><p>A valid specification of the <code>SL.library</code> option of a call to 
-<code>SuperLearner</code>. See <code><a href='survtmle.html'>?survtmle</a></code> for more documentation. Alternatively, 
-this could be an object of class <code>SuperLearner</code> (as in calls to this function via 
-<code>timepoints</code>), in which case predictions are obtained using this object
-with no new fitting.</p></td>
+      <td><p>A valid specification of the <code>SL.library</code> option of a call
+to <code>SuperLearner</code>. See <code><a href='survtmle.html'>?survtmle</a></code> for more documentation.
+Alternatively, this could be an object of class <code>SuperLearner</code>
+(as in calls to this function via <code>timepoints</code>), in which case
+predictions are obtained using this object with no new fitting.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether fitted model objects should be returned.</p></td>
+      <td><p>A boolean indicating whether fitted model objects should
+be returned.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean passed to the <code>verbose</code> option of the call to 
+      <td><p>A boolean passed to the <code>verbose</code> option of the call to
 <code>SuperLearner</code>.</p></td>
     </tr>
     <tr>
       <th>gtol</th>
-      <td><p>The truncation level of predicted trt probabilities to handle positivity violations.</p></td>
+      <td><p>The truncation level of predicted trt probabilities to handle
+positivity violations.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -159,11 +163,11 @@ with no new fitting.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>dat The input <code>data.frame</code> object with two added columns corresponding with
-the conditional probability (given <code>adjustVars</code>) of <code>trt==max(trt)</code> and 
-<code>trt==min(trt)</code>.</p>
-<p>trtMod If <code>returnModels = TRUE</code>, the fitted <code>glm</code> or <code>SuperLearner</code>
-object. Otherwise, <code>NULL</code></p>
+    <p>dat The input <code>data.frame</code> object with two added columns
+        corresponding with the conditional probability (given
+        <code>adjustVars</code>) of <code>trt==max(trt)</code> and <code>trt==min(trt)</code>.</p>
+<p>trtMod If <code>returnModels = TRUE</code>, the fitted <code>glm</code> or
+        <code>SuperLearner</code> object. Otherwise, <code>NULL</code></p>
     
 
   </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>estimateIteratedMean — estimateIteratedMean • survtmle</title>
+<title>Estimation for the Method of Iterated Means — estimateIteratedMean • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,26 +95,28 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>estimateIteratedMean</h1>
+    <h1>Estimation for the Method of Iterated Means</h1>
     </div>
 
     
-    <p>This function computes an estimate of the G-computation regression at 
-a specified time <code>t</code> using either <code>glm</code> or <code>SuperLearner</code>. The 
-structure of the function is specific to how it is called within <code>mean_tmle</code>.
-In particular, <code>wideDataList</code> must have a very specific structure for this 
-function to run properly. The list should consist of <code>data.frame</code> objects. The first should
-have all rows set to their observed value of <code>trt</code>. The remaining should 
-in turn have all rows set to each value of <code>trtOfInterest</code> in the
-<code>survtmle</code> call. Currently the code requires each <code>data.frame</code> to have
-named columns for each name in <code>names(adjustVars)</code>, as well as a column named
-<code>trt</code>. It must also have a columns named <code>Nj.Y</code> where j corresponds with the
-numeric values input in <code>allJ</code>. These are the indicators of failure due to the various
-causes before time <code>t</code> and are necessary for determining who to include in the 
-regression. Similarly, each <code>data.frame</code> should have a column call <code>C.Y</code> 
-where Y is again <code>t-1</code>, so that right censored observations are not included in
-the regressions. The function will fit a regression with <code>Qj.star.t+1</code> (also needed as
-a column in <code>wideDataList</code>) on functions of <code>trt</code> and <code>names(adjustVars)</code>
+    <p>This function computes an estimate of the G-computation regression at a
+specified time <code>t</code> using either <code>glm</code> or <code>SuperLearner</code>. The
+structure of the function is specific to how it is called within
+<code>mean_tmle</code>. In particular, <code>wideDataList</code> must have a very
+specific structure for this function to run properly. The list should consist
+of <code>data.frame</code> objects. The first should have all rows set to their
+observed value of <code>trt</code>. The remaining should in turn have all rows set
+to each value of <code>trtOfInterest</code> in the <code>survtmle</code> call. Currently
+the code requires each <code>data.frame</code> to have named columns for each name
+in <code>names(adjustVars)</code>, as well as a column named <code>trt</code>. It must
+also have a columns named <code>Nj.Y</code> where j corresponds with the numeric
+values input in <code>allJ</code>. These are the indicators of failure due to the
+various causes before time <code>t</code> and are necessary for determining who to
+include in the regression. Similarly, each <code>data.frame</code> should have a
+column call <code>C.Y</code> where Y is again <code>t - 1</code>, so that right censored
+observations are not included in the regressions. The function will fit a
+regression with <code>Qj.star.t+1</code> (also needed as a column in
+<code>wideDataList</code>) on functions of <code>trt</code> and <code>names(adjustVars)</code>
 as specified by <code>glm.ftime</code> or <code>SL.ftime</code>.</p>
     
 
@@ -135,8 +137,8 @@ as specified by <code>glm.ftime</code> or <code>SL.ftime</code>.</p>
     </tr>
     <tr>
       <th>whichJ</th>
-      <td><p>Numeric value indicating the cause of failure for which regression should be 
-computed.</p></td>
+      <td><p>Numeric value indicating the cause of failure for which
+regression should be computed.</p></td>
     </tr>
     <tr>
       <th>allJ</th>
@@ -144,44 +146,52 @@ computed.</p></td>
     </tr>
     <tr>
       <th>t0</th>
-      <td><p>The timepoint at which <code>survtmle</code> was called to evaluate. Needed only because
-the naming convention for the regression if <code>t==t0</code> is different than if <code>t!=t0</code>.</p></td>
+      <td><p>The timepoint at which <code>survtmle</code> was called to evaluate.
+Needed only because the naming convention for the regression if
+<code>t == t0</code> is different than if <code>t != t0</code>.</p></td>
     </tr>
     <tr>
       <th>adjustVars</th>
-      <td><p>Object of class <code>data.frame</code> that contains the variables to adjust 
-for in the regression.</p></td>
+      <td><p>Object of class <code>data.frame</code> that contains the
+variables to adjust for in the regression.</p></td>
     </tr>
     <tr>
       <th>SL.ftime</th>
-      <td><p>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). See <code>?SuperLearner</code> for more information on how to specify valid 
-<code>SuperLearner</code> libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called <code>"trt"</code> and <code>names(adjustVars)</code>.</p></td>
+      <td><p>A character vector or list specification to be passed to the
+<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
+outcome regression (either cause-specific hazards or condtional mean).
+See <code>?SuperLearner</code> for more information on how to specify valid
+<code>SuperLearner</code> libraries. It is expected that the wrappers used
+in the library will play nicely with the input variables, which will
+be called <code>"trt"</code> and <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
-      <td><p>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>"trt"</code> to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+      <td><p>A character specification of the right-hand side of the
+equation passed to the <code>formula</code> option of a call to <code>glm</code>
+for the outcome regression (either cause-specific hazards or
+condtional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>"trt"</code>
+to specify the treatment in this formula (see examples). The formula
+can additionally include any variables found in
 <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the <code>SuperLearner</code> or <code>glm</code> 
-objects used to estimate the nuisance parameters. Must be set to <code>TRUE</code> if the user plans to 
-use calls to <code>timepoints</code> to obtain estimates at times other than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code>
-for more information.</p></td>
+      <td><p>A boolean indicating whether to return the
+<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
+nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
+use calls to <code>timepoints</code> to obtain estimates at times other than
+<code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</p></td>
+      <td><p>A list of bounds to be used when performing the outcome
+regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,10 +201,11 @@ for more information.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function then returns a list that is exactly the same as the input <code>wideDataList</code>, 
-but with a column named <code>Qj.t</code> added to it, which is the estimated conditional mean of 
-<code>Qj.star.t+1</code> evaluated at the each of the rows of each <code>data.frame</code> in 
-<code>wideDataList</code>.</p>
+    <p>The function then returns a list that is exactly the same as the
+        input <code>wideDataList</code>, but with a column named <code>Qj.t</code> added
+        to it, which is the estimated conditional mean of <code>Qj.star.t+1</code>
+        evaluated at the each of the rows of each <code>data.frame</code> in
+        <code>wideDataList</code>.</p>
     
 
   </div>

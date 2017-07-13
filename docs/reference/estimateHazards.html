@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>estimateHazards — estimateHazards • survtmle</title>
+<title>Estimation for the Method of Cause-Specific Hazards — estimateHazards • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,29 +95,32 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>estimateHazards</h1>
+    <h1>Estimation for the Method of Cause-Specific Hazards</h1>
     </div>
 
     
-    <p>This function computes an estimate of the cause-specific hazard functions over all times
-using either <code>glm</code> or <code>SuperLearner</code>. The 
-structure of the function is specific to how it is called within <code>hazard_tmle</code>.
-In particular, <code>dataList</code> must have a very specific structure for this 
-function to run properly. The list should consist of <code>data.frame</code> objects. 
-The first will have the number of rows for each observation
-equal to the <code>ftime</code> corresponding to that observation. The subsequent entries will
-have <code>t0</code> rows for each observation and will set <code>trt</code> column equal to each value
-of <code>trtOfInterest</code> in turn. The function uses the first entry in <code>dataList</code> to iteratively
-fit hazard regression models for each cause of failure. Thus, this <code>data.frame</code> needs to have
-a column called <code>Nj</code> for each value of j in <code>J</code>. The first fit estimates the 
-hazard of <code>min(J)</code>, while subsequent fits estimate the pseudo-hazard of all other values of
-j, where pseudo-hazard is used to mean the probability of a failure due to type j at a particular
-time point given no failure of any type at any previous time point AND no failure due to 
-type <code>k &lt; j</code> at a particular time point. The hazard estimates of causes j' can then be used to 
-map this pseudo-hazard back into the hazard at a particular time. This is nothing more than 
-the re-framing of a conditional multinomial probability into a series of conditional 
-binomial probabilities. This structure ensures that no strata have estimated hazards that sum to 
-more than one over all possible causes of failure at a particular time point.</p>
+    <p>This function computes an estimate of the cause-specific hazard functions
+over all times using either <code>glm</code> or <code>SuperLearner</code>. The structure
+of the function is specific to how it is called within <code>hazard_tmle</code>. In
+particular, <code>dataList</code> must have a very specific structure for this
+function to run properly. The list should consist of <code>data.frame</code>
+objects. The first will have the number of rows for each observation equal to
+the <code>ftime</code> corresponding to that observation. The subsequent entries
+will have <code>t0</code> rows for each observation and will set <code>trt</code> column
+equal to each value of <code>trtOfInterest</code> in turn. The function uses the
+first entry in <code>dataList</code> to iteratively fit hazard regression models
+for each cause of failure. Thus, this <code>data.frame</code> needs to have a
+column called <code>Nj</code> for each value of j in <code>J</code>. The first fit
+estimates the hazard of <code>min(J)</code>, while subsequent fits estimate the
+pseudo-hazard of all other values of j, where pseudo-hazard is used to mean
+the probability of a failure due to type j at a particular time point given
+no failure of any type at any previous time point AND no failure due to type
+<code>k &lt; j</code> at a particular time point. The hazard estimates of causes j'
+can then be used to map this pseudo-hazard back into the hazard at a
+particular time. This is nothing more than the re-framing of a conditional
+multinomial probability into a series of conditional binomial probabilities.
+This structure ensures that no strata have estimated hazards that sum to more
+than one over all possible causes of failure at a particular time point.</p>
     
 
     <pre class="usage"><span class='fu'>estimateHazards</span>(<span class='no'>dataList</span>, <span class='no'>J</span>, <span class='no'>adjustVars</span>, <span class='kw'>SL.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -136,31 +139,36 @@ more than one over all possible causes of failure at a particular time point.</p
     </tr>
     <tr>
       <th>adjustVars</th>
-      <td><p>Object of class <code>data.frame</code> that contains the variables to adjust 
-for in the regression.</p></td>
+      <td><p>Object of class <code>data.frame</code> that contains the
+variables to adjust for in the regression.</p></td>
     </tr>
     <tr>
       <th>SL.ftime</th>
-      <td><p>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). See <code>?SuperLearner</code> for more information on how to specify valid 
-<code>SuperLearner</code> libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called <code>"trt"</code> and <code>names(adjustVars)</code>.</p></td>
+      <td><p>A character vector or list specification to be passed to the
+<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
+outcome regression (either cause-specific hazards or condtional mean).
+See <code>?SuperLearner</code> for more information on how to specify valid
+<code>SuperLearner</code> libraries. It is expected that the wrappers used
+in the library will play nicely with the input variables, which will
+be called <code>"trt"</code> and <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
-      <td><p>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the outcome regression (either cause-specific hazards or 
-condtional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>"trt"</code> to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
+      <td><p>A character specification of the right-hand side of the
+equation passed to the <code>formula</code> option of a call to <code>glm</code>
+for the outcome regression (either cause-specific hazards or
+condtional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>"trt"</code>
+to specify the treatment in this formula (see examples). The formula
+can additionally include any variables found in
 <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the <code>SuperLearner</code> or <code>glm</code> 
-objects used to estimate the nuisance parameters. Must be set to <code>TRUE</code> if the user plans to 
-use calls to <code>timepoints</code> to obtain estimates at times other than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code>
-for more information.</p></td>
+      <td><p>A boolean indicating whether to return the
+<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
+nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
+use calls to <code>timepoints</code> to obtain estimates at times other than
+<code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
@@ -168,7 +176,8 @@ for more information.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -178,9 +187,10 @@ for more information.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list that is exactly the same as the input <code>dataList</code>, 
-but with additional columns corresponding to the hazard, pseudo-hazard, and the total hazard for
-summed over all causes <code>k &lt; j</code>.</p>
+    <p>The function returns a list that is exactly the same as the input
+        <code>dataList</code>, but with additional columns corresponding to the
+        hazard, pseudo-hazard, and the total hazard for summed over all
+        causes <code>k &lt; j</code>.</p>
     
 
   </div>
