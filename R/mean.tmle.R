@@ -131,8 +131,6 @@
 #' \item{adjustVars}{The \code{data.frame} of failure times used in the fit.}
 #'}
 #'
-#' @export
-#'
 #' @examples
 #'
 #' ## Single failure type examples

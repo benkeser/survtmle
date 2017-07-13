@@ -148,8 +148,6 @@
 #' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'
-#' @export
-#'
 #' @examples
 #'
 #' # simulate data

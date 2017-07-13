@@ -136,11 +136,11 @@ fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.h
                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>, 
                 <span class="dt">t0 =</span> t_<span class="dv">0</span>)
 
-<span class="co"># extract cumulative incidence at each time point</span>
+<span class="co"># extract cumulative incidence at each timepoint</span>
 tpfit &lt;-<span class="st"> </span><span class="kw"><a href="reference/timepoints.html">timepoints</a></span>(fit, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
 
 <span class="co"># examine output object produced by the timepoints function</span>
-<span class="kw">print</span>(tpfit)
+tpfit
 <span class="co">#&gt; $est</span>
 <span class="co">#&gt;              t1         t2         t3         t4         t5         t6</span>
 <span class="co">#&gt; 0 1 0.032997470 0.06492788 0.09582530 0.12572293 0.15465313 0.18264737</span>

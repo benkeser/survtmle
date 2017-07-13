@@ -50,7 +50,7 @@ This minimal example shows how to use `survtmle` to obtain cumulative incidence 
 ``` r
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 0.1.2
+#> Version: 1.0.0
 set.seed(341796)
 
 # simulate data
@@ -75,7 +75,7 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
 tpfit <- timepoints(fit, times = seq_len(t_0))
 
 # examine output object produced by the timepoints function
-print(tpfit)
+tpfit
 #> $est
 #>              t1         t2         t3         t4         t5         t6
 #> 0 1 0.032997470 0.06492788 0.09582530 0.12572293 0.15465313 0.18264737
