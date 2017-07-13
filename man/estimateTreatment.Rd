@@ -50,7 +50,7 @@ trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or
 This function computes the conditional probability of having \code{trt} for
 each specified level either using \code{glm} or \code{SuperLearner}.
 Currently only two unique values of treatment are acceptable. By default the
-function will compute estimates of the condtional probability of
+function will compute estimates of the conditional probability of
 \code{trt == max(trt)} and compute the probability of \code{trt == min(trt)}
 as one minus this probability.
 }

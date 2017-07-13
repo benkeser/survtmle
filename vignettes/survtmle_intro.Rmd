@@ -17,7 +17,7 @@ The `survtmle` package is designed to use targeted minimum loss-based estimation
 incidence in right-censored survival settings with (and without) competing
 risks. The package facilitates flexible modeling to adjust for covariates
 through the use of ensemble machine learning via the
-[`SuperLearner`](https://cran.r-project.org/web/packages/SuperLearner/index.html)
+[`SuperLearner`](https://CRAN.R-project.org/package=SuperLearner)
 package.
 
 ---

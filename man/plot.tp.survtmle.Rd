@@ -19,10 +19,10 @@ the latter being computed by a call to \code{stats::isoreg}}
 \value{
 object of class \code{ggplot} containing a step function plot of the
        raw or smoothened point estimates of cumulative incidence across a
-       series of time points of interest.
+       series of timepoints of interest.
 }
 \description{
-Step funciton plots for both raw and smoothed (monotonic) estimates, the
+Step function plots for both raw and smoothed (monotonic) estimates, the
 latter by isotonic regression of the raw estimates, of cumulative incidence.
 }
 \examples{

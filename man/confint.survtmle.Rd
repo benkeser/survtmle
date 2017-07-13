@@ -10,7 +10,7 @@
 \arguments{
 \item{object}{An object of class \code{survtmle}.}
 
-\item{parm}{A numeric vector indicating which indices of \code{object$est} to
+\item{parm}{A numeric vector indicating which indexes of \code{object$est} to
 return confidence intervals for (default is to return all).}
 
 \item{level}{The confidence level requested.}

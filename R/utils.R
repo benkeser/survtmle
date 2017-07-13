@@ -3,7 +3,7 @@
 #' Computes confidence intervals for a fitted \code{survtmle} object.
 #'
 #' @param object An object of class \code{survtmle}.
-#' @param parm A numeric vector indicating which indices of \code{object$est} to
+#' @param parm A numeric vector indicating which indexes of \code{object$est} to
 #'             return confidence intervals for (default is to return all).
 #' @param level The confidence level requested.
 #' @param ... Other arguments. Not currently used.

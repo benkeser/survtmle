@@ -160,7 +160,7 @@ An object of class \code{survtmle}.
                 \code{glm} or \code{SuperLearner} for the outcome regression
                 models. If \code{method="mean"} this will be a list of length
                 \code{length(ftypeOfInterest)} each of length \code{t0} (one
-                regression for each failure type and for each time point). If
+                regression for each failure type and for each timepoint). If
                 \code{method="hazard"} this will be a list of length
                 \code{length(ftypeOfInterest)} with one fit corresponding to
                 the hazard for each cause of failure. If

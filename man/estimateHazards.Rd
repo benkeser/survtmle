@@ -17,7 +17,7 @@ variables to adjust for in the regression.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
-outcome regression (either cause-specific hazards or condtional mean).
+outcome regression (either cause-specific hazards or conditional mean).
 See \code{?SuperLearner} for more information on how to specify valid
 \code{SuperLearner} libraries. It is expected that the wrappers used
 in the library will play nicely with the input variables, which will
@@ -26,7 +26,7 @@ be called \code{"trt"} and \code{names(adjustVars)}.}
 \item{glm.ftime}{A character specification of the right-hand side of the
 equation passed to the \code{formula} option of a call to \code{glm}
 for the outcome regression (either cause-specific hazards or
-condtional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
+conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 to specify the treatment in this formula (see examples). The formula
 can additionally include any variables found in
 \code{names(adjustVars)}.}
@@ -65,12 +65,12 @@ for each cause of failure. Thus, this \code{data.frame} needs to have a
 column called \code{Nj} for each value of j in \code{J}. The first fit
 estimates the hazard of \code{min(J)}, while subsequent fits estimate the
 pseudo-hazard of all other values of j, where pseudo-hazard is used to mean
-the probability of a failure due to type j at a particular time point given
-no failure of any type at any previous time point AND no failure due to type
-\code{k < j} at a particular time point. The hazard estimates of causes j'
+the probability of a failure due to type j at a particular timepoint given
+no failure of any type at any previous timepoint AND no failure due to type
+\code{k < j} at a particular timepoint. The hazard estimates of causes j'
 can then be used to map this pseudo-hazard back into the hazard at a
 particular time. This is nothing more than the re-framing of a conditional
 multinomial probability into a series of conditional binomial probabilities.
 This structure ensures that no strata have estimated hazards that sum to more
-than one over all possible causes of failure at a particular time point.
+than one over all possible causes of failure at a particular timepoint.
 }

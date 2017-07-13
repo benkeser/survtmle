@@ -15,8 +15,8 @@
 #' @param object A fitted \code{survtmle} object with \code{returnModels = TRUE}
 #' @param times The times to evaluate incidence.
 #' @param returnModels Should the function return fitted GLM or Super Learner
-#'        models at each time point. If set to \code{TRUE}, memory issues could
-#'        arise depending on the number of time points specified and the size of
+#'        models at each timepoint. If set to \code{TRUE}, memory issues could
+#'        arise depending on the number of timepoints specified and the size of
 #'        the Super Learner library.
 #'
 #' @return An object of class \code{tp.survtmle} with number of entries equal to

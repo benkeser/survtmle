@@ -91,11 +91,11 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 glm.ctime = "W1 + t", method = "hazard", 
                 t0 = t_0)
 
-# extract cumulative incidence at each time point
+# extract cumulative incidence at each timepoint
 tpfit <- timepoints(fit, times = seq_len(t_0))
 
 # examine output object produced by the timepoints function
-print(tpfit)
+tpfit
 
 # examine plot of cumulative incidences
 plot(tpfit)

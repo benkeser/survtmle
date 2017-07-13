@@ -117,7 +117,7 @@
 #'                 regression models. If \code{method="mean"} this will be a
 #'                 list of length \code{length(ftypeOfInterest)} each of length
 #'                 \code{t0} (one regression for each failure type and for each
-#'                 time point). If \code{method = "hazard"} this will be a list
+#'                 timepoint). If \code{method = "hazard"} this will be a list
 #'                 of length \code{length(ftypeOfInterest)} with one fit
 #'                 corresponding to the hazard for each cause of failure. If
 #'                 \code{returnModels = FALSE}, this entry will be \code{NULL}.}
