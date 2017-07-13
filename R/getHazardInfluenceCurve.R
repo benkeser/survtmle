@@ -34,6 +34,7 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
     for(j in ofInterestJ) {
       dat[[paste0("margF",j,".z",z,".t0")]] <- 
         mean(dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)])
+
       dat[[paste0("F",j,".z",z,".t0")]] <- 
         dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)]
       thisD <- NULL
