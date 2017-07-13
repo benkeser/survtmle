@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>updateVariables — updateVariables • survtmle</title>
+<title>Update TMLEs for Hazard to Cumulative Incidence — updateVariables • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,12 +95,12 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>updateVariables</h1>
+    <h1>Update TMLEs for Hazard to Cumulative Incidence</h1>
     </div>
 
     
-    <p>A helper function that maps hazard estimates into estimates of cumulative 
-incidence and updates the "clever covariates" used by the targeted minimum 
+    <p>A helper function that maps hazard estimates into estimates of cumulative
+incidence and updates the "clever covariates" used by the targeted minimum
 loss-based estimation fluctuation step.</p>
     
 
@@ -120,8 +120,8 @@ loss-based estimation fluctuation step.</p>
     </tr>
     <tr>
       <th>ofInterestJ</th>
-      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was passed to 
-<code>hazard_tmle</code>.</p></td>
+      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was
+passed to <code>hazard_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>nJ</th>
@@ -141,8 +141,8 @@ loss-based estimation fluctuation step.</p>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress.
-the cross-validated sieve effect parameter.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -152,9 +152,10 @@ the cross-validated sieve effect parameter.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list that is exactly the same as the input <code>dataList</code>, 
-but with updated columns corresponding with estimated cumulative incidence at each time
-and estimated "clever covariates" at each time.</p>
+    <p>The function returns a list that is exactly the same as the input
+        <code>dataList</code>, but with updated columns corresponding with
+        estimated cumulative incidence at each time and estimated "clever
+        covariates" at each time.</p>
     
 
   </div>

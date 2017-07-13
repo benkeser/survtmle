@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>fluctuateHazards — fluctuateHazards • survtmle</title>
+<title>Fluctuation for the Method of Cause-Specific Hazards — fluctuateHazards • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,24 +95,25 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>fluctuateHazards</h1>
+    <h1>Fluctuation for the Method of Cause-Specific Hazards</h1>
     </div>
 
     
-    <p>This function performs a fluctuation of an initial estimate of the cause-specific
-hazard functions using a call to <code>glm</code> (i.e., a logistic submodel) or a call to
-<code>optim</code> (to ensure fluctuations stay within model space).
-The structure of the function is specific to how it is 
-called within <code>hazard_tmle</code>. In particular, <code>dataList</code> must have a very specific structure for this 
-function to run properly. The list should consist of <code>data.frame</code> objects. 
-The first will have the number of rows for each observation
-equal to the <code>ftime</code> corresponding to that observation. The subsequent entries will
-have <code>t0</code> rows for each observation and will set <code>trt</code> column equal to each value
-of <code>trtOfInterest</code> in turn. The function will fit a logistic regression with 
-(a scaled version of) <code>Nj</code> as outcome, the logit of the current (pseudo-) hazard 
-estimate as offset and the targeted minimum loss-based estimation "clever covariates". The function
-then obtains predictions based on this fit on each of the <code>data.frame</code> objects in 
-<code>dataList</code>.</p>
+    <p>This function performs a fluctuation of an initial estimate of the
+cause-specific hazard functions using a call to <code>glm</code> (i.e., a logistic
+submodel) or a call to <code>optim</code> (to ensure fluctuations stay within model
+space). The structure of the function is specific to how it is called within
+<code>hazard_tmle</code>. In particular, <code>dataList</code> must have a very specific
+structure for this function to run properly. The list should consist of
+<code>data.frame</code> objects. The first will have the number of rows for each
+observation equal to the <code>ftime</code> corresponding to that observation. The
+subsequent entries will have <code>t0</code> rows for each observation and will set
+<code>trt</code> column equal to each value of <code>trtOfInterest</code> in turn. The
+function will fit a logistic regression with (a scaled version of) <code>Nj</code>
+as outcome, the logit of the current (pseudo-) hazard estimate as offset and
+the targeted minimum loss-based estimation "clever covariates". The function
+then obtains predictions based on this fit on each of the <code>data.frame</code>
+objects in <code>dataList</code>.</p>
     
 
     <pre class="usage"><span class='fu'>fluctuateHazards</span>(<span class='no'>dataList</span>, <span class='no'>allJ</span>, <span class='no'>ofInterestJ</span>, <span class='no'>nJ</span>, <span class='no'>uniqtrt</span>, <span class='no'>ntrt</span>, <span class='no'>t0</span>, <span class='no'>verbose</span>,
@@ -131,8 +132,8 @@ then obtains predictions based on this fit on each of the <code>data.frame</code
     </tr>
     <tr>
       <th>ofInterestJ</th>
-      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was passed to 
-<code>hazard_tmle</code>.</p></td>
+      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was
+passed to <code>hazard_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>nJ</th>
@@ -152,7 +153,8 @@ then obtains predictions based on this fit on each of the <code>data.frame</code
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -162,9 +164,10 @@ then obtains predictions based on this fit on each of the <code>data.frame</code
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list that is exactly the same as the input <code>dataList</code>, 
-but with updated columns corresponding with estimated cumulative incidence at each time
-and estimated "clever covariates" at each time.</p>
+    <p>The function returns a list that is exactly the same as the input
+        <code>dataList</code>, but with updated columns corresponding with
+        estimated cumulative incidence at each time and estimated "clever
+        covariates" at each time.</p>
     
 
   </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>getHazardInfluenceCurve — getHazardInfluenceCurve • survtmle</title>
+<title>Extract Influence Curve for Estimated Hazard Functions — getHazardInfluenceCurve • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,16 +95,17 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>getHazardInfluenceCurve</h1>
+    <h1>Extract Influence Curve for Estimated Hazard Functions</h1>
     </div>
 
     
-    <p>This function computes the hazard-based efficient influence curve at the final
-estimate of the fluctuated cause-specific hazard functions and evaluates 
-it on the observed data. The influence-function is computed on the long-format data
-but is subsequently summed over all timepoints for each observation and the function
-returns a new short form data set with columns added corresponding to the sum over
-all time points of the estimated efficient influence function evaluated at that observation.</p>
+    <p>This function computes the hazard-based efficient influence curve at the
+final estimate of the fluctuated cause-specific hazard functions and
+evaluates it on the observed data. The influence-function is computed on the
+long-format data but is subsequently summed over all timepoints for each
+observation and the function returns a new short form data set with columns
+added corresponding to the sum over all time points of the estimated
+efficient influence function evaluated at that observation.</p>
     
 
     <pre class="usage"><span class='fu'>getHazardInfluenceCurve</span>(<span class='no'>dataList</span>, <span class='no'>dat</span>, <span class='no'>allJ</span>, <span class='no'>ofInterestJ</span>, <span class='no'>nJ</span>, <span class='no'>uniqtrt</span>, <span class='no'>t0</span>,
@@ -115,11 +116,13 @@ all time points of the estimated efficient influence function evaluated at that 
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dataList</th>
-      <td><p>A list of <code>data.frame</code> objects. See <code><a href='makeDataList.html'>?makeDataList</a></code> for more information.</p></td>
+      <td><p>A list of <code>data.frame</code> objects. See <code><a href='makeDataList.html'>?makeDataList</a></code>
+for more information.</p></td>
     </tr>
     <tr>
       <th>dat</th>
-      <td><p>A <code>data.frame</code> in short form. See <code><a href='makeDataList.html'>?makeDataList</a></code> for more information.</p></td>
+      <td><p>A <code>data.frame</code> in short form. See <code><a href='makeDataList.html'>?makeDataList</a></code> for
+more information.</p></td>
     </tr>
     <tr>
       <th>allJ</th>
@@ -127,8 +130,8 @@ all time points of the estimated efficient influence function evaluated at that 
     </tr>
     <tr>
       <th>ofInterestJ</th>
-      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was passed to 
-<code>hazard_tmle</code>.</p></td>
+      <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was
+passed to <code>hazard_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>nJ</th>
@@ -144,7 +147,8 @@ all time points of the estimated efficient influence function evaluated at that 
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -154,9 +158,10 @@ all time points of the estimated efficient influence function evaluated at that 
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>data.frame</code> with columns <code>D.jX.zZ</code> added for each value
-of X in <code>ofInterestJ</code> and each value of Z in <code>uniqtrt</code>. These are the sum over
-all time points of the estimated efficient influence function evaluated at that observation.</p>
+    <p>An object of class <code>data.frame</code> with columns <code>D.jX.zZ</code>
+        added for each value of X in <code>ofInterestJ</code> and each value of Z
+        in <code>uniqtrt</code>. These are the sum over all time points of the
+        estimated efficient influence function evaluated at that observation.</p>
     
 
   </div>

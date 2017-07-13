@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>makeDataList — makeDataList • survtmle</title>
+<title>Convert Short Form Data to List of Wide Form Data — makeDataList • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,17 +95,17 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>makeDataList</h1>
+    <h1>Convert Short Form Data to List of Wide Form Data</h1>
     </div>
 
     
-    <p>The function takes a <code>data.frame</code> of 
-short format right-censored failure times and reshapes the long format into 
-the wide format needed for calls to both <code>mean_tmle</code> and <code>hazard_tmle</code>. 
-The list returned by the function will have number of entries equal to 
-<code>length(trtOfInterest) + 1</code>. The first will have the number of rows for each observation
-equal to the <code>ftime</code> corresponding to that observation. The subsequent entries will
-have <code>t0</code> rows for each observation and will set <code>trt</code> column equal to each value
+    <p>The function takes a <code>data.frame</code> of short format right-censored failure
+times and reshapes the long format into the wide format needed for calls to
+both <code>mean_tmle</code> and <code>hazard_tmle</code>. The list returned will have a
+number of entries equal to <code>length(trtOfInterest) + 1</code>. The first will
+have number of rows for each observation equal to the <code>ftime</code>
+corresponding to that observation. The subsequent entries will have <code>t0</code>
+rows for each observation and will set <code>trt</code> column equal to each value
 of <code>trtOfInterest</code> in turn.</p>
     
 
@@ -128,7 +128,8 @@ of <code>trtOfInterest</code> in turn.</p>
     </tr>
     <tr>
       <th>uniqtrt</th>
-      <td><p>The unique values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</p></td>
+      <td><p>The unique values of <code>trtOfInterest</code> passed to
+<code>mean_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>t0</th>
@@ -136,7 +137,7 @@ of <code>trtOfInterest</code> in turn.</p>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>More description to be added soon.</p></td>
+      <td><p>Minimum and maximum values to be placed on the <code>ftype</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>

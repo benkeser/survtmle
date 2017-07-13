@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>hazard_tmle — hazard_tmle • survtmle</title>
+<title>TMLE for Cause-Specific Hazard Functions — hazard_tmle • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,15 +95,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>hazard_tmle</h1>
+    <h1>TMLE for Cause-Specific Hazard Functions</h1>
     </div>
 
     
     <p>This function estimates the marginal cumulative incidence for failures of
-specified types using targeted minimum loss-based estimation based on the 
-initial estimates of the cause-specific hazard functions for failures of each type. 
-The function is called by <code>survtmle</code> whenever <code>method="hazard"</code> is specified. 
-However, power users could, in theory, make calls directly to this function.</p>
+specified types using targeted minimum loss-based estimation based on the
+initial estimates of the cause-specific hazard functions for failures of each
+type. The function is called by <code>survtmle</code> whenever
+<code>method = "hazard"</code> is specified. However, power users could, in theory,
+make calls directly to this function.</p>
     
 
     <pre class="usage"><span class='fu'>hazard_tmle</span>(<span class='no'>ftime</span>, <span class='no'>ftype</span>, <span class='no'>trt</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fu'>max</span>(<span class='no'>ftime</span>[<span class='no'>ftype</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>]),
@@ -118,127 +119,152 @@ However, power users could, in theory, make calls directly to this function.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ftime</th>
-      <td><p>A numeric vector of failure times. Right-censored observations should have corresponding 
-<code>ftype</code> set to 0.</p></td>
+      <td><p>A numeric vector of failure times. Right-censored observations
+should have corresponding <code>ftype</code> set to 0.</p></td>
     </tr>
     <tr>
       <th>ftype</th>
-      <td><p>A numeric vector indicating the type of failure. Observations with <code>ftype=0</code> are treated 
-as a right-censored observation. Each unique value besides zero is treated as a separate
-type of failure.</p></td>
+      <td><p>A numeric vector indicating the type of failure. Observations
+with <code>ftype=0</code> are treated as a right-censored observation. Each
+unique value besides zero is treated as a separate type of failure.</p></td>
     </tr>
     <tr>
       <th>trt</th>
-      <td><p>A numeric vector indicating observed treatment assignment. Each unique value will 
-be treated as a different type of treatment. Currently, only two unique values are supported.</p></td>
+      <td><p>A numeric vector indicating observed treatment assignment. Each
+unique value will be treated as a different type of treatment.
+Currently, only two unique values are supported.</p></td>
     </tr>
     <tr>
       <th>t0</th>
-      <td><p>The time at which to return cumulative incidence estimates. By default this is set
-to <code>max(ftime[ftype &gt;0])</code>.</p></td>
+      <td><p>The time at which to return cumulative incidence estimates. By
+default this is set to <code>max(ftime[ftype &gt; 0])</code>.</p></td>
     </tr>
     <tr>
       <th>adjustVars</th>
-      <td><p>A data.frame of adjustment variables that will be used in estimating the 
-conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.</p></td>
+      <td><p>A data.frame of adjustment variables that will be used in
+estimating the conditional treatment, censoring, and failure (hazard
+or conditional mean) probabilities.</p></td>
     </tr>
     <tr>
       <th>SL.ftime</th>
-      <td><p>A character vector or list specification to be passed to the <code>SL.library</code> option 
-in the call to <code>SuperLearner</code> for the cause-specific hazards. See <code>?SuperLearner</code> for more information on how to specify valid 
-<code>SuperLearner</code> libraries. It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be called <code>"trt"</code>, <code>names(adjustVars)</code>, and <code>"t"</code> (if <code>method="hazard"</code>).</p></td>
+      <td><p>A character vector or list specification to be passed to the
+<code>SL.library</code> option in the call to <code>SuperLearner</code> for the
+cause-specific hazards. See <code>?SuperLearner</code> for more information
+on how to specify valid <code>SuperLearner</code> libraries. It is expected
+that the wrappers used in the library will play nicely with the input
+variables, which will be called <code>"trt"</code>,
+<code>names(adjustVars)</code>, and <code>"t"</code> if <code>method = "hazard"</code>.</p></td>
     </tr>
     <tr>
       <th>SL.ctime</th>
-      <td><p>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the estimate of the conditional hazard for censoring. It is expected 
-that the wrappers used in the library will play nicely with the input variables, which will be 
-called <code>"trt"</code> and <code>names(adjustVars)</code>.</p></td>
+      <td><p>A character vector or list specification to be passed to the
+<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
+estimate of the conditional hazard for censoring. It is expected that
+the wrappers used in the library will play nicely with the input
+variables, which will be called <code>"trt"</code> and
+<code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>SL.trt</th>
-      <td><p>A character vector or list specification to be passed to the <code>SL.library</code> argument 
-in the call to <code>SuperLearner</code> for the estimate of the conditional probability of treatment.
-It is expected that the wrappers used in the library will play nicely
-with the input variables, which will be <code>names(adjustVars)</code>.</p></td>
+      <td><p>A character vector or list specification to be passed to the
+<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
+estimate of the conditional probability of treatment. It is expected
+that the wrappers used in the library will play nicely with the input
+variables, which will be <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
-      <td><p>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the outcome regression. Ignored if <code>SL.ftime</code> is not equal to <code>NULL</code>. 
-Use <code>"trt"</code> to specify the treatment in this formula (see examples). The formula can additionally include any variables found in 
-<code>names(adjustVars)</code>.</p></td>
+      <td><p>A character specification of the right-hand side of the
+equation passed to the <code>formula</code> option of a call to <code>glm</code>
+for the outcome regression. Ignored if <code>SL.ftime</code> is not equal to
+<code>NULL</code>. Use <code>"trt"</code> to specify the treatment in this formula
+(see examples). The formula can additionally include any variables
+found in <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>glm.ctime</th>
-      <td><p>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the estimate of the conditional hazard for 
-censoring. Ignored if <code>SL.ctime</code> is not equal to <code>NULL</code>. Use <code>"trt"</code> to specify the treatment 
-in this formula (see examples). The formula can additionally include any variables found in 
-<code>names(adjustVars)</code>.</p></td>
+      <td><p>A character specification of the right-hand side of the
+equation passed to the <code>formula</code> option of a call to <code>glm</code>
+for the estimate of the conditional hazard for censoring. Ignored if
+<code>SL.ctime</code> is not equal to <code>NULL</code>. Use <code>"trt"</code> to
+specify the treatment in this formula (see examples). The formula can
+additionally include any variables found in <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>glm.trt</th>
-      <td><p>A character specification of the right-hand side of the equation passed to the
-<code>formula</code> option of a call to <code>glm</code> for the estimate of the conditional probability of 
-treatment. Ignored if <code>SL.trt</code> is not equal to <code>NULL</code>. The formula can include any variables found in 
-<code>names(adjustVars)</code>.</p></td>
+      <td><p>A character specification of the right-hand side of the
+equation passed to the <code>formula</code> option of a call to <code>glm</code>
+for the estimate of the conditional probability of treatment. Ignored
+if <code>SL.trt</code> is not equal to <code>NULL</code>. The formula can include
+any variables found in <code>names(adjustVars)</code>.</p></td>
     </tr>
     <tr>
       <th>returnIC</th>
-      <td><p>A boolean indicating whether to return vectors of influence curve estimates. These are
-needed for some post-hoc comparisons, so it is recommended to leave as <code>TRUE</code> (the default)
-unless the user is sure these estimates will not be needed later.</p></td>
+      <td><p>A boolean indicating whether to return vectors of influence
+curve estimates. These are needed for some post-hoc comparisons, so it
+is recommended to leave as <code>TRUE</code> (the default) unless the user
+is sure these estimates will not be needed later.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the <code>SuperLearner</code> or <code>glm</code> 
-objects used to estimate the nuisance parameters. Must be set to <code>TRUE</code> if the user plans to 
-use <code>timepoints</code> to obtain estimates of incidence at times other than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code>
-for more information.</p></td>
+      <td><p>A boolean indicating whether to return the
+<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
+nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
+use <code>timepoints</code> to obtain estimates of incidence at times other
+than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
     </tr>
     <tr>
       <th>ftypeOfInterest</th>
-      <td><p>An input specifying what failure types to compute estimates of incidence for. 
-The default value computes estimates for values <code>unique(ftype)</code>. Can alternatively
-be set to a vector of values found in <code>ftype</code>.</p></td>
+      <td><p>An input specifying what failure types to compute
+estimates of incidence for. The default value computes estimates for
+values <code>unique(ftype)</code>. Can alternatively be set to a vector of
+values found in <code>ftype</code>.</p></td>
     </tr>
     <tr>
       <th>trtOfInterest</th>
-      <td><p>An input specifying which levels of <code>trt</code> are of interest. The default value
-computes estimates for values <code>unique(trt)</code>. Can alternatively be set to a 
-vector of values found in <code>trt</code>.</p></td>
+      <td><p>An input specifying which levels of <code>trt</code> are of
+interest. The default value computes estimates for values
+<code>unique(trt)</code>. Can alternatively be set to a vector of values
+found in <code>trt</code>.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>A <code>data.frame</code> of bounds on the conditional hazard function. The <code>data.frame</code> should have a column
-named <code>"t"</code> that includes values <code>1:t0</code>. The other columns should be names <code>paste0("l",j)</code> and
-<code>paste0("u",j)</code> for each unique failure type label j, denoting lower and upper bounds, respectively. See examples.</p></td>
+      <td><p>A <code>data.frame</code> of bounds on the conditional hazard
+function. The <code>data.frame</code> should have a column named <code>"t"</code>
+that includes values <code>seq_len(t0)</code>. The other columns should be
+names <code>paste0("l",j)</code> and <code>paste0("u",j)</code> for each unique
+failure type label j, denoting lower and upper bounds, respectively.
+See examples.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print messages to indicate progress. If <code>SuperLearner</code>
-is called internally, this option will additionally be passed to <code>SuperLearner</code>.</p></td>
+      <td><p>A boolean indicating whether the function should print
+messages to indicate progress. If <code>SuperLearner</code> is called
+internally, this option will additionally be passed to
+<code>SuperLearner</code>.</p></td>
     </tr>
     <tr>
       <th>tol</th>
-      <td><p>The stopping criteria. The TMLE algorithm performs
-updates to the initial estimators until the empirical mean of the efficient influence function
-is smaller than <code>tol</code> or until <code>maxIter</code> iterations have been completed. The default (<code>1/length(ftime)</code>) is a sensible value. Larger values can
-be used in situations where convergence of the algorithm is an issue; however, this may result in 
+      <td><p>The stopping criteria. The TMLE algorithm performs updates to the
+initial estimators until the empirical mean of the efficient influence
+function is smaller than <code>tol</code> or until <code>maxIter</code> iterations
+have been completed. The default (<code>1 / length(ftime)</code>) is a
+sensible value. Larger values can be used in situations where
+convergence of the algorithm is an issue; however, this may result in
 large finite-sample bias.</p></td>
     </tr>
     <tr>
       <th>maxIter</th>
-      <td><p>The maximum number of iterations for the algorithm. The 
-algorithm will iterate until either the empirical mean of the efficient influence function
-is smaller than <code>tol</code> or until <code>maxIter</code> iterations have been completed.</p></td>
+      <td><p>The maximum number of iterations for the algorithm. The
+algorithm will iterate until either the empirical mean of the
+efficient influence function is smaller than <code>tol</code> or until
+<code>maxIter</code> iterations have been completed.</p></td>
     </tr>
     <tr>
       <th>gtol</th>
-      <td><p>The truncation level of predicted censoring survival. Setting to larger values can help 
-performance in data sets with practical positivity violations.</p></td>
+      <td><p>The truncation level of predicted censoring survival. Setting to
+larger values can help performance in data sets with practical
+positivity violations.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -250,25 +276,34 @@ performance in data sets with practical positivity violations.</p></td>
 
     <p>An object of class <code>survtmle</code>.</p><dl class='dl-horizontal'>
 <dt>call</dt><dd><p>The call to <code>survtmle</code>.</p></dd>
-<dt>est</dt><dd><p>A numeric vector of point estimates -- one for each combination of <code>ftypeOfInterest</code>
-and <code>trtOfInterest</code>.</p></dd>
+<dt>est</dt><dd><p>A numeric vector of point estimates -- one for each combination of
+           <code>ftypeOfInterest</code> and <code>trtOfInterest</code>.</p></dd>
 <dt>var</dt><dd><p>A covariance matrix for the point estimates.</p></dd>
-<dt>meanIC</dt><dd><p>The empirical mean of the efficient influence function at the estimated, targeted
-nuisance parameters. Each value should be small or the user will be warned that excessive finite-sample bias may exist in the point estimates.</p></dd>
-<dt>ic</dt><dd><p>The efficient influence function at the estimated, fluctuated nuisance parameters,
-evaluated on each of the observations. These are used to construct confidence intervals for post-hoc comparisons.</p></dd>
-<dt>ftimeMod</dt><dd><p>If <code>returnModels=TRUE</code> the fit object(s) for the call to <code>glm</code> or 
-<code>SuperLearner</code> for the outcome regression models. If <code>method="mean"</code> this will be a list
-of length <code>length(ftypeOfInterest)</code> each of length <code>t0</code> (one regression for each
-failure type and for each time point). If <code>method="hazard"</code> this will be a list of length
-<code>length(ftypeOfInterest)</code> with one fit corresponding to the hazard for each
-cause of failure. If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
-<dt>ctimeMod</dt><dd><p>If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
-<code>SuperLearner</code> for the pooled hazard regression model for the censoring distribution.  
-If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
-<dt>trtMod</dt><dd><p>If <code>returnModels=TRUE</code> the fit object for the call to <code>glm</code> or 
-<code>SuperLearner</code> for the conditional probability of <code>trt</code> regression model. 
-If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
+<dt>meanIC</dt><dd><p>The empirical mean of the efficient influence function at the
+              estimated, targeted nuisance parameters. Each value should be
+              small or the user will be warned that excessive finite-sample
+              bias may exist in the point estimates.</p></dd>
+<dt>ic</dt><dd><p>The efficient influence function at the estimated, fluctuated
+          nuisance parameters, evaluated on each of the observations. These
+          are used to construct confidence intervals for post-hoc
+          comparisons.</p></dd>
+<dt>ftimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object(s) for the call
+                to <code>glm</code> or <code>SuperLearner</code> for the outcome
+                regression models. If <code>method="mean"</code> this will be a
+                list of length <code>length(ftypeOfInterest)</code> each of length
+                <code>t0</code> (one regression for each failure type and for each
+                time point). If <code>method = "hazard"</code> this will be a list
+                of length <code>length(ftypeOfInterest)</code> with one fit
+                corresponding to the hazard for each cause of failure. If
+                <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
+<dt>ctimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call to
+                <code>glm</code> or <code>SuperLearner</code> for the pooled hazard
+                regression model for the censoring distribution. If
+                <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
+<dt>trtMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call to
+              <code>glm</code> or <code>SuperLearner</code> for the conditional
+              probability of <code>trt</code> regression model. If
+              <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
 <dt>t0</dt><dd><p>The timepoint at which the function was evaluated.</p></dd>
 <dt>ftime</dt><dd><p>The numeric vector of failure times used in the fit.</p></dd>
 <dt>ftype</dt><dd><p>The numeric vector of failure types used in the fit.</p></dd>
@@ -284,17 +319,19 @@ If <code>returnModels=FALSE</code>, this entry will be <code>NULL</code>.</p></d
 <span class='co'># simulate data</span>
 <span class='fu'>set.seed</span>(<span class='fl'>1234</span>)
 <span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>100</span>
-<span class='no'>trt</span> <span class='kw'>&lt;-</span> <span class='fu'>rbinom</span>(<span class='no'>n</span>,<span class='fl'>1</span>,<span class='fl'>0.5</span>)
-<span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>)), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>2</span>)))
+<span class='no'>trt</span> <span class='kw'>&lt;-</span> <span class='fu'>rbinom</span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>)
+<span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>)), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>, <span class='fl'>0</span>, <span class='fl'>2</span>)))
 
-<span class='no'>ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fl'>1</span> + <span class='fu'>runif</span>(<span class='no'>n</span>,<span class='fl'>1</span>,<span class='fl'>4</span>) - <span class='no'>trt</span> + <span class='no'>adjustVars</span>$<span class='no'>W1</span> + <span class='no'>adjustVars</span>$<span class='no'>W2</span>)
-<span class='no'>ftype</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>1</span>))
+<span class='no'>ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fl'>1</span> + <span class='fu'>runif</span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>4</span>) - <span class='no'>trt</span> + <span class='no'>adjustVars</span>$<span class='no'>W1</span> + <span class='no'>adjustVars</span>$<span class='no'>W2</span>)
+<span class='no'>ftype</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span>))
 
-<span class='co'>#' # Fit 1</span>
-<span class='co'># fit hazard_tmle object with glm estimators for treatment, censoring, and failure</span>
-<span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>hazard_tmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-<span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
-<span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
+<span class='co'># Fit 1 - fit hazard_tmle object with GLMs for treatment, censoring, failure</span>
+<span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>hazard_tmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
+                    <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
+                    <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
+                    <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+                    <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+                    <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

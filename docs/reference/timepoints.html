@@ -99,16 +99,17 @@
     </div>
 
     
-    <p>This is a wrapper function for <code>survtmle</code> that takes a fitted <code>survtmle</code>
-object and computes the TMLE estimated incidence for all times specified in the 
-<code>times</code> argument. For this function to work, the original call to <code>survtmle</code>
-should have been executed with <code>returnModels = TRUE</code>. This allows the function to
-be more efficient than repeated calls to <code>survtmle</code> in that <code>timepoints</code> will
-use fitted censoring (and hazard if <code>method="hazard"</code> was used in the original call)
-estimates. It is therefore advisable that the vector <code>times</code> used in the call to 
-<code>timepoints</code> not include times beyond the time specified in <code>t0</code> in the original
-call to <code>survtmle</code>. This can be ensured be making the original call to <code>survtmle</code>
-with <code>t0 = max(ftime)</code>.</p>
+    <p>Wrapper function for <code>survtmle</code> that takes a fitted <code>survtmle</code>
+object and computes the TMLE estimated incidence for all times specified in
+the <code>times</code> argument. For this function to work, the original call to
+<code>survtmle</code> should have been executed with <code>returnModels = TRUE</code>.
+This allows the function to be more efficient than repeated calls to
+<code>survtmle</code> in that <code>timepoints</code> will use fitted censoring (and
+hazard if <code>method="hazard"</code> was used in the original call) estimates. It
+is therefore advisable that the vector <code>times</code> used in the call to
+<code>timepoints</code> not include times beyond the time specified in <code>t0</code> in
+the original call to <code>survtmle</code>. This can be ensured be making the
+original call to <code>survtmle</code> with <code>t0 = max(ftime)</code>.</p>
     
 
     <pre class="usage"><span class='fu'>timepoints</span>(<span class='no'>object</span>, <span class='no'>times</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -118,7 +119,7 @@ with <code>t0 = max(ftime)</code>.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A fitted <code>survtmle</code> object with <code>returnModels=TRUE</code></p></td>
+      <td><p>A fitted <code>survtmle</code> object with <code>returnModels = TRUE</code></p></td>
     </tr>
     <tr>
       <th>times</th>
@@ -126,31 +127,35 @@ with <code>t0 = max(ftime)</code>.</p>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>Should the function return fitted glm/super learner models at each
-timepoint. If set to <code>TRUE</code>, memory issues could arise depending on the number of 
-timepoints specified and the size of the super learner library.</p></td>
+      <td><p>Should the function return fitted GLM or Super Learner
+models at each time point. If set to <code>TRUE</code>, memory issues could
+arise depending on the number of time points specified and the size of
+the Super Learner library.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>tp.survtmle</code> with number of entries equal to 
-<code>length(times)</code>. Each entry is named "tX", where X denotes a single value of <code>times</code>.</p>
+    <p>An object of class <code>tp.survtmle</code> with number of entries equal to
+        <code>length(times)</code>. Each entry is named "tX", where X denotes a
+        single value of <code>times</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simulate data</span>
 <span class='fu'>set.seed</span>(<span class='fl'>1234</span>)
 <span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>100</span>
-<span class='no'>ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>,<span class='fl'>1</span>,<span class='fl'>4</span>))
-<span class='no'>ftype</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>2</span>))
-<span class='no'>trt</span> <span class='kw'>&lt;-</span> <span class='fu'>rbinom</span>(<span class='no'>n</span>,<span class='fl'>1</span>,<span class='fl'>0.5</span>)
+<span class='no'>ftime</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>4</span>))
+<span class='no'>ftype</span> <span class='kw'>&lt;-</span> <span class='fu'>round</span>(<span class='fu'>runif</span>(<span class='no'>n</span>, <span class='fl'>0</span>, <span class='fl'>2</span>))
+<span class='no'>trt</span> <span class='kw'>&lt;-</span> <span class='fu'>rbinom</span>(<span class='no'>n</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>)
 <span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='no'>n</span>), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'>rnorm</span>(<span class='no'>n</span>))
 
 <span class='co'># fit an initial survtmle object with t0=max(ftime)</span>
-<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='survtmle.html'>survtmle</a></span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-<span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='survtmle.html'>survtmle</a></span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
+               <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
+               <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+               <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>,
+               <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># call timepoints to get cumulative incidence estimates at each timepoint</span>
 <span class='no'>allTimes</span> <span class='kw'>&lt;-</span> <span class='fu'>timepoints</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>fm</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
@@ -169,7 +174,7 @@ timepoints specified and the size of the super learner library.</p></td>
 #&gt; 1 1  3.343729e-05  1.679328e-03 -1.913208e-05 -3.350074e-05
 #&gt; 0 2 -1.918862e-04 -1.913208e-05  1.933470e-03  5.318150e-09
 #&gt; 1 2 -4.921541e-06 -3.350074e-05  5.318150e-09  3.632602e-04
-#&gt; </div><div class='input'><span class='co'># look at results for time 2 </span>
+#&gt; </div><div class='input'><span class='co'># look at results for time 2</span>
 <span class='no'>allTimes</span>$<span class='no'>t2</span></div><div class='output co'>#&gt; $est
 #&gt;          [,1]
 #&gt; 0 1 0.2725236

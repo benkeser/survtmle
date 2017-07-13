@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>fluctuateIteratedMean — fluctuateIteratedMean • survtmle</title>
+<title>Fluctuation for the Method of Iterated Means — fluctuateIteratedMean • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,35 +95,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>fluctuateIteratedMean</h1>
+    <h1>Fluctuation for the Method of Iterated Means</h1>
     </div>
 
     
-    <p>This function performs a fluctuation of an initial estimate of the G-computation regression at 
-a specified time <code>t</code> using a call to <code>glm</code> (i.e., a logistic submodel) or a call to
-<code>optim</code> (if bounds are specified). The structure of the function is specific to how it is 
-called within <code>mean_tmle</code>.
-In particular, <code>wideDataList</code> must have a very specific structure for this 
-function to run properly. The list should consist of <code>data.frame</code> objects. The first should
-have all rows set to their observed value of <code>trt</code>. The remaining should 
-in turn have all rows set to each value of <code>trtOfInterest</code> in the
-<code>survtmle</code> call. The latter will be used to obtain predictions that are then mapped
-into the estimates of the cumulative incidence funciton at <code>t0</code>. 
-Currently the code requires each <code>data.frame</code> to have
-named columns for each name in <code>names(adjustVars)</code>, as well as a column named
-<code>trt</code>. It must also have a columns named <code>Nj.Y</code> where j corresponds with the
-numeric values input in <code>allJ</code>. These are the indicators of failure due to the various
-causes before time <code>t</code> and are necessary for determining who to include in the 
-fluctuation regression. Similarly, each <code>data.frame</code> should have a column call <code>C.Y</code> 
-where Y is again <code>t-1</code>, so that right censored observations are not included in
-the regressions. The function will fit a logistic regression with <code>Qj.star.t+1</code> 
-as outcome (also needed as a column in <code>wideDataList</code>) with offset <code>qlogis(Qj.star.t)</code>
-and number of additional covariates given by <code>length(trtOfInterest)</code>. These additional 
-covariates should be columns in the each <code>data.frame</code> in <code>wideDataList</code> called 
-<code>H.z.t</code> where <code>z</code> corresponds to a each unique value of <code>trtOfInterest</code>.
-The function returns the same <code>wideDataList</code>, but with a column called 
-<code>Qj.star.t</code> added to it, which is the fluctuated initial regression estimate evaluated
-at the observed data points.</p>
+    <p>This function performs a fluctuation of an initial estimate of the
+G-computation regression at a specified time <code>t</code> using a call to
+<code>glm</code> (i.e., a logistic submodel) or a call to <code>optim</code> (if bounds
+are specified). The structure of the function is specific to how it is called
+within <code>mean_tmle</code>. In particular, <code>wideDataList</code> must have a very
+specific structure for this function to run properly. The list should consist
+of <code>data.frame</code> objects. The first should have all rows set to their
+observed value of <code>trt</code>. The remaining should in turn have all rows set
+to each value of <code>trtOfInterest</code> in the <code>survtmle</code> call. The latter
+will be used to obtain predictions that are then mapped into the estimates of
+the cumulative incidence funciton at <code>t0</code>. Currently the code requires
+each <code>data.frame</code> to have named columns for each name in
+<code>names(adjustVars)</code>, as well as a column named <code>trt</code>. It must also
+have a columns named <code>Nj.Y</code> where j corresponds with the numeric values
+input in <code>allJ</code>. These are the indicators of failure due to the various
+causes before time <code>t</code> and are necessary for determining who to include
+in the fluctuation regression. Similarly, each <code>data.frame</code> should have
+a column call <code>C.Y</code> where Y is again <code>t-1</code>, so that right censored
+observations are not included in the regressions. The function will fit a
+logistic regression with <code>Qj.star.t + 1</code> as outcome (also needed as a
+column in <code>wideDataList</code>) with offset <code>qlogis(Qj.star.t)</code> and
+number of additional covariates given by <code>length(trtOfInterest)</code>. These
+additional covariates should be columns in the each <code>data.frame</code> in
+<code>wideDataList</code> called <code>H.z.t</code> where <code>z</code> corresponds to a each
+unique value of <code>trtOfInterest</code>. The function returns the same
+<code>wideDataList</code>, but with a column called <code>Qj.star.t</code> added to it,
+which is the fluctuated initial regression estimate evaluated at the observed
+data points.</p>
     
 
     <pre class="usage"><span class='fu'>fluctuateIteratedMean</span>(<span class='no'>wideDataList</span>, <span class='no'>t</span>, <span class='no'>uniqtrt</span>, <span class='no'>whichJ</span>, <span class='no'>allJ</span>, <span class='no'>t0</span>,
@@ -146,8 +149,8 @@ at the observed data points.</p>
     </tr>
     <tr>
       <th>whichJ</th>
-      <td><p>Numeric value indicating the cause of failure for which regression should be 
-computed.</p></td>
+      <td><p>Numeric value indicating the cause of failure for which
+regression should be computed.</p></td>
     </tr>
     <tr>
       <th>allJ</th>
@@ -155,17 +158,20 @@ computed.</p></td>
     </tr>
     <tr>
       <th>t0</th>
-      <td><p>The timepoint at which <code>survtmle</code> was called to evaluate. Needed only because
-the naming convention for the regression if <code>t==t0</code> is different than if <code>t!=t0</code>.</p></td>
+      <td><p>The timepoint at which <code>survtmle</code> was called to evaluate.
+Needed only because the naming convention for the regression if
+<code>t == t0</code> is different than if <code>t != t0</code>.</p></td>
     </tr>
     <tr>
       <th>Gcomp</th>
-      <td><p>A boolean indicating whether <code>mean_tmle</code> was called to evaluate the G-computation
-estimator, in which case this function does nothing but relabel columns.</p></td>
+      <td><p>A boolean indicating whether <code>mean_tmle</code> was called to
+evaluate the G-computation estimator, in which case this function does
+nothing but re-label columns.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>A list of bounds... XXX NEED MORE DESCRIPTION HERE XXX</p></td>
+      <td><p>A list of bounds to be used when performing the outcome
+regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -175,10 +181,11 @@ estimator, in which case this function does nothing but relabel columns.</p></td
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function then returns a list that is exactly the same as the input <code>wideDataList</code>, 
-but with a column named <code>Qj.star.t</code> added to it, which is the fluctuated conditional mean of 
-<code>Qj.star.t+1</code> evaluated at the each of the rows of each <code>data.frame</code> in 
-<code>wideDataList</code>.</p>
+    <p>The function then returns a list that is exactly the same as the
+        input <code>wideDataList</code>, but with a column named <code>Qj.star.t</code>
+        added to it, which is the fluctuated conditional mean of
+        <code>Qj.star.t+1</code> evaluated at the each of the rows of each
+        <code>data.frame</code> in <code>wideDataList</code>.</p>
     
 
   </div>

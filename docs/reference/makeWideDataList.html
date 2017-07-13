@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>makeWideDataList — makeWideDataList • survtmle</title>
+<title>Convert Long Form Data to List of Wide Form Data — makeWideDataList • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,17 +95,19 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>makeWideDataList</h1>
+    <h1>Convert Long Form Data to List of Wide Form Data</h1>
     </div>
 
     
-    <p>The function takes a <code>data.frame</code> and <code>list</code> consisting of
-short and long format right-censored failure times. The function reshapes the long format into 
-the wide format needed for calls to <code>mean_tmle</code>. The list returned by the function
-will have number of entries equal to <code>length(trtOfInterest) + 1</code>. The first will 
-contain the observed <code>trt</code> columns and will set <code>C.t</code> (the censoring counting process)
-equal to the observed value of censoring. The subsequent entries will set <code>trt</code> equal to 
-each level of <code>trtOfInterest</code> and set <code>C.t</code> to zero for everyone.</p>
+    <p>The function takes a <code>data.frame</code> and <code>list</code> consisting of short
+and long format right-censored failure times. The function reshapes the long
+format into the wide format needed for calls to <code>mean_tmle</code>. The list
+returned by the function will have number of entries equal to
+<code>length(trtOfInterest) + 1</code>. The first will contain the observed
+<code>trt</code> columns and will set <code>C.t</code> (the censoring counting process)
+equal to the observed value of censoring. The subsequent entries will set
+<code>trt</code> equal to each level of <code>trtOfInterest</code> and set <code>C.t</code> to
+zero for everyone.</p>
     
 
     <pre class="usage"><span class='fu'>makeWideDataList</span>(<span class='no'>dat</span>, <span class='no'>allJ</span>, <span class='no'>uniqtrt</span>, <span class='no'>adjustVars</span>, <span class='no'>dataList</span>, <span class='no'>t0</span>, <span class='no'>...</span>)</pre>
@@ -127,13 +129,14 @@ each level of <code>trtOfInterest</code> and set <code>C.t</code> to zero for ev
     </tr>
     <tr>
       <th>adjustVars</th>
-      <td><p>A data.frame of adjustment variables that will be used in estimating the 
-conditional treatment, censoring, and failure (hazard or conditional mean) probabilities.</p></td>
+      <td><p>A data.frame of adjustment variables that will be used in
+estimating the conditional treatment, censoring, and failure (hazard
+or conditional mean) probabilities.</p></td>
     </tr>
     <tr>
       <th>dataList</th>
-      <td><p>A list of long format <code>data.frame</code> objects. See <code><a href='makeDataList.html'>?makeDataList</a></code> for 
-more details on formatting.</p></td>
+      <td><p>A list of long format <code>data.frame</code> objects. See
+<code><a href='makeDataList.html'>?makeDataList</a></code> for more details on formatting.</p></td>
     </tr>
     <tr>
       <th>t0</th>

@@ -99,23 +99,23 @@
     </div>
 
     
-    <p>A dataset containing data that is similar in structure to the 
-RTSS/AS01 malaria vaccine trial. Privacy agreements prevent the sharing
-of the real data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA.
-The data set is a <code>list</code> of 10 simulated multiple outputation draws.
-The covariate data, <code>ftime</code>, and <code>vaccine</code> stay the same across
-the data sets; however, the <code>ftype</code> variable changes, simulating 
-outputed data sets of multiply infected trial participants.</p>
+    <p>A dataset containing data that is similar in structure to the RTSS/AS01
+malaria vaccine trial. Privacy agreements prevent the sharing of the real
+data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA. The data set is a
+<code>list</code> of 10 simulated multiple outputation draws. The covariate data,
+<code>ftime</code>, and <code>vaccine</code> stay the same across the data sets; however,
+the <code>ftype</code> variable changes, simulating output data sets of multiply
+infected trial participants.</p>
     
 
     <pre class="usage"><span class='no'>rtss</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A <code>list</code> with 10 entries, each a <code>data.frame</code> with 
-6,890 rows and 18 columns.</p><dl class='dl-horizontal'>
+    <p>A <code>list</code> with 10 entries, each a <code>data.frame</code> with 6,890
+        rows and 18 columns.</p><dl class='dl-horizontal'>
   <dt>ftime</dt><dd><p>number of months until first recorded malaria disease</p></dd>
-  <dt>ftype</dt><dd><p>the genotype of sampled malaria parasite 
+  <dt>ftype</dt><dd><p>the genotype of sampled malaria parasite
   (0 = censored, 1 = CSP matched, 2 = CSP mismatched)</p></dd>
   <dt>vaccine</dt><dd><p>vaccine assignment (0 = control vaccine, 1 = vaccine)</p></dd>
   <dt>ageWeeks</dt><dd><p>participant's age in weeks at trial enrollment</p></dd>
@@ -128,7 +128,8 @@ outputed data sets of multiply infected trial participants.</p>
   <dt>hemog</dt><dd><p>hemoglobin</p></dd>
   <dt>distInpatient</dt><dd><p>distance from nearest inpatient clinic</p></dd>
   <dt>distOutpatient</dt><dd><p>distance from nearest outpatient clinic</p></dd>
-  <dt>startMonthCat</dt><dd><p>study site-specific indicator of rainy (=1) vs. dry (=0) season</p></dd>
+  <dt>startMonthCat</dt><dd><p>study site-specific indicator of rainy (=1) versus dry
+                       (=0) season</p></dd>
   ...
 </dl>
     
