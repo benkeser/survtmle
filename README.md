@@ -21,16 +21,22 @@ Description
 Installation
 ------------
 
+For standard use, we recommend installing the package from [CRAN](https://cran.r-project.org/) via
+
+``` r
+install.packages("survtmle")
+```
+
 You can install a stable release of `survtmle` from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/) with:
 
 ``` r
 devtools::install_github("benkeser/survtmle")
 ```
 
-For standard use, we recommend installing the package from [CRAN](https://cran.r-project.org/) (an initial release will be coming soon) via
+To contribute, install the *development version* from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
 
 ``` r
-install.packages("survtmle")
+devtools::install_github("benkeser/survtmle", ref = "develop")
 ```
 
 ------------------------------------------------------------------------
@@ -97,6 +103,38 @@ plot(tpfit)
 ```
 
 <img src="README-example-1.png" style="display: block; margin: auto;" />
+
+------------------------------------------------------------------------
+
+Contributions
+-------------
+
+It is our hope that `survtmle` will grow to be widely used in health and medical studies where the substantive scientific questions concern parameters for which estimation and inference can be obtain nonparametrically, in settings involving right-censoring. To that end, contributions are very welcome, though we ask that interested contributors consult our [`contribution guidelines`](https://github.com/benkeser/survtmle/blob/master/CONTRIBUTING.md) prior to submitting a pull request.
+
+------------------------------------------------------------------------
+
+Citation
+--------
+
+After using the `survtmle` R package, please cite both of the following:
+
+        @misc{benkeser2017survtmle,
+          url = {https://github.com/benkeser/survtmle},
+          year  = {2017},
+          author = {Benkeser, David C. and Hejazi, Nima S.},
+          title = {survtmle: Targeted Minimum Loss-Based Estimation for Survival
+                   Analysis in R}
+        }
+
+        @article{benkeser2017improved,
+          doi = {10.1002/sim.7337},
+          year  = {2017},
+          publisher = {Wiley-Blackwell},
+          author = {Benkeser, David C. and Carone, Marco and Gilbert, Peter B.},
+          title = {Improved estimation of the cumulative incidence of rare
+                   outcomes},
+          journal = {Statistics in Medicine}
+        }
 
 ------------------------------------------------------------------------
 
