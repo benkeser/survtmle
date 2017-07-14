@@ -3,7 +3,7 @@ Title: Compute Targeted Minimum Loss-Based Estimates in Right-Censored Survival
     Settings
 Version: 1.0.0
 Authors@R: c(person("David","Benkeser",role = c("aut","cre","cph"),email="benkeser@emory.edu",
-             person("Nima","Hejazi",role = c("aut"), email = "nheajzi@berkeley.edu"))
+             person("Nima","Hejazi",role = c("aut"), email = "nheajzi@berkeley.edu")))
 Maintainer: David Benkeser <benkeser@emory.edu>
 Description: Tools that facilitate targeted estimation of marginal cumulative
     incidence estimates in survival settings with and without competing risks (Benkeser, Carone, and Gilbert (2017) <doi: 10.1002/sim.7337>)
