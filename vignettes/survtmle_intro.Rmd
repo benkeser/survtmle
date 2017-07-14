@@ -140,7 +140,7 @@ generalization of stacked regression [@breiman1996stacked] that uses
 cross-validation to select the best-performing estimator from a library of
 candidate estimators [@vdlpolley:2007:statappgenetics]. Many popular machine
 learning algorithms have been implemented in the
-[`SuperLearner`](https://cran.r-project.org/web/packages/SuperLearner/index.html).
+[`SuperLearner`](https://cran.r-project.org/package=SuperLearner).
 
 To utilize `SuperLearner` estimates, we can utilize options `SL.trt`,
 `SL.ctime`, and `SL.ftime` to estimate conditional treatment, censoring, and
