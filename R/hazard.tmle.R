@@ -136,8 +136,6 @@
 #' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'
-#' @export
-#'
 #' @examples
 #'
 #' ## Single failure type examples
@@ -157,6 +155,8 @@
 #'                     glm.ftime = "trt + W1 + W2",
 #'                     glm.ctime = "trt + W1 + W2",
 #'                     returnModels = TRUE)
+#'
+#' @export
 #'
 
 hazard_tmle <- function(ftime, ftype, trt,

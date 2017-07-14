@@ -1,0 +1,30 @@
+reference:
+  - title: "TMLE Procedures for Estimating Cumulative Incidence"
+    desc: "Functions for computing TMLEs for cumulative incidence via the
+      methods of cause-specific hazards and the method of iterated means."
+    contents:
+      - survtmle
+      - timepoints
+      - mean_tmle
+      - hazard_tmle
+  - title: "Estimation and Fluctuation Procedures for Computing TMLEs"
+    desc: "Functions for computing TMLEs for cumulative incidence via the
+      methods of cause-specific hazards and the method of iterated means."
+    contents:
+      - estimateCensoring
+      - estimateTreatment
+      - estimateIteratedMean
+      - fluctuateIteratedMean
+      - estimateHazards
+      - fluctuateHazards
+      - getHazardInfluenceCurve
+  - title: "Internal Package Utilities"
+    desc: "Functions for internal convenience functions used by core functions."
+    contents:
+      - grad
+      - grad_offset
+      - LogLikelihood
+      - LogLikelihood_offset
+      - makeDataList
+      - makeWideDataList
+      - updateVariables

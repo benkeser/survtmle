@@ -148,8 +148,6 @@
 #' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'
-#' @export
-#'
 #' @examples
 #'
 #' # simulate data
@@ -181,6 +179,8 @@
 #'                  SL.ctime = c("SL.mean"),
 #'                  method = "mean", t0 = 6)
 #' fit2
+#'
+#' @export
 #'
 
 survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),

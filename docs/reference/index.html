@@ -112,8 +112,8 @@
       <tbody>
         <tr>
           <th colspan="2">
-            <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-            <p class="section-desc"></p>
+            <h2 id="section-tmle-procedures-for-estimating-cumulative-incidence" class="hasAnchor"><a href="#section-tmle-procedures-for-estimating-cumulative-incidence" class="anchor"></a>TMLE Procedures for Estimating Cumulative Incidence</h2>
+            <p class="section-desc"><p>Functions for computing TMLEs for cumulative incidence via the methods of cause-specific hazards and the method of iterated means.</p></p>
           </th>
         </tr>
         <tr>
@@ -121,37 +121,39 @@
           <td>
             <p></p>
           </td>
-          <td><p>Check Function Inputs</p></td>
+          <td><p>Compute Targeted Minimum Loss-Based Estimators in Survival Analysis Settings</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="cleanglm.html">cleanglm</a></code> </p>
+            <p><code><a href="timepoints.html">timepoints</a></code> </p>
           </td>
-          <td><p>Clean up outputs from GLM</p></td>
+          <td><p>Evaluate Results over Time Points of Interest</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="confint.survtmle.html">confint</a></code> </p>
+            <p></p>
           </td>
-          <td><p>confint.survtmle</p></td>
+          <td><p>TMLE for G-Computation of Cumulative Incidence</p></td>
         </tr><tr>
+          <!--  -->
+          <td>
+            <p></p>
+          </td>
+          <td><p>TMLE for Cause-Specific Hazard Functions</p></td>
+        </tr>
+      </tbody><tbody>
+        <tr>
+          <th colspan="2">
+            <h2 id="section-estimation-and-fluctuation-procedures-for-computing-tmles" class="hasAnchor"><a href="#section-estimation-and-fluctuation-procedures-for-computing-tmles" class="anchor"></a>Estimation and Fluctuation Procedures for Computing TMLEs</h2>
+            <p class="section-desc"><p>Functions for computing TMLEs for cumulative incidence via the methods of cause-specific hazards and the method of iterated means.</p></p>
+          </th>
+        </tr>
+        <tr>
           <!--  -->
           <td>
             <p><code><a href="estimateCensoring.html">estimateCensoring</a></code> </p>
           </td>
           <td><p>Estimate Censoring Mechanisms</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="estimateHazards.html">estimateHazards</a></code> </p>
-          </td>
-          <td><p>Estimation for the Method of Cause-Specific Hazards</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="estimateIteratedMean.html">estimateIteratedMean</a></code> </p>
-          </td>
-          <td><p>Estimation for the Method of Iterated Means</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -161,9 +163,9 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="fluctuateHazards.html">fluctuateHazards</a></code> </p>
+            <p><code><a href="estimateIteratedMean.html">estimateIteratedMean</a></code> </p>
           </td>
-          <td><p>Fluctuation for the Method of Cause-Specific Hazards</p></td>
+          <td><p>Estimation for the Method of Iterated Means</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -173,15 +175,35 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="format.perc.html">format</a></code> </p>
+            <p><code><a href="estimateHazards.html">estimateHazards</a></code> </p>
           </td>
-          <td><p>format.perc</p></td>
+          <td><p>Estimation for the Method of Cause-Specific Hazards</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="fluctuateHazards.html">fluctuateHazards</a></code> </p>
+          </td>
+          <td><p>Fluctuation for the Method of Cause-Specific Hazards</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="getHazardInfluenceCurve.html">getHazardInfluenceCurve</a></code> </p>
           </td>
           <td><p>Extract Influence Curve for Estimated Hazard Functions</p></td>
+        </tr>
+      </tbody><tbody>
+        <tr>
+          <th colspan="2">
+            <h2 id="section-internal-package-utilities" class="hasAnchor"><a href="#section-internal-package-utilities" class="anchor"></a>Internal Package Utilities</h2>
+            <p class="section-desc"><p>Functions for internal convenience functions used by core functions.</p></p>
+          </th>
+        </tr>
+        <tr>
+          <!--  -->
+          <td>
+            <p><code><a href="grad.html">grad</a></code> </p>
+          </td>
+          <td><p>Gradient for Logistic Regression</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -191,27 +213,15 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="grad.html">grad</a></code> </p>
+            <p><code><a href="LogLikelihood.html">LogLikelihood</a></code> </p>
           </td>
-          <td><p>Gradient for Logistic Regression</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>TMLE for Cause-Specific Hazard Functions</p></td>
+          <td><p>Log-Likelihood</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="LogLikelihood_offset.html">LogLikelihood_offset</a></code> </p>
           </td>
           <td><p>Log-Likelihood Offset</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="LogLikelihood.html">LogLikelihood</a></code> </p>
-          </td>
-          <td><p>Log-Likelihood</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -227,54 +237,6 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p></p>
-          </td>
-          <td><p>TMLE for G-Computation of Cumulative Incidence</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plot.tp.survtmle.html">plot</a></code> </p>
-          </td>
-          <td><p>Plot Results of Cumulative Incidence Estimates</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="print.survtmle.html">print</a></code> </p>
-          </td>
-          <td><p>print.survtmle</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="print.tp.survtmle.html">print</a></code> </p>
-          </td>
-          <td><p>print.tp.survtmle</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="rtss.html">rtss</a></code> </p>
-          </td>
-          <td><p>Mock RTSS/AS01 data set</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="rv144.html">rv144</a></code> </p>
-          </td>
-          <td><p>Mock RV144 data set</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>Compute Targeted Minimum Loss-Based Estimators in Survival Analysis Settings</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="timepoints.html">timepoints</a></code> </p>
-          </td>
-          <td><p>timepoints</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
             <p><code><a href="updateVariables.html">updateVariables</a></code> </p>
           </td>
           <td><p>Update TMLEs for Hazard to Cumulative Incidence</p></td>
@@ -287,7 +249,9 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-tmle-procedures-for-estimating-cumulative-incidence">TMLE Procedures for Estimating Cumulative Incidence</a></li>
+      <li><a href="#section-estimation-and-fluctuation-procedures-for-computing-tmles">Estimation and Fluctuation Procedures for Computing TMLEs</a></li>
+      <li><a href="#section-internal-package-utilities">Internal Package Utilities</a></li>
     </ul>
   </div>
 </div>
