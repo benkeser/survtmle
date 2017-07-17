@@ -3,9 +3,10 @@
 #' Removes superfluous output from the call to \code{glm} that is not needed to
 #' perform later predictions. It is applied as a space saving technique.
 #'
-#' @param cm An object of class \code{glm}.
+#' @param cm An object of class \code{glm} or class \code{speedglm}.
 #'
-#' @return An object of class \code{glm} but with unnecessary output removed.
+#' @return An object of class \code{glm} or \code{speedglm}, but with
+#'         unnecessary output removed.
 #'
 
 cleanglm <- function(cm) {
@@ -14,7 +15,7 @@ cleanglm <- function(cm) {
   cm$residuals <- NULL
   cm$fitted.values <- NULL
   cm$effects <- NULL
-  cm$qr$qr <- NULL 
+  cm$qr$qr <- NULL
   cm$linear.predictors <- NULL
   cm$weights <- NULL
   cm$prior.weights <- NULL
@@ -26,5 +27,5 @@ cleanglm <- function(cm) {
   cm$family$simulate <- NULL
   attr(cm$terms, ".Environment") <- NULL
   attr(cm$formula, ".Environment") <- NULL
-  cm
+  return(cm)
 }

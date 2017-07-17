@@ -19,7 +19,8 @@ Imports:
     plyr,
     tidyr,
     stringr,
-    ggplot2
+    ggplot2,
+    speedglm
 Suggests:
     testthat,
     knitr,

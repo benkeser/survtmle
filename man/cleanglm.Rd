@@ -7,10 +7,11 @@
 cleanglm(cm)
 }
 \arguments{
-\item{cm}{An object of class \code{glm}.}
+\item{cm}{An object of class \code{glm} or class \code{speedglm}.}
 }
 \value{
-An object of class \code{glm} but with unnecessary output removed.
+An object of class \code{glm} or \code{speedglm}, but with
+        unnecessary output removed.
 }
 \description{
 Removes superfluous output from the call to \code{glm} that is not needed to

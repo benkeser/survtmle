@@ -76,9 +76,9 @@ estimateCensoring <- function(dataList,
     if(!("glm" %in% class(glm.ctime))) {
       if(!all(dataList[[1]]$C == 0)) {
         ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
-        ctimeMod <- glm(as.formula(ctimeForm), 
-                        data = dataList[[1]][include, ],
-                        family = "binomial")
+        ctimeMod <- fast_glm(reg_form = ctimeForm,
+                             data = dataList[[1]][include, ],
+                             family = stats::binomial())
         ctimeMod <- cleanglm(ctimeMod)
       } else {
         dataList <- lapply(dataList, function(x) {
@@ -106,8 +106,8 @@ estimateCensoring <- function(dataList,
 
           # put time back to normal
           x$t <- x$t + 1
-          # replace any observations with t = 1 
-          # to avoid extrapolation 
+          # replace any observations with t = 1
+          # to avoid extrapolation
           g_dC[x$t == 1] <- 1
         }
         x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN = cumprod)))
@@ -123,7 +123,7 @@ estimateCensoring <- function(dataList,
     if(class(SL.ctime) != "SuperLearner") {
       if(!all(dataList[[1]]$C == 0)){
         ctimeMod <- SuperLearner(Y = dataList[[1]]$C[include],
-                                 X = dataList[[1]][include, 
+                                 X = dataList[[1]][include,
                                                    c("t", "trt",
                                                      names(adjustVars))],
                                  id = dataList[[1]]$id[include],
@@ -140,7 +140,7 @@ estimateCensoring <- function(dataList,
     }
     } else { # if input SLlibrary.time is Super Learner object, just use that
       ctimeMod <- SL.ctime
-    } 
+    }
     if(class(ctimeMod) != "noCens"){
       dataList <- lapply(dataList, function(x) {
         g_dC <- rep(1, nrow(x))
@@ -148,7 +148,7 @@ estimateCensoring <- function(dataList,
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
-          g_dC <- 
+          g_dC <-
 
             suppressWarnings(
             1 - predict(ctimeMod, newdata = x[, c("t", "trt",
@@ -174,7 +174,7 @@ estimateCensoring <- function(dataList,
   }
   # truncate small propensities at gtol
   dataList <- lapply(dataList,function(x) {
-    x$G_dC[x$G_dC < gtol]  <- gtol 
+    x$G_dC[x$G_dC < gtol]  <- gtol
     x
   })
 

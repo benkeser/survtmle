@@ -45,7 +45,7 @@
 #'        nothing but re-label columns.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula optim glm qlogis
+#' @importFrom stats as.formula optim glm qlogis binomial
 #' @importFrom Matrix Diagonal
 #'
 #' @return The function then returns a list that is exactly the same as the
@@ -79,7 +79,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
                                        1 - .Machine$double.neg.eps] <- 1 - .Machine$double.neg.eps
       x
     }, t = t)
- 
+
     flucForm <- paste(outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
                       ".", t, ")) +",
                       paste0("H", uniqtrt, ".", t, collapse = "+"), sep = "")
@@ -87,9 +87,10 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
     if(!Gcomp) {
       # fluctuation model
       suppressWarnings(
-        flucMod <- stats::glm(stats::as.formula(flucForm), family = "binomial",
-                              data = wideDataList[[1]][include, ],
-                              start = rep(0, length(uniqtrt)))
+        flucMod <- fast_glm(reg_form = flucForm,
+                            data = wideDataList[[1]][include, ],
+                            family = stats::binomial(),
+                            start = rep(0, length(uniqtrt)))
       )
       # get predictions back
       wideDataList <- lapply(wideDataList, function(x, t) {
@@ -138,14 +139,14 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
                                offset = wideDataList[[1]]$thisOffset[include],
                                method = "BFGS", gr = grad_offset,
                                control = list(reltol = 1e-7, maxit = 50000))
- 
+
       if(fluc.mod$convergence != 0) {
         stop("fluctuation convergence failure")
       } else {
         beta <- fluc.mod$par
 
         wideDataList <- lapply(wideDataList, function(x) {
-          x[[paste0("Q",whichJ,"star.",t)]] <- x[[Nj.tm1]] + 
+          x[[paste0("Q",whichJ,"star.",t)]] <- x[[Nj.tm1]] +
             (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) * (plogis(x$thisOffset +
               as.matrix(x[, cleverCovariates]) %*% as.matrix(beta)) *
                                                   x$thisScale + x[[lj.t]])

@@ -36,7 +36,7 @@
 #' @return trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or
 #'         \code{SuperLearner} object. Otherwise, \code{NULL}
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom stats as.formula predict model.matrix optim glm binomial
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean
 #'             SL.glm SL.step
 #'
@@ -47,9 +47,9 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
+    thisY <- as.numeric(dat$trt == max(dat$trt))
     if(!is.null(SL.trt)) {
       if(class(SL.trt) != "SuperLearner") {
-        thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- SuperLearner::SuperLearner(Y = thisY, X = adjustVars,
                                              newX = adjustVars,
                                              SL.library = SL.trt,
@@ -61,11 +61,13 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
       dat[[paste0("g_",max(dat$trt))]] <- trtMod$SL.predict
       dat[[paste0("g_",min(dat$trt))]] <- 1-trtMod$SL.predict
 
-    }else if(!is.null(glm.trt) & is.null(SL.trt)) {
+    } else if(!is.null(glm.trt) & is.null(SL.trt)) {
       if(!("glm" %in% class(glm.trt))) {
-        thisY <- as.numeric(dat$trt == max(dat$trt))
-        trtMod <- stats::glm(stats::as.formula(paste0("thisY ~ ", glm.trt)),
-                             data = adjustVars, family = "binomial")
+        trtMod <- fast_glm(reg_form = stats::as.formula(paste0("thisY ~ ",
+                                                               glm.trt)),
+                           data = adjustVars,
+                           err_fam = stats::binomial())
+
       } else {
         trtMod <- glm.trt
       }

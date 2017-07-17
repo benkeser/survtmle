@@ -54,7 +54,6 @@
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
 #' @importFrom SuperLearner SuperLearner
 #'
-#'
 #' @return The function returns a list that is exactly the same as the input
 #'         \code{dataList}, but with additional columns corresponding to the
 #'         hazard, pseudo-hazard, and the total hazard for summed over all
@@ -82,9 +81,9 @@ estimateHazards <- function(dataList, J, adjustVars,
 
         # fit GLM
         if(all(class(glm.ftime[[1]]) != "glm")) {
-          Qj.mod <- glm(as.formula(Qj.form),
-                        data = dataList[[1]][NlessthanJ == 0, ],
-                        family = "binomial")
+          Qj.mod <- fast_glm(reg_form = Qj.form,
+                             data = dataList[[1]][NlessthanJ == 0, ],
+                             family = stats::binomial())
           Qj.mod <- cleanglm(Qj.mod)
         } else {
           Qj.mod <- glm.ftime[[paste0("J",j)]]

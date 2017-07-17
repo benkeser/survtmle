@@ -55,7 +55,7 @@
 #'        regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm
+#' @importFrom stats as.formula predict model.matrix optim glm binomial gaussian
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
 #'
 #' @return The function then returns a list that is exactly the same as the
@@ -106,9 +106,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     if(is.null(bounds)) { # with no bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
       suppressWarnings({
-        Qmod <- stats::glm(as.formula(Qform), family = "binomial",
-                           data = wideDataList[[1]][include, ])
-
+        Qmod <- fast_glm(reg_form = Qform,
+                         data = wideDataList[[1]][include, ],
+                         err_fam = stats::binomial())
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
@@ -119,20 +119,20 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       })
     } else { # with bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
-      X <- model.matrix(as.formula(Qform), data = wideDataList[[1]][include, ])
+      X <- stats::model.matrix(as.formula(Qform),
+                               data = wideDataList[[1]][include, ])
       Ytilde <- (wideDataList[[1]][include, outcomeName] -
                  wideDataList[[1]][[lj.t]][include]) /
                 (wideDataList[[1]][[uj.t]][include] -
                  wideDataList[[1]][[lj.t]][include])
-      Qmod <- optim(par = rep(0, ncol(X)), fn = LogLikelihood, Y = Ytilde,
-                    X = X, method = "BFGS", gr = grad,
-                    control = list(reltol = 1e-7, maxit = 50000))
+      Qmod <- stats::optim(par = rep(0, ncol(X)), fn = LogLikelihood,
+                           Y = Ytilde, X = X, method = "BFGS", gr = grad,
+                           control = list(reltol = 1e-7, maxit = 50000))
       beta <- Qmod$par
       wideDataList <- lapply(wideDataList, function(x, j, t) {
-        newX <- model.matrix(as.formula(Qform), data = x)
+        newX <- stats::model.matrix(as.formula(Qform), data = x)
         x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
           (plogis(newX %*% beta) * (x[[uj.t]] - x[[lj.t]]) + x[[lj.t]])
-
         x
       }, j = whichJ, t = t)
     }
@@ -148,8 +148,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         ignoreSL <- nE <= 2
         if(ignoreSL) {
           suppressWarnings({
-            Qmod <- stats::glm(stats::as.formula(paste0(outcomeName, " ~ trt")),
-                               data = wideDataList[[1]][include, ])
+            Qmod <- speed_glm(reg_form = paste0(outcomeName, " ~ trt"),
+                              data = wideDataList[[1]][include, ],
+                              err_fam = stats::gaussian())
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
               x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]]- x[[Nj.tm1]]) *
