@@ -32,15 +32,15 @@
 #'        variables to adjust for in the regression.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression (either cause-specific hazards or conditional mean).
+#'        outcome regression, either cause-specific hazards or conditional mean.
 #'        See \code{?SuperLearner} for more information on how to specify valid
 #'        \code{SuperLearner} libraries. It is expected that the wrappers used
 #'        in the library will play nicely with the input variables, which will
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression (either cause-specific hazards or
-#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
+#'        for the outcome regression, either cause-specific hazards or
+#'        conditional mean. Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
@@ -73,10 +73,10 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   if(t != 1) {
     for(j in allJ) {
       # exclude previously failed subjects
-      include[wideDataList[[1]][[paste0("N",j,".",t-1)]]==1] <- FALSE
+      include[wideDataList[[1]][[paste0("N", j, ".", t - 1)]] == 1] <- FALSE
     }
     # exclude previously censored subjects
-    include[wideDataList[[1]][[paste0("C.",t-1)]]==1] <- FALSE
+    include[wideDataList[[1]][[paste0("C.", t - 1)]] == 1] <- FALSE
   }
 
   ## determine the outcome for the regression
@@ -84,34 +84,35 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                         paste("Q", whichJ, "star.", t + 1, sep = ""))
 
   ## create an indicator of any failure prior to t
-  wideDataList <- lapply(wideDataList, function(x, t){
+  wideDataList <- lapply(wideDataList, function(x, t) {
     if(length(allJ) > 1) {
-      x[[paste0("NnotJ.",t-1)]] <- 
-        rowSums(cbind(rep(0, nrow(x)), x[, paste0('N', allJ[allJ != whichJ], '.', t - 1)]))
+      x[[paste0("NnotJ.", t - 1)]] <-
+        rowSums(cbind(rep(0, nrow(x)), x[, paste0("N", allJ[allJ != whichJ],
+                                                  ".", t - 1)]))
     } else {
-      x[[paste0("NnotJ.",t-1)]] <- 0
+      x[[paste0("NnotJ.", t - 1)]] <- 0
     }
     x
-  },t = t)
+  }, t = t)
 
-  lj.t <- paste0("l",whichJ,".",t)
-  uj.t <- paste0("u",whichJ,".",t)
-  Qtildej.t <- paste0("Qtilde",whichJ,".",t)
-  Nj.tm1 <- paste0("N",whichJ,".",t-1)
-  Qj.t <- paste0("Q",whichJ,".",t)
-  NnotJ.tm1 <- paste0("NnotJ.",t-1)
+  lj.t <- paste0("l", whichJ, ".", t)
+  uj.t <- paste0("u", whichJ, ".", t)
+  Qtildej.t <- paste0("Qtilde", whichJ, ".", t)
+  Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
+  Qj.t <- paste0("Q", whichJ, ".", t)
+  NnotJ.tm1 <- paste0("NnotJ.", t - 1)
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
       suppressWarnings({
         Qmod <- stats::glm(as.formula(Qform), family = "binomial",
-                           data = wideDataList[[1]][include,])
+                           data = wideDataList[[1]][include, ])
 
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
-                predict(Qmod,newdata=x,type="response")
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
+              predict(Qmod, newdata = x, type = "response")
           )
           x
         }, t = t, whichJ = whichJ)
@@ -119,16 +120,18 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     } else { # with bounds
       Qform <- paste(outcomeName, "~", glm.ftime)
       X <- model.matrix(as.formula(Qform), data = wideDataList[[1]][include, ])
-      Ytilde <- (wideDataList[[1]][include,outcomeName] - wideDataList[[1]][[lj.t]][include])/
-        (wideDataList[[1]][[uj.t]][include] - wideDataList[[1]][[lj.t]][include])
+      Ytilde <- (wideDataList[[1]][include, outcomeName] -
+                 wideDataList[[1]][[lj.t]][include]) /
+                (wideDataList[[1]][[uj.t]][include] -
+                 wideDataList[[1]][[lj.t]][include])
       Qmod <- optim(par = rep(0, ncol(X)), fn = LogLikelihood, Y = Ytilde,
                     X = X, method = "BFGS", gr = grad,
                     control = list(reltol = 1e-7, maxit = 50000))
       beta <- Qmod$par
       wideDataList <- lapply(wideDataList, function(x, j, t) {
         newX <- model.matrix(as.formula(Qform), data = x)
-        x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
-          (plogis(newX%*%beta)*(x[[uj.t]]-x[[lj.t]]) + x[[lj.t]])
+        x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
+          (plogis(newX %*% beta) * (x[[uj.t]] - x[[lj.t]]) + x[[lj.t]])
 
         x
       }, j = whichJ, t = t)
@@ -137,10 +140,10 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     if(is.null(bounds)) { # with no bounds
       # some stability checks
       # number of unique outcome values
-      nUniq <- length(unique(wideDataList[[1]][include,outcomeName]))
+      nUniq <- length(unique(wideDataList[[1]][include, outcomeName]))
       cvControl <- SuperLearner::SuperLearner.CV.control()
       if(t == t0) {
-        # if there are less than 2 events at t0, just fit regression using only Z
+        # if there are less than 2 events at t0, fit regression using only Z
         nE <- sum(wideDataList[[1]][include, outcomeName])
         ignoreSL <- nE <= 2
         if(ignoreSL) {
@@ -149,8 +152,8 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                data = wideDataList[[1]][include, ])
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
-              x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]])*
-                predict(Qmod,newdata=data.frame(trt=x$trt))
+              x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]]- x[[Nj.tm1]]) *
+                predict(Qmod, newdata = data.frame(trt = x$trt))
              )
              x
             }, t = t, whichJ = whichJ)
@@ -159,7 +162,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
           simplify <- nE <= cvControl$V
           if(simplify) cvControl <- list(V = nE - 1, stratifyCV = TRUE)
           suppressWarnings(
-            Qmod <- SuperLearner::SuperLearner(Y = wideDataList[[1]][include,outcomeName],
+            Qmod <- SuperLearner::SuperLearner(Y = wideDataList[[1]][include, outcomeName],
                                                X = wideDataList[[1]][include, c("trt", names(adjustVars))],
                                                SL.library = SL.ftime,
                                                cvControl = cvControl,
@@ -167,8 +170,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                                                verbose = verbose)
           )
           wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
-              predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
+              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
+                      onlySL = TRUE)$pred
             x
           }, t = t, whichJ = whichJ)
         }
@@ -183,8 +187,9 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         )
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[Nj.tm1]]-x[[NnotJ.tm1]])*
-              predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[Nj.tm1]] - x[[NnotJ.tm1]]) *
+              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
+                      onlySL = TRUE)$pred
           )
           x
         }, t = t, whichJ = whichJ)

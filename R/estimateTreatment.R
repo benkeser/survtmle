@@ -37,7 +37,8 @@
 #'         \code{SuperLearner} object. Otherwise, \code{NULL}
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm
-#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
+#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean
+#'             SL.glm SL.step
 #'
 
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
@@ -71,16 +72,16 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
       suppressWarnings(
         pred <- predict(trtMod, type = "response")
       )
-      dat[[paste0("g_",max(dat$trt))]] <- pred
-      dat[[paste0("g_",min(dat$trt))]] <- 1-pred
+      dat[[paste0("g_", max(dat$trt))]] <- pred
+      dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
     }
   }
 
   # truncate propensities
   eval(parse(text = paste0("dat$g_", min(dat$trt), "[dat$g_", min(dat$trt),
                            "< gtol]<- gtol")))
-  eval(parse(text=paste0("dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
-                         "< gtol]<- gtol")))
+  eval(parse(text = paste0("dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
+                           "< gtol]<- gtol")))
 
   out <- list(dat = dat,
               trtMod = if(returnModels & length(unique(dat$trt)) > 1)

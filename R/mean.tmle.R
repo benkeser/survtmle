@@ -250,7 +250,7 @@ mean_tmle <- function(ftime, ftype, trt,
       eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
                               " <- rep(thisEst,n)", sep = "")))
       eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
-                              " <- wideDataList[[(z+1)]]$Q", j, "star.1",
+                              " <- wideDataList[[(z + 1)]]$Q", j, "star.1",
                               sep = "")))
     }
   }

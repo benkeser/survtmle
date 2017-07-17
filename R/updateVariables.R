@@ -36,7 +36,8 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
     for(j in ofInterestJ) {
       # calculate CIF at time t
-      x[[paste0("F",j,".t")]] <- unlist(by(x[,paste0("Q",j,"Haz")]*S.tminus1,x$id,FUN=cumsum))
+      x[[paste0("F", j, ".t")]] <- unlist(by(x[, paste0("Q", j, "Haz")] *
+                                             S.tminus1, x$id, FUN = cumsum))
     }
     x
   }, allJ = allJ)
@@ -47,13 +48,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     Fj.t0.allZ <- vector(mode = "list", length = ntrt)
     for(i in 1:ntrt) {
       t0.mod <- dataList[[i + 1]]$ftime[1]
-      Fj.t0.allZ[[i]] <- dataList[[i+1]][[paste0("F",j,".t")]][dataList[[i+1]]$t==t0.mod]
+      Fj.t0.allZ[[i]] <- dataList[[i + 1]][[paste0("F", j,
+                                                   ".t")]][dataList[[i + 1]]$t == t0.mod]
     }
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
       for(i in seq_along(uniqtrt)) {
         ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
-        x[[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind]
+        x[[paste0("F", j, ".z", uniqtrt[i], ".t0")]] <- Fj.t0.allZ[[i]][ind]
       }
       x
     }, j = j, uniqtrt = uniqtrt, Fj.t0.allZ = Fj.t0.allZ)
@@ -74,7 +76,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
                                                                ".t"))],
                          by = c("id", "t", "trt"))
   } else {
-    # the next times it's called those columns will exist but we want them replaced
+    # the next times it's called those columns will exist but want them replaced
     # with the values from dataList[[>1]]
     dataList[[1]] <- merge(dataList[[1]][, -colInd],
                            Reduce(rbind,
@@ -89,10 +91,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   dataList <- lapply(dataList, function(x, allJ) {
     for(j in allJ) {
       if(length(allJ) > 1) {
-        x[[paste0("hazNot",j)]] <- rowSums(cbind(rep(0, nrow(x)),x[,paste0('Q',allJ[allJ != j],'Haz')]))
-        x[[paste0("hazNot",j)]][x[[paste0("hazNot",j)]]==1] <- 1-.Machine$double.neg.eps
+        x[[paste0("hazNot", j)]] <- rowSums(cbind(rep(0, nrow(x)),
+                                                  x[, paste0("Q",
+                                                             allJ[allJ != j],
+                                                             "Haz")]))
+        x[[paste0("hazNot", j)]][x[[paste0("hazNot", j)]] == 1] <-
+          1 - .Machine$double.neg.eps
       } else {
-        x[[paste0("hazNot",j)]] <- 0
+        x[[paste0("hazNot", j)]] <- 0
       }
     }
     x
@@ -104,13 +110,16 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     for(z in uniqtrt) {
       for(j in ofInterestJ) {
         x[[paste0("H", j, ".jSelf.z", z)]] <- 
-          (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_",z)]]*x$G_dC) * 
-            (1-x[[paste0("hazNot",j)]]) * ((x$t < t0) * (1-(x[[paste0("F",j,".z",z,".t0")]]-
-                x[[paste0("F",j,".t")]])/c(x$S.t)) + as.numeric(x$t==t0))
-          x[[paste0("H", j, ".jNotSelf.z", z)]] <- 
-            - (x$ftime >= x$t & x$trt ==z)/(x[[paste0("g_",z)]]*x$G_dC) * 
-              (1-x[[paste0("hazNot",j)]]) * ((x$t < t0)*(x[[paste0("F",j,".z",z,".t0")]] - 
-                x[[paste0("F",j,".t")]])/c(x$S.t))
+          (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_", z)]] * x$G_dC) *
+            (1 - x[[paste0("hazNot", j)]]) *
+            ((x$t < t0) * (1 - (x[[paste0("F", j, ".z", z, ".t0")]] -
+                                x[[paste0("F", j, ".t")]]) /
+            c(x$S.t)) + as.numeric(x$t == t0))
+          x[[paste0("H", j, ".jNotSelf.z", z)]] <-
+            - (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_", z)]] * x$G_dC) *
+              (1 - x[[paste0("hazNot", j)]]) *
+              ((x$t < t0) * (x[[paste0("F", j, ".z", z, ".t0")]] -
+                             x[[paste0("F", j, ".t")]]) / c(x$S.t))
         }
       }
       x

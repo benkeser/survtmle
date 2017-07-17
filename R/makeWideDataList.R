@@ -64,15 +64,16 @@ makeWideDataList <- function(dat,
   names(wideDataList) <- c("obs", uniqtrt)
 
   for(z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
-  
+ 
   wideDataList <- lapply(wideDataList, function(x){
     # make clever covariates
     for(z in uniqtrt) {
       for(t in 1:t0) {
-        x[[paste0("H",z,".",t)]] <- 
-          (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x[[paste0("g_",z,".",t)]])
+        x[[paste0("H", z, ".", t)]] <-
+          (x$trt == z & x[[paste0("C.", t - 1)]] == 0) /
+          (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
       }
-        x[[paste0("H",z,".0")]] <- (x$trt==z) / x[[paste0("g_",z,".",t)]]
+        x[[paste0("H", z, ".0")]] <- (x$trt == z) / x[[paste0("g_", z, ".", t)]]
     }
     x
   })
