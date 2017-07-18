@@ -83,7 +83,8 @@ estimateHazards <- function(dataList, J, adjustVars,
         if(all(class(glm.ftime[[1]]) != "glm")) {
           Qj.mod <- fast_glm(reg_form = Qj.form,
                              data = dataList[[1]][NlessthanJ == 0, ],
-                             family = stats::binomial())
+                             family = stats::binomial(),
+                             flavor = "slow")
           Qj.mod <- cleanglm(Qj.mod)
         } else {
           Qj.mod <- glm.ftime[[paste0("J",j)]]

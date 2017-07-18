@@ -78,7 +78,8 @@ estimateCensoring <- function(dataList,
         ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
         ctimeMod <- fast_glm(reg_form = ctimeForm,
                              data = dataList[[1]][include, ],
-                             family = stats::binomial())
+                             family = stats::binomial(),
+                             flavor = "slow")
         ctimeMod <- cleanglm(ctimeMod)
       } else {
         dataList <- lapply(dataList, function(x) {

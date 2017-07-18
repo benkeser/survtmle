@@ -90,6 +90,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         flucMod <- fast_glm(reg_form = flucForm,
                             data = wideDataList[[1]][include, ],
                             family = stats::binomial(),
+                            flavor = "slow",
                             start = rep(0, length(uniqtrt)))
       )
       # get predictions back

@@ -66,13 +66,14 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         trtMod <- fast_glm(reg_form = stats::as.formula(paste0("thisY ~ ",
                                                                glm.trt)),
                            data = adjustVars,
-                           err_fam = stats::binomial())
+                           family = stats::binomial(),
+                           flavor = "slow")
 
       } else {
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, type = "response")
+        pred <- predict(trtMod, newdata = adjustVars, type = "response")
       )
       dat[[paste0("g_", max(dat$trt))]] <- pred
       dat[[paste0("g_", min(dat$trt))]] <- 1 - pred

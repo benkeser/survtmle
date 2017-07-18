@@ -4,14 +4,16 @@
 \alias{fast_glm}
 \title{Faster Yet Robust Generalized Linear Models}
 \usage{
-fast_glm(reg_form, data, err_fam, start = NULL)
+fast_glm(reg_form, data, family, flavor = "fast", start = NULL)
 }
 \arguments{
 \item{reg_form}{...}
 
 \item{data}{...}
 
-\item{err_fam}{...}
+\item{family}{...}
+
+\item{flavor}{Character: do you want to live dangerously?}
 
 \item{start}{...}
 }
