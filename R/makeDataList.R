@@ -82,7 +82,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   }
 
   # subsequent elements used for prediction
-  for(i in 1:ntrt){
+  for(i in seq_len(ntrt)) {
     dataList[[i + 1]] <- dat[sort(rep(1:nrow(dat), t0)), ]
     dataList[[i + 1]]$t <- rep(1:t0, n)
     for(j in J){
