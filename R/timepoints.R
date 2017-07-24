@@ -56,16 +56,17 @@ timepoints <- function(object, times, returnModels = FALSE) {
     stop("object must have returnModels = TRUE")
  
   callList <- as.list(object$call)[-1]
-  cglm <- any(class(object$ctimeMod) == "glm") |
+  cglm <- any(class(object$ctimeMod) %in% c("glm", "speedglm")) |
     any(class(object$ctimeMod) == "noCens")
 
-  tglm <- any(class(object$trtMod) == "glm")
+  tglm <- any(class(object$trtMod) %in% c("glm", "speedglm"))
   ftglm <- ifelse(callList$method == "hazard",
-                  any(class(object$ftimeMod[[1]]) == "glm"), FALSE)
+                  any(class(object$ftimeMod[[1]]) %in% c("glm",
+                                                         "speedglm")), FALSE)
 
   myOpts <- c("t0", "returnModels",
               ifelse(cglm, "glm.ctime", "SL.ctime"),
-              ifelse(tglm, "glm.trt","SL.trt"))
+              ifelse(tglm, "glm.trt", "SL.trt"))
   if(callList$method == "hazard") {
     myOpts <- c(myOpts, ifelse(ftglm, "glm.ftime", "SL.ftime"))
   }

@@ -75,12 +75,14 @@ estimateCensoring <- function(dataList,
   if(is.null(SL.ctime)){
     if(!("glm" %in% class(glm.ctime))) {
       if(!all(dataList[[1]]$C == 0)) {
+        # create formula and model matrix for regression
         ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
         ctimeMod <- fast_glm(reg_form = ctimeForm,
                              data = dataList[[1]][include, ],
-                             family = stats::binomial(),
-                             flavor = "slow")
-        ctimeMod <- cleanglm(ctimeMod)
+                             family = stats::binomial())
+        if (unique(class(ctimeMod) %in% c("glm", "lm"))) {
+          ctimeMod <- cleanglm(ctimeMod)
+        }
       } else {
         dataList <- lapply(dataList, function(x) {
           x$G_dC <- 1; x

@@ -2,24 +2,25 @@
 % Please edit documentation in R/fastglm.R
 \name{fast_glm}
 \alias{fast_glm}
-\title{Faster Yet Robust Generalized Linear Models}
+\title{Wrapper for Faster Generalized Linear Models}
 \usage{
-fast_glm(reg_form, data, family, flavor = "fast", start = NULL)
+fast_glm(reg_form, data, family, ...)
 }
 \arguments{
-\item{reg_form}{...}
+\item{reg_form}{Character indicating the regression formula to be computed.}
 
-\item{data}{...}
+\item{data}{Object of class \code{data.frame} containing the data.}
 
-\item{family}{...}
+\item{family}{Object from package \code{stats} indicating error distribution.}
 
-\item{flavor}{Character: do you want to live dangerously?}
-
-\item{start}{...}
+\item{...}{Additional arguments passed to \code{glm} or \code{speedglm}.}
 }
 \value{
-...
+Object of class \code{glm} or \code{speedglm}.
 }
 \description{
-words, words, words, ...
+A convenience utility to fit regression models more quickly in the main
+internal functions for estimation, which usually require logistic regression.
+Use of \code{speedglm} appears to provide roughly an order of magnitude
+improvement in speed when compared to \code{glm} in custom benchmarks.
 }

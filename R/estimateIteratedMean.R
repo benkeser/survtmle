@@ -108,8 +108,10 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       suppressWarnings({
         Qmod <- fast_glm(reg_form = Qform,
                          data = wideDataList[[1]][include, ],
-                         family = stats::binomial(),
-                         flavor = "slow")
+                         family = stats::binomial())
+        if (unique(class(Qmod) %in% c("glm", "lm"))) {
+          Qmod <- cleanglm(Qmod)
+        }
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
@@ -149,10 +151,10 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         ignoreSL <- nE <= 2
         if(ignoreSL) {
           suppressWarnings({
-            Qmod <- fast_glm(reg_form = paste0(outcomeName, " ~ trt"),
+            Qmod <- fast_glm(reg_form = paste(outcomeName, "~", "trt",
+                                              sep = " "),
                              data = wideDataList[[1]][include, ],
-                             family = stats::gaussian(),
-                             flavor = "slow")
+                             family = stats::gaussian())
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
               x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]]- x[[Nj.tm1]]) *

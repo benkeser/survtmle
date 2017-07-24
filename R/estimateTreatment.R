@@ -47,7 +47,10 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
+    # binarize the outcome
     thisY <- as.numeric(dat$trt == max(dat$trt))
+
+    # fit Super Learner
     if(!is.null(SL.trt)) {
       if(class(SL.trt) != "SuperLearner") {
         trtMod <- SuperLearner::SuperLearner(Y = thisY, X = adjustVars,
@@ -62,13 +65,11 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
       dat[[paste0("g_",min(dat$trt))]] <- 1-trtMod$SL.predict
 
     } else if(!is.null(glm.trt) & is.null(SL.trt)) {
+      # fit GLM if Super Learner not requested
       if(!("glm" %in% class(glm.trt))) {
-        trtMod <- fast_glm(reg_form = stats::as.formula(paste0("thisY ~ ",
-                                                               glm.trt)),
-                           data = adjustVars,
-                           family = stats::binomial(),
-                           flavor = "slow")
-
+        trtMod <- fast_glm(reg_form = paste(thisY, "~", glm.trt, sep = " "),
+                           data = as.data.frame(cbind(thisY, adjustVars)),
+                           family = stats::binomial())
       } else {
         trtMod <- glm.trt
       }

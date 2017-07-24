@@ -1,46 +1,40 @@
-#' Faster Yet Robust Generalized Linear Models
+#' Wrapper for Faster Generalized Linear Models
 #'
-#' words, words, words, ...
+#' A convenience utility to fit regression models more quickly in the main
+#' internal functions for estimation, which usually require logistic regression.
+#' Use of \code{speedglm} appears to provide roughly an order of magnitude
+#' improvement in speed when compared to \code{glm} in custom benchmarks.
 #'
-#' @param reg_form ...
-#' @param data ...
-#' @param family ...
-#' @param start ...
-#' @param flavor Character: do you want to live dangerously?
+#' @param reg_form Character indicating the regression formula to be computed.
+#' @param data Object of class \code{data.frame} containing the data.
+#' @param family Object from package \code{stats} indicating error distribution.
+#' @param ... Additional arguments passed to \code{glm} or \code{speedglm}.
 #'
 #' @importFrom speedglm speedglm
-#' @importFrom stats glm as.formula
+#' @importFrom stats glm as.formula gaussian binomial
 #'
-#' @return ...
+#' @return Object of class \code{glm} or \code{speedglm}.
 #'
 
-fast_glm <- function(reg_form, data, family, flavor = "fast", start = NULL) {
-  if(flavor == "fast") {
-    out <- tryCatch(
-      {
-        speedglm::speedglm(stats::as.formula(reg_form),
-                           data = data,
-                           family = family,
-                           start = start)
-      },
-      error = function(cond) {
-        message("'speedglm' encountered an error, reverting to using 'glm'")
-        message("Here's the original error message (from 'speedglm'):")
-        message(cond)
-        # Choose a return value in case of error
-        mod <- stats::glm(stats::as.formula(reg_form),
-                          data = data,
-                          family = family,
-                          start = start)
-        return(mod)
-      }
-      )
-    return(out)
-  } else {
-    out <- stats::glm(stats::as.formula(reg_form),
-                      data = data,
-                      family = family,
-                      start = start)
-  }
+fast_glm <- function(reg_form, data, family, ...) {
+  out <- tryCatch(
+    {
+      speedglm::speedglm(stats::as.formula(reg_form),
+                         data = data,
+                         family = family,
+                         model = TRUE,
+                         fitted = TRUE,
+                         ...)
+    },
+    error = function(cond) {
+      message("'speedglm' ran into an error...reverting to use of 'glm'.")
+      # Choose a return value in case of error
+      mod <- stats::glm(stats::as.formula(reg_form),
+                        data = data,
+                        family = family,
+                        ...)
+      return(mod)
+    }
+  )
   return(out)
 }
