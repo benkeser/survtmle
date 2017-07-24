@@ -67,7 +67,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
     } else if(!is.null(glm.trt) & is.null(SL.trt)) {
       # fit GLM if Super Learner not requested
       if(!("glm" %in% class(glm.trt))) {
-        trtMod <- fast_glm(reg_form = paste(thisY, "~", glm.trt, sep = " "),
+        trtMod <- fast_glm(reg_form = paste("thisY", "~", glm.trt, sep = " "),
                            data = as.data.frame(cbind(thisY, adjustVars)),
                            family = stats::binomial())
       } else {
