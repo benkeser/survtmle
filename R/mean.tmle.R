@@ -206,12 +206,12 @@ mean_tmle <- function(ftime, ftype, trt,
                                    allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt)
 
   # estimate/fluctuate iterated means
-  timeAndType <- expand.grid(t0:1, ofInterestJ)
+  timeAndType <- expand.grid(rev(seq_len(t0)), ofInterestJ)
 
   # empty list for Qmod if returnModels
   ftimeMod <- vector(mode = "list", length = length(ofInterestJ))
   names(ftimeMod) <- paste0("J", ofInterestJ)
-  for(j in seq_along(ofInterestJ)) {
+  for(j in seq_len(ofInterestJ)) {
     ftimeMod[[j]] <- vector(mode = "list", length = t0)
     names(ftimeMod[[j]]) <- paste0("t", seq_len(t0))
   }
