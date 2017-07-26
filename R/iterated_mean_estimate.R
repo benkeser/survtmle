@@ -101,7 +101,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
   Qj.t <- paste0("Q", whichJ, ".", t)
   NnotJ.tm1 <- paste0("NnotJ.", t - 1)
-  Qform <- paste(as.character(outcomeName), "~", glm.ftime, sep = " ")
+  Qform <- paste(outcomeName, "~", glm.ftime, sep = " ")
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
@@ -122,7 +122,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         }, t = t, whichJ = whichJ)
       })
     } else { # with bounds
-      X <- stats::model.matrix(as.formula(Qform),
+      X <- stats::model.matrix(stats::as.formula(Qform),
                                data = wideDataList[[1]][include, ])
       Ytilde <- (wideDataList[[1]][include, outcomeName] -
                  wideDataList[[1]][[lj.t]][include]) /
@@ -133,7 +133,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
                            control = list(reltol = 1e-7, maxit = 50000))
       beta <- Qmod$par
       wideDataList <- lapply(wideDataList, function(x, j, t) {
-        newX <- stats::model.matrix(as.formula(Qform), data = x)
+        newX <- stats::model.matrix(stats::as.formula(Qform), data = x)
         x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
           (plogis(newX %*% beta) * (x[[uj.t]] - x[[lj.t]]) + x[[lj.t]])
         x
@@ -151,13 +151,13 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         ignoreSL <- nE <= 2
         if(ignoreSL) {
           suppressWarnings({
-            Qform_trt <- paste(as.character(outcomeName), "~", "trt", sep = " ")
+            Qform_trt <- paste(outcomeName, "~", "trt", sep = " ")
             Qmod <- fast_glm(reg_form = stats::as.formula(Qform_trt),
                              data = wideDataList[[1]][include, ],
                              family = stats::gaussian())
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
-              x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]])*
+              x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]]) *
                 predict(Qmod,newdata=data.frame(trt=x$trt))
              )
              x
@@ -191,7 +191,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         )
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[Nj.tm1]]-x[[NnotJ.tm1]])*
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[Nj.tm1]] - x[[NnotJ.tm1]]) *
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
           )
           x
@@ -202,6 +202,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     }
   }
   out <- list(wideDataList = wideDataList,
-              ftimeMod = ifelse(!is.null(Qmod), Qmod, NULL))
+              ftimeMod = ifelse(returnModels == TRUE, Qmod, NULL))
   return(out)
 }

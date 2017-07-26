@@ -37,8 +37,7 @@
 #'         \code{SuperLearner} object. Otherwise, \code{NULL}
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
-#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean
-#'             SL.glm SL.step
+#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
 #' @importFrom speedglm speedglm
 #'
 
@@ -79,7 +78,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, type = "response")
+        pred <- predict(trtMod, newdata = trt_data_in, type = "response")
       )
       dat[[paste0("g_", max(dat$trt))]] <- pred
       dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
@@ -93,6 +92,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                            "< gtol]<- gtol")))
 
   out <- list(dat = dat,
-              trtMod = ifelse(returnModels == TRUE, trtMod, NULL))
+              trtMod = ifelse((returnModels == TRUE) &
+                              (length(unique(dat$trt)) > 1), trtMod, NULL))
   return(out)
 }

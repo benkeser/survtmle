@@ -104,7 +104,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       # if Gcomp, just skip fluctuation step and assign this
       wideDataList <- lapply(wideDataList, function(x, t) {
         x[[paste0("Q", whichJ, "star.", t)]] <- x[[paste0("Q", whichJ, ".", t)]]
-        return(x)
+        x
       }, t = t)
     }
   } else {
@@ -159,5 +159,5 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         }, t = t)
     }
   }
-  return(wideDataList)
+  wideDataList
 }
