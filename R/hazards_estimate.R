@@ -148,7 +148,7 @@ estimateHazards <- function(dataList, J, adjustVars,
           beta <- Qj_mod$par
           eval(parse(text = paste0("ftimeMod$J", j, " <- Qj_mod")))
           dataList <- lapply(dataList, function(x, j) {
-            newX <- stats::model.matrix(stats::as.formula(Qj.form), data = x)
+            newX <- stats::model.matrix(stats::as.formula(Qj_form), data = x)
             x[[paste0("Q",j,"PseudoHaz")]] <- plogis(newX %*% beta)
             x[[paste0("Q",j,"Haz")]] <- (pmin(x[[paste0("u",j)]], 1 - x[[paste0("hazLessThan",j)]]) -
                                            x[[paste0("l",j)]])*x[[paste0("Q",j,"PseudoHaz")]] + x[[paste0("l",j)]]

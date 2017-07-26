@@ -101,7 +101,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
   Qj.t <- paste0("Q", whichJ, ".", t)
   NnotJ.tm1 <- paste0("NnotJ.", t - 1)
-  Qform <- paste(outcomeName, "~", glm.ftime, sep = " ")
+  Qform <- paste(as.character(outcomeName), "~", glm.ftime, sep = " ")
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
@@ -202,6 +202,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     }
   }
   out <- list(wideDataList = wideDataList,
-              ftimeMod = ifelse(returnModels == TRUE, Qmod, NULL))
+              ftimeMod = ifelse(!is.null(Qmod), Qmod, NULL))
   return(out)
 }
