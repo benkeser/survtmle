@@ -24,15 +24,15 @@
 #'        \code{t == t0} is different than if \code{t != t0}.
 #' @param SL.ctime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression, either cause-specific hazards or conditional mean.
-#'        See \code{?SuperLearner} for more information on how to specify valid
+#'        outcome regression (either cause-specific hazards or conditional mean).
+#'        See \code{?SuperLearner} for more information on how to specify valid 
 #'        \code{SuperLearner} libraries. It is expected that the wrappers used
 #'        in the library will play nicely with the input variables, which will
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ctime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression, either cause-specific hazards or
-#'        conditional mean. Ignored if \code{SL.ctime != NULL}. Use \code{"trt"}
+#'        for the outcome regression (either cause-specific hazards or
+#'        conditional mean). Ignored if \code{SL.ctime != NULL}. Use \code{"trt"}
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
@@ -75,7 +75,6 @@ estimateCensoring <- function(dataList,
   if(is.null(SL.ctime)){
     if(!("glm" %in% class(glm.ctime))) {
       if(!all(dataList[[1]]$C == 0)) {
-        # create formula and model matrix for regression
         ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
         ctimeMod <- fast_glm(reg_form = ctimeForm,
                              data = dataList[[1]][include, ],
@@ -97,14 +96,14 @@ estimateCensoring <- function(dataList,
     # get predictions from ctimeMod
     if(all(class(ctimeMod) != "noCens")) {
       dataList <- lapply(dataList, function(x) {
-        g_dC <- rep(1, length(x[, 1]))
+        g_dC <- rep(1, length(x[,1]))
         if(t0 != 1) {
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
 
           suppressWarnings(
-            g_dC <- 1 - predict(ctimeMod, newdata = x, type = "response")
+            g_dC <- 1-predict(ctimeMod, newdata = x, type = "response")
           )
 
           # put time back to normal
@@ -123,12 +122,11 @@ estimateCensoring <- function(dataList,
       })
     }
   } else {
-    if(class(SL.ctime) != "SuperLearner") {
+    if(class(SL.ctime) != "SuperLearner"){
       if(!all(dataList[[1]]$C == 0)){
         ctimeMod <- SuperLearner(Y = dataList[[1]]$C[include],
-                                 X = dataList[[1]][include,
-                                                   c("t", "trt",
-                                                     names(adjustVars))],
+                                 X = dataList[[1]][include,c("t", "trt",
+                                                             names(adjustVars))],
                                  id = dataList[[1]]$id[include],
                                  family = "binomial",
                                  SL.library = SL.ctime,
@@ -152,7 +150,6 @@ estimateCensoring <- function(dataList,
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
           g_dC <-
-
             suppressWarnings(
             1 - predict(ctimeMod, newdata = x[, c("t", "trt",
                                                   names(adjustVars))],

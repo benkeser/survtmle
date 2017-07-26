@@ -65,10 +65,10 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
   if(t != 1) {
     for(j in allJ) {
       # exclude previously failed subjects
-      include[wideDataList[[1]][[paste0("N", j, ".", t - 1)]] == 1] <- FALSE
+      include[wideDataList[[1]][[paste0("N",j,".",t-1)]] == 1] <- FALSE
     }
     # exclude previously censored subjects
-    include[wideDataList[[1]][[paste0("C.", t - 1)]] == 1] <- FALSE
+    include[wideDataList[[1]][[paste0("C.",t-1)]]==1] <- FALSE
   }
   if(is.null(bounds)) {
     wideDataList <- lapply(wideDataList, function(x, t) {
@@ -110,20 +110,19 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
   } else {
     if(!Gcomp) {
       cleverCovariates <- paste0("H", uniqtrt, ".", t)
-      lj.t <- paste0("l", whichJ, ".", t)
-      uj.t <- paste0("u", whichJ, ".", t)
-      Qtildej.t <- paste0("Qtilde", whichJ, ".", t)
-      Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
-      Qj.t <- paste0("Q", whichJ, ".", t)
-      NnotJ.tm1 <- paste0("NnotJ.", t - 1)
+      lj.t <- paste0("l",whichJ,".",t)
+      uj.t <- paste0("u",whichJ,".",t)
+      Qtildej.t <- paste0("Qtilde",whichJ,".",t)
+      Nj.tm1 <- paste0("N",whichJ,".",t-1)
+      Qj.t <- paste0("Q",whichJ,".",t)
+      NnotJ.tm1 <- paste0("NnotJ.",t-1)
       # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x) {
-        x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]]) /
-          (x[[uj.t]] - x[[lj.t]])
+        x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]])/(x[[uj.t]]-x[[lj.t]])
         x[["thisScale"]] <- x[[uj.t]] - x[[lj.t]]
-        x[[Qtildej.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]]-x[[Nj.tm1]]) *
-          (x[[Qj.t]] - x[[lj.t]]) / x[["thisScale"]]
-        x[[Qtildej.t]][x[[Qtildej.t]] == 1] <- 1 - .Machine$double.neg.eps
+        x[[Qtildej.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
+          (x[[Qj.t]] - x[[lj.t]])/x[["thisScale"]]
+        x[[Qtildej.t]][x[[Qtildej.t]]==1] <- 1-.Machine$double.neg.eps
 
         x$thisOffset <- 0
         x$thisOffset[(x[[NnotJ.tm1]] + x[[Nj.tm1]]) == 0] <-
@@ -147,16 +146,16 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
 
         wideDataList <- lapply(wideDataList, function(x) {
           x[[paste0("Q",whichJ,"star.",t)]] <- x[[Nj.tm1]] +
-            (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) * (plogis(x$thisOffset +
-              as.matrix(x[, cleverCovariates]) %*% as.matrix(beta)) *
-                                                  x$thisScale + x[[lj.t]])
+            (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]])* (plogis(x$thisOffset +
+              as.matrix(x[, cleverCovariates]) %*% as.matrix(beta))*x$thisScale
+            + x[[lj.t]])
           x
         })
       }
     } else {
       wideDataList <- lapply(wideDataList, function(x, t) {
           x[[paste0("Q", whichJ, "star.", t)]] <- x[[Qj.t]]
-          return(x)
+          x
         }, t = t)
     }
   }

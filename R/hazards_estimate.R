@@ -29,15 +29,15 @@
 #'        variables to adjust for in the regression.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression, either cause-specific hazards or conditional mean.
+#'        outcome regression (either cause-specific hazards or conditional mean).
 #'        See \code{?SuperLearner} for more information on how to specify valid
 #'        \code{SuperLearner} libraries. It is expected that the wrappers used
 #'        in the library will play nicely with the input variables, which will
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression, either cause-specific hazards or
-#'        conditional mean. Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
+#'        for the outcome regression (either cause-specific hazards or
+#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
@@ -74,10 +74,10 @@ estimateHazards <- function(dataList, J, adjustVars,
         # formula
         Qj_form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
 
-        # sum all events less than current j to see who to include in regression
+        # add up all events less than current j to see who to include in regression
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
         }
 
         # fit GLM
@@ -100,16 +100,13 @@ estimateHazards <- function(dataList, J, adjustVars,
                                                         type = "response")
           )
           if(j != min(J)) {
-            x[[paste0("hazLessThan", j)]] <- rowSums(cbind(rep(0, nrow(x)),
-                                                           x[, paste0('Q',
-                                                                      J[J < j],
-                                                                      "Haz")]))
-            x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]] *
-              (1 - x[[paste0("hazLessThan", j)]])
+            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
+                                                          x[, paste0('Q', J[J < j], 'Haz')]))
+            x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] * (1-x[[paste0("hazLessThan",j)]])
 
           } else {
-            x[[paste0("hazLessThan", j)]] <- 0
-            x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]]
+            x[[paste0("hazLessThan",j)]] <- 0
+            x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]]
           }
           x
         }, j = j)
@@ -122,25 +119,21 @@ estimateHazards <- function(dataList, J, adjustVars,
 
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
         }
 
         dataList <- lapply(dataList, function(x, j) {
           if(j != min(J)) {
-            x[[paste0("hazLessThan", j)]] <- rowSums(cbind(rep(0, nrow(x)),
-                                                           x[, paste0("Q",
-                                                                      J[J < j],
-                                                                      "Haz")]))
+            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
+                                                          x[, paste0('Q', J[J < j], 'Haz')]))
           } else {
-            x[[paste0("hazLessThan", j)]] <- 0
+            x[[paste0("hazLessThan",j)]] <- 0
           }
           x
         }, j = j)
-        Ytilde <- (dataList[[1]][[paste0("N", j)]] -
-                   dataList[[1]][[paste0("l", j)]]) /
-          (pmin(dataList[[1]][[paste0("u", j)]], 1 -
-                dataList[[1]][[paste0("hazLessThan", j)]]) -
-           dataList[[1]][[paste0("l", j)]])
+        Ytilde <- (dataList[[1]][[paste0("N",j)]] - dataList[[1]][[paste0("l",j)]])/
+          (pmin(dataList[[1]][[paste0("u",j)]],1-dataList[[1]][[paste0("hazLessThan",j)]]) -
+            dataList[[1]][[paste0("l",j)]])
 
         if(class("glm.ftime") != "list") {
           Qj_mod <- stats::optim(par = rep(0, ncol(X)), fn = LogLikelihood,
@@ -155,15 +148,12 @@ estimateHazards <- function(dataList, J, adjustVars,
           beta <- Qj_mod$par
           eval(parse(text = paste0("ftimeMod$J", j, " <- Qj_mod")))
           dataList <- lapply(dataList, function(x, j) {
-            newX <- stats::model.matrix(stats::as.formula(Qj_form), data = x)
-            x[[paste0("Q", j, "PseudoHaz")]] <- plogis(newX %*% beta)
-            x[[paste0("Q", j, "Haz")]] <- (pmin(x[[paste0("u", j)]], 1 -
-                                                x[[paste0("hazLessThan", j)]]) -
-                                     x[[paste0("l", j)]]) *
-                             x[[paste0("Q", j, "PseudoHaz")]] +
-                             x[[paste0("l", j)]]
+            newX <- stats::model.matrix(stats::as.formula(Qj.form), data = x)
+            x[[paste0("Q",j,"PseudoHaz")]] <- plogis(newX %*% beta)
+            x[[paste0("Q",j,"Haz")]] <- (pmin(x[[paste0("u",j)]], 1 - x[[paste0("hazLessThan",j)]]) -
+                                           x[[paste0("l",j)]])*x[[paste0("Q",j,"PseudoHaz")]] + x[[paste0("l",j)]]
             x
-          }, j = j)
+          },j = j)
         }
       }
     }
@@ -177,11 +167,9 @@ estimateHazards <- function(dataList, J, adjustVars,
       }
 
       if(class(SL.ftime[[1]]) != "SuperLearner") {
-        Qj_mod <- SuperLearner(Y = dataList[[1]][[paste0("N",
-                                                         j)]][NlessthanJ == 0],
+        Qj_mod <- SuperLearner(Y = dataList[[1]][[paste0("N",j)]][NlessthanJ == 0],
                                X = dataList[[1]][NlessthanJ == 0,
-                                                 c("t", "trt",
-                                                   names(adjustVars))],
+                                                            c('t', 'trt', names(adjustVars))],
                                         id = dataList[[1]]$id[NlessthanJ == 0],
                                         family = stats::binomial(),
                                         SL.library = SL.ftime,
@@ -194,19 +182,17 @@ estimateHazards <- function(dataList, J, adjustVars,
       # get predictions back
       dataList <- lapply(dataList, function(x, j){
         suppressWarnings(
-        x[[paste0("Q", j, "PseudoHaz")]] <- predict(Qj_mod, onlySL = TRUE,
-          newdata = x[, c("t", "trt", names(adjustVars))])[[1]]
+        x[[paste0("Q",j,"PseudoHaz")]] <- predict(Qj_mod, onlySL = TRUE,
+          newdata = x[,c('t', 'trt', names(adjustVars))])[[1]]
         )
         if(j != min(J)) {
-          x[[paste0("hazLessThan", j)]] <- rowSums(cbind(rep(0, nrow(x)),
-                                                         x[, paste0("Q",
-                                                                    J[J < j],
-                                                                    "Haz")]))
-          x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]] *
-            (1 - x[[paste0("hazLessThan", j)]])
+          x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
+                                                        x[, paste0('Q', J[J < j], 'Haz')]))
+          x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] *
+            (1 - x[[paste0("hazLessThan",j)]])
         } else {
-          x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]]
-          x[[paste0("hazLessThan", j)]] <- 0
+          x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]]
+          x[[paste0("hazLessThan",j)]] <- 0
         }
         x
       }, j = j)
