@@ -25,42 +25,38 @@
 
 makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   n <- nrow(dat)
-  dataList <- vector(mode = "list", length = ntrt + 1)
+  dataList <- vector(mode = "list", length = ntrt+1)
   rankftime <- match(dat$ftime, sort(unique(dat$ftime)))
 
   # first element used for estimation
   dataList[[1]] <- dat[rep(1:nrow(dat), rankftime), ]
   for(j in J) {
-    dataList[[1]][[paste0("N", j)]] <- 0
-    dataList[[1]][[paste0("N", j)]][cumsum(rankftime)] <-
-      as.numeric(dat$ftype == j)
+    dataList[[1]][[paste0("N",j)]] <- 0
+    dataList[[1]][[paste0("N",j)]][cumsum(rankftime)] <- as.numeric(dat$ftype==j)
   }
   dataList[[1]]$C <- 0
   dataList[[1]]$C[cumsum(rankftime)] <- as.numeric(dat$ftype == 0)
-
+ 
   n.row.ii <- nrow(dataList[[1]])
   uniqftime <- unique(dat$ftime)
   orduniqftime <- uniqftime[order(uniqftime)]
   row.names(dataList[[1]])[row.names(dataList[[1]]) %in%
-                           paste(row.names(dat))] <- paste0(row.names(dat),
-                                                            ".0")
-  dataList[[1]]$t <-
-    orduniqftime[as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]), ".",
-                                                  fixed = TRUE))[seq(2, n.row.ii
-                                                                 * 2, 2)])) + 1]
+                           paste(row.names(dat))] <- paste0(row.names(dat),".0")
+  dataList[[1]]$t <- orduniqftime[as.numeric(paste(unlist(strsplit(row.names(dataList[[1]]), ".",
+                                                                   fixed = TRUE))[seq(2, n.row.ii * 2, 2)])) + 1]
 
   if(!is.null(bounds)){
     boundFormat <- data.frame(t = bounds$t)
     for(j in J){
       if(paste("l", j, sep = "") %in% colnames(bounds)) {
-        boundFormat[[paste0("l", j)]] <- bounds[, paste0("l", j)]
+        boundFormat[[paste0("l",j)]] <- bounds[,paste0("l",j)]
       } else {
-        boundFormat[[paste0("l", j)]] <- 0
+        boundFormat[[paste0("l",j)]] <- 0
       }
       if(paste("u", j, sep = "") %in% names(bounds)) {
-        boundFormat[[paste0("u", j)]] <- bounds[, paste0("u", j)]
+        boundFormat[[paste0("u",j)]] <- bounds[,paste0("u",j)]
       } else {
-        boundFormat[[paste0("u", j)]] <- 1
+        boundFormat[[paste0("u",j)]] <- 1
       }
     }
     suppressMessages(
@@ -76,8 +72,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     }
   } else {
     for(j in J){
-      dataList[[1]][[paste0("l", j)]] <- 0
-      dataList[[1]][[paste0("u", j)]] <- 1
+      dataList[[1]][[paste0("l",j)]] <- 0
+      dataList[[1]][[paste0("u",j)]] <- 1
     }
   }
 
@@ -87,10 +83,9 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     dataList[[i + 1]]$t <- rep(1:t0, n)
     for(j in J){
       typejEvents <- dat$id[which(dat$ftype == j)]
-      dataList[[i + 1]][[paste0("N", j)]] <- 0
-      dataList[[i + 1]][[paste0("N", j)]][dataList[[i + 1]]$id %in%
-                                          typejEvents & dataList[[i + 1]]$t >=
-                                          dataList[[i + 1]]$ftime] <- 1
+      dataList[[i+1]][[paste0("N",j)]] <- 0
+      dataList[[i+1]][[paste0("N",j)]][dataList[[i+1]]$id %in% typejEvents & 
+                                        dataList[[i+1]]$t >= dataList[[i+1]]$ftime] <- 1
     }
     censEvents <- dat$id[which(dat$ftype == 0)]
     dataList[[i + 1]]$C <- 0
@@ -113,9 +108,9 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
         dataList[[i + 1]][tmp, paste0("u", j)] <- 1
       }
     } else {
-      for(j in J) {
-        dataList[[i + 1]][[paste0("l", j)]] <- .Machine$double.eps
-        dataList[[i + 1]][[paste0("u", j)]] <- 1 - .Machine$double.eps
+      for(j in J){
+        dataList[[i+1]][[paste0("l",j)]] <- .Machine$double.eps
+        dataList[[i+1]][[paste0("u",j)]] <- 1-.Machine$double.eps
       }
     }
   }
