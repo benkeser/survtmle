@@ -39,6 +39,7 @@
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean
 #'             SL.glm SL.step
+#' @importFrom speedglm speedglm
 #'
 
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
@@ -67,14 +68,18 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
     } else if(!is.null(glm.trt) & is.null(SL.trt)) {
       # fit GLM if Super Learner not requested
       if(!("glm" %in% class(glm.trt))) {
-        trtMod <- fast_glm(reg_form = paste("thisY", "~", glm.trt, sep = " "),
-                           data = as.data.frame(cbind(thisY, adjustVars)),
+        # set up model formula and data for the treatment regression
+        trt_form <- paste("thisY", "~", glm.trt, sep = " ")
+        trt_data_in <- as.data.frame(cbind(adjustVars, thisY))
+        # fit the treatment model
+        trtMod <- fast_glm(reg_form = stats::as.formula(trt_form),
+                           data = trt_data_in,
                            family = stats::binomial())
       } else {
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, newdata = adjustVars, type = "response")
+        pred <- predict(trtMod, type = "response")
       )
       dat[[paste0("g_", max(dat$trt))]] <- pred
       dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
@@ -88,9 +93,8 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                            "< gtol]<- gtol")))
 
   out <- list(dat = dat,
-              trtMod = if(returnModels & length(unique(dat$trt)) > 1)
-                trtMod
-              else
-                NULL)
-  out
+              trtMod = ifelse(returnModels &
+                              (length(unique(dat$trt)) > 1) == TRUE,
+                            trtMod, NULL))
+  return(out)
 }

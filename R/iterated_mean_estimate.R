@@ -55,8 +55,9 @@
 #'        regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm binomial gaussian
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
+#' @importFrom stats as.formula predict model.matrix optim glm binomial gaussian
+#' @importFrom speedglm speedglm
 #'
 #' @return The function then returns a list that is exactly the same as the
 #'         input \code{wideDataList}, but with a column named \code{Qj.t} added
@@ -101,12 +102,12 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
   Qj.t <- paste0("Q", whichJ, ".", t)
   NnotJ.tm1 <- paste0("NnotJ.", t - 1)
+  Qform <- paste(as.character(outcomeName), "~", glm.ftime, sep = " ")
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
-      Qform <- paste(outcomeName, "~", glm.ftime)
       suppressWarnings({
-        Qmod <- fast_glm(reg_form = Qform,
+        Qmod <- fast_glm(reg_form = stats::as.formula(Qform),
                          data = wideDataList[[1]][include, ],
                          family = stats::binomial())
         if (unique(class(Qmod) %in% c("glm", "lm"))) {
@@ -121,7 +122,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         }, t = t, whichJ = whichJ)
       })
     } else { # with bounds
-      Qform <- paste(outcomeName, "~", glm.ftime)
       X <- stats::model.matrix(as.formula(Qform),
                                data = wideDataList[[1]][include, ])
       Ytilde <- (wideDataList[[1]][include, outcomeName] -
@@ -136,7 +136,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         newX <- stats::model.matrix(as.formula(Qform), data = x)
         x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
           (plogis(newX %*% beta) * (x[[uj.t]] - x[[lj.t]]) + x[[lj.t]])
-        x
+        return(x)
       }, j = whichJ, t = t)
     }
   } else if(is.null(glm.ftime)) { # Super Learner
@@ -151,8 +151,8 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         ignoreSL <- nE <= 2
         if(ignoreSL) {
           suppressWarnings({
-            Qmod <- fast_glm(reg_form = paste(outcomeName, "~", "trt",
-                                              sep = " "),
+            Qform_trt <- paste(as.character(outcomeName), "~", "trt", sep = " ")
+            Qmod <- fast_glm(reg_form = stats::as.formula(Qform_trt),
                              data = wideDataList[[1]][include, ],
                              family = stats::gaussian())
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
@@ -184,7 +184,7 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       } else {
         suppressWarnings(
           Qmod <- SuperLearner::SuperLearner(Y = wideDataList[[1]][include, outcomeName],
-                                             X=wideDataList[[1]][include, c("trt", names(adjustVars))],
+                                             X = wideDataList[[1]][include, c("trt", names(adjustVars))],
                                              SL.library = SL.ftime,
                                              cvControl = cvControl,
                                              family = "binomial",
@@ -204,9 +204,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     }
   }
   out <- list(wideDataList = wideDataList,
-              ftimeMod = if(returnModels)
-                Qmod
-              else
-                NULL)
-  out
+              ftimeMod = ifelse(returnModels == TRUE, Qmod, NULL))
+  return(out)
 }

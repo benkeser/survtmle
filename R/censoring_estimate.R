@@ -76,7 +76,7 @@ estimateCensoring <- function(dataList,
     if(!("glm" %in% class(glm.ctime))) {
       if(!all(dataList[[1]]$C == 0)) {
         # create formula and model matrix for regression
-        ctimeForm <- sprintf("%s ~ %s", "C", glm.ctime)
+        ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
         ctimeMod <- fast_glm(reg_form = ctimeForm,
                              data = dataList[[1]][include, ],
                              family = stats::binomial())

@@ -52,6 +52,7 @@
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
+#' @importFrom speedglm speedglm
 #' @importFrom SuperLearner SuperLearner
 #'
 #' @return The function returns a list that is exactly the same as the input
@@ -81,22 +82,22 @@ estimateHazards <- function(dataList, J, adjustVars,
 
         # fit GLM
         if(all(class(glm.ftime[[1]]) != "glm")) {
-          Qj_mod <- fast_glm(reg_form = Qj_form,
+          Qj_mod <- fast_glm(reg_form = stats::as.formula(Qj_form),
                              data = dataList[[1]][NlessthanJ == 0, ],
                              family = stats::binomial())
           if (unique(class(Qj_mod) %in% c("glm", "lm"))) {
             Qj_mod <- cleanglm(Qj_mod)
           }
         } else {
-          Qj_mod <- glm.ftime[[paste0("J",j)]]
+          Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        ftimeMod[[paste0("J",j)]] <- if(returnModels){ Qj_mod } else { NULL }
+        ftimeMod[[paste0("J", j)]] <- ifelse(returnModels == TRUE, Qj_mod, NULL)
 
         # get predictions back
         dataList <- lapply(dataList, function(x, j) {
           suppressWarnings(
-            x[[paste0("Q",j,"PseudoHaz")]] <- predict(Qj_mod, type = "response",
-                                                      newdata = x)
+            x[[paste0("Q", j, "PseudoHaz")]] <- predict(Qj_mod, newdata = x,
+                                                        type = "response")
           )
           if(j != min(J)) {
             x[[paste0("hazLessThan", j)]] <- rowSums(cbind(rep(0, nrow(x)),
@@ -212,8 +213,5 @@ estimateHazards <- function(dataList, J, adjustVars,
     }
   }
   out <- list(dataList = dataList,
-              ftimeMod = if(returnModels)
-                ftimeMod
-              else
-                NULL)
+              ftimeMod = ifelse(returnModels == TRUE, ftimeMod, NULL))
 }

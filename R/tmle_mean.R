@@ -211,7 +211,7 @@ mean_tmle <- function(ftime, ftype, trt,
   # empty list for Qmod if returnModels
   ftimeMod <- vector(mode = "list", length = length(ofInterestJ))
   names(ftimeMod) <- paste0("J", ofInterestJ)
-  for(j in seq_len(ofInterestJ)) {
+  for(j in seq_along(ofInterestJ)) {
     ftimeMod[[j]] <- vector(mode = "list", length = t0)
     names(ftimeMod[[j]]) <- paste0("t", seq_len(t0))
   }
@@ -259,7 +259,7 @@ mean_tmle <- function(ftime, ftype, trt,
   # calculate influence function
   for(j in ofInterestJ) {
     for(z in seq_along(uniqtrt)) {
-      for(t in t0:1) {
+      for(t in rev(seq_len(t0))) {
         outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
                               paste("Q", j, "star.", t + 1, sep = ""))
         eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
@@ -285,7 +285,7 @@ mean_tmle <- function(ftime, ftype, trt,
   infCurves <- wideDataList[[1]][, grep("IC", names(wideDataList[[1]])),
                                  drop = FALSE]
   meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
+  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
   row.names(var) <- colnames(var) <- rowNames
 
   out <- list(est = est, var = var, meanIC = meanIC, ic = infCurves,
