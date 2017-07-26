@@ -92,7 +92,12 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                            "< gtol]<- gtol")))
 
   out <- list(dat = dat,
-              trtMod = ifelse((returnModels == TRUE) &
-                              (length(unique(dat$trt)) > 1), trtMod, NULL))
+              trtMod = if((returnModels == TRUE) &
+                          (length(unique(dat$trt)) > 1)) {
+                          trtMod
+                       } else {
+                          NULL
+                       }
+             )
   return(out)
 }

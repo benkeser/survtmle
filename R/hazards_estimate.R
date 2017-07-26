@@ -199,5 +199,10 @@ estimateHazards <- function(dataList, J, adjustVars,
     }
   }
   out <- list(dataList = dataList,
-              ftimeMod = ifelse(returnModels == TRUE, ftimeMod, NULL))
+              ftimeMod = if(returnModels) {
+                            ftimeMod
+                         } else {
+                            NULL
+                         }
+             )
 }
