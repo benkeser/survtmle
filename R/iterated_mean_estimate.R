@@ -202,6 +202,11 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
     }
   }
   out <- list(wideDataList = wideDataList,
-              ftimeMod = ifelse(returnModels == TRUE, Qmod, NULL))
+              ftimeMod = if(returnModels == TRUE) {
+                            Qmod
+                         } else {
+                            NULL
+                         }
+             )
   return(out)
 }

@@ -73,7 +73,7 @@ estimateCensoring <- function(dataList,
 
   # if no SL library is specified, the code defaults to the specific GLM form
   if(is.null(SL.ctime)){
-    if(!("glm" %in% class(glm.ctime))) {
+    if(!("glm" %in% class(glm.ctime)) & !("speedglm" %in% class(glm.ctime))) {
       if(!all(dataList[[1]]$C == 0)) {
         ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
         ctimeMod <- fast_glm(reg_form = ctimeForm,
@@ -96,14 +96,14 @@ estimateCensoring <- function(dataList,
     # get predictions from ctimeMod
     if(all(class(ctimeMod) != "noCens")) {
       dataList <- lapply(dataList, function(x) {
-        g_dC <- rep(1, length(x[,1]))
+        g_dC <- rep(1, length(x[, 1]))
         if(t0 != 1) {
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
 
           suppressWarnings(
-            g_dC <- 1-predict(ctimeMod, newdata = x, type = "response")
+            g_dC <- 1 - predict(ctimeMod, newdata = x, type = "response")
           )
 
           # put time back to normal
@@ -179,9 +179,11 @@ estimateCensoring <- function(dataList,
   })
 
   out <- list(dataList = dataList,
-              ctimeMod = if(returnModels)
-                  ctimeMod
-                else
-                  NULL)
+              ctimeMod = if(returnModels) {
+                            ctimeMod
+                         } else {
+                            NULL
+                        }
+             )
   return(out)
 }

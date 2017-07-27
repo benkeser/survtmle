@@ -77,11 +77,12 @@ estimateHazards <- function(dataList, J, adjustVars,
         # add up all events less than current j to see who to include in regression
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
         }
 
         # fit GLM
-        if(all(class(glm.ftime[[1]]) != "glm")) {
+        if (!("glm" %in% class(glm.ftime[[1]])) &
+            !("speedglm" %in% class(glm.ftime[[1]]))) {
           Qj_mod <- fast_glm(reg_form = stats::as.formula(Qj_form),
                              data = dataList[[1]][NlessthanJ == 0, ],
                              family = stats::binomial())
@@ -91,7 +92,11 @@ estimateHazards <- function(dataList, J, adjustVars,
         } else {
           Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        ftimeMod[[paste0("J", j)]] <- ifelse(returnModels == TRUE, Qj_mod, NULL)
+        ftimeMod[[paste0("J", j)]] <- if (returnModels) {
+                                         Qj_mod
+                                      } else {
+                                         NULL
+                                      }
 
         # get predictions back
         dataList <- lapply(dataList, function(x, j) {
@@ -119,7 +124,7 @@ estimateHazards <- function(dataList, J, adjustVars,
 
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
         }
 
         dataList <- lapply(dataList, function(x, j) {
@@ -127,7 +132,7 @@ estimateHazards <- function(dataList, J, adjustVars,
             x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
                                                           x[, paste0('Q', J[J < j], 'Haz')]))
           } else {
-            x[[paste0("hazLessThan",j)]] <- 0
+            x[[paste0("hazLessThan", j)]] <- 0
           }
           x
         }, j = j)

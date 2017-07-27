@@ -1,7 +1,7 @@
 Package: survtmle
 Title: Compute Targeted Minimum Loss-Based Estimates in Right-Censored Survival
     Settings
-Version: 1.0.1.1
+Version: 1.0.1.2
 Authors@R: c(person("David", "Benkeser", role = c("aut", "cre", "cph"),
                     email = "benkeser@emory.edu"),
              person("Nima", "Hejazi", role = c("aut"),
