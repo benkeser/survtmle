@@ -91,7 +91,8 @@ estimateHazards <- function(dataList, J, adjustVars,
         } else {
           Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        ftimeMod[[paste0("J", j)]] <- ifelse(returnModels == TRUE, Qj_mod, NULL)
+        ftimeMod[[paste0("J", j)]] <- NULL
+        if(returnModels) ftimeMod[[paste0("J", j)]] <- Qj_mod
 
         # get predictions back
         dataList <- lapply(dataList, function(x, j) {
@@ -198,6 +199,8 @@ estimateHazards <- function(dataList, J, adjustVars,
       }, j = j)
     }
   }
-  out <- list(dataList = dataList,
-              ftimeMod = ifelse(returnModels == TRUE, ftimeMod, NULL))
+  out <- list()
+  out$dataList <- dataList
+  out$ftimeMod <- ftimeMod
+  return(out)
 }

@@ -228,7 +228,7 @@ checkInputs <- function(ftime,
 	   there are observed endpoints at every time 1:t0.")
     }
   }
-  if(!is.null(glm.ctime) & !any(class(glm.ctime) == "glm")) {
+  if(!is.null(glm.ctime) & !any(class(glm.ctime) %in% c("speedglm","glm"))) {
     if(grepl("factor(t)", glm.ctime)) {
       stop("Time can only be modeled as a factor in hazard implementation if
 	   there are observed endpoints at every time 1:t0.")
