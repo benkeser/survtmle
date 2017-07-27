@@ -36,9 +36,8 @@
 #' @return trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or
 #'         \code{SuperLearner} object. Otherwise, \code{NULL}
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm binomial
+#' @importFrom stats as.formula predict model.matrix optim glm
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
-#' @importFrom speedglm speedglm
 #'
 
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
@@ -47,12 +46,9 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
-    # binarize the outcome
-    thisY <- as.numeric(dat$trt == max(dat$trt))
-
-    # fit Super Learner
     if(!is.null(SL.trt)) {
       if(class(SL.trt) != "SuperLearner") {
+        thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- SuperLearner::SuperLearner(Y = thisY, X = adjustVars,
                                              newX = adjustVars,
                                              SL.library = SL.trt,
@@ -79,10 +75,10 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, newdata = trt_data_in, type = "response")
+        pred <- predict(trtMod, type = "response")
       )
-      dat[[paste0("g_", max(dat$trt))]] <- pred
-      dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
+      dat[[paste0("g_",max(dat$trt))]] <- pred
+      dat[[paste0("g_",min(dat$trt))]] <- 1-pred
     }
   }
 
@@ -91,14 +87,9 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                            "< gtol]<- gtol")))
   eval(parse(text = paste0("dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
                            "< gtol]<- gtol")))
-
-  out <- list(dat = dat,
-              trtMod = if((returnModels == TRUE) &
-                          (length(unique(dat$trt)) > 1)) {
-                          trtMod
-                       } else {
-                          NULL
-                       }
-             )
+  out <- list()
+  out$dat <- dat
+  out$trtMod <- NULL
+  if(returnModels) out$trtMod <- trtMod
   return(out)
 }

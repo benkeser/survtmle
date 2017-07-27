@@ -74,7 +74,7 @@ estimateHazards <- function(dataList, J, adjustVars,
         # formula
         Qj_form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
 
-        # add up all events less than current j to see who to include in regression
+        # sum all events less than current j to see who to include in regression
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
           NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
@@ -92,11 +92,8 @@ estimateHazards <- function(dataList, J, adjustVars,
         } else {
           Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        ftimeMod[[paste0("J", j)]] <- if (returnModels) {
-                                         Qj_mod
-                                      } else {
-                                         NULL
-                                      }
+        ftimeMod[[paste0("J", j)]] <- NULL
+        if(returnModels) ftimeMod[[paste0("J", j)]] <- Qj_mod
 
         # get predictions back
         dataList <- lapply(dataList, function(x, j) {
@@ -203,11 +200,8 @@ estimateHazards <- function(dataList, J, adjustVars,
       }, j = j)
     }
   }
-  out <- list(dataList = dataList,
-              ftimeMod = if(returnModels) {
-                            ftimeMod
-                         } else {
-                            NULL
-                         }
-             )
+  out <- list()
+  out$dataList <- dataList
+  out$ftimeMod <- ftimeMod
+  return(out)
 }

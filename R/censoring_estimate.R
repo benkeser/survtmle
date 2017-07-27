@@ -73,7 +73,7 @@ estimateCensoring <- function(dataList,
 
   # if no SL library is specified, the code defaults to the specific GLM form
   if(is.null(SL.ctime)){
-    if(!("glm" %in% class(glm.ctime)) & !("speedglm" %in% class(glm.ctime))) {
+    if(!(any(c("glm", "speedglm") %in% class(glm.ctime)))) {
       if(!all(dataList[[1]]$C == 0)) {
         ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
         ctimeMod <- fast_glm(reg_form = ctimeForm,
