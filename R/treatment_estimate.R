@@ -43,12 +43,16 @@
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                               returnModels = FALSE, verbose = FALSE,
                               gtol = 1e-3, ...) {
+
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
+    # binarize the outcome
+    thisY <- as.numeric(dat$trt == max(dat$trt))
+
+    # fit Super Learner
     if(!is.null(SL.trt)) {
       if(class(SL.trt) != "SuperLearner") {
-        thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- SuperLearner::SuperLearner(Y = thisY, X = adjustVars,
                                              newX = adjustVars,
                                              SL.library = SL.trt,
@@ -75,10 +79,10 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, type = "response")
+        pred <- predict(trtMod, newdata = trt_data_in, type = "response")
       )
-      dat[[paste0("g_",max(dat$trt))]] <- pred
-      dat[[paste0("g_",min(dat$trt))]] <- 1-pred
+      dat[[paste0("g_", max(dat$trt))]] <- pred
+      dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
     }
   }
 
