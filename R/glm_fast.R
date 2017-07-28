@@ -12,6 +12,7 @@
 #'
 #' @importFrom speedglm speedglm
 #' @importFrom stats glm gaussian binomial
+#' @importFrom stringr str_split
 #'
 #' @return Object of class \code{glm} or \code{speedglm}.
 #'
@@ -20,8 +21,8 @@ fast_glm <- function(reg_form, data, family, ...) {
   # a quick type check for safety
   stopifnot(class(reg_form) == "formula")
 
-  # catch the function input in case desired later
-  #call <- match.call(expand.dots = TRUE)
+  # catch the calling function
+  calling_fun <- stringr::str_split(deparse(sys.call(-1)), "\\(")[[1]][1]
 
   # fit speedglm or glm as appropriate
   out <- tryCatch(
@@ -33,7 +34,9 @@ fast_glm <- function(reg_form, data, family, ...) {
                          ...)
     },
     error = function(cond) {
-      message("'speedglm' ran into an error...reverting to use of 'glm'.")
+      message(paste("'speedglm' ran into an error in",
+                    as.character(calling_fun),
+                    "\n...reverting to use of 'glm'."))
       # Choose a return value in case of error
       mod <- stats::glm(formula = reg_form,
                         data = data,
