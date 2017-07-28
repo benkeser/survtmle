@@ -22,7 +22,8 @@ fast_glm <- function(reg_form, data, family, ...) {
   stopifnot(class(reg_form) == "formula")
 
   # catch the calling function
-  calling_fun <- stringr::str_split(deparse(sys.call(-1)), "\\(")[[1]][1]
+  calling_fun <- as.character(stringr::str_split(deparse(sys.call(-1)),
+                                                 "\\(")[[1]][1])
 
   # fit speedglm or glm as appropriate
   out <- tryCatch(
@@ -34,9 +35,8 @@ fast_glm <- function(reg_form, data, family, ...) {
                          ...)
     },
     error = function(cond) {
-      message(paste("'speedglm' ran into an error in",
-                    as.character(calling_fun),
-                    "\n...reverting to use of 'glm'."))
+      message(paste("'speedglm' ran into an error in", calling_fun,
+                    "...", "using 'glm' instead."))
       # Choose a return value in case of error
       mod <- stats::glm(formula = reg_form,
                         data = data,
