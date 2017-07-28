@@ -3,7 +3,7 @@
 R/`survtmle`
 ============
 
-[![Travis-CI Build Status](https://travis-ci.org/benkeser/survtmle.svg?branch=master)](https://travis-ci.org/benkeser/survtmle) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/benkeser/survtmle?branch=master&svg=true)](https://ci.appveyor.com/project/benkeser/survtmle) [![Coverage Status](https://img.shields.io/codecov/c/github/benkeser/survtmle/master.svg)](https://codecov.io/github/benkeser/survtmle?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/survtmle)](http://www.r-pkg.org/pkg/survtmle) [![CRAN downloads](https://cranlogs.r-pkg.org/badges/survtmle)](https://CRAN.R-project.org/package=survtmle) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![Travis-CI Build Status](https://travis-ci.org/benkeser/survtmle.svg?branch=master)](https://travis-ci.org/benkeser/survtmle) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/benkeser/survtmle?branch=master&svg=true)](https://ci.appveyor.com/project/benkeser/survtmle) [![Coverage Status](https://img.shields.io/codecov/c/github/benkeser/survtmle/master.svg)](https://codecov.io/github/benkeser/survtmle?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/survtmle)](http://www.r-pkg.org/pkg/survtmle) [![CRAN downloads](https://cranlogs.r-pkg.org/badges/survtmle)](https://CRAN.R-project.org/package=survtmle) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.835868.svg)](https://doi.org/10.5281/zenodo.835868)
 
 > Targeted Minimum Loss-Based Estimation (TMLE) for Survival Analysis with Competing Risks
 
@@ -33,11 +33,15 @@ You can install a stable release of `survtmle` from GitHub via [`devtools`](http
 devtools::install_github("benkeser/survtmle")
 ```
 
-To contribute, install the *development version* from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
+<!--
+To contribute, install the _development version_ from GitHub via
+[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
 
-``` r
+
+```r
 devtools::install_github("benkeser/survtmle", ref = "develop")
 ```
+-->
 
 ------------------------------------------------------------------------
 
@@ -54,12 +58,8 @@ Example
 This minimal example shows how to use `survtmle` to obtain cumulative incidence estimates with a very simple, simulated data set.
 
 ``` r
-library(survtmle)
-#> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.0
-set.seed(341796)
-
 # simulate data
+set.seed(341796)
 n <- 100
 t_0 <- 10
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
@@ -69,12 +69,17 @@ C <- rgeom(n, plogis(-6 + W$W1)) + 1
 ftime <- pmin(T, C)
 ftype <- as.numeric(ftime == T)
 
+# load the package
+library(survtmle)
+#> survtmle: Targeted Learning for Survival Analysis
+#> Version: 1.0.0
+
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
                 trt = A, adjustVars = W,
                 glm.trt = "1",
                 glm.ftime = "I(W1*W2) + trt + t",
-                glm.ctime = "W1 + t", method = "hazard", 
+                glm.ctime = "W1 + t", method = "hazard",
                 t0 = t_0)
 
 # extract cumulative incidence at each timepoint
@@ -119,21 +124,23 @@ Citation
 After using the `survtmle` R package, please cite both of the following:
 
         @misc{benkeser2017survtmle,
-          url = {https://github.com/benkeser/survtmle},
-          year  = {2017},
           author = {Benkeser, David C. and Hejazi, Nima S.},
-          title = {survtmle: Targeted Minimum Loss-Based Estimation for Survival
-                   Analysis in R}
+          title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
+                   Survival Analysis in {R}},
+          year  = {2017},
+          howpublished = {\url{https://github.com/benkeser/survtmle}},
+          url = {http://dx.doi.org/10.5281/zenodo.835868},
+          doi = {10.5281/zenodo.835868}
         }
 
         @article{benkeser2017improved,
-          doi = {10.1002/sim.7337},
-          year  = {2017},
-          publisher = {Wiley-Blackwell},
           author = {Benkeser, David C. and Carone, Marco and Gilbert, Peter B.},
           title = {Improved estimation of the cumulative incidence of rare
                    outcomes},
-          journal = {Statistics in Medicine}
+          journal = {Statistics in Medicine},
+          publisher = {Wiley-Blackwell},
+          year  = {2017},
+          doi = {10.1002/sim.7337}
         }
 
 ------------------------------------------------------------------------
