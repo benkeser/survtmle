@@ -101,8 +101,15 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"survtmle"</span>)</code></pre></div>
 <p>You can install a stable release of <code>survtmle</code> from GitHub via <a href="https://www.rstudio.com/products/rpackages/devtools/"><code>devtools</code></a> with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"benkeser/survtmle"</span>)</code></pre></div>
-<p>To contribute, install the <em>development version</em> from GitHub via <a href="https://www.rstudio.com/products/rpackages/devtools/"><code>devtools</code></a>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"benkeser/survtmle"</span>, <span class="dt">ref =</span> <span class="st">"develop"</span>)</code></pre></div>
+<!--
+To contribute, install the _development version_ from GitHub via
+[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
+
+
+```r
+devtools::install_github("benkeser/survtmle", ref = "develop")
+```
+-->
 <hr>
 </div>
 <div id="issues" class="section level2">
@@ -115,12 +122,8 @@
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>This minimal example shows how to use <code>survtmle</code> to obtain cumulative incidence estimates with a very simple, simulated data set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survtmle)
-<span class="co">#&gt; survtmle: Targeted Learning for Survival Analysis</span>
-<span class="co">#&gt; Version: 1.0.0</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># simulate data</span>
 <span class="kw">set.seed</span>(<span class="dv">341796</span>)
-
-<span class="co"># simulate data</span>
 n &lt;-<span class="st"> </span><span class="dv">100</span>
 t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">10</span>
 W &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">runif</span>(n), <span class="dt">W2 =</span> <span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>))
@@ -130,12 +133,17 @@ C &lt;-<span class="st"> </span><span class="kw">rgeom</span>(n, <span class="kw
 ftime &lt;-<span class="st"> </span><span class="kw">pmin</span>(T, C)
 ftype &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ftime <span class="op">==</span><span class="st"> </span>T)
 
+<span class="co"># load the package</span>
+<span class="kw">library</span>(survtmle)
+<span class="co">#&gt; survtmle: Targeted Learning for Survival Analysis</span>
+<span class="co">#&gt; Version: 1.0.0</span>
+
 <span class="co"># apply survtmle for estimation</span>
 fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
                 <span class="dt">trt =</span> A, <span class="dt">adjustVars =</span> W,
                 <span class="dt">glm.trt =</span> <span class="st">"1"</span>,
                 <span class="dt">glm.ftime =</span> <span class="st">"I(W1*W2) + trt + t"</span>,
-                <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>, 
+                <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>,
                 <span class="dt">t0 =</span> t_<span class="dv">0</span>)
 
 <span class="co"># extract cumulative incidence at each timepoint</span>
@@ -175,21 +183,23 @@ tpfit
 <a href="#citation" class="anchor"></a>Citation</h2>
 <p>After using the <code>survtmle</code> R package, please cite both of the following:</p>
 <pre><code>    @misc{benkeser2017survtmle,
-      url = {https://github.com/benkeser/survtmle},
-      year  = {2017},
       author = {Benkeser, David C. and Hejazi, Nima S.},
-      title = {survtmle: Targeted Minimum Loss-Based Estimation for Survival
-               Analysis in R}
+      title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
+               Survival Analysis in {R}},
+      year  = {2017},
+      howpublished = {\url{https://github.com/benkeser/survtmle}},
+      url = {http://dx.doi.org/10.5281/zenodo.835868},
+      doi = {10.5281/zenodo.835868}
     }
 
     @article{benkeser2017improved,
-      doi = {10.1002/sim.7337},
-      year  = {2017},
-      publisher = {Wiley-Blackwell},
       author = {Benkeser, David C. and Carone, Marco and Gilbert, Peter B.},
       title = {Improved estimation of the cumulative incidence of rare
                outcomes},
-      journal = {Statistics in Medicine}
+      journal = {Statistics in Medicine},
+      publisher = {Wiley-Blackwell},
+      year  = {2017},
+      doi = {10.1002/sim.7337}
     }</code></pre>
 <hr>
 </div>
@@ -251,6 +261,7 @@ SOFTWARE.</code></pre>
 <li><a href="https://CRAN.R-project.org/package=survtmle"><img src="https://cranlogs.r-pkg.org/badges/survtmle" alt="CRAN downloads"></a></li>
 <li><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
 <li><a href="http://opensource.org/licenses/MIT"><img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT license"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.835868"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.835868.svg" alt="DOI"></a></li>
 </ul>
 </div>
 
