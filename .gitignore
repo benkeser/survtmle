@@ -4,3 +4,4 @@
 .Ruserdata
 README.html
 vignettes/*.html
+.ipynb_checkpoints
