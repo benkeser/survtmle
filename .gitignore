@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 README.html
+sandbox/*.html
 vignettes/*.html
 .ipynb_checkpoints
