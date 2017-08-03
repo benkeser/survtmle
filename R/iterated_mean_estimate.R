@@ -130,7 +130,7 @@ estimateIteratedMean <- function(wideDataList,
       suppressWarnings({
         Qmod <- fast_glm(reg_form = stats::as.formula(Qform),
                          data = wideDataList[[1]][include, ],
-                         family = eval(glm.family))
+                         family = eval(glm_family))
         if (unique(class(Qmod) %in% c("glm", "lm"))) {
           Qmod <- cleanglm(Qmod)
         }
