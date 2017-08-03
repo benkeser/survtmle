@@ -136,7 +136,7 @@ ftype &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ftime <sp
 <span class="co"># load the package</span>
 <span class="kw">library</span>(survtmle)
 <span class="co">#&gt; survtmle: Targeted Learning for Survival Analysis</span>
-<span class="co">#&gt; Version: 1.0.0</span>
+<span class="co">#&gt; Version: 1.0.1.2</span>
 
 <span class="co"># apply survtmle for estimation</span>
 fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
@@ -145,6 +145,7 @@ fit &lt;-<span class="st"> </span><span class="kw"><a href="reference/survtmle.h
                 <span class="dt">glm.ftime =</span> <span class="st">"I(W1*W2) + trt + t"</span>,
                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + t"</span>, <span class="dt">method =</span> <span class="st">"hazard"</span>,
                 <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+<span class="co">#&gt; 'speedglm' ran into an error in estimateHazards ... using 'glm' instead.</span>
 
 <span class="co"># extract cumulative incidence at each timepoint</span>
 tpfit &lt;-<span class="st"> </span><span class="kw"><a href="reference/timepoints.html">timepoints</a></span>(fit, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))

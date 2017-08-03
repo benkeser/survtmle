@@ -107,8 +107,9 @@ function will compute estimates of the conditional probability of
 as one minus this probability.</p>
     
 
-    <pre class="usage"><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gtol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>estimateTreatment</span>(<span class='no'>dat</span>, <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>glm.family</span>,
+  <span class='kw'>SL.trt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gtol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +132,14 @@ in a call to <code>glm</code>. See <code><a href='survtmle.html'>?survtmle</a></
 Alternatively, this could be an object of class <code>glm</code> (as in
 calls to this function via <code>timepoints</code>), in which case
 predictions are obtained using this object with no new fitting.</p></td>
+    </tr>
+    <tr>
+      <th>glm.family</th>
+      <td><p>The type of regression to be performed if fitting GLMs in
+the estimation and fluctuation procedures. The default is "binomial"
+for logistic regression. Only change this from the default if there
+are justifications that are well understood. This is inherited from
+the calling function (either <code>mean_tmle</code> or <code>hazard_tmle</code>).</p></td>
     </tr>
     <tr>
       <th>SL.trt</th>

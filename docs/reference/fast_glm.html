@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clean up outputs from GLM — cleanglm • survtmle</title>
+<title>Wrapper for faster Generalized Linear Models — fast_glm • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,29 +95,42 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Clean up outputs from GLM</h1>
+    <h1>Wrapper for faster Generalized Linear Models</h1>
     </div>
 
     
-    <p>Removes superfluous output from the call to <code>glm</code> that is not needed to
-perform later predictions. It is applied as a space saving technique.</p>
+    <p>A convenience utility to fit regression models more quickly in the main
+internal functions for estimation, which usually require logistic regression.
+Use of <code>speedglm</code> appears to provide roughly an order of magnitude
+improvement in speed when compared to <code>glm</code> in custom benchmarks.</p>
     
 
-    <pre class="usage"><span class='fu'>cleanglm</span>(<span class='no'>cm</span>)</pre>
+    <pre class="usage"><span class='fu'>fast_glm</span>(<span class='no'>reg_form</span>, <span class='no'>data</span>, <span class='no'>family</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cm</th>
-      <td><p>An object of class <code>glm</code> or class <code>speedglm</code>.</p></td>
+      <th>reg_form</th>
+      <td><p>Character indicating the regression formula to be computed.</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>Object of class <code>data.frame</code> containing the data.</p></td>
+    </tr>
+    <tr>
+      <th>family</th>
+      <td><p>Object from package <code>stats</code> indicating error distribution.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments passed to <code>glm</code> or <code>speedglm</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>glm</code> or <code>speedglm</code>, but with
-        unnecessary output removed.</p>
+    <p>Object of class <code>glm</code> or <code>speedglm</code>.</p>
     
 
   </div>

@@ -72,7 +72,7 @@ ftype <- as.numeric(ftime == T)
 # load the package
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.0
+#> Version: 1.0.1.2
 
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
@@ -81,6 +81,7 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 glm.ftime = "I(W1*W2) + trt + t",
                 glm.ctime = "W1 + t", method = "hazard",
                 t0 = t_0)
+#> 'speedglm' ran into an error in estimateHazards ... using 'glm' instead.
 
 # extract cumulative incidence at each timepoint
 tpfit <- timepoints(fit, times = seq_len(t_0))
