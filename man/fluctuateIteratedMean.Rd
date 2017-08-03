@@ -5,7 +5,7 @@
 \title{Fluctuation for the Method of Iterated Means}
 \usage{
 fluctuateIteratedMean(wideDataList, t, uniqtrt, whichJ, allJ, t0,
-  Gcomp = FALSE, bounds = NULL, ...)
+  Gcomp = FALSE, glm.family, bounds = NULL, ...)
 }
 \arguments{
 \item{wideDataList}{A list of \code{data.frame} objects.}
@@ -26,6 +26,12 @@ Needed only because the naming convention for the regression if
 \item{Gcomp}{A boolean indicating whether \code{mean_tmle} was called to
 evaluate the G-computation estimator, in which case this function does
 nothing but re-label columns.}
+
+\item{glm.family}{The type of regression to be performed if fitting GLMs in
+the estimation and fluctuation procedures. The default is "binomial"
+for logistic regression. Only change this from the default if there
+are justifications that are well understood. This is inherited from
+the calling function (either \code{mean_tmle} or \code{hazard_tmle}).}
 
 \item{bounds}{A list of bounds to be used when performing the outcome
 regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.}

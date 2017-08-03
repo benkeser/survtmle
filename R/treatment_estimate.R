@@ -17,6 +17,11 @@
 #'        Alternatively, this could be an object of class \code{glm} (as in
 #'        calls to this function via \code{timepoints}), in which case
 #'        predictions are obtained using this object with no new fitting.
+#' @param glm.family The type of regression to be performed if fitting GLMs in
+#'        the estimation and fluctuation procedures. The default is "binomial"
+#'        for logistic regression. Only change this from the default if there
+#'        are justifications that are well understood. This is inherited from
+#'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
 #' @param SL.trt A valid specification of the \code{SL.library} option of a call
 #'        to \code{SuperLearner}. See \code{?survtmle} for more documentation.
 #'        Alternatively, this could be an object of class \code{SuperLearner}
@@ -40,9 +45,20 @@
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
 #'
 
-estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
-                              returnModels = FALSE, verbose = FALSE,
-                              gtol = 1e-3, ...) {
+estimateTreatment <- function(dat,
+                              adjustVars,
+                              glm.trt = NULL,
+                              glm.family,
+                              SL.trt = NULL,
+                              returnModels = FALSE,
+                              verbose = FALSE,
+                              gtol = 1e-3,
+                              ...) {
+
+  ## determine whether to use linear or logistic regression in GLM fit
+  if (!is.null(glm.family)) {
+    glm_family <- parse(text = paste0("stats::", glm.family, "()"))
+  }
 
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
@@ -74,7 +90,7 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         # fit the treatment model
         trtMod <- fast_glm(reg_form = stats::as.formula(trt_form),
                            data = trt_data_in,
-                           family = stats::binomial())
+                           family = eval(glm_family))
       } else {
         trtMod <- glm.trt
       }

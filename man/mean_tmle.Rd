@@ -6,10 +6,10 @@
 \usage{
 mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), adjustVars = NULL,
   SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
-  glm.ctime = NULL, glm.trt = "1", returnIC = TRUE,
-  returnModels = FALSE, ftypeOfInterest = unique(ftype[ftype != 0]),
-  trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
-  Gcomp = FALSE, gtol = 0.001, ...)
+  glm.ctime = NULL, glm.trt = "1", glm.family = "binomial",
+  returnIC = TRUE, returnModels = FALSE,
+  ftypeOfInterest = unique(ftype[ftype != 0]), trtOfInterest = unique(trt),
+  bounds = NULL, verbose = FALSE, Gcomp = FALSE, gtol = 0.001, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Right-censored observations
@@ -71,6 +71,11 @@ equation passed to the \code{formula} option of a call to \code{glm}
 for the estimate of the conditional probability of treatment. Ignored
 if \code{SL.trt} is not equal to \code{NULL}. The formula can include
 any variables found in \code{names(adjustVars)}.}
+
+\item{glm.family}{The type of regression to be performed if fitting GLMs in
+the estimation and fluctuation procedures. The default is "binomial"
+for logistic regression. Only change this from the default if there
+are justifications that are well understood.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence
 curve estimates. These are needed for some post-hoc comparisons, so it

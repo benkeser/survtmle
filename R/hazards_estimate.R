@@ -36,11 +36,16 @@
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression (either cause-specific hazards or
+#'        for the outcome regression (either using cause-specific hazards or
 #'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
+#' @param glm.family The type of regression to be performed if fitting GLMs in
+#'        the estimation and fluctuation procedures. The default is "binomial"
+#'        for logistic regression. Only change this from the default if there
+#'        are justifications that are well understood. This is inherited from
+#'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
 #' @param returnModels A boolean indicating whether to return the
 #'        \code{SuperLearner} or \code{glm} objects used to estimate the
 #'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
@@ -61,12 +66,24 @@
 #'         causes \code{k < j}.
 #'
 
-estimateHazards <- function(dataList, J, adjustVars,
-                            SL.ftime = NULL, glm.ftime = NULL,
-                            returnModels, bounds, verbose, ...) {
+estimateHazards <- function(dataList,
+                            J,
+                            adjustVars,
+                            SL.ftime = NULL,
+                            glm.ftime = NULL,
+                            glm.family,
+                            returnModels,
+                            bounds,
+                            verbose,
+                            ...) {
 
   ftimeMod <- vector(mode = "list", length = length(J))
   names(ftimeMod) <- paste0("J", J)
+
+  ## determine whether to use linear or logistic regression in GLM fit
+  if (!is.null(glm.family)) {
+    glm_family <- parse(text = paste0("stats::", glm.family, "()"))
+  }
 
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) {
@@ -85,7 +102,7 @@ estimateHazards <- function(dataList, J, adjustVars,
             !("speedglm" %in% class(glm.ftime[[1]]))) {
           Qj_mod <- fast_glm(reg_form = stats::as.formula(Qj_form),
                              data = dataList[[1]][NlessthanJ == 0, ],
-                             family = stats::binomial())
+                             family = eval(glm_family))
           if (unique(class(Qj_mod) %in% c("glm", "lm"))) {
             Qj_mod <- cleanglm(Qj_mod)
           }
@@ -169,13 +186,13 @@ estimateHazards <- function(dataList, J, adjustVars,
       }
 
       if(class(SL.ftime[[1]]) != "SuperLearner") {
-        Qj_mod <- SuperLearner(Y = dataList[[1]][[paste0("N",j)]][NlessthanJ == 0],
-                               X = dataList[[1]][NlessthanJ == 0,
-                                                            c('t', 'trt', names(adjustVars))],
-                                        id = dataList[[1]]$id[NlessthanJ == 0],
-                                        family = stats::binomial(),
-                                        SL.library = SL.ftime,
-                                        verbose = verbose)
+        Qj_mod <- SuperLearner::SuperLearner(Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0],
+                                             X = dataList[[1]][NlessthanJ == 0,
+                                                               c("t", "trt", names(adjustVars))],
+                                             id = dataList[[1]]$id[NlessthanJ == 0],
+                                             family = stats::binomial(),
+                                             SL.library = SL.ftime,
+                                             verbose = verbose)
       } else {
         Qj_mod <- SL.ftime[[paste0("J", j)]]
       }
