@@ -44,11 +44,6 @@
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
-#' @param glm.family The type of regression to be performed if fitting GLMs in
-#'        the estimation and fluctuation procedures. The default is "binomial"
-#'        for logistic regression. Only change this from the default if there
-#'        are justifications that are well understood. This is inherited from
-#'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
 #' @param verbose A boolean indicating whether the function should print
 #'        messages to indicate progress.
 #' @param returnModels A boolean indicating whether to return the
@@ -71,25 +66,9 @@
 #'         \code{wideDataList}.
 #'
 
-estimateIteratedMean <- function(wideDataList,
-                                 t,
-                                 whichJ,
-                                 allJ,
-                                 t0,
-                                 adjustVars,
-                                 SL.ftime = NULL,
-                                 glm.ftime = NULL,
-                                 glm.family,
-                                 verbose,
-                                 returnModels = FALSE,
-                                 bounds = NULL,
-                                 ...) {
-
-  ## determine whether to use linear or logistic regression in GLM fit
-  if (!is.null(glm.family)) {
-    glm_family <- parse(text = paste0("stats::", glm.family, "()"))
-  }
-
+estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
+                                 SL.ftime = NULL, glm.ftime = NULL, verbose,
+                                 returnModels = FALSE, bounds = NULL, ...){
   ## determine who to include in estimation
   include <- rep(TRUE, nrow(wideDataList[[1]]))
   if(t != 1) {
@@ -123,14 +102,13 @@ estimateIteratedMean <- function(wideDataList,
   Qj.t <- paste0("Q", whichJ, ".", t)
   NnotJ.tm1 <- paste0("NnotJ.", t - 1)
   Qform <- paste(outcomeName, "~", glm.ftime, sep = " ")
-
   ## GLM code
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) { # with no bounds
       suppressWarnings({
         Qmod <- fast_glm(reg_form = stats::as.formula(Qform),
                          data = wideDataList[[1]][include, ],
-                         family = eval(glm_family))
+                         family = stats::binomial())
         if (unique(class(Qmod) %in% c("glm", "lm"))) {
           Qmod <- cleanglm(Qmod)
         }
@@ -168,7 +146,7 @@ estimateIteratedMean <- function(wideDataList,
       nUniq <- length(unique(wideDataList[[1]][include,outcomeName]))
       cvControl <- SuperLearner::SuperLearner.CV.control()
       if(t == t0) {
-        # if there are less than 2 events at t0, fit regression using only Z
+        # if there are less than 2 events at t0, just fit regression using only Z
         nE <- sum(wideDataList[[1]][include, outcomeName])
         ignoreSL <- nE <= 2
         if(ignoreSL) {
@@ -180,7 +158,7 @@ estimateIteratedMean <- function(wideDataList,
             wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
               suppressWarnings(
               x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]- x[[Nj.tm1]]) *
-                predict(Qmod, newdata = data.frame(trt = x$trt))
+                predict(Qmod,newdata=data.frame(trt=x$trt))
              )
              x
             }, t = t, whichJ = whichJ)
@@ -197,7 +175,7 @@ estimateIteratedMean <- function(wideDataList,
                                                verbose = verbose)
           )
           wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
-            x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]])*
+            x[[Qj.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
               predict(Qmod, newdata = x[, c('trt', names(adjustVars))], onlySL = TRUE)$pred
             x
           }, t = t, whichJ = whichJ)

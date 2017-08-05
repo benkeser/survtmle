@@ -43,11 +43,6 @@
 #' @param Gcomp A boolean indicating whether \code{mean_tmle} was called to
 #'        evaluate the G-computation estimator, in which case this function does
 #'        nothing but re-label columns.
-#' @param glm.family The type of regression to be performed if fitting GLMs in
-#'        the estimation and fluctuation procedures. The default is "binomial"
-#'        for logistic regression. Only change this from the default if there
-#'        are justifications that are well understood. This is inherited from
-#'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula optim glm qlogis binomial
@@ -60,24 +55,10 @@
 #'         \code{data.frame} in \code{wideDataList}.
 #'
 
-fluctuateIteratedMean <- function(wideDataList,
-                                  t,
-                                  uniqtrt,
-                                  whichJ,
-                                  allJ,
-                                  t0,
-                                  Gcomp = FALSE,
-                                  glm.family,
-                                  bounds = NULL,
-                                  ...) {
-
+fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
+                                  Gcomp = FALSE, bounds = NULL, ...) {
   outcomeName <- ifelse(t == t0, paste("N", whichJ, ".", t0, sep = ""),
                         paste("Q", whichJ, "star.", t + 1, sep = ""))
-
-  ## determine whether to use linear or logistic regression in GLM fit
-  if (!is.null(glm.family)) {
-    glm_family <- parse(text = paste0("stats::", glm.family, "()"))
-  }
 
   ## determine who to include in estimation
   include <- rep(TRUE, nrow(wideDataList[[1]]))
@@ -108,7 +89,7 @@ fluctuateIteratedMean <- function(wideDataList,
       suppressWarnings(
         flucMod <- fast_glm(reg_form = stats::as.formula(flucForm),
                             data = wideDataList[[1]][include, ],
-                            family = eval(glm_family),
+                            family = stats::binomial(),
                             start = rep(0, length(uniqtrt)))
       )
       # get predictions back
@@ -129,13 +110,12 @@ fluctuateIteratedMean <- function(wideDataList,
   } else {
     if(!Gcomp) {
       cleverCovariates <- paste0("H", uniqtrt, ".", t)
-      lj.t <- paste0("l", whichJ, ".", t)
-      uj.t <- paste0("u", whichJ, ".", t)
-      Qtildej.t <- paste0("Qtilde", whichJ, ".", t)
-      Nj.tm1 <- paste0("N", whichJ, ".", t - 1)
-      Qj.t <- paste0("Q", whichJ, ".", t)
-      NnotJ.tm1 <- paste0("NnotJ.", t - 1)
-
+      lj.t <- paste0("l",whichJ,".",t)
+      uj.t <- paste0("u",whichJ,".",t)
+      Qtildej.t <- paste0("Qtilde",whichJ,".",t)
+      Nj.tm1 <- paste0("N",whichJ,".",t-1)
+      Qj.t <- paste0("Q",whichJ,".",t)
+      NnotJ.tm1 <- paste0("NnotJ.",t-1)
       # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x) {
         x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]])/(x[[uj.t]]-x[[lj.t]])
