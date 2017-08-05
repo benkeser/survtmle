@@ -58,7 +58,8 @@
 #' @param glm.family The type of regression to be performed if fitting GLMs in
 #'        the estimation and fluctuation procedures. The default is "binomial"
 #'        for logistic regression. Only change this from the default if there
-#'        are justifications that are well understood.
+#'        are justifications that are well understood. This is passed directly
+#'        to \code{estimateCensoring}.
 #' @param returnIC A boolean indicating whether to return vectors of influence
 #'        curve estimates. These are needed for some post-hoc comparisons, so it
 #'        is recommended to leave as \code{TRUE} (the default) unless the user
@@ -204,7 +205,6 @@ mean_tmle <- function(ftime,
                               adjustVars = adjustVars,
                               SL.trt = SL.trt,
                               glm.trt = glm.trt,
-                              glm.family = glm.family,
                               returnModels = returnModels,
                               gtol = gtol)
   dat <- trtOut$dat
@@ -255,7 +255,6 @@ mean_tmle <- function(ftime,
                                    SL.ftime = SL.ftime,
                                    adjustVars = adjustVars,
                                    glm.ftime = glm.ftime,
-                                   glm.family = glm.family,
                                    verbose = verbose,
                                    returnModels = returnModels,
                                    bounds = bounds)
@@ -270,7 +269,6 @@ mean_tmle <- function(ftime,
                                           allJ = allJ, t0 = t0,
                                           SL.ftime = SL.ftime,
                                           glm.ftime = glm.ftime,
-                                          glm.family = glm.family,
                                           returnModels = returnModels,
                                           bounds = bounds,
                                           Gcomp = Gcomp)
