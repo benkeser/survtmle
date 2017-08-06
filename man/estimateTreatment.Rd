@@ -4,9 +4,8 @@
 \alias{estimateTreatment}
 \title{Estimate Treatment Mechanisms}
 \usage{
-estimateTreatment(dat, adjustVars, glm.trt = NULL, glm.family,
-  SL.trt = NULL, returnModels = FALSE, verbose = FALSE, gtol = 0.001,
-  ...)
+estimateTreatment(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
+  returnModels = FALSE, verbose = FALSE, gtol = 0.001, ...)
 }
 \arguments{
 \item{dat}{An object of class \code{data.frame}. Must have named column
@@ -21,12 +20,6 @@ in a call to \code{glm}. See \code{?survtmle} for more documentation.
 Alternatively, this could be an object of class \code{glm} (as in
 calls to this function via \code{timepoints}), in which case
 predictions are obtained using this object with no new fitting.}
-
-\item{glm.family}{The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is inherited from
-the calling function (either \code{mean_tmle} or \code{hazard_tmle}).}
 
 \item{SL.trt}{A valid specification of the \code{SL.library} option of a call
 to \code{SuperLearner}. See \code{?survtmle} for more documentation.

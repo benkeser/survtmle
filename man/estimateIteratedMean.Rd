@@ -5,8 +5,8 @@
 \title{Estimation for the Method of Iterated Means}
 \usage{
 estimateIteratedMean(wideDataList, t, whichJ, allJ, t0, adjustVars,
-  SL.ftime = NULL, glm.ftime = NULL, glm.family, verbose,
-  returnModels = FALSE, bounds = NULL, ...)
+  SL.ftime = NULL, glm.ftime = NULL, verbose, returnModels = FALSE,
+  bounds = NULL, ...)
 }
 \arguments{
 \item{wideDataList}{A list of \code{data.frame} objects.}
@@ -40,12 +40,6 @@ conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 to specify the treatment in this formula (see examples). The formula
 can additionally include any variables found in
 \code{names(adjustVars)}.}
-
-\item{glm.family}{The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is inherited from
-the calling function (either \code{mean_tmle} or \code{hazard_tmle}).}
 
 \item{verbose}{A boolean indicating whether the function should print
 messages to indicate progress.}

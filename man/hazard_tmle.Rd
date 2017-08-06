@@ -75,7 +75,8 @@ any variables found in \code{names(adjustVars)}.}
 \item{glm.family}{The type of regression to be performed if fitting GLMs in
 the estimation and fluctuation procedures. The default is "binomial"
 for logistic regression. Only change this from the default if there
-are justifications that are well understood.}
+are justifications that are well understood. This is passed directly
+to \code{estimateCensoring} and \code{estimateHazards}.}
 
 \item{returnIC}{A boolean indicating whether to return vectors of influence
 curve estimates. These are needed for some post-hoc comparisons, so it
