@@ -31,7 +31,9 @@ fast_glm <- function(reg_form, data, family, ...) {
       speedglm::speedglm(formula = reg_form,
                          data = data,
                          family = family,
-                         fitted = TRUE,
+                         method = "Cholesky",
+                         sparse = TRUE,
+                         trace = FALSE,
                          ...)
     },
     error = function(cond) {
