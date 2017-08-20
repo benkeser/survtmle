@@ -132,7 +132,7 @@ prior to submitting a pull request.
 After using the `survtmle` R package, please cite both of the following:
 
         @misc{benkeser2017survtmle,
-          author = {Benkeser, David C. and Hejazi, Nima S.},
+          author = {Benkeser, David C and Hejazi, Nima S},
           title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
                    Survival Analysis in {R}},
           year  = {2017},
@@ -142,7 +142,7 @@ After using the `survtmle` R package, please cite both of the following:
         }
 
         @article{benkeser2017improved,
-          author = {Benkeser, David C. and Carone, Marco and Gilbert, Peter B.},
+          author = {Benkeser, David C and Carone, Marco and Gilbert, Peter B},
           title = {Improved estimation of the cumulative incidence of rare
                    outcomes},
           journal = {Statistics in Medicine},

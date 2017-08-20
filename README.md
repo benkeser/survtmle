@@ -72,7 +72,7 @@ ftype <- as.numeric(ftime == T)
 # load the package
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.1.2
+#> Version: 1.0.0
 
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
@@ -81,7 +81,6 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 glm.ftime = "I(W1*W2) + trt + t",
                 glm.ctime = "W1 + t", method = "hazard",
                 t0 = t_0)
-#> 'speedglm' ran into an error in estimateHazards ... using 'glm' instead.
 
 # extract cumulative incidence at each timepoint
 tpfit <- timepoints(fit, times = seq_len(t_0))
@@ -125,7 +124,7 @@ Citation
 After using the `survtmle` R package, please cite both of the following:
 
         @misc{benkeser2017survtmle,
-          author = {Benkeser, David C. and Hejazi, Nima S.},
+          author = {Benkeser, David C and Hejazi, Nima S},
           title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
                    Survival Analysis in {R}},
           year  = {2017},
@@ -135,7 +134,7 @@ After using the `survtmle` R package, please cite both of the following:
         }
 
         @article{benkeser2017improved,
-          author = {Benkeser, David C. and Carone, Marco and Gilbert, Peter B.},
+          author = {Benkeser, David C and Carone, Marco and Gilbert, Peter B},
           title = {Improved estimation of the cumulative incidence of rare
                    outcomes},
           journal = {Statistics in Medicine},
