@@ -35,25 +35,16 @@ fast_glm <- function(reg_form, data, family, ...) {
   # fit speedglm or glm as appropriate
   out <- tryCatch(
     {
-      if(calling_fun == "estimateTreatment") {
-        # estimateTreatment fits an intercept model. Obviously, a sparse design
-        # matrix does not exist in this case, making sparse=TRUE inappropriate.
-        speedglm::speedglm(formula = reg_form,
-                           data = data,
-                           family = family,
-                           method = "Cholesky",
-                           sparse = FALSE,
-                           trace = FALSE,
-                           ...)
-      } else {
-        speedglm::speedglm(formula = reg_form,
-                           data = data,
-                           family = family,
-                           method = "Cholesky",
-                           sparse = TRUE,
-                           trace = FALSE,
-                           ...)
-      }
+      # estimateTreatment fits an intercept model. Obviously, a sparse design
+      # matrix does not exist in this case, making sparse=TRUE inappropriate.
+      speedglm::speedglm(formula = reg_form,
+                         data = data,
+                         family = family,
+                         method = "Cholesky",
+                         sparse = ifelse(calling_fun == "estimateTreatment",
+                                         FALSE, TRUE),
+                         trace = FALSE,
+                         ...)
     },
     error = function(cond) {
       message(paste0("'speedglm' ran into an error in ", calling_fun,
