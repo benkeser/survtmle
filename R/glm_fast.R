@@ -5,9 +5,12 @@
 #' Use of \code{speedglm} appears to provide roughly an order of magnitude
 #' improvement in speed when compared to \code{glm} in custom benchmarks.
 #'
-#' @param reg_form Character indicating the regression formula to be computed.
+#' @param reg_form Object of class \code{formula} indicating the regression to
+#'        be fit.
 #' @param data Object of class \code{data.frame} containing the data.
-#' @param family Object from package \code{stats} indicating error distribution.
+#' @param family Object of class \code{family} from package \code{stats}
+#'        indicating the error distribution. Appropriate options are limited to
+#'        \code{gaussian} and \code{binomial}.
 #' @param ... Additional arguments passed to \code{glm} or \code{speedglm}.
 #'
 #' @importFrom speedglm speedglm
@@ -19,7 +22,11 @@
 
 fast_glm <- function(reg_form, data, family, ...) {
   # a quick type check for safety
-  stopifnot(class(reg_form) == "formula")
+  stopifnot(
+    class(reg_form) == "formula" &
+    class(data) %in% c("matrix", "data.frame") &
+    class(family) == "family"
+  )
 
   # catch the calling function
   calling_fun <- as.character(stringr::str_split(deparse(sys.call(-1)),
@@ -28,17 +35,29 @@ fast_glm <- function(reg_form, data, family, ...) {
   # fit speedglm or glm as appropriate
   out <- tryCatch(
     {
-      speedglm::speedglm(formula = reg_form,
-                         data = data,
-                         family = family,
-                         method = "Cholesky",
-                         sparse = TRUE,
-                         trace = FALSE,
-                         ...)
+      if(calling_fun == "estimateTreatment") {
+        # estimateTreatment fits an intercept model. Obviously, a sparse design
+        # matrix does not exist in this case, making sparse=TRUE inappropriate.
+        speedglm::speedglm(formula = reg_form,
+                           data = data,
+                           family = family,
+                           method = "Cholesky",
+                           sparse = FALSE,
+                           trace = FALSE,
+                           ...)
+      } else {
+        speedglm::speedglm(formula = reg_form,
+                           data = data,
+                           family = family,
+                           method = "Cholesky",
+                           sparse = TRUE,
+                           trace = FALSE,
+                           ...)
+      }
     },
     error = function(cond) {
-      message(paste("'speedglm' ran into an error in", calling_fun,
-                    "...", "using 'glm' instead."))
+      message(paste0("'speedglm' ran into an error in ", calling_fun,
+                    ".", "'glm' will be used instead."))
       # Choose a return value in case of error
       mod <- stats::glm(formula = reg_form,
                         data = data,
