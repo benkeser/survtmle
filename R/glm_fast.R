@@ -32,18 +32,18 @@ fast_glm <- function(reg_form, data, family, ...) {
   calling_fun <- as.character(stringr::str_split(deparse(sys.call(-1)),
                                                  "\\(")[[1]][1])
 
-  # Obviously, a sparse design matrix is not used when fitting an intercept
-  # model. In such cases, 'sparse=TRUE' is an inappropriate choice.
-  int_mod <- unlist(stringr::str_split(deparse(reg_form), pattern = " "))[3]
-
   # fit speedglm or glm as appropriate
   out <- tryCatch(
     {
+      # Obviously, a sparse design matrix is not used when fitting an intercept
+      # model. In such cases, 'sparse=TRUE' is an inappropriate choice, though
+      # this is only expected when estimating the treatment mechanism.
       speedglm::speedglm(formula = reg_form,
                          data = data,
                          family = family,
                          method = "Cholesky",
-                         sparse = ifelse(int_mod == "1", FALSE, TRUE),
+                         sparse = ifelse(calling_fun == "estimateTreatment",
+                                         FALSE, TRUE),
                          trace = FALSE,
                          ...)
     },
