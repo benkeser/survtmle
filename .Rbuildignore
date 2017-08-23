@@ -10,10 +10,10 @@
 ^\Makefile$
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
-^\.git$
 ^docs$
 ^debug$
-^paper_JSS$
+^paper$
+^sandbox$
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README-.*\.png$

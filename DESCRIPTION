@@ -1,16 +1,16 @@
 Package: survtmle
 Title: Compute Targeted Minimum Loss-Based Estimates in Right-Censored Survival
     Settings
-Version: 1.0.0
+Version: 1.0.2.0
 Authors@R: c(person("David", "Benkeser", role = c("aut", "cre", "cph"),
                     email = "benkeser@emory.edu"),
              person("Nima", "Hejazi", role = c("aut"),
                     email = "nhejazi@berkeley.edu")
             )
-Description: Targeted estimates of marginal cumulative incidence estimates in
-    survival settings with and without competing risks, including estimators
-    that respect bounds (Benkeser, Carone, and Gilbert (2017),
-    doi: 10.1002/sim.7337).
+Description: Targeted estimates of marginal cumulative incidence in survival
+    settings with and without competing risks, including estimators that respect
+    bounds (Benkeser, Carone, and Gilbert. Statistics in Medicine, 2017.
+    <doi:10.1002/sim.7337>).
 Depends:
     R (>= 3.0.0)
 Imports:
@@ -19,7 +19,8 @@ Imports:
     plyr,
     tidyr,
     stringr,
-    ggplot2
+    ggplot2,
+    speedglm
 Suggests:
     testthat,
     knitr,

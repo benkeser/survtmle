@@ -55,6 +55,11 @@
 #'        for the estimate of the conditional probability of treatment. Ignored
 #'        if \code{SL.trt} is not equal to \code{NULL}. The formula can include
 #'        any variables found in \code{names(adjustVars)}.
+#' @param glm.family The type of regression to be performed if fitting GLMs in
+#'        the estimation and fluctuation procedures. The default is "binomial"
+#'        for logistic regression. Only change this from the default if there
+#'        are justifications that are well understood. This is passed directly
+#'        to \code{estimateCensoring}.
 #' @param returnIC A boolean indicating whether to return vectors of influence
 #'        curve estimates. These are needed for some post-hoc comparisons, so it
 #'        is recommended to leave as \code{TRUE} (the default) unless the user
@@ -153,15 +158,28 @@
 #' @export
 #'
 
-mean_tmle <- function(ftime, ftype, trt,
-                      t0 = max(ftime[ftype > 0]), adjustVars = NULL,
-                      SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
-                      glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1",
-                      returnIC = TRUE, returnModels = FALSE,
+mean_tmle <- function(ftime,
+                      ftype,
+                      trt,
+                      t0 = max(ftime[ftype > 0]),
+                      adjustVars = NULL,
+                      SL.ftime = NULL,
+                      SL.ctime = NULL,
+                      SL.trt = NULL,
+                      glm.ftime = NULL,
+                      glm.ctime = NULL,
+                      glm.trt = "1",
+                      glm.family = "binomial",
+                      returnIC = TRUE,
+                      returnModels = FALSE,
                       ftypeOfInterest = unique(ftype[ftype != 0]),
                       trtOfInterest = unique(trt),
-                      bounds = NULL, verbose = FALSE, Gcomp = FALSE,
-                      gtol = 1e-3, ...) {
+                      bounds = NULL,
+                      verbose = FALSE,
+                      Gcomp = FALSE,
+                      gtol = 1e-3,
+                      ...) {
+
   # assemble data frame of necessary variables
   n <- length(ftime)
   id <- seq_len(n)
@@ -181,10 +199,14 @@ mean_tmle <- function(ftime, ftype, trt,
   uniqtrt <- sort(trtOfInterest)
 
   # estimate trt probabilities
-  trtOut <- estimateTreatment(dat = dat, ntrt = ntrt, uniqtrt = uniqtrt,
+  trtOut <- estimateTreatment(dat = dat,
+                              ntrt = ntrt,
+                              uniqtrt = uniqtrt,
                               adjustVars = adjustVars,
-                              SL.trt = SL.trt, glm.trt = glm.trt,
-                              returnModels = returnModels, gtol = gtol)
+                              SL.trt = SL.trt,
+                              glm.trt = glm.trt,
+                              returnModels = returnModels,
+                              gtol = gtol)
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
 
@@ -193,11 +215,17 @@ mean_tmle <- function(ftime, ftype, trt,
                            t0 = t0, bounds = bounds)
 
   # estimate censoring
-  censOut <- estimateCensoring(dataList = dataList, ntrt = ntrt,
-                               uniqtrt = uniqtrt, t0 = t0,
-                               verbose = verbose, adjustVars = adjustVars,
-                               SL.ctime = SL.ctime, glm.ctime = glm.ctime,
-                               returnModels = returnModels, gtol = gtol)
+  censOut <- estimateCensoring(dataList = dataList,
+                               ntrt = ntrt,
+                               uniqtrt = uniqtrt,
+                               t0 = t0,
+                               verbose = verbose,
+                               adjustVars = adjustVars,
+                               SL.ctime = SL.ctime,
+                               glm.ctime = glm.ctime,
+                               glm.family = glm.family,
+                               returnModels = returnModels,
+                               gtol = gtol)
   dataList <- censOut$dataList
   ctimeMod <- censOut$ctimeMod
 
@@ -206,7 +234,7 @@ mean_tmle <- function(ftime, ftype, trt,
                                    allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt)
 
   # estimate/fluctuate iterated means
-  timeAndType <- expand.grid(t0:1, ofInterestJ)
+  timeAndType <- expand.grid(rev(seq_len(t0)), ofInterestJ)
 
   # empty list for Qmod if returnModels
   ftimeMod <- vector(mode = "list", length = length(ofInterestJ))
@@ -219,11 +247,18 @@ mean_tmle <- function(ftime, ftype, trt,
   for(i in seq_len(nrow(timeAndType))) {
     estOut <- estimateIteratedMean(wideDataList = wideDataList,
                                    t = timeAndType[i, 1],
-                                   whichJ = timeAndType[i, 2], ntrt = ntrt,
-                                   uniqtrt = uniqtrt, allJ = allJ, t0 = t0,
-                                   SL.ftime = SL.ftime, adjustVars = adjustVars,
-                                   glm.ftime = glm.ftime, verbose = verbose,
-                                   returnModels = returnModels, bounds = bounds)
+                                   whichJ = timeAndType[i, 2],
+                                   ntrt = ntrt,
+                                   uniqtrt = uniqtrt,
+                                   allJ = allJ,
+                                   t0 = t0,
+                                   SL.ftime = SL.ftime,
+                                   adjustVars = adjustVars,
+                                   glm.ftime = glm.ftime,
+                                   verbose = verbose,
+                                   returnModels = returnModels,
+                                   bounds = bounds)
+
     wideDataList <- estOut$wideDataList
     eval(parse(text = paste0("ftimeMod$J", timeAndType[i, 2], "$t",
                              timeAndType[i, 1], "<-estOut$ftimeMod")))
@@ -250,7 +285,7 @@ mean_tmle <- function(ftime, ftype, trt,
       eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
                               " <- rep(thisEst,n)", sep = "")))
       eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
-                              " <- wideDataList[[(z + 1)]]$Q", j, "star.1",
+                              " <- wideDataList[[(z+1)]]$Q", j, "star.1",
                               sep = "")))
     }
   }
@@ -259,7 +294,7 @@ mean_tmle <- function(ftime, ftype, trt,
   # calculate influence function
   for(j in ofInterestJ) {
     for(z in seq_along(uniqtrt)) {
-      for(t in t0:1) {
+      for(t in rev(seq_len(t0))) {
         outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
                               paste("Q", j, "star.", t + 1, sep = ""))
         eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
@@ -285,7 +320,7 @@ mean_tmle <- function(ftime, ftype, trt,
   infCurves <- wideDataList[[1]][, grep("IC", names(wideDataList[[1]])),
                                  drop = FALSE]
   meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
+  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
   row.names(var) <- colnames(var) <- rowNames
 
   out <- list(est = est, var = var, meanIC = meanIC, ic = infCurves,

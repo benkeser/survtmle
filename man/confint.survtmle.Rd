@@ -20,7 +20,7 @@ return confidence intervals for (default is to return all).}
 \value{
 A matrix with columns giving the lower and upper confidence limits
         for each parameter. These will be labeled as (1-level)/2 and
-        1-(1-level)/2 in percent. The default is 2.5% and 97.5%.
+        1 - (1-level)/2 in percent. The default is 2.5% and 97.5%.
 }
 \description{
 Computes confidence intervals for a fitted \code{survtmle} object.
