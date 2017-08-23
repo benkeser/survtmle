@@ -43,12 +43,16 @@
 estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
                               returnModels = FALSE, verbose = FALSE,
                               gtol = 1e-3, ...) {
+
   if(length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
+    # binarize the outcome
+    thisY <- as.numeric(dat$trt == max(dat$trt))
+
+    # fit Super Learner
     if(!is.null(SL.trt)) {
       if(class(SL.trt) != "SuperLearner") {
-        thisY <- as.numeric(dat$trt == max(dat$trt))
         trtMod <- SuperLearner::SuperLearner(Y = thisY, X = adjustVars,
                                              newX = adjustVars,
                                              SL.library = SL.trt,
@@ -58,34 +62,38 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
         trtMod <- SL.trt
       }
       dat[[paste0("g_",max(dat$trt))]] <- trtMod$SL.predict
-      dat[[paste0("g_",min(dat$trt))]] <- 1-trtMod$SL.predict
+      dat[[paste0("g_",min(dat$trt))]] <- 1 - trtMod$SL.predict
 
-    }else if(!is.null(glm.trt) & is.null(SL.trt)) {
-      if(!("glm" %in% class(glm.trt))) {
-        thisY <- as.numeric(dat$trt == max(dat$trt))
-        trtMod <- stats::glm(stats::as.formula(paste0("thisY ~ ", glm.trt)),
-                             data = adjustVars, family = "binomial")
+    } else if(!is.null(glm.trt) & is.null(SL.trt)) {
+      # set up model formula and data for the treatment regression
+      trt_form <- paste("thisY", "~", glm.trt, sep = " ")
+      trt_data_in <- as.data.frame(cbind(adjustVars, thisY))
+
+      # fit GLM if Super Learner not requested
+      if(!("glm" %in% class(glm.trt)) & !("speedglm" %in% class(glm.trt))) {
+        # fit the treatment model
+        trtMod <- fast_glm(reg_form = stats::as.formula(trt_form),
+                           data = trt_data_in,
+                           family = stats::binomial())
       } else {
         trtMod <- glm.trt
       }
       suppressWarnings(
-        pred <- predict(trtMod, type = "response")
+        pred <- predict(trtMod, newdata = trt_data_in, type = "response")
       )
-      dat[[paste0("g_",max(dat$trt))]] <- pred
-      dat[[paste0("g_",min(dat$trt))]] <- 1-pred
+      dat[[paste0("g_", max(dat$trt))]] <- pred
+      dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
     }
   }
 
   # truncate propensities
   eval(parse(text = paste0("dat$g_", min(dat$trt), "[dat$g_", min(dat$trt),
                            "< gtol]<- gtol")))
-  eval(parse(text=paste0("dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
-                         "< gtol]<- gtol")))
-
-  out <- list(dat = dat,
-              trtMod = if(returnModels & length(unique(dat$trt)) > 1)
-                trtMod
-              else
-                NULL)
-  out
+  eval(parse(text = paste0("dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
+                           "< gtol]<- gtol")))
+  out <- list()
+  out$dat <- dat
+  out$trtMod <- NULL
+  if(returnModels) out$trtMod <- trtMod
+  return(out)
 }

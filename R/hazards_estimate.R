@@ -36,11 +36,16 @@
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression (either cause-specific hazards or
+#'        for the outcome regression (either using cause-specific hazards or
 #'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
 #'        to specify the treatment in this formula (see examples). The formula
 #'        can additionally include any variables found in
 #'        \code{names(adjustVars)}.
+#' @param glm.family The type of regression to be performed if fitting GLMs in
+#'        the estimation and fluctuation procedures. The default is "binomial"
+#'        for logistic regression. Only change this from the default if there
+#'        are justifications that are well understood. This is inherited from
+#'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
 #' @param returnModels A boolean indicating whether to return the
 #'        \code{SuperLearner} or \code{glm} objects used to estimate the
 #'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
@@ -52,8 +57,8 @@
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
+#' @importFrom speedglm speedglm
 #' @importFrom SuperLearner SuperLearner
-#'
 #'
 #' @return The function returns a list that is exactly the same as the input
 #'         \code{dataList}, but with additional columns corresponding to the
@@ -61,43 +66,60 @@
 #'         causes \code{k < j}.
 #'
 
-estimateHazards <- function(dataList, J, adjustVars,
-                            SL.ftime = NULL, glm.ftime = NULL,
-                            returnModels, bounds, verbose, ...) {
+estimateHazards <- function(dataList,
+                            J,
+                            adjustVars,
+                            SL.ftime = NULL,
+                            glm.ftime = NULL,
+                            glm.family,
+                            returnModels,
+                            bounds,
+                            verbose,
+                            ...) {
 
   ftimeMod <- vector(mode = "list", length = length(J))
   names(ftimeMod) <- paste0("J", J)
+
+  ## determine whether to use linear or logistic regression in GLM fit
+  if (!is.null(glm.family)) {
+    glm_family <- parse(text = paste0("stats::", glm.family, "()"))
+  }
 
   if(is.null(SL.ftime)) {
     if(is.null(bounds)) {
       for(j in J) {
         # formula
-        Qj.form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
+        Qj_form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
 
-        # add up all events less than current j to see who to include in regression
+        # sum all events less than current j to see who to include in regression
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
         }
 
         # fit GLM
-        if(all(class(glm.ftime[[1]]) != "glm")) {
-          Qj.mod <- glm(as.formula(Qj.form),
-                        data = dataList[[1]][NlessthanJ == 0, ],
-                        family = "binomial")
-          Qj.mod <- cleanglm(Qj.mod)
+        if (!("glm" %in% class(glm.ftime[[1]])) &
+            !("speedglm" %in% class(glm.ftime[[1]]))) {
+          Qj_mod <- fast_glm(reg_form = stats::as.formula(Qj_form),
+                             data = dataList[[1]][NlessthanJ == 0, ],
+                             family = eval(glm_family))
+          if (unique(class(Qj_mod) %in% c("glm", "lm"))) {
+            Qj_mod <- cleanglm(Qj_mod)
+          }
         } else {
-          Qj.mod <- glm.ftime[[paste0("J",j)]]
+          Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        ftimeMod[[paste0("J",j)]] <- if(returnModels){ Qj.mod } else { NULL }
+        ftimeMod[[paste0("J", j)]] <- NULL
+        if(returnModels) ftimeMod[[paste0("J", j)]] <- Qj_mod
 
         # get predictions back
         dataList <- lapply(dataList, function(x, j) {
           suppressWarnings(
-            x[[paste0("Q",j,"PseudoHaz")]] <- predict(Qj.mod, type = 'response', newdata = x)
+            x[[paste0("Q", j, "PseudoHaz")]] <- predict(Qj_mod, newdata = x,
+                                                        type = "response")
           )
           if(j != min(J)) {
-            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)), 
+            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
                                                           x[, paste0('Q', J[J < j], 'Haz')]))
             x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] * (1-x[[paste0("hazLessThan",j)]])
 
@@ -110,21 +132,21 @@ estimateHazards <- function(dataList, J, adjustVars,
       }
     } else {
       for(j in J) {
-        Qj.form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
-        X <- stats::model.matrix(stats::as.formula(Qj.form),
+        Qj_form <- sprintf("%s ~ %s", paste("N", j, sep = ""), glm.ftime)
+        X <- stats::model.matrix(stats::as.formula(Qj_form),
                                  data = dataList[[1]])
 
         NlessthanJ <- rep(0, nrow(dataList[[1]]))
         for(i in J[J < j]) {
-          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]] 
+          NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
         }
 
         dataList <- lapply(dataList, function(x, j) {
           if(j != min(J)) {
-            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)), 
+            x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
                                                           x[, paste0('Q', J[J < j], 'Haz')]))
           } else {
-            x[[paste0("hazLessThan",j)]] <- 0
+            x[[paste0("hazLessThan", j)]] <- 0
           }
           x
         }, j = j)
@@ -133,21 +155,21 @@ estimateHazards <- function(dataList, J, adjustVars,
             dataList[[1]][[paste0("l",j)]])
 
         if(class("glm.ftime") != "list") {
-          Qj.mod <- stats::optim(par = rep(0, ncol(X)), fn = LogLikelihood,
+          Qj_mod <- stats::optim(par = rep(0, ncol(X)), fn = LogLikelihood,
                                  Y = Ytilde, X = X, method = "BFGS", gr = grad,
                                  control = list(reltol = 1e-7, maxit = 50000))
         } else {
-          Qj.mod <- glm.ftime[[paste0("J",j)]]
+          Qj_mod <- glm.ftime[[paste0("J", j)]]
         }
-        if(Qj.mod$convergence != 0) {
+        if(Qj_mod$convergence != 0) {
           stop("convergence failure")
         } else {
-          beta <- Qj.mod$par
-          eval(parse(text = paste0("ftimeMod$J", j, " <- Qj.mod")))
+          beta <- Qj_mod$par
+          eval(parse(text = paste0("ftimeMod$J", j, " <- Qj_mod")))
           dataList <- lapply(dataList, function(x, j) {
-            newX <- stats::model.matrix(stats::as.formula(Qj.form), data = x)
+            newX <- stats::model.matrix(stats::as.formula(Qj_form), data = x)
             x[[paste0("Q",j,"PseudoHaz")]] <- plogis(newX %*% beta)
-            x[[paste0("Q",j,"Haz")]] <- (pmin(x[[paste0("u",j)]], 1 - x[[paste0("hazLessThan",j)]]) - 
+            x[[paste0("Q",j,"Haz")]] <- (pmin(x[[paste0("u",j)]], 1 - x[[paste0("hazLessThan",j)]]) -
                                            x[[paste0("l",j)]])*x[[paste0("Q",j,"PseudoHaz")]] + x[[paste0("l",j)]]
             x
           },j = j)
@@ -159,33 +181,33 @@ estimateHazards <- function(dataList, J, adjustVars,
       # add all events less than current j to see who to include in regression
       NlessthanJ <- rep(0, nrow(dataList[[1]]))
       for (i in J[J < j]) {
-        NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N",i)]]
+        NlessthanJ <- NlessthanJ + dataList[[1]][[paste0("N", i)]]
 
       }
 
       if(class(SL.ftime[[1]]) != "SuperLearner") {
-        Qj.mod <- SuperLearner(Y = dataList[[1]][[paste0("N",j)]][NlessthanJ == 0],
-                               X = dataList[[1]][NlessthanJ == 0,
-                                                            c('t', 'trt', names(adjustVars))],
-                                        id = dataList[[1]]$id[NlessthanJ == 0],
-                                        family = stats::binomial(),
-                                        SL.library = SL.ftime,
-                                        verbose = verbose)
+        Qj_mod <- SuperLearner::SuperLearner(Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0],
+                                             X = dataList[[1]][NlessthanJ == 0,
+                                                               c("t", "trt", names(adjustVars))],
+                                             id = dataList[[1]]$id[NlessthanJ == 0],
+                                             family = stats::binomial(),
+                                             SL.library = SL.ftime,
+                                             verbose = verbose)
       } else {
-        Qj.mod <- SL.ftime[[paste0("J",j)]]
+        Qj_mod <- SL.ftime[[paste0("J", j)]]
       }
-      ftimeMod[[paste0("J",j)]] <- Qj.mod
+      ftimeMod[[paste0("J", j)]] <- Qj_mod
 
       # get predictions back
       dataList <- lapply(dataList, function(x, j){
         suppressWarnings(
-        x[[paste0("Q",j,"PseudoHaz")]] <- predict(Qj.mod, onlySL = TRUE,
+        x[[paste0("Q",j,"PseudoHaz")]] <- predict(Qj_mod, onlySL = TRUE,
           newdata = x[,c('t', 'trt', names(adjustVars))])[[1]]
         )
         if(j != min(J)) {
-          x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)), 
+          x[[paste0("hazLessThan",j)]] <- rowSums(cbind(rep(0, nrow(x)),
                                                         x[, paste0('Q', J[J < j], 'Haz')]))
-          x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] * 
+          x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]] *
             (1 - x[[paste0("hazLessThan",j)]])
         } else {
           x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]]
@@ -195,9 +217,8 @@ estimateHazards <- function(dataList, J, adjustVars,
       }, j = j)
     }
   }
-  out <- list(dataList = dataList,
-              ftimeMod = if(returnModels)
-                ftimeMod
-              else
-                NULL)
+  out <- list()
+  out$dataList <- dataList
+  out$ftimeMod <- ftimeMod
+  return(out)
 }
