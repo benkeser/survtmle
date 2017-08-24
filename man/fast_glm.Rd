@@ -7,11 +7,14 @@
 fast_glm(reg_form, data, family, ...)
 }
 \arguments{
-\item{reg_form}{Character indicating the regression formula to be computed.}
+\item{reg_form}{Object of class \code{formula} indicating the regression to
+be fit.}
 
 \item{data}{Object of class \code{data.frame} containing the data.}
 
-\item{family}{Object from package \code{stats} indicating error distribution.}
+\item{family}{Object of class \code{family} from package \code{stats}
+indicating the error distribution. Appropriate options are limited to
+\code{gaussian} and \code{binomial}.}
 
 \item{...}{Additional arguments passed to \code{glm} or \code{speedglm}.}
 }

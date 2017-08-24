@@ -93,7 +93,7 @@
 <p>We examine the use of <code>survtmle</code> in a variety of simple examples. The package can be loaded as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survtmle)</code></pre></div>
 <pre><code>## survtmle: Targeted Learning for Survival Analysis</code></pre>
-<pre><code>## Version: 1.0.2.0</code></pre>
+<pre><code>## Version: 1.0.2.1</code></pre>
 <p>We simulate a simple data with no censoring and a single cause of failure to illustrate the machinery of the <code>survtmle</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 n &lt;-<span class="st"> </span><span class="dv">200</span>
@@ -182,12 +182,6 @@ fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
 <pre><code>## Loading required package: nnls</code></pre>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3</code></pre></div>
 <pre><code>## $est
 ##          [,1]
@@ -334,20 +328,8 @@ fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.
-## 'speedglm' ran into an error in withCallingHandlers.'glm' will be used instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit8</code></pre></div>
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit8</code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4347158
@@ -601,14 +583,14 @@ tp.fit4</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] nnls_1.4          survtmle_1.0.2.0  tibble_1.3.3.9001
+## [1] nnls_1.4         survtmle_1.0.2.1 tibble_1.3.4    
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.12             knitr_1.17              
 ##  [3] magrittr_1.5             MASS_7.3-47             
 ##  [5] munsell_0.4.3            speedglm_0.3-2          
 ##  [7] colorspace_1.3-2         lattice_0.20-35         
-##  [9] rlang_0.1.2              stringr_1.2.0.9000      
+##  [9] rlang_0.1.2.9000         stringr_1.2.0.9000      
 ## [11] plyr_1.8.4               tools_3.4.1             
 ## [13] grid_3.4.1               gtable_0.2.0            
 ## [15] SuperLearner_2.0-23-9000 htmltools_0.3.6         
