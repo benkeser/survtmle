@@ -130,7 +130,7 @@ data points.</p>
     
 
     <pre class="usage"><span class='fu'>fluctuateIteratedMean</span>(<span class='no'>wideDataList</span>, <span class='no'>t</span>, <span class='no'>uniqtrt</span>, <span class='no'>whichJ</span>, <span class='no'>allJ</span>, <span class='no'>t0</span>,
-  <span class='kw'>Gcomp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>glm.family</span>, <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>Gcomp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>bounds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -167,14 +167,6 @@ Needed only because the naming convention for the regression if
       <td><p>A boolean indicating whether <code>mean_tmle</code> was called to
 evaluate the G-computation estimator, in which case this function does
 nothing but re-label columns.</p></td>
-    </tr>
-    <tr>
-      <th>glm.family</th>
-      <td><p>The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is inherited from
-the calling function (either <code>mean_tmle</code> or <code>hazard_tmle</code>).</p></td>
     </tr>
     <tr>
       <th>bounds</th>
