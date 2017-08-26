@@ -16,6 +16,9 @@
 #'        or conditional mean) probabilities.
 #' @param t0 The time at which to return cumulative incidence estimates. By
 #'        default this is set to \code{max(ftime[ftype > 0])}.
+#' @param cv Whether to compute a cross-validated estimate. This defaults to
+#'        \code{FALSE}. If set to \code{TRUE}, cross-validation is invoked with
+#'        parallelization using routines involving \code{future}s.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} option in the call to \code{SuperLearner} for the
 #'        outcome regression (either cause-specific hazards or iterated mean).
@@ -184,7 +187,7 @@
 #'
 
 survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-                     SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
+                     cv = FALSE, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
                      glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL,
                      returnIC = TRUE, returnModels = TRUE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
