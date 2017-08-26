@@ -112,7 +112,8 @@ improvement in speed when compared to <code>glm</code> in custom benchmarks.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>reg_form</th>
-      <td><p>Character indicating the regression formula to be computed.</p></td>
+      <td><p>Object of class <code>formula</code> indicating the regression to
+be fit.</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -120,7 +121,9 @@ improvement in speed when compared to <code>glm</code> in custom benchmarks.</p>
     </tr>
     <tr>
       <th>family</th>
-      <td><p>Object from package <code>stats</code> indicating error distribution.</p></td>
+      <td><p>Object of class <code>family</code> from package <code>stats</code>
+indicating the error distribution. Appropriate options are limited to
+<code>gaussian</code> and <code>binomial</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>

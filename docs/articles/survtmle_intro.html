@@ -75,7 +75,7 @@
       <h1>Targeted Learning for Survival Analysis with Competing Risks</h1>
                         <h4 class="author">David Benkeser &amp; Nima Hejazi</h4>
             
-            <h4 class="date">2017-08-03</h4>
+            <h4 class="date">2017-08-24</h4>
           </div>
 
     
@@ -93,7 +93,7 @@
 <p>We examine the use of <code>survtmle</code> in a variety of simple examples. The package can be loaded as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survtmle)</code></pre></div>
 <pre><code>## survtmle: Targeted Learning for Survival Analysis</code></pre>
-<pre><code>## Version: 1.0.1.2</code></pre>
+<pre><code>## Version: 1.0.2.1</code></pre>
 <p>We simulate a simple data with no censoring and a single cause of failure to illustrate the machinery of the <code>survtmle</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 n &lt;-<span class="st"> </span><span class="dv">200</span>
@@ -135,13 +135,8 @@ fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
 ## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
 <pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 ## glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.</code></pre>
-<pre><code>## 'speedglm' ran into an error in estimateCensoring ... using 'glm' instead.</code></pre>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
+<pre><code>## Warning in chol.default(B, pivot = TRUE): the matrix is either rank-
+## deficient or indefinite</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit1</code></pre></div>
 <pre><code>## $est
 ##          [,1]
@@ -150,8 +145,8 @@ fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0031770491 0.0002159195
-## 1 1 0.0002159195 0.0022831146</code></pre>
+## 0 1 0.0261215098 0.0002153689
+## 1 1 0.0002153689 0.0185303036</code></pre>
 <p>Internally, <code>survtmle</code> estimates the covariate-conditional treatment probability (via <code>glm.trt</code> or <code>SL.trt</code>, see below) and covariate-conditional censoring distribution (via <code>glm.ctime</code> or <code>SL.ctime</code>, see below). In the above example, the treatment probability does not depend on covariates (as in e.g., a randomized trial) and so we did not specify a way to adjust for covariates in estimating the treatment probability. In this case, <code>survtmle</code> sets <code>glm.trt = "1"</code>, which corresponds with empirical estimates of treatment probability, and sets <code>glm.ctime</code> to be equivalent to the Kaplan-Meier censoring distribution estimates.</p>
 <p>In practice, we may wish to adjust for covariates when computing estimates of the covariate-conditional treatment and censoring probabilities. In observational studies, the distribution of treatment may differ by measured covariates, while in almost any study (including randomized trials) it is possible that censoring differs by covariates. Thus, we often wish to adjust for covariates to account for measured confounders of treatment receipt and censoring.</p>
 <p>This adjustment may be accomplished using logistic regression through the <code>glm.trt</code> and <code>glm.ctime</code> arguments, respectively. The <code>glm.trt</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>. The <code>glm.ctime</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>, <code>"trt"</code>, and <code>"t"</code> used to model the hazard function for censoring. By including <code>"trt"</code> and <code>"t"</code>, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call <code>survtmle</code> again, now adjusting for covariates in the treatment and censoring fits.</p>
@@ -162,14 +157,8 @@ fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit2</code></pre></div>
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit2</code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5657950
@@ -193,22 +182,16 @@ fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
 <pre><code>## Loading required package: nnls</code></pre>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5541623
-## 1 1 0.7023496
+## 0 1 0.5541546
+## 1 1 0.7140480
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0028199510 0.0001807128
-## 1 1 0.0001807128 0.0018521466</code></pre>
+## 0 1 0.0027940998 0.0001872402
+## 1 1 0.0001872402 0.0017399509</code></pre>
 <p><strong>Remark:</strong> Invoking <code>survtmle</code> with <code>method = "mean"</code> and <code>SL.ftime</code> requires fitting a Super Learner <em>for each time point</em> from <code>seq_len(t0)</code>. If there are many unique time points observed in the data, this can become a computationally intensive process. In such cases, we recommend either redefining the <code>ftime</code> variable to pool across time points <em>or</em> using <code>method = "hazard"</code> (see below).</p>
 <hr>
 </div>
@@ -248,13 +231,13 @@ fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
 fit5</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5849860
-## 1 1 0.7589767
+## 0 1 0.5836815
+## 1 1 0.7634571
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0026726484 0.0002175538
-## 1 1 0.0002175538 0.0020695179</code></pre>
+## 0 1 0.0026784034 0.0002269052
+## 1 1 0.0002269052 0.0020455780</code></pre>
 <p><strong>Remark:</strong> The TMLE algorithm for the hazard-based estimator differs from the iterated mean-based TMLE. In particular, the algorithm is iterative and has no guarantee of convergence. While we have not identified instances where convergence is a serious problem, we encourage users to submit any such situations as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or to write directly to <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>. The stopping criteria for the iteration may be adjusted via <code>tol</code> and <code>maxIter</code> options. Increasing <code>tol</code> or decreasing <code>maxIter</code> will lead to faster convergence; however, it is recommended that <code>tol</code> be set no larger than <code>1 / sqrt(length(ftime))</code>. If <code>maxIter</code> is reached without convergence, one should check that <code>fit$meanIC</code> are all less than <code>1 / sqrt(length(ftime))</code>.</p>
 <hr>
 </div>
@@ -298,20 +281,8 @@ fit6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit6</code></pre></div>
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit6</code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4229114
@@ -334,14 +305,8 @@ fit7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit7</code></pre></div>
+                 <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)
+fit7</code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4229114
@@ -363,33 +328,21 @@ fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
                  <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit8</code></pre></div>
+                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
+fit8</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.4330357
-## 1 1 0.6075647
-## 0 2 0.2493319
-## 1 2 0.2737479
+## 0 1 0.4347158
+## 1 1 0.6060303
+## 0 2 0.2501808
+## 1 2 0.2751184
 ## 
 ## $var
 ##               0 1           1 1           0 2           1 2
-## 0 1  2.654633e-03  2.104489e-05 -1.266479e-03  4.270718e-05
-## 1 1  2.104489e-05  2.475461e-03 -6.820073e-06 -1.692892e-03
-## 0 2 -1.266479e-03 -6.820073e-06  2.031209e-03  6.284473e-05
-## 1 2  4.270718e-05 -1.692892e-03  6.284473e-05  1.933630e-03</code></pre>
+## 0 1  2.689783e-03  2.060343e-05 -1.301778e-03  4.322551e-05
+## 1 1  2.060343e-05  2.514412e-03 -6.451645e-06 -1.707281e-03
+## 0 2 -1.301778e-03 -6.451645e-06  2.059196e-03  6.360288e-05
+## 1 2  4.322551e-05 -1.707281e-03  6.360288e-05  1.954279e-03</code></pre>
 <p><strong>Remark:</strong> As with single failure type, the <code>method = "mean"</code> call to <code>survtmle</code> may be computationally intensive with many time points. This is especially true when there are additionally multiple failure types, as the function must repeat these calls to <code>SuperLearner</code> separately for each type of failure. In this case, calls to <code>survtmle</code> could be parallelized with one call to <code>survtmle</code> for each type of failure specifying <code>ftypeOfInterest</code>.</p>
 </div>
 </div>
@@ -432,17 +385,17 @@ fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survt
 fit10</code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.4562659
-## 1 1 0.6077551
-## 0 2 0.2901153
-## 1 2 0.2639072
+## 0 1 0.4561936
+## 1 1 0.6098020
+## 0 2 0.2895448
+## 1 2 0.2627577
 ## 
 ## $var
 ##               0 1           1 1           0 2           1 2
-## 0 1  2.636284e-03 -1.326474e-03  4.852226e-05  5.250069e-05
-## 1 1 -1.326474e-03  2.032189e-03 -1.107243e-05  6.019873e-05
-## 0 2  4.852226e-05 -1.107243e-05  3.045731e-03 -2.151165e-03
-## 1 2  5.250069e-05  6.019873e-05 -2.151165e-03  2.514515e-03</code></pre>
+## 0 1  2.599773e-03 -1.309696e-03  4.811715e-05  5.362138e-05
+## 1 1 -1.309696e-03  2.011762e-03 -1.172315e-05  6.302634e-05
+## 0 2  4.811715e-05 -1.172315e-05  3.036662e-03 -2.161558e-03
+## 1 2  5.362138e-05  6.302634e-05 -2.161558e-03  2.523458e-03</code></pre>
 <p>As with the iterated-mean based TMLE, we can obtain estimates of cumulative incidence of only certain failure types (via <code>ftypeOfInterest</code>); however, this does not necessarily result in faster computation, as it did in the case above. In situations where the convergence of the algorithm is an issue, it may be useful to invoke multiple calls to <code>survtmle</code> with singular <code>ftypeOfInterest</code>. If such convergence issues arise, please report them as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or contact us at <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>.</p>
 </div>
 </div>
@@ -552,14 +505,8 @@ fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sur
                  <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit2_rm</code></pre></div>
+                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)
+fit2_rm</code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5657950
@@ -570,22 +517,8 @@ fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sur
 ## 0 1 0.0029470633 0.0002170549
 ## 1 1 0.0002170549 0.0016411250</code></pre>
 <p>Now we can call <code>timepoints</code> to return estimates of cumulative incidence at each time <code>seq_len(t_0)</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))</code></pre></div>
-<pre><code>## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.
-## 'speedglm' ran into an error in withCallingHandlers ... using 'glm' instead.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># print the object</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
+<span class="co"># print the object</span>
 tp.fit2</code></pre></div>
 <pre><code>## $est
 ##   t1         t2         t3        t4        t5        t6
@@ -636,8 +569,8 @@ tp.fit4</code></pre></div>
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session Information</h2>
 <pre><code>## R version 3.4.1 (2017-06-30)
-## Platform: x86_64-apple-darwin16.6.0 (64-bit)
-## Running under: macOS Sierra 10.12.5
+## Platform: x86_64-apple-darwin16.7.0 (64-bit)
+## Running under: macOS Sierra 10.12.6
 ## 
 ## Matrix products: default
 ## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
@@ -650,24 +583,25 @@ tp.fit4</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] nnls_1.4          survtmle_1.0.1.2  tibble_1.3.3.9001
+## [1] nnls_1.4         survtmle_1.0.2.1 tibble_1.3.4    
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.12             knitr_1.16              
+##  [1] Rcpp_0.12.12             knitr_1.17              
 ##  [3] magrittr_1.5             MASS_7.3-47             
 ##  [5] munsell_0.4.3            speedglm_0.3-2          
 ##  [7] colorspace_1.3-2         lattice_0.20-35         
-##  [9] rlang_0.1.1.9000         stringr_1.2.0.9000      
+##  [9] rlang_0.1.2.9000         stringr_1.2.0.9000      
 ## [11] plyr_1.8.4               tools_3.4.1             
 ## [13] grid_3.4.1               gtable_0.2.0            
 ## [15] SuperLearner_2.0-23-9000 htmltools_0.3.6         
 ## [17] yaml_2.1.14              lazyeval_0.2.0          
 ## [19] rprojroot_1.2            digest_0.6.12           
-## [21] Matrix_1.2-10            tidyr_0.6.3             
-## [23] ggplot2_2.2.1            evaluate_0.10.1         
-## [25] rmarkdown_1.6            labeling_0.3            
-## [27] stringi_1.1.5            compiler_3.4.1          
-## [29] scales_0.4.1.9002        backports_1.1.0</code></pre>
+## [21] Matrix_1.2-11            purrr_0.2.3             
+## [23] tidyr_0.7.0              ggplot2_2.2.1           
+## [25] glue_1.1.1               evaluate_0.10.1         
+## [27] rmarkdown_1.6            labeling_0.3            
+## [29] stringi_1.1.5            compiler_3.4.1          
+## [31] scales_0.4.1.9002        backports_1.1.0</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">

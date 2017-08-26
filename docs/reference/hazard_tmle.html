@@ -204,7 +204,8 @@ any variables found in <code>names(adjustVars)</code>.</p></td>
       <td><p>The type of regression to be performed if fitting GLMs in
 the estimation and fluctuation procedures. The default is "binomial"
 for logistic regression. Only change this from the default if there
-are justifications that are well understood.</p></td>
+are justifications that are well understood. This is passed directly
+to <code>estimateCensoring</code> and <code>estimateHazards</code>.</p></td>
     </tr>
     <tr>
       <th>returnIC</th>

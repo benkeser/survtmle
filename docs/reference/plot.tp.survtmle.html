@@ -149,7 +149,8 @@ the latter being computed by a call to <code><a href='http://www.rdocumentation.
                   <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>W</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"I(W1*W2) + trt + t"</span>,
                   <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>A</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"W1 + t"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"hazard"</span>,
                   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,  <span class='kw'>t0</span> <span class='kw'>=</span> <span class='no'>t_0</span>, <span class='kw'>maxIter</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-)</div><div class='output co'>#&gt; <span class='message'>'speedglm' ran into an error in estimateHazards ... using 'glm' instead.</span></div><div class='input'><span class='no'>tpfit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='timepoints.html'>timepoints</a></span>(<span class='no'>fit</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'>seq_len</span>(<span class='no'>t_0</span>))
+)
+<span class='no'>tpfit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='timepoints.html'>timepoints</a></span>(<span class='no'>fit</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'>seq_len</span>(<span class='no'>t_0</span>))
 <span class='fu'>plot</span>(<span class='no'>tpfit</span>)</div><div class='img'><img src='plot.tp.survtmle-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
 </div></pre>
   </div>

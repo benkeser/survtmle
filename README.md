@@ -72,7 +72,7 @@ ftype <- as.numeric(ftime == T)
 # load the package
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.2.0
+#> Version: 1.0.2.1
 
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,

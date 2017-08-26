@@ -87,10 +87,10 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
     if(!Gcomp) {
       # fluctuation model
       suppressWarnings(
-        flucMod <- fast_glm(reg_form = stats::as.formula(flucForm),
-                            data = wideDataList[[1]][include, ],
-                            family = stats::binomial(),
-                            start = rep(0, length(uniqtrt)))
+        flucMod <- stats::glm(formula = stats::as.formula(flucForm),
+                              data = wideDataList[[1]][include, ],
+                              family = stats::binomial(),
+                              start = rep(0, length(uniqtrt)))
       )
       # get predictions back
       wideDataList <- lapply(wideDataList, function(x, t) {
