@@ -5,8 +5,8 @@
 \title{Compute Targeted Minimum Loss-Based Estimators in Survival Analysis Settings}
 \usage{
 survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-  SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
-  glm.ctime = NULL, glm.trt = NULL, returnIC = TRUE,
+  cv = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
+  glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL, returnIC = TRUE,
   returnModels = TRUE, ftypeOfInterest = unique(ftype[ftype != 0]),
   trtOfInterest = unique(trt), method = "hazard", bounds = NULL,
   verbose = FALSE, tol = 1/(sqrt(length(ftime))), maxIter = 10,
@@ -30,6 +30,10 @@ or conditional mean) probabilities.}
 
 \item{t0}{The time at which to return cumulative incidence estimates. By
 default this is set to \code{max(ftime[ftype > 0])}.}
+
+\item{cv}{Whether to compute a cross-validated estimate. This defaults to
+\code{NULL}. To invoke cross-validation, provide a numeric greater
+than 1, corresponding to the number of folds that ought to be used.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} option in the call to \code{SuperLearner} for the
