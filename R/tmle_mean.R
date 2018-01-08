@@ -134,7 +134,7 @@
 #' \item{ftype}{The numeric vector of failure types used in the fit.}
 #' \item{trt}{The numeric vector of treatment assignments used in the fit.}
 #' \item{adjustVars}{The \code{data.frame} of failure times used in the fit.}
-#'}
+#' }
 #'
 #' @examples
 #'
@@ -185,7 +185,7 @@ mean_tmle <- function(ftime,
   id <- seq_len(n)
   dat <- data.frame(id = id, ftime = ftime, ftype = ftype, trt = trt)
 
-  if(!is.null(adjustVars)) {
+  if (!is.null(adjustVars)) {
     dat <- cbind(dat, adjustVars)
   }
 
@@ -199,39 +199,47 @@ mean_tmle <- function(ftime,
   uniqtrt <- sort(trtOfInterest)
 
   # estimate trt probabilities
-  trtOut <- estimateTreatment(dat = dat,
-                              ntrt = ntrt,
-                              uniqtrt = uniqtrt,
-                              adjustVars = adjustVars,
-                              SL.trt = SL.trt,
-                              glm.trt = glm.trt,
-                              returnModels = returnModels,
-                              gtol = gtol)
+  trtOut <- estimateTreatment(
+    dat = dat,
+    ntrt = ntrt,
+    uniqtrt = uniqtrt,
+    adjustVars = adjustVars,
+    SL.trt = SL.trt,
+    glm.trt = glm.trt,
+    returnModels = returnModels,
+    gtol = gtol
+  )
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
 
   # make long version of data sets needed for estimation of censoring
-  dataList <- makeDataList(dat = dat, J = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
-                           t0 = t0, bounds = bounds)
+  dataList <- makeDataList(
+    dat = dat, J = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
+    t0 = t0, bounds = bounds
+  )
 
   # estimate censoring
-  censOut <- estimateCensoring(dataList = dataList,
-                               ntrt = ntrt,
-                               uniqtrt = uniqtrt,
-                               t0 = t0,
-                               verbose = verbose,
-                               adjustVars = adjustVars,
-                               SL.ctime = SL.ctime,
-                               glm.ctime = glm.ctime,
-                               glm.family = glm.family,
-                               returnModels = returnModels,
-                               gtol = gtol)
+  censOut <- estimateCensoring(
+    dataList = dataList,
+    ntrt = ntrt,
+    uniqtrt = uniqtrt,
+    t0 = t0,
+    verbose = verbose,
+    adjustVars = adjustVars,
+    SL.ctime = SL.ctime,
+    glm.ctime = glm.ctime,
+    glm.family = glm.family,
+    returnModels = returnModels,
+    gtol = gtol
+  )
   dataList <- censOut$dataList
   ctimeMod <- censOut$ctimeMod
 
-  wideDataList <- makeWideDataList(dat = dat, dataList = dataList,
-                                   adjustVars = adjustVars, t0 = t0,
-                                   allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt)
+  wideDataList <- makeWideDataList(
+    dat = dat, dataList = dataList,
+    adjustVars = adjustVars, t0 = t0,
+    allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt
+  )
 
   # estimate/fluctuate iterated means
   timeAndType <- expand.grid(rev(seq_len(t0)), ofInterestJ)
@@ -239,93 +247,118 @@ mean_tmle <- function(ftime,
   # empty list for Qmod if returnModels
   ftimeMod <- vector(mode = "list", length = length(ofInterestJ))
   names(ftimeMod) <- paste0("J", ofInterestJ)
-  for(j in seq_along(ofInterestJ)) {
+  for (j in seq_along(ofInterestJ)) {
     ftimeMod[[j]] <- vector(mode = "list", length = t0)
     names(ftimeMod[[j]]) <- paste0("t", seq_len(t0))
   }
 
-  for(i in seq_len(nrow(timeAndType))) {
-    estOut <- estimateIteratedMean(wideDataList = wideDataList,
-                                   t = timeAndType[i, 1],
-                                   whichJ = timeAndType[i, 2],
-                                   ntrt = ntrt,
-                                   uniqtrt = uniqtrt,
-                                   allJ = allJ,
-                                   t0 = t0,
-                                   SL.ftime = SL.ftime,
-                                   adjustVars = adjustVars,
-                                   glm.ftime = glm.ftime,
-                                   verbose = verbose,
-                                   returnModels = returnModels,
-                                   bounds = bounds)
+  for (i in seq_len(nrow(timeAndType))) {
+    estOut <- estimateIteratedMean(
+      wideDataList = wideDataList,
+      t = timeAndType[i, 1],
+      whichJ = timeAndType[i, 2],
+      ntrt = ntrt,
+      uniqtrt = uniqtrt,
+      allJ = allJ,
+      t0 = t0,
+      SL.ftime = SL.ftime,
+      adjustVars = adjustVars,
+      glm.ftime = glm.ftime,
+      verbose = verbose,
+      returnModels = returnModels,
+      bounds = bounds
+    )
 
     wideDataList <- estOut$wideDataList
-    eval(parse(text = paste0("ftimeMod$J", timeAndType[i, 2], "$t",
-                             timeAndType[i, 1], "<-estOut$ftimeMod")))
-    wideDataList <- fluctuateIteratedMean(wideDataList = wideDataList,
-                                          t = timeAndType[i, 1],
-                                          whichJ = timeAndType[i, 2],
-                                          ntrt = ntrt, uniqtrt = uniqtrt,
-                                          allJ = allJ, t0 = t0,
-                                          SL.ftime = SL.ftime,
-                                          glm.ftime = glm.ftime,
-                                          returnModels = returnModels,
-                                          bounds = bounds,
-                                          Gcomp = Gcomp)
+    eval(parse(text = paste0(
+      "ftimeMod$J", timeAndType[i, 2], "$t",
+      timeAndType[i, 1], "<-estOut$ftimeMod"
+    )))
+    wideDataList <- fluctuateIteratedMean(
+      wideDataList = wideDataList,
+      t = timeAndType[i, 1],
+      whichJ = timeAndType[i, 2],
+      ntrt = ntrt, uniqtrt = uniqtrt,
+      allJ = allJ, t0 = t0,
+      SL.ftime = SL.ftime,
+      glm.ftime = glm.ftime,
+      returnModels = returnModels,
+      bounds = bounds,
+      Gcomp = Gcomp
+    )
   }
 
   # get point estimate
   est <- rowNames <- NULL
-  for(j in ofInterestJ) {
-    for(z in seq_along(uniqtrt)) {
-      thisEst <- eval(parse(text = paste("mean(wideDataList[[", z + 1, "]]$Q",
-                                         j, "star.1)", sep = "")))
+  for (j in ofInterestJ) {
+    for (z in seq_along(uniqtrt)) {
+      thisEst <- eval(parse(text = paste(
+        "mean(wideDataList[[", z + 1, "]]$Q",
+        j, "star.1)", sep = ""
+      )))
       est <- rbind(est, thisEst)
       rowNames <- c(rowNames, paste(c(uniqtrt[z], j), collapse = " "))
-      eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
-                              " <- rep(thisEst,n)", sep = "")))
-      eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
-                              " <- wideDataList[[(z+1)]]$Q", j, "star.1",
-                              sep = "")))
+      eval(parse(text = paste(
+        "wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
+        " <- rep(thisEst,n)", sep = ""
+      )))
+      eval(parse(text = paste(
+        "wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
+        " <- wideDataList[[(z+1)]]$Q", j, "star.1",
+        sep = ""
+      )))
     }
   }
   row.names(est) <- rowNames
 
   # calculate influence function
-  for(j in ofInterestJ) {
-    for(z in seq_along(uniqtrt)) {
-      for(t in rev(seq_len(t0))) {
+  for (j in ofInterestJ) {
+    for (z in seq_along(uniqtrt)) {
+      for (t in rev(seq_len(t0))) {
         outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
-                              paste("Q", j, "star.", t + 1, sep = ""))
-        eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
-                                "star.", t, " <- wideDataList[[1]]$H",
-                                uniqtrt[z], ".", t,
-                                "*(wideDataList[[1]][,outcomeName] - wideDataList[[1]]$Q",
-                                j, "star.", t, ")", sep = "")))
+          paste("Q", j, "star.", t + 1, sep = "")
+        )
+        eval(parse(text = paste(
+          "wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
+          "star.", t, " <- wideDataList[[1]]$H",
+          uniqtrt[z], ".", t,
+          "*(wideDataList[[1]][,outcomeName] - wideDataList[[1]]$Q",
+          j, "star.", t, ")", sep = ""
+        )))
       }
-      eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
-                              "star.0 <- wideDataList[[1]]$Q", j, "star.1.Z",
-                              uniqtrt[z], " - wideDataList[[1]]$Q", j,
-                              "star.0.Z", uniqtrt[z], sep = "")))
-      ind <- eval(parse(text = paste("grep('D.Z", uniqtrt[z], ".", j,
-                                     "star', names(wideDataList[[1]]))",
-                                     sep = "")))
-      eval(parse(text = paste("wideDataList[[1]]$IC", j, "star.Z", uniqtrt[z],
-                              " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),wideDataList[[1]][,ind]))",
-                              sep = "")))
+      eval(parse(text = paste(
+        "wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
+        "star.0 <- wideDataList[[1]]$Q", j, "star.1.Z",
+        uniqtrt[z], " - wideDataList[[1]]$Q", j,
+        "star.0.Z", uniqtrt[z], sep = ""
+      )))
+      ind <- eval(parse(text = paste(
+        "grep('D.Z", uniqtrt[z], ".", j,
+        "star', names(wideDataList[[1]]))",
+        sep = ""
+      )))
+      eval(parse(text = paste(
+        "wideDataList[[1]]$IC", j, "star.Z", uniqtrt[z],
+        " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),wideDataList[[1]][,ind]))",
+        sep = ""
+      )))
     }
   }
 
   # calculate standard error
-  infCurves <- wideDataList[[1]][, grep("IC", names(wideDataList[[1]])),
-                                 drop = FALSE]
+  infCurves <- wideDataList[[1]][
+    , grep("IC", names(wideDataList[[1]])),
+    drop = FALSE
+  ]
   meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
+  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n ^ 2)
   row.names(var) <- colnames(var) <- rowNames
 
-  out <- list(est = est, var = var, meanIC = meanIC, ic = infCurves,
-              trtMod = trtMod, ftimeMod = ftimeMod, ctimeMod = ctimeMod,
-              ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars)
+  out <- list(
+    est = est, var = var, meanIC = meanIC, ic = infCurves,
+    trtMod = trtMod, ftimeMod = ftimeMod, ctimeMod = ctimeMod,
+    ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars
+  )
   class(out) <- "survtmle"
   return(out)
 }

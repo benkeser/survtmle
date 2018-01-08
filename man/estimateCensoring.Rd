@@ -22,7 +22,7 @@ Needed only because the naming convention for the regression if
 \item{SL.ctime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
 outcome regression (either cause-specific hazards or conditional mean).
-See \code{?SuperLearner} for more information on how to specify valid 
+See \code{?SuperLearner} for more information on how to specify valid
 \code{SuperLearner} libraries. It is expected that the wrappers used
 in the library will play nicely with the input variables, which will
 be called \code{"trt"} and \code{names(adjustVars)}.}

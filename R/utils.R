@@ -40,17 +40,16 @@ confint.survtmle <- function(object,
                              parm = 1:length(object$est),
                              level = 0.95,
                              ...) {
-
-    estVec <- object$est[parm]
-    ses <- sqrt(diag(object$var)[parm])
-    a <- (1 - level)/2
-    a <- c(a, 1 - a)
-    fac <- stats::qnorm(a)
-    pct <- format.perc(a, 3)
-    ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, pct))
-    ci[] <- estVec + ses %o% fac
-    row.names(ci) <- row.names(object$est)[parm]
-    return(ci)
+  estVec <- object$est[parm]
+  ses <- sqrt(diag(object$var)[parm])
+  a <- (1 - level) / 2
+  a <- c(a, 1 - a)
+  fac <- stats::qnorm(a)
+  pct <- format.perc(a, 3)
+  ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, pct))
+  ci[] <- estVec + ses %o% fac
+  row.names(ci) <- row.names(object$est)[parm]
+  return(ci)
 }
 
 #' format.perc
@@ -60,7 +59,9 @@ confint.survtmle <- function(object,
 #' @param probs Probabilities
 #' @param digits Number of digits to round to
 #'
-format.perc <- function (probs, digits) {
-    paste(format(100 * probs, trim = TRUE,
-                 scientific = FALSE, digits = digits), "%")
+format.perc <- function(probs, digits) {
+  paste(format(
+    100 * probs, trim = TRUE,
+    scientific = FALSE, digits = digits
+  ), "%")
 }

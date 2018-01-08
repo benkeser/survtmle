@@ -30,21 +30,21 @@
 
 getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
                                     uniqtrt, t0, verbose, ...) {
-  for(z in uniqtrt) {
-    for(j in ofInterestJ) {
-      dat[[paste0("margF",j,".z",z,".t0")]] <- 
-        mean(dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)])
+  for (z in uniqtrt) {
+    for (j in ofInterestJ) {
+      dat[[paste0("margF", j, ".z", z, ".t0")]] <-
+        mean(dataList[[1]][[paste0("F", j, ".z", z, ".t0")]][dataList[[1]]$t == min(dataList[[1]]$t)])
 
-      dat[[paste0("F",j,".z",z,".t0")]] <- 
-        dataList[[1]][[paste0("F",j,".z",z,".t0")]][dataList[[1]]$t==min(dataList[[1]]$t)]
+      dat[[paste0("F", j, ".z", z, ".t0")]] <-
+        dataList[[1]][[paste0("F", j, ".z", z, ".t0")]][dataList[[1]]$t == min(dataList[[1]]$t)]
       thisD <- NULL
-      for(jTild in allJ) {
-        H <- paste0("H",j,".j",ifelse(jTild==j,"Self","NotSelf"),".z",z)
-        thisD <- cbind(thisD, dataList[[1]][[H]]/(1-dataList[[1]][[paste0("hazNot",j)]])*
-                      (dataList[[1]][[paste0("N",jTild)]] - dataList[[1]][[paste0("Q",jTild,"Haz")]]))
+      for (jTild in allJ) {
+        H <- paste0("H", j, ".j", ifelse(jTild == j, "Self", "NotSelf"), ".z", z)
+        thisD <- cbind(thisD, dataList[[1]][[H]] / (1 - dataList[[1]][[paste0("hazNot", j)]]) *
+          (dataList[[1]][[paste0("N", jTild)]] - dataList[[1]][[paste0("Q", jTild, "Haz")]]))
       }
-      dat[[paste0("D.j",j,".z",z)]] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN=sum)) +
-          dat[[paste0("F",j,".z",z,".t0")]] - dat[[paste0("margF",j,".z",z,".t0")]]
+      dat[[paste0("D.j", j, ".z", z)]] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum)) +
+        dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]]
     }
   }
   return(dat)
