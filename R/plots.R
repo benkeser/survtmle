@@ -103,7 +103,9 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
     colnames(iso_est_in) <- c("t", "group", "value")
     plot_in <- iso_est_in
   }
-  pal <- wesanderson::wes_palette("Darjeeling", length(unique(plot_in$group)))
+  pal <- wesanderson::wes_palette(name = "Darjeeling",
+                                  n = length(unique(plot_in$group)),
+                                  type = "continuous")
   p <- ggplot2::ggplot(
     data = plot_in,
     ggplot2::aes(x = t, y = value, colour = group)
