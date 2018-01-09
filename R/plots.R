@@ -13,8 +13,8 @@ utils::globalVariables(c("value", "group"))
 #' @param ... additional arguments passed \code{plot} as necessary
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_step xlab ylab ggtitle
+#' @importFrom ggsci scale_color_lancet
 #' @importFrom stringr str_length str_sub
-#' @importFrom wesanderson wes_palette
 #' @importFrom tidyr gather
 #' @importFrom stats isoreg
 #'
@@ -103,9 +103,6 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
     colnames(iso_est_in) <- c("t", "group", "value")
     plot_in <- iso_est_in
   }
-  pal <- wesanderson::wes_palette(name = "Darjeeling",
-                                  n = length(unique(plot_in$group)),
-                                  type = "continuous")
   p <- ggplot2::ggplot(
     data = plot_in,
     ggplot2::aes(x = t, y = value, colour = group)
@@ -115,7 +112,7 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
   } else {
     p <- p + ggplot2::geom_point()
   }
-  p <- p + ggplot2::scale_colour_manual(values = pal) + ggplot2::xlab("Time") +
+  p <- p + ggplot2::xlab("Time") +
     ggplot2::ylab("Cumulative Incidence Estimate") +
     ggplot2::ggtitle(paste(
       "Cumulative Incidence Amongst Groups",
@@ -123,6 +120,8 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
         "\n (smoothed by isotonic regression)",
         "\n (raw estimates)"
       )
-    )) + ggplot2::theme_bw()
+    )) +
+    ggplot2::theme_bw() +
+    ggsci::scale_color_lancet()
   return(p)
 }

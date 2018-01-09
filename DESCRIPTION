@@ -24,7 +24,7 @@ Imports:
     tidyr,
     stringr,
     ggplot2,
-    wesanderson
+    ggsci
 Suggests:
     testthat,
     knitr,
