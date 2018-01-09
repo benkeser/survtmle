@@ -13,7 +13,7 @@ utils::globalVariables(c("value", "group"))
 #' @param ... additional arguments passed \code{plot} as necessary
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_step xlab ylab ggtitle
-#' @importFrom ggsci scale_color_lancet
+#' @importFrom ggsci scale_fill_lancet
 #' @importFrom stringr str_length str_sub
 #' @importFrom tidyr gather
 #' @importFrom stats isoreg
@@ -122,6 +122,6 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
       )
     )) +
     ggplot2::theme_bw() +
-    ggsci::scale_color_lancet()
+    ggsci::scale_fill_lancet()
   return(p)
 }
