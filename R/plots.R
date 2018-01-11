@@ -6,14 +6,19 @@ utils::globalVariables(c("value", "group"))
 #' latter by isotonic regression of the raw estimates, of cumulative incidence.
 #'
 #' @param x object of class \code{tp.survtmle} as produced by a sequence of
-#' appropriate calls to \code{survtmle} and \code{timepoints}
-#' @param type character describing whether to provide a plot of raw ("raw") or
-#'        monotonic ("iso") estimates in the resultant step function plot, with
-#'        the latter being computed by a call to \code{stats::isoreg}
+#'  appropriate calls to \code{survtmle} and \code{timepoints}
+#' @param type \code{character} describing whether to provide a plot of raw
+#'  ("raw") or monotonic ("iso") estimates in the resultant step function plot,
+#'  with the latter being computed by a call to \code{stats::isoreg}
+#' @param palette A \code{ggplot2} palette object from the \code{ggsci} package.
+#'  The default of \code{scale_color_lancet} is generally appropriate for both
+#'  medical and epidemiologic applications, though there are situations in which
+#'  one might opt to change this. Note that this can also be overridden in the
+#'  resultant plot object using standard \code{ggplot2} semantics.
 #' @param ... additional arguments passed \code{plot} as necessary
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_step xlab ylab ggtitle
-#' @importFrom ggsci scale_fill_lancet
+#' @importFrom ggsci scale_color_lancet
 #' @importFrom stringr str_length str_sub
 #' @importFrom tidyr gather
 #' @importFrom stats isoreg
@@ -46,7 +51,10 @@ utils::globalVariables(c("value", "group"))
 #' tpfit <- timepoints(fit, times = seq_len(t_0))
 #' plot(tpfit)
 #'
-plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
+plot.tp.survtmle <- function(x,
+                             ...,
+                             type = c("iso", "raw"),
+                             palette = ggsci::scale_color_lancet()) {
 
   # check that input for type is appropriate
   type <- match.arg(type)
@@ -122,6 +130,7 @@ plot.tp.survtmle <- function(x, ..., type = c("iso", "raw")) {
       )
     )) +
     ggplot2::theme_bw() +
-    ggsci::scale_fill_lancet()
+    try(palette)
   return(p)
 }
+
