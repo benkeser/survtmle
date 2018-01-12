@@ -69,7 +69,7 @@ plot.tp.survtmle <- function(x,
   times <- objects(x)
   times_labels <- stringr::str_sub(times, 2, stringr::str_length(times))
   times_labels <- as.numeric(unclass(times_labels))
-  times_labels <- times_labels[order(times_labels)]  # reorder
+  times_labels <- times_labels[order(times_labels)] # reorder
 
   if (type == "raw") {
     raw_est_in <- as.data.frame(cbind(t(est), times_labels))
@@ -120,20 +120,19 @@ plot.tp.survtmle <- function(x,
   if (length(unique(plot_in$t)) > 1) {
     p <- p + ggplot2::geom_step()
   } else {
-    p <-  p + ggplot2::geom_point()
+    p <- p + ggplot2::geom_point()
   }
   p <- p + ggplot2::xlab("Time") +
-  ggplot2::ylab("Cumulative Incdicence Estimate") +
-  ggplot2::ggtitle(paste(
-    "Cumulative Incidence Amongst Groups",
-    ifelse(type == "iso",
-      "\n (smoothed by isotonic regression)",
-      "\n (raw estimates)"
-    )
-  )) +
-  ggplot2::theme_bw() +
-  pal
+    ggplot2::ylab("Cumulative Incdicence Estimate") +
+    ggplot2::ggtitle(paste(
+      "Cumulative Incidence Amongst Groups",
+      ifelse(type == "iso",
+        "\n (smoothed by isotonic regression)",
+        "\n (raw estimates)"
+      )
+    )) +
+    ggplot2::theme_bw() +
+    pal
   # ...and print
   return(p)
 }
-
