@@ -43,6 +43,11 @@
 #' @param Gcomp A boolean indicating whether \code{mean_tmle} was called to
 #'        evaluate the G-computation estimator, in which case this function does
 #'        nothing but re-label columns.
+#' @param msm.formula A valid right-hand-side of a formula that can include 
+#'        variables \code{trt} and \code{colnames(adjustVars)}
+#' @param msm.family A family argument for the msm (either \code{"gaussian"} for
+#'        an L-2 projection onto a linear MSM or \code{"binomial"} for a 
+#'        Kulback-Leibler projection onto a logistic-linear MSM
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula optim glm qlogis binomial
@@ -56,12 +61,13 @@
 #'
 
 fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
-                                  Gcomp = FALSE, bounds = NULL, ...) {
+                                  Gcomp = FALSE, bounds = NULL, msm.formula = NULL,
+                                  msm.family = NULL, ...) {
   outcomeName <- ifelse(t == t0, paste("N", whichJ, ".", t0, sep = ""),
                         paste("Q", whichJ, "star.", t + 1, sep = ""))
-
+  n <- length(wideDataList[[1]][,1])
   ## determine who to include in estimation
-  include <- rep(TRUE, nrow(wideDataList[[1]]))
+  include <- rep(TRUE, n)
   if(t != 1) {
     for(j in allJ) {
       # exclude previously failed subjects
@@ -80,26 +86,57 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       x
     }, t = t)
 
-    flucForm <- paste(outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
-                      ".", t, ")) +",
-                      paste0("H", uniqtrt, ".", t, collapse = "+"), sep = "")
-
+    if(is.null(msm.formula)){
+      flucForm <- paste0(outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
+                        ".", t, ")) +", paste0("H", uniqtrt, ".", t, collapse = "+"))
+    }else{
+      # figure out dimension without calling model.matrix again
+      msm.p <- sum(grepl(paste0("H.*.",t,".obs"), colnames(wideDataList[[1]])))
+      flucForm <- paste0(outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
+                        ".", t, ")) +", paste0("H", 1:msm.p, ".", t, ".obs", collapse = "+"))
+    }
     if(!Gcomp) {
       # fluctuation model
-      suppressWarnings(
-        flucMod <- stats::glm(formula = stats::as.formula(flucForm),
-                              data = wideDataList[[1]][include, ],
-                              family = stats::binomial(),
-                              start = rep(0, length(uniqtrt)))
-      )
-      # get predictions back
-      wideDataList <- lapply(wideDataList, function(x, t) {
+      if(is.null(msm.formula)){
         suppressWarnings(
-          x[[paste0("Q", whichJ, "star.", t)]] <- predict(flucMod, newdata = x,
-                                                          type = "response")
+          flucMod <- stats::glm(formula = stats::as.formula(flucForm),
+                                data = wideDataList[[1]][include, ],
+                                family = stats::binomial(),
+                                start = rep(0, length(uniqtrt)))
         )
-        x
-      }, t = t)
+        # get predictions back
+        wideDataList <- lapply(wideDataList, function(x, t) {
+          suppressWarnings(
+            x[[paste0("Q", whichJ, "star.", t)]] <- 
+              x[[paste0("N",whichJ,".",t-1)]] + (1-x[[paste0("NnotJ.",t-1)]]-x[[paste0("N",whichJ,".",t-1)]])*
+                predict(flucMod, newdata = x, type = "response")
+          )
+          x
+        }, t = t)
+      }else{
+        # stackedData <- Reduce("rbind", lapply(wideDataList[2:length(wideDataList)], 
+        #                         "[", i = 1:n, j = c(outcomeName, 
+        #                           paste0("H",1:msm.p,".",t,".obs"),paste0("Q", whichJ,".",t))))
+        # stackedInclude <- rep(include, msm.p)
+        suppressWarnings(
+          flucMod <- stats::glm(formula = stats::as.formula(flucForm),
+                                data = wideDataList[[1]][include,],
+                                family = stats::binomial(),
+                                start = rep(0, length(uniqtrt)))
+        )
+        epsilon <- matrix(flucMod$coefficients)
+        # get predictions back
+        wideDataList <- lapply(wideDataList, function(x, t) {
+          predCov <- as.matrix(x[,paste0("H",1:msm.p,".",t,".pred")])
+          predOffset <- x[,paste0("Q", whichJ,".",t)]
+          suppressWarnings(
+            x[[paste0("Q", whichJ, "star.", t)]] <- 
+              x[[paste0("N",whichJ,".",t-1)]] + (1-x[[paste0("NnotJ.",t-1)]]-x[[paste0("N",whichJ,".",t-1)]])*
+                plogis(qlogis(predOffset) + predCov %*% epsilon)
+          )
+          x
+        }, t = t)
+      }
     } else {
       # if Gcomp, just skip fluctuation step and assign this
       wideDataList <- lapply(wideDataList, function(x, t) {
@@ -109,7 +146,12 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
     }
   } else {
     if(!Gcomp) {
-      cleverCovariates <- paste0("H", uniqtrt, ".", t)
+      if(is.null(msm.formula)){
+        cleverCovariates <- paste0("H", uniqtrt, ".", t)
+      }else{
+        msm.p <- sum(grepl(paste0("H.*.",t), colnames(wideDataList[[1]])))
+        cleverCovariates <- paste0("H", 1:msm.p, ".", t, ".obs")
+      }
       lj.t <- paste0("l",whichJ,".",t)
       uj.t <- paste0("u",whichJ,".",t)
       Qtildej.t <- paste0("Qtilde",whichJ,".",t)
@@ -121,7 +163,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]])/(x[[uj.t]]-x[[lj.t]])
         x[["thisScale"]] <- x[[uj.t]] - x[[lj.t]]
         x[[Qtildej.t]] <- x[[Nj.tm1]] + (1-x[[NnotJ.tm1]]-x[[Nj.tm1]])*
-          (x[[Qj.t]] - x[[lj.t]])/x[["thisScale"]]
+          (x[[Qj.t]] - x[[lj.t]]) / x[["thisScale"]]
         x[[Qtildej.t]][x[[Qtildej.t]]==1] <- 1-.Machine$double.neg.eps
 
         x$thisOffset <- 0
@@ -129,21 +171,37 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
           stats::qlogis(x[[Qtildej.t]][(x[[NnotJ.tm1]] + x[[Nj.tm1]]) == 0])
         x
       })
-
-      fluc.mod <- stats::optim(par = rep(0, length(cleverCovariates)),
-                               fn = LogLikelihood_offset,
-                               Y = wideDataList[[1]]$thisOutcome[include],
-                               H = as.matrix(wideDataList[[1]][include,
-                                             cleverCovariates]),
-                               offset = wideDataList[[1]]$thisOffset[include],
-                               method = "BFGS", gr = grad_offset,
-                               control = list(reltol = 1e-7, maxit = 50000))
+      if(is.null(msm.formula)){
+        fluc.mod <- stats::optim(par = rep(0, length(cleverCovariates)),
+                                 fn = LogLikelihood_offset,
+                                 Y = wideDataList[[1]]$thisOutcome[include],
+                                 H = as.matrix(wideDataList[[1]][include,
+                                               cleverCovariates]),
+                                 offset = wideDataList[[1]]$thisOffset[include],
+                                 method = "BFGS", gr = grad_offset,
+                                 control = list(reltol = 1e-7, maxit = 50000))
+      }else{
+        # stackedData <- Reduce("rbind", lapply(wideDataList[2:length(wideDataList)], 
+        #                         "[", i = 1:n, j = c("thisOutcome", "thisOffset",
+        #                           paste0("H",1:msm.p,".",t,".obs"))))
+        # stackedInclude <- rep(include, msm.p)
+        fluc.mod <- stats::optim(par = rep(0, length(cleverCovariates)),
+                         fn = LogLikelihood_offset,
+                         Y = wideDataList[[1]]$thisOutcome[include],
+                         H = as.matrix(wideDataList[[1]][include,
+                                       cleverCovariates]),
+                         offset = wideDataList[[1]]$thisOffset[include],
+                         method = "BFGS", gr = grad_offset,
+                         control = list(reltol = 1e-7, maxit = 50000))
+      }
 
       if(fluc.mod$convergence != 0) {
         stop("fluctuation convergence failure")
       } else {
         beta <- fluc.mod$par
-
+        if(!is.null(msm.formula)){
+          cleverCovariates <- paste0("H", 1:msm.p, ".", t, ".pred")
+        }
         wideDataList <- lapply(wideDataList, function(x) {
           x[[paste0("Q",whichJ,"star.",t)]] <- x[[Nj.tm1]] +
             (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]])* (plogis(x$thisOffset +

@@ -101,6 +101,15 @@
 #' @param gtol The truncation level of predicted censoring survival. Setting to
 #'        larger values can help performance in data sets with practical
 #'        positivity violations.
+#' @param msm.formula A valid right-hand-side of a formula that can include 
+#'        variables \code{trt} and \code{colnames(adjustVars)}
+#' @param msm.family A family argument for the msm (either \code{"gaussian"} for
+#'        an L-2 projection onto a linear MSM or \code{"binomial"} for a 
+#'        Kulback-Leibler projection onto a logistic-linear MSM
+#' @param msm.weights A character specifying what weights to use for the projection
+#'        onto the working MSM. Options now include "marginal" (weight by marginal
+#'        probability of treatment) or "equal" (equal weight, all treatment and 
+#'        covariates)
 #' @param ... Other options. Not currently used.
 #'
 #' @return An object of class \code{survtmle}.
@@ -176,6 +185,9 @@ hazard_tmle <- function(ftime,
                         glm.ctime = NULL,
                         glm.trt = "1",
                         glm.family = "binomial",
+                        msm.formula = NULL,
+                        msm.family = NULL, 
+                        msm.weights = "marginal",
                         returnIC = TRUE,
                         returnModels = FALSE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -217,6 +229,21 @@ hazard_tmle <- function(ftime,
   dataList <- makeDataList(dat = dat, J = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
                            t0 = t0, bounds = bounds)
 
+  if(!is.null(msm.formula)){
+    # if msm, estimate stable weights
+    msmWeightList <- estimateMSMWeights(dat = dat, 
+                                        dataList = dataList, 
+                                    ntrt = ntrt, 
+                                    uniqtrt = uniqtrt, 
+                                    adjustVars = adjustVars,
+                                    msm.formula = msm.formula,
+                                    msm.weights = msm.weights, 
+                                    returnModels = returnModels, t0 = t0)
+  }else{
+    msmWeightList <- NULL
+    msm.p <- NULL
+  }
+
   # estimate censoring
   censOut <- estimateCensoring(dataList = dataList,
                                ntrt = ntrt,
@@ -255,13 +282,32 @@ hazard_tmle <- function(ftime,
   dataList <- updateVariables(dataList = dataList, allJ = allJ,
                               ofInterestJ = ofInterestJ,
                               nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-                              t0 = t0, verbose = verbose)
- 
+                              t0 = t0, verbose = verbose,
+                              msm.formula = msm.formula, msm.family = msm.family,
+                              msmWeightList = msmWeightList)
+  
+  # if msm, need to compute an estimate of the parameters to get the 
+  # influence function 
+  if(!is.null(msm.formula)){
+    est <- getHazardMSMEstimate(dat = dat, 
+                                dataList = dataList,
+                                msm.formula = msm.formula,
+                                msm.family = msm.family,
+                                msmWeightList = msmWeightList, 
+                                adjustVarNames = colnames(adjustVars),
+                                ofInterestJ = ofInterestJ, 
+                                ...)
+  }else{
+    est <- NULL
+  }
+
   # calculate influence function
   dat <- getHazardInfluenceCurve(dataList = dataList, dat = dat,
                                  ofInterestJ = ofInterestJ, allJ = allJ,
                                  nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-                                 verbose = verbose, t0 = t0)
+                                 verbose = verbose, t0 = t0, msm.est = est,
+                                 msm.formula = msm.formula, msm.family = msm.family,
+                                 msmWeightList = msmWeightList)
   infCurves <- dat[, grep("D.j", names(dat))]
   meanIC <- colMeans(infCurves)
  
@@ -271,18 +317,31 @@ hazard_tmle <- function(ftime,
     dataList <- fluctuateHazards(dataList = dataList, ofInterestJ = ofInterestJ,
                                  tol = tol, allJ = allJ, nJ = nJ,
                                  uniqtrt = uniqtrt, ntrt = ntrt,
-                                 verbose = verbose, t0 = t0)
+                                 verbose = verbose, t0 = t0, msm.p = length(est), 
+                                 msm.formula = msm.formula, msm.family = msm.family,
+                                 msmWeightList = msmWeightList)
     suppressWarnings(
       if(all(dataList[[1]] == "convergence failure")) {
         return("fluctuation convergence failure")
       }
     )
-
+    if(!is.null(msm.formula)){
+      est <- getHazardMSMEstimate(dat = dat, 
+                                  dataList = dataList,
+                                  msm.formula = msm.formula,
+                                  msm.family = msm.family,
+                                  msmWeightList = msmWeightList, 
+                                  adjustVarNames = colnames(adjustVars),
+                                  ofInterestJ = ofInterestJ)
+    }
     # calculate influence function
     dat <- getHazardInfluenceCurve(dataList = dataList, dat = dat,
                                    ofInterestJ = ofInterestJ, allJ = allJ,
                                    nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-                                   verbose = verbose, t0 = t0)
+                                   verbose = verbose, t0 = t0, msm.est = est,
+                                   msm.formula = msm.formula, msm.family = msm.family,
+                                   msmWeightList = msmWeightList)
+
     infCurves <- dat[, grep("D.j", names(dat))]
     meanIC <- colMeans(infCurves)
 
@@ -297,20 +356,23 @@ hazard_tmle <- function(ftime,
   }
 
   # calculate point estimate
-  est <- rowNames <- NULL
-  for(j in ofInterestJ) {
-    for(z in uniqtrt) {
-      eval(parse(text = paste("est <- rbind(est, dat$margF", j, ".z", z,
-                              ".t0[1])", sep = "")))
-      rowNames <- c(rowNames, paste(c(z, j), collapse = " "))
+  if(is.null(msm.formula)){
+    est <- rowNames <- NULL
+    for(j in ofInterestJ) {
+      for(z in uniqtrt) {
+        eval(parse(text = paste("est <- rbind(est, dat$margF", j, ".z", z,
+                                ".t0[1])", sep = "")))
+        rowNames <- c(rowNames, paste(c(z, j), collapse = " "))
+      }
     }
+    row.names(est) <- rowNames
+
+    # calculate standard error
+    var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
+    row.names(var) <- colnames(var) <- rowNames
+  }else{
+    var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
   }
-  row.names(est) <- rowNames
-
-  # calculate standard error
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
-  row.names(var) <- colnames(var) <- rowNames
-
   out <- list(est = est, var = var, meanIC = meanIC, ic = infCurves,
               trtMod = trtMod, ftimeMod = ftimeMod, ctimeMod = ctimeMod,
               ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars)

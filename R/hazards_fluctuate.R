@@ -26,6 +26,9 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A boolean indicating whether the function should print
 #'        messages to indicate progress.
+#' @param msm.formula A valid right-hand-side of a formula that can include 
+#'        variables \code{trt} and \code{colnames(adjustVars)}
+#' @param msm.p Dimension of MSM parameter
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return The function returns a list that is exactly the same as the input
@@ -38,73 +41,127 @@
 #'
 
 fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
-                             verbose, ...) {
+                             verbose, msm.formula = NULL, msm.family = NULL,
+                             msm.p = NULL, msmWeightList = NULL, ...) {
   eps <- NULL
-  for(z in uniqtrt) {
-    for(j in allJ) {
-      # clever covariates
-      cleverCovariatesNotSelf <- NULL
-      if(length(ofInterestJ[ofInterestJ != j]) > 0) {
-        cleverCovariatesNotSelf <- c(cleverCovariatesNotSelf,
-                                     paste0("H", ofInterestJ[ofInterestJ != j],
-                                            ".jNotSelf.z", z))
-      }
-      if(j %in% ofInterestJ) {
-        cleverCovariatesSelf <- paste0("H", j, ".jSelf.z", z)
+  if(is.null(msm.formula)){
+    for(z in uniqtrt) {
+      for(j in allJ) {
+        # clever covariates
+        cleverCovariatesNotSelf <- NULL
+        if(length(ofInterestJ[ofInterestJ != j]) > 0) {
+          cleverCovariatesNotSelf <- c(cleverCovariatesNotSelf,
+                                       paste0("H", ofInterestJ[ofInterestJ != j],
+                                              ".jNotSelf.z", z))
+        }
+        if(j %in% ofInterestJ) {
+          cleverCovariatesSelf <- paste0("H", j, ".jSelf.z", z)
+        } else {
+          cleverCovariatesSelf <- NULL
+        }
+
+      # calculate offset term and outcome
+      dataList <- lapply(dataList, function(x, j, allJ) {
+        x$thisScale <- pmin(x[[paste0("u",j)]],1-x[[paste0("hazNot",j)]]) - x[[paste0("l",j)]]
+        x$thisOffset <- stats::qlogis(pmin((x[[paste0("Q",j,"Haz")]] - x[[paste0("l",j)]])/x$thisScale,
+                                    1-.Machine$double.neg.eps))
+        x$thisOutcome <- (x[[paste0("N",j)]] - x[[paste0("l",j)]])/x$thisScale
+        x
+      }, j = j, allJ = allJ)
+
+      fluc.mod <- stats::optim(par = rep(0, length(c(cleverCovariatesNotSelf,
+                                                     cleverCovariatesSelf))),
+                               fn = LogLikelihood_offset,
+                               Y = dataList[[1]]$thisOutcome,
+                               H = suppressWarnings(
+                                    as.matrix(Matrix::Diagonal(x = dataList[[1]]$thisScale) %*%
+                                              as.matrix(dataList[[1]][, c(cleverCovariatesNotSelf,
+                                                                          cleverCovariatesSelf)]))
+                                   ),
+                               offset = dataList[[1]]$thisOffset,
+                               method = "BFGS", gr = grad_offset,
+                               control = list(reltol = 1e-7, maxit = 50000))
+
+      if(fluc.mod$convergence != 0) {
+        warning("Fluctuation convergence failure. Using current estimates.")
+        beta <- rep(0, length(fluc.mod$par))
       } else {
-        cleverCovariatesSelf <- NULL
+        beta <- fluc.mod$par
       }
+      eps <- c(eps, beta)
 
-    # calculate offset term and outcome
-    dataList <- lapply(dataList, function(x, j, allJ) {
-      x$thisScale <- pmin(x[[paste0("u",j)]],1-x[[paste0("hazNot",j)]]) - x[[paste0("l",j)]]
-      x$thisOffset <- stats::qlogis(pmin((x[[paste0("Q",j,"Haz")]] - x[[paste0("l",j)]])/x$thisScale,
-                                  1-.Machine$double.neg.eps))
-      x$thisOutcome <- (x[[paste0("N",j)]] - x[[paste0("l",j)]])/x$thisScale
-      x
-    }, j = j, allJ = allJ)
-
-    fluc.mod <- stats::optim(par = rep(0, length(c(cleverCovariatesNotSelf,
-                                                   cleverCovariatesSelf))),
-                             fn = LogLikelihood_offset,
-                             Y = dataList[[1]]$thisOutcome,
-                             H = suppressWarnings(
-                                  as.matrix(Matrix::Diagonal(x = dataList[[1]]$thisScale) %*%
-                                            as.matrix(dataList[[1]][, c(cleverCovariatesNotSelf,
-                                                                        cleverCovariatesSelf)]))
-                                 ),
-                             offset = dataList[[1]]$thisOffset,
-                             method = "BFGS", gr = grad_offset,
-                             control = list(reltol = 1e-7, maxit = 50000))
-
-    if(fluc.mod$convergence != 0) {
-      warning("Fluctuation convergence failure. Using with initial estimates.
-              Proceed with caution")
-      beta <- rep(0, length(fluc.mod$par))
-    } else {
-      beta <- fluc.mod$par
-    }
-    eps <- c(eps, beta)
-
-    dataList <- lapply(dataList, function(x, j) {
-      x[[paste0("Q",j,"PseudoHaz")]][x$trt==z] <- plogis(x$thisOffset[x$trt==z] + 
-        suppressWarnings(
-          as.matrix(
-            Matrix::Diagonal(x=x$thisScale[x$trt==z])%*%
-                as.matrix(x[x$trt==z,c(cleverCovariatesNotSelf, cleverCovariatesSelf)])
-          )%*% as.matrix(beta)
+      dataList <- lapply(dataList, function(x, j) {
+        x[[paste0("Q",j,"PseudoHaz")]][x$trt==z] <- plogis(x$thisOffset[x$trt==z] + 
+          suppressWarnings(
+            as.matrix(
+              Matrix::Diagonal(x=x$thisScale[x$trt==z])%*%
+                  as.matrix(x[x$trt==z,c(cleverCovariatesNotSelf, cleverCovariatesSelf)])
+            )%*% as.matrix(beta)
+          )
         )
-      )
-      x[[paste0("Q",j,"Haz")]][x$trt==z] <- x[[paste0("Q",j,"PseudoHaz")]][x$trt==z]*
-        x$thisScale[x$trt==z] + x[[paste0("l",j)]][x$trt==z]
-      x 
-    }, j = j)
+        x[[paste0("Q",j,"Haz")]][x$trt==z] <- x[[paste0("Q",j,"PseudoHaz")]][x$trt==z]*
+          x$thisScale[x$trt==z] + x[[paste0("l",j)]][x$trt==z]
+        x 
+      }, j = j)
 
-    # update variables based on new haz
-    dataList <- updateVariables(dataList = dataList, allJ = allJ,
-                                ofInterestJ = ofInterestJ,
-                                nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-                                verbose = verbose, t0 = t0)
+      # update variables based on new haz
+      dataList <- updateVariables(dataList = dataList, allJ = allJ,
+                                  ofInterestJ = ofInterestJ,
+                                  nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
+                                  verbose = verbose, t0 = t0)
+      }
+    }
+  }else{
+    for(jTild in allJ) {
+      H <- paste0("H",ofInterestJ,".j",ifelse(jTild == ofInterestJ, "Self", "NotSelf"), ".", 1:msm.p)
+      # calculate offset term and outcome
+      dataList <- lapply(dataList, function(x, j, allJ) {
+        x$thisScale <- pmin(x[,paste0("u",j)],1-x[,paste0("hazNot",j)]) - x[,paste0("l",j)]
+        x$thisOffset <- stats::qlogis(pmin((x[,paste0("Q",j,"Haz")] - x[,paste0("l",j)])/x$thisScale,
+                                    1-.Machine$double.neg.eps))
+        x$thisOutcome <- (x[,paste0("N",j)] - x[,paste0("l",j)])/x$thisScale
+        x
+      }, j = jTild, allJ = allJ)
+
+      fluc.mod <- stats::optim(par = rep(0, length(H)),
+                               fn = LogLikelihood_offset,
+                               Y = dataList[[1]]$thisOutcome,
+                               H = suppressWarnings(
+                                    as.matrix(Matrix::Diagonal(x = dataList[[1]]$thisScale) %*%
+                                              as.matrix(dataList[[1]][, H]))),
+                               offset = dataList[[1]]$thisOffset,
+                               method = "BFGS", gr = grad_offset,
+                               control = list(reltol = 1e-7, maxit = 50000))
+
+      if(fluc.mod$convergence != 0) {
+        warning("Fluctuation convergence failure. Using current estimates.")
+        beta <- rep(0, length(fluc.mod$par))
+      } else {
+        beta <- fluc.mod$par
+      }
+      eps <- c(eps, beta)
+
+      dataList <- lapply(dataList, function(x, j) {
+        x[[paste0("Q",j,"PseudoHaz")]] <- plogis(x$thisOffset + 
+          suppressWarnings(
+            as.matrix(
+              Matrix::Diagonal(x=x$thisScale)%*%
+                  as.matrix(x[ , H])
+            )%*% as.matrix(beta)
+          )
+        )
+        x[[paste0("Q",j,"Haz")]] <- x[[paste0("Q",j,"PseudoHaz")]]*
+          x$thisScale + x[[paste0("l",j)]]
+        x 
+      }, j = jTild)
+
+      # update variables based on new haz
+      dataList <- updateVariables(dataList = dataList, allJ = allJ,
+                                  ofInterestJ = ofInterestJ,
+                                  nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
+                                  verbose = verbose, t0 = t0,
+                                  msm.formula = msm.formula, msm.family = msm.family,
+                                  msmWeightList = msmWeightList)
     }
   }
   attr(dataList, "fluc") <- eps

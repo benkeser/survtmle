@@ -92,6 +92,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     dataList[[i + 1]]$C[dataList[[i + 1]]$id %in% censEvents &
                         dataList[[i + 1]]$t >= dataList[[i + 1]]$ftime] <- 1
     dataList[[i + 1]]$trt <- uniqtrt[i]
+    dataList[[i + 1]]$g_obsz <- dataList[[i + 1]][[paste0("g_", uniqtrt[i])]]
     # so all indicators pass
     dataList[[i + 1]]$ftime <- t0
 

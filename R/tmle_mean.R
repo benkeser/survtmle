@@ -96,6 +96,15 @@
 #' @param gtol The truncation level of predicted censoring survival. Setting to
 #'        larger values can help performance in data sets with practical
 #'        positivity violations.
+#' @param msm.formula A valid right-hand-side of a formula that can include 
+#'        variables \code{trt} and \code{colnames(adjustVars)}
+#' @param msm.family A family argument for the msm (either \code{"gaussian"} for
+#'        an L-2 projection onto a linear MSM or \code{"binomial"} for a 
+#'        Kulback-Leibler projection onto a logistic-linear MSM
+#' @param msm.weights A character specifying what weights to use for the projection
+#'        onto the working MSM. Options now include "marginal" (weight by marginal
+#'        probability of treatment) or "equal" (equal weight, all treatment and 
+#'        covariates)
 #' @param ... Other options. Not currently used.
 #'
 #' @return An object of class \code{survtmle}.
@@ -170,6 +179,9 @@ mean_tmle <- function(ftime,
                       glm.ctime = NULL,
                       glm.trt = "1",
                       glm.family = "binomial",
+                      msm.formula = NULL,
+                      msm.family = NULL, 
+                      msm.weights = "marginal",
                       returnIC = TRUE,
                       returnModels = FALSE,
                       ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -209,6 +221,19 @@ mean_tmle <- function(ftime,
                               gtol = gtol)
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
+  
+  if(!is.null(msm.formula)){
+    # if msm, estimate stable weights
+    msmWeightList <- estimateMSMWeights(dat = dat, 
+                                    ntrt = ntrt, 
+                                    uniqtrt = uniqtrt, 
+                                    adjustVars = adjustVars,
+                                    msm.formula = msm.formula,
+                                    msm.weights = msm.weights, 
+                                    returnModels = returnModels)
+  }else{
+    msmWeightList <- NULL
+  }
 
   # make long version of data sets needed for estimation of censoring
   dataList <- makeDataList(dat = dat, J = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
@@ -231,7 +256,9 @@ mean_tmle <- function(ftime,
 
   wideDataList <- makeWideDataList(dat = dat, dataList = dataList,
                                    adjustVars = adjustVars, t0 = t0,
-                                   allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt)
+                                   allJ = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
+                                   msm.formula = msm.formula,
+                                   msmWeightList = msmWeightList)
 
   # estimate/fluctuate iterated means
   timeAndType <- expand.grid(rev(seq_len(t0)), ofInterestJ)
@@ -261,7 +288,7 @@ mean_tmle <- function(ftime,
 
     wideDataList <- estOut$wideDataList
     eval(parse(text = paste0("ftimeMod$J", timeAndType[i, 2], "$t",
-                             timeAndType[i, 1], "<-estOut$ftimeMod")))
+                             timeAndType[i, 1], "<- estOut$ftimeMod")))
     wideDataList <- fluctuateIteratedMean(wideDataList = wideDataList,
                                           t = timeAndType[i, 1],
                                           whichJ = timeAndType[i, 2],
@@ -271,58 +298,167 @@ mean_tmle <- function(ftime,
                                           glm.ftime = glm.ftime,
                                           returnModels = returnModels,
                                           bounds = bounds,
-                                          Gcomp = Gcomp)
+                                          Gcomp = Gcomp,
+                                          msm.formula = msm.formula)
   }
 
   # get point estimate
-  est <- rowNames <- NULL
-  for(j in ofInterestJ) {
-    for(z in seq_along(uniqtrt)) {
-      thisEst <- eval(parse(text = paste("mean(wideDataList[[", z + 1, "]]$Q",
-                                         j, "star.1)", sep = "")))
-      est <- rbind(est, thisEst)
-      rowNames <- c(rowNames, paste(c(uniqtrt[z], j), collapse = " "))
-      eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
-                              " <- rep(thisEst,n)", sep = "")))
-      eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
-                              " <- wideDataList[[(z+1)]]$Q", j, "star.1",
-                              sep = "")))
-    }
-  }
-  row.names(est) <- rowNames
-
-  # calculate influence function
-  for(j in ofInterestJ) {
-    for(z in seq_along(uniqtrt)) {
-      for(t in rev(seq_len(t0))) {
-        outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
-                              paste("Q", j, "star.", t + 1, sep = ""))
-        eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
-                                "star.", t, " <- wideDataList[[1]]$H",
-                                uniqtrt[z], ".", t,
-                                "*(wideDataList[[1]][,outcomeName] - wideDataList[[1]]$Q",
-                                j, "star.", t, ")", sep = "")))
+  if(is.null(msm.formula)){
+    est <- rowNames <- NULL
+    for(j in ofInterestJ) {
+      for(z in seq_along(uniqtrt)) {
+        thisEst <- eval(parse(text = paste("mean(wideDataList[[", z + 1, "]]$Q",
+                                           j, "star.1)", sep = "")))
+        est <- rbind(est, thisEst)
+        rowNames <- c(rowNames, paste(c(uniqtrt[z], j), collapse = " "))
+        eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
+                                " <- rep(thisEst,n)", sep = "")))
+        eval(parse(text = paste("wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
+                                " <- wideDataList[[(z+1)]]$Q", j, "star.1",
+                                sep = "")))
       }
-      eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
-                              "star.0 <- wideDataList[[1]]$Q", j, "star.1.Z",
-                              uniqtrt[z], " - wideDataList[[1]]$Q", j,
-                              "star.0.Z", uniqtrt[z], sep = "")))
-      ind <- eval(parse(text = paste("grep('D.Z", uniqtrt[z], ".", j,
-                                     "star', names(wideDataList[[1]]))",
-                                     sep = "")))
-      eval(parse(text = paste("wideDataList[[1]]$IC", j, "star.Z", uniqtrt[z],
-                              " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),wideDataList[[1]][,ind]))",
-                              sep = "")))
+    }
+    row.names(est) <- rowNames
+
+    # calculate influence function
+    for(j in ofInterestJ) {
+      for(z in seq_along(uniqtrt)) {
+        for(t in rev(seq_len(t0))) {
+          outcomeName <- ifelse(t == t0, paste("N", j, ".", t0, sep = ""),
+                                paste("Q", j, "star.", t + 1, sep = ""))
+          eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
+                                  "star.", t, " <- wideDataList[[1]]$H",
+                                  uniqtrt[z], ".", t,
+                                  "*(wideDataList[[1]][,outcomeName] - wideDataList[[1]]$Q",
+                                  j, "star.", t, ")", sep = "")))
+        }
+        eval(parse(text = paste("wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
+                                "star.0 <- wideDataList[[1]]$Q", j, "star.1.Z",
+                                uniqtrt[z], " - wideDataList[[1]]$Q", j,
+                                "star.0.Z", uniqtrt[z], sep = "")))
+        ind <- eval(parse(text = paste("grep('D.Z", uniqtrt[z], ".", j,
+                                       "star', names(wideDataList[[1]]))",
+                                       sep = "")))
+        eval(parse(text = paste("wideDataList[[1]]$IC", j, "star.Z", uniqtrt[z],
+                                " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),wideDataList[[1]][,ind]))",
+                                sep = "")))
+      }
+    }
+
+    # calculate standard error
+    infCurves <- wideDataList[[1]][, grep("IC", names(wideDataList[[1]])),
+                                   drop = FALSE]
+    meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
+    var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
+    row.names(var) <- colnames(var) <- rowNames
+  }else{
+    # make a stacked vector of Qjstar.1
+    est <- rowNames <- NULL
+    for(j in ftypeOfInterest){
+      outcomeList <- lapply(wideDataList[2:length(wideDataList)], "[[", paste0("Q",j,"star.1"))
+      stackedOutcomeVec <- Reduce("c", outcomeList)
+      stackedWeightVec <- Reduce("c", lapply(msmWeightList[2:length(msmWeightList)], function(x){x}))
+      modelMatrixList <- lapply(wideDataList[2:length(wideDataList)], function(wdl){
+        model.matrix(as.formula(paste0("N",j,".0 ~", msm.formula)), data = wdl)
+      })
+      modelMatrixObs <- model.matrix(as.formula(paste0("N",j,".0 ~", msm.formula)), data = wideDataList[[1]])
+      stackedModelMatrix <- Reduce("rbind", modelMatrixList)
+      if(msm.family == "binomial"){
+        msm.family <- binomial()
+      }else if(msm.family == "gaussian"){
+        msm.family <- gaussian()
+      }
+      suppressWarnings(
+      fit <- glm.fit(x = stackedModelMatrix, y = stackedOutcomeVec, 
+                     weights = stackedWeightVec, family = msm.family)
+      )
+      est <- fit$coef
+
+      # compute co-variance estimate
+      msm.p <- length(est)
+      if(msm.family$family == "gaussian"){
+        fittedValueList <- lapply(modelMatrixList, function(mm){
+          mm %*% matrix(est)
+        })
+        derivList <- lapply(modelMatrixList, function(mm){
+          rep(1, n)
+        })
+        fittedValues <- modelMatrixObs %*% matrix(est)
+        deriv <- rep(1, n)
+      }else if(msm.family$family == "binomial"){
+        fittedValueList <- lapply(modelMatrixList, function(mm){
+          plogis(mm %*% matrix(est))
+        })
+        derivList <- lapply(fittedValueList, function(fitted_value){
+          fitted_value * (1 - fitted_value)
+        })
+        fittedValues <- plogis(modelMatrixObs %*% matrix(est))
+        deriv <- fittedValues * (1 - fittedValues)
+      }
+      # mapply goes over values of z
+      # apply goes over i = 1,...,n
+      cQ <- Reduce("+", mapply(mw = msmWeightList[2:length(msmWeightList)], 
+             mm = modelMatrixList, dl = derivList, FUN = function(mw, mm, dl){
+                Reduce("+", lapply(apply(cbind(mw, dl, mm), 1, function(x){ 
+                  list(x[1] * x[2] * tcrossprod(matrix(x[3:(msm.p+2)])))
+                }),"[[",1))
+             }, SIMPLIFY = FALSE)) / n
+      # cQ <- Reduce("+", lapply(apply(cbind(msmWeightList[[1]], deriv, modelMatrixObs), 1, function(x){
+      #   list(x[1] * x[2] * tcrossprod(matrix(x[3:(msm.p+2)])))
+      # }), "[[", 1)) / n 
+      # TO DO: Add ginv tryCatch?
+      cQ_inv <- tryCatch(solve(cQ), error = function(){ MASS::ginv(cQ) })
+      # first piece of EIF
+      sumD1_allZ <- Reduce("+", mapply(mw = msmWeightList[2:length(msmWeightList)], fv = fittedValueList, 
+             mm = modelMatrixList, ol = outcomeList, function(mm, mw, fv, ol){
+                oneZ <- apply(cbind(mw, fv, ol, mm), 1, function(x){
+                  # weight * (outcome - fitted) * model matrix
+                  x[1] * (x[3] - x[2]) * x[4:(msm.p+3)]
+                })
+                return(oneZ)
+             }, SIMPLIFY = FALSE))
+
+      D1 <- cQ_inv %*% sumD1_allZ
+      # sanity check: rowMeans of D1 should be small
+      # other pieces of EIF
+      D_allt <- matrix(0, nrow = msm.p, ncol = n)
+      for(t in 1:t0){
+        # TO DO: this could be done more efficiently
+        if(t == t0){
+          outcome_tplus1 <- wideDataList[[1]][,paste0("N",j,".",t)]
+        }else{
+          outcome_tplus1 <- wideDataList[[1]][,paste0("Q",j,"star.",t+1)]
+          # outcomeList_tplus1 <- lapply(wideDataList[2:length(wideDataList)], function(x){
+          #   as.numeric(x[,paste0("Q",j,"star.",t+1)])
+          # })
+        }
+        # outcomeList_t <- lapply(wideDataList[2:length(wideDataList)], function(x){
+        #   as.numeric(x[,paste0("Q",j,"star.",t)])
+        # })
+        outcome_t <- wideDataList[[1]][,paste0("Q",j,"star.",t)]
+
+        cleverCovariates <- wideDataList[[1]][,paste0("H",1:msm.p,".",t,".obs")]
+        # cleverCovariateList <- lapply(wideDataList[2:length(wideDataList)], "[", i = 1:n, j = paste0("H",1:msm.p,".",t,".obs"))
+        # Dt_allZ <- Reduce("+", mapply(otp1 = outcomeList_tplus1, ot = outcomeList_t, cc = cleverCovariateList, FUN = function(otp1, ot, cc){
+        #   tmp <- cbind(otp1, ot, cc)
+        #   Dt_z <- apply(tmp, 1, function(x){
+        #     (x[1] - x[2]) * x[3:(msm.p+2)]
+        #   })
+        #   return(Dt_z)
+        # }, SIMPLIFY = FALSE))
+        tmp <- cbind(outcome_tplus1, outcome_t, cleverCovariates)
+        Dt_z <- apply(tmp, 1, function(x){
+          (x[1] - x[2]) * x[3:(msm.p+2)]
+        })
+        D_allt <- D_allt + Dt_z
+      }
+      # sanity check: rowMeans of D_allZ_allt should be small
+      D2 <- cQ_inv %*% D_allt
+      infCurves <- D1 + D2
+      var <- tcrossprod(infCurves)/n^2
+      meanIC <- rowMeans(infCurves)
     }
   }
-
-  # calculate standard error
-  infCurves <- wideDataList[[1]][, grep("IC", names(wideDataList[[1]])),
-                                 drop = FALSE]
-  meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
-  row.names(var) <- colnames(var) <- rowNames
-
   out <- list(est = est, var = var, meanIC = meanIC, ic = infCurves,
               trtMod = trtMod, ftimeMod = ftimeMod, ctimeMod = ctimeMod,
               ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars)

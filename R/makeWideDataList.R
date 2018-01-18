@@ -18,6 +18,11 @@
 #'        or conditional mean) probabilities.
 #' @param dataList A list of long format \code{data.frame} objects. See
 #'        \code{?makeDataList} for more details on formatting.
+#' @param msm.formula A valid right-hand-side of a formula that can include 
+#'        variables \code{trt} and \code{colnames(adjustVars)}
+#' @param msmWeightList A list of weights in same format as this list will be (
+#'        i.e., first entry corresponding to observed trt, latter to set values
+#'        of trt)
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param ... Other arguments. Not currently used.
 #'
@@ -31,12 +36,18 @@ makeWideDataList <- function(dat,
                              uniqtrt,
                              adjustVars,
                              dataList,
+                             msm.formula = NULL, 
+                             msmWeightList = NULL, 
                              t0, ...) {
   wideDataList <- vector(mode = "list", length = length(dataList))
-  wideDataList[[1]] <- data.frame(dat$trt, dat[, names(adjustVars)],
+  dlNames <- colnames(dataList[[1]])
+  g_names <- dlNames[grepl("g_.*", dlNames)]
+  # g_names <- g_names[-which(g_names == "g_obsz")]
+  
+  dropVars <- c("trt", names(adjustVars),"ftime","ftype", g_names)
+  wideDataList[[1]] <- data.frame(dat$trt, dat[, names(adjustVars)], g_obsz = dat$g_obsz,
                                   stats::reshape(dataList[[2]][, !(names(dataList[[2]]) %in%
-                                                             c("trt", names(adjustVars),
-                                                               "ftime","ftype"))],
+                                                             dropVars)],
                                                  direction = "wide",
                                                  timevar = "t", idvar = "id"))
   colnames(wideDataList[[1]])[1] <- c("trt")
@@ -48,13 +59,13 @@ makeWideDataList <- function(dat,
  
   wideDataList[2:length(dataList)] <- lapply(dataList[2:length(dataList)],
                                              function(x) {
-    out <- data.frame(dat[, names(adjustVars)], 
-                      stats::reshape(x[, !(names(x) %in%
-                                           c("trt", names(adjustVars), "ftime",
-                                             "ftype"))],
+    out <- data.frame(dat[, names(adjustVars)],
+                      stats::reshape(x[, !(names(x) %in% dropVars)],
                               direction = "wide", timevar = "t", idvar = "id")
                       ,row.names = NULL)
-    out[, paste0("C.", 1:t0)] <- 0
+    if(is.null(msm.formula)){
+      out[, paste0("C.", 1:t0)] <- 0
+    }
     names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
     # set Nj0=0 for all j -- makes things easier to run in a loop later
     eval(parse(text = paste0(paste0("out$N", allJ, ".0", collapse = "<-"),
@@ -63,18 +74,44 @@ makeWideDataList <- function(dat,
   })
   names(wideDataList) <- c("obs", uniqtrt)
 
-  for(z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
+  for(z in uniqtrt){
+    wideDataList[[paste0(z)]]$trt <- z
+    wideDataList[[paste0(z)]]$g_obsz <- dat[[paste0("g_",z)]]
+  }
   
-  wideDataList <- lapply(wideDataList, function(x){
-    # make clever covariates
-    for(z in uniqtrt) {
-      for(t in 1:t0) {
-        x[[paste0("H",z,".",t)]] <- 
-          (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x[[paste0("g_",z,".",t)]])
+  if(is.null(msm.formula)){
+    wideDataList <- lapply(wideDataList, function(x){
+      # make clever covariates
+      for(z in uniqtrt) {
+        for(t in 1:t0) {
+          x[[paste0("H",z,".",t)]] <- 
+            (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x$g_obsz)
+        }
+          x[[paste0("H",z,".0")]] <- (x$trt==z) / x$g_obsz
       }
-        x[[paste0("H",z,".0")]] <- (x$trt==z) / x[[paste0("g_",z,".",t)]]
-    }
-    x
-  })
+      x
+    })
+  }else{
+    wideDataList <- mapply(wdl = wideDataList, mw = msmWeightList, FUN = function(wdl, mw){
+      # browser()
+      msmModelMatrix <- model.matrix(as.formula(paste0("N1.0 ~ ",msm.formula)), data = wdl)
+      msm.p <- dim(msmModelMatrix)[2]
+      for(t in 1:t0){
+        for(j in 1:msm.p){
+          wdl[[paste0("H",j,".",t,".obs")]] <- 
+            as.numeric(msmModelMatrix[,j] * mw * as.numeric(wdl[,paste0("C.",t-1)]==0) / (wdl[[paste0("G_dC.",t)]] * wdl$g_obsz))
+          wdl[[paste0("H",j,".",t,".pred")]] <- 
+            as.numeric(msmModelMatrix[,j] * mw / (wdl[[paste0("G_dC.",t)]] * wdl$g_obsz))
+               
+        }
+      }
+      for(j in 1:msm.p){
+        wdl[[paste0("H",j,".",0,".obs")]] <- as.numeric(msmModelMatrix[,j] * mw / wdl$g_obsz)
+        wdl[[paste0("H",j,".",0,".pred")]] <- as.numeric(msmModelMatrix[,j] * mw / wdl$g_obsz)
+      }
+      wdl
+    }, SIMPLIFY = FALSE)
+  }
+
   return(wideDataList)
 }

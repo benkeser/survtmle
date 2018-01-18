@@ -14,6 +14,7 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A boolean indicating whether the function should print
 #'        messages to indicate progress.
+#' @param msm.formula 
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return The function returns a list that is exactly the same as the input
@@ -23,7 +24,7 @@
 #'
 
 updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
-                            verbose, ...) {
+                            verbose, msm.formula = NULL, msmWeightList = NULL, ...) {
   dataList[2:(ntrt + 1)] <- lapply(dataList[2:(ntrt + 1)], function(x, allJ) {
     # total hazard
     Q_dot <- rowSums(cbind(rep(0, nrow(x)), x[, paste0("Q", allJ, "Haz")]))
@@ -43,20 +44,33 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
   # calculate CIF at time t0
   for(j in ofInterestJ) {
-    # TO DO: change this to static memory allocation
     Fj.t0.allZ <- vector(mode = "list", length = ntrt)
     for(i in 1:ntrt) {
       t0.mod <- dataList[[i + 1]]$ftime[1]
       Fj.t0.allZ[[i]] <- dataList[[i+1]][[paste0("F",j,".t")]][dataList[[i+1]]$t==t0.mod]
     }
 
-    dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
-      for(i in seq_along(uniqtrt)) {
-        ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
-        x[[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind]
-      }
-      x
-    }, j = j, uniqtrt = uniqtrt, Fj.t0.allZ = Fj.t0.allZ)
+    for(i in seq_along(uniqtrt)) {
+      ind_1 <- tapply(X = dataList[[1]]$id, INDEX = dataList[[1]]$id, FUN = NULL)
+      dataList[[1]][[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind_1]
+
+      ind_i <- tapply(X = dataList[[i + 1]]$id, INDEX = dataList[[i + 1]]$id, FUN = NULL)
+      dataList[[i + 1]][[paste0("F",j,".z.t0")]] <- Fj.t0.allZ[[i]][ind_i]
+    }
+
+    ind_z <- rep(NA, length(dataList[[1]][,1]))
+    for(i in 1:ntrt){
+      ind_z[dataList[[1]]$trt == uniqtrt[i]] <- which(colnames(dataList[[1]]) == paste0("F",j,".z",uniqtrt[i],".t0"))
+    }
+    dataList[[1]][[paste0("F",j,".z.t0")]] <- dataList[[1]][cbind(seq_along(ind_z), ind_z)]
+
+    # dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
+    #   for(i in seq_along(uniqtrt)) {
+    #     ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
+    #     x[[paste0("F",j,".z",uniqtrt[i],".t0")]] <- Fj.t0.allZ[[i]][ind]
+    #   }
+    #   x
+    # }, j = j, uniqtrt = uniqtrt, Fj.t0.allZ = Fj.t0.allZ)
   }
 
   # merge into dataList[[1]]
@@ -64,6 +78,12 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   colInd <- which(colnames(dataList[[1]]) %in% c("S.t", paste0("F",
                                                                ofInterestJ,
                                                                ".t")))
+  #### !!!!!!
+  #### LOOKS LIKE THIS CUTS DOWN dataList[[1]] to only include 
+  #### times 1:t0, which is fine for what's left of the function. 
+  #### I guess msmWeightList needs to be adjusted accordingly as well?
+  #### Or what is the easiest way to do this??
+
   # the first time it's called these columns won't exist
   if(length(colInd) == 0) {
   dataList[[1]] <- merge(dataList[[1]],
@@ -100,21 +120,40 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
 
   # set up clever covariates needed for fluctuation
-  dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
-    for(z in uniqtrt) {
-      for(j in ofInterestJ) {
-        x[[paste0("H", j, ".jSelf.z", z)]] <- 
-          (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_",z)]]*x$G_dC) * 
-            (1-x[[paste0("hazNot",j)]]) * ((x$t < t0) * (1-(x[[paste0("F",j,".z",z,".t0")]]-
-                x[[paste0("F",j,".t")]])/c(x$S.t)) + as.numeric(x$t==t0))
-          x[[paste0("H", j, ".jNotSelf.z", z)]] <- 
-            - (x$ftime >= x$t & x$trt ==z)/(x[[paste0("g_",z)]]*x$G_dC) * 
-              (1-x[[paste0("hazNot",j)]]) * ((x$t < t0)*(x[[paste0("F",j,".z",z,".t0")]] - 
-                x[[paste0("F",j,".t")]])/c(x$S.t))
+  if(is.null(msm.formula)){
+    dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
+      for(z in uniqtrt) {
+        for(j in ofInterestJ) {
+          x[[paste0("H", j, ".jSelf.z", z)]] <- 
+            (x$ftime >= x$t & x$trt == z)/(x[[paste0("g_",z)]]*x$G_dC) * 
+              (1-x[[paste0("hazNot",j)]]) * ((x$t < t0) * (1-(x[[paste0("F",j,".z",z,".t0")]]-
+                  x[[paste0("F",j,".t")]])/c(x$S.t)) + as.numeric(x$t==t0))
+            x[[paste0("H", j, ".jNotSelf.z", z)]] <- 
+              - (x$ftime >= x$t & x$trt ==z)/(x[[paste0("g_",z)]]*x$G_dC) * 
+                (1-x[[paste0("hazNot",j)]]) * ((x$t < t0)*(x[[paste0("F",j,".z",z,".t0")]] - 
+                  x[[paste0("F",j,".t")]])/c(x$S.t))
+          }
         }
-      }
-      x
-    }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt)
+        x
+      }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt)
+  }else{
+    dataList <- mapply(dl = dataList, mw = msmWeightList[2:length(msmWeightList)], function(dl, mw, ofInterestJ, uniqtrt) {
+      msmModelMatrix <- model.matrix(as.formula(paste0("N1 ~ ",msm.formula)), data = dl)
+      msm.p <- dim(msmModelMatrix)[2]
+      # assume only one ftypeOfInterest for now...
+      for(j in 1:msm.p) {
+        dl[[paste0("H", ofInterestJ, ".jSelf.",j)]] <- 
+          mw * msmModelMatrix[,j] * (dl$ftime >= dl$t)/(dl$g_obsz * dl$G_dC) * 
+            (1-dl[[paste0("hazNot", ofInterestJ)]]) * ((dl$t < t0) * (1-(dl[[paste0("F",ofInterestJ,".z.t0")]]-
+                dl[[paste0("F",ofInterestJ,".t")]])/c(dl$S.t)) + as.numeric(dl$t==t0))
+          dl[[paste0("H", ofInterestJ, ".jNotSelf.",j)]] <- 
+            - mw * msmModelMatrix[,j] * (dl$ftime >= dl$t)/(dl$g_obsz * dl$G_dC) * 
+              (1-dl[[paste0("hazNot", ofInterestJ)]]) * ((dl$t < t0)*(dl[[paste0("F",ofInterestJ,".z.t0")]] - 
+                dl[[paste0("F",ofInterestJ,".t")]])/c(dl$S.t))
+        }
+      dl
+    }, MoreArgs = list(ofInterestJ = ofInterestJ, uniqtrt = uniqtrt), SIMPLIFY = FALSE)
+  }
 #  } else {
 #    dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
 #    # placebo match
