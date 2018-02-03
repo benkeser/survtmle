@@ -16,6 +16,9 @@
 #'        or conditional mean) probabilities.
 #' @param t0 The time at which to return cumulative incidence estimates. By
 #'        default this is set to \code{max(ftime[ftype > 0])}.
+#' @param cv Whether to compute a cross-validated estimate. This defaults to
+#'        \code{NULL}. To invoke cross-validation, provide a numeric greater
+#'        than 1, corresponding to the number of folds that ought to be used.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} option in the call to \code{SuperLearner} for the
 #'        outcome regression (either cause-specific hazards or iterated mean).
@@ -148,6 +151,8 @@
 #' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'
+#' @importFrom origami make_folds cross_validate
+#'
 #' @examples
 #'
 #' # simulate data
@@ -184,7 +189,7 @@
 #'
 
 survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-                     SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
+                     cv = NULL, SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
                      glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL,
                      returnIC = TRUE, returnModels = TRUE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -211,9 +216,46 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                        bounds = bounds, verbose = verbose, tol = tol,
                        Gcomp = Gcomp, method = method)
 
+  # using cross-validated estimates
+  if (!is.null(cv)) {
+    folds <- origami::make_folds(n = ftime, V = cv)
+  }
+
   # hazard-based TMLE
   if(method == "hazard") {
-    tmle.fit <- hazard_tmle(ftime = clean$ftime,
+    if (is.null(cv)) {
+      # compute a TMLE for the hazard
+      tmle.fit <- hazard_tmle(ftime = clean$ftime,
+                              ftype = clean$ftype,
+                              trt = clean$trt,
+                              t0 = t0,
+                              adjustVars = clean$adjustVars,
+                              SL.ftime = clean$SL.ftime,
+                              SL.ctime = clean$SL.ctime,
+                              SL.trt = clean$SL.trt,
+                              glm.ftime = clean$glm.ftime,
+                              glm.ctime = clean$glm.ctime,
+                              glm.trt = clean$glm.trt,
+                              returnIC = returnIC,
+                              returnModels = returnModels,
+                              ftypeOfInterest = ftypeOfInterest,
+                              trtOfInterest = trtOfInterest,
+                              bounds = bounds,
+                              verbose = verbose,
+                              tol = tol,
+                              maxIter = maxIter,
+                              gtol = gtol)
+    } else {
+      message("Computation of CV-TMLEs is not currently supported.")
+      # compute a CV-TMLE for the hazard
+      #cv.tmle.fit <- origami::cross_validate(cv_fun = cv_hazard_tmle,
+      #                                       folds = folds,
+      #                                      )
+    }
+  } else if (method == "mean") {
+    if (is.null(cv)) {
+      # compute a TMLE with the method of iterative means
+      tmle.fit <- mean_tmle(ftime = clean$ftime,
                             ftype = clean$ftype,
                             trt = clean$trt,
                             t0 = t0,
@@ -231,30 +273,15 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                             bounds = bounds,
                             verbose = verbose,
                             tol = tol,
-                            maxIter = maxIter,
+                            Gcomp = Gcomp,
                             gtol = gtol)
-  } else if (method == "mean") {
-    tmle.fit <- mean_tmle(ftime = clean$ftime,
-                          ftype = clean$ftype,
-                          trt = clean$trt,
-                          t0 = t0,
-                          adjustVars = clean$adjustVars,
-                          SL.ftime = clean$SL.ftime,
-                          SL.ctime = clean$SL.ctime,
-                          SL.trt = clean$SL.trt,
-                          glm.ftime = clean$glm.ftime,
-                          glm.ctime = clean$glm.ctime,
-                          glm.trt = clean$glm.trt,
-                          returnIC = returnIC,
-                          returnModels = returnModels,
-                          ftypeOfInterest = ftypeOfInterest,
-                          trtOfInterest = trtOfInterest,
-                          bounds = bounds,
-                          verbose = verbose,
-                          tol = tol,
-                          Gcomp = Gcomp,
-                          gtol = gtol
-    )
+    } else {
+      message("Computation of CV-TMLEs is not currently supported.")
+      # compute a CV-TMLE with the method of iterative means
+      #cv.tmle.fit <- origami::cross_validate(cv_fun = cv_mean_tmle,
+      #                                       folds = folds
+      #                                      )
+    }
   }
 
   out <- list(call = call, est = tmle.fit$est, var = tmle.fit$var,
@@ -266,3 +293,4 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   class(out) <- "survtmle"
   return(out)
 }
+

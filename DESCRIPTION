@@ -1,7 +1,7 @@
 Package: survtmle
 Title: Compute Targeted Minimum Loss-Based Estimates in Right-Censored Survival
     Settings
-Version: 1.0.2.1
+Version: 1.0.2.2
 Authors@R: c(
     person("David", "Benkeser", email = "benkeser@emory.edu",
            role = c("aut", "cre", "cph"),
@@ -23,7 +23,8 @@ Imports:
     tidyr,
     stringr,
     ggplot2,
-    speedglm
+    speedglm,
+    origami
 Suggests:
     testthat,
     knitr,
