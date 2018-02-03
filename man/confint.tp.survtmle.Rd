@@ -4,12 +4,15 @@
 \alias{confint.tp.survtmle}
 \title{confint.tp.survtmle}
 \usage{
-\method{confint}{tp.survtmle}(object, level = 0.95, ...)
+\method{confint}{tp.survtmle}(object, parm, level = 0.95, ...)
 }
 \arguments{
 \item{object}{An object of class \code{tp.survtmle}, as produced by invoking
 the function \code{timepoints} on an object produced by \code{survtmle}, for
 which a confidence interval is to be computed.}
+
+\item{parm}{A numeric vector indicating which indexes of \code{object$est} to
+return confidence intervals for (default is to return all). NOT USED NOW.}
 
 \item{level}{A \code{numeric} indicating the level of the confidence interval
 to be computed.}
