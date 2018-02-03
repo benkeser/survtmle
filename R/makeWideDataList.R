@@ -33,46 +33,66 @@ makeWideDataList <- function(dat,
                              dataList,
                              t0, ...) {
   wideDataList <- vector(mode = "list", length = length(dataList))
-  wideDataList[[1]] <- data.frame(dat$trt, dat[, names(adjustVars)],
-                                  stats::reshape(dataList[[2]][, !(names(dataList[[2]]) %in%
-                                                             c("trt", names(adjustVars),
-                                                               "ftime","ftype"))],
-                                                 direction = "wide",
-                                                 timevar = "t", idvar = "id"))
+  wideDataList[[1]] <- data.frame(
+    dat$trt, dat[, names(adjustVars)],
+    stats::reshape(
+      dataList[[2]][, !(names(dataList[[2]]) %in%
+        c(
+          "trt", names(adjustVars),
+          "ftime", "ftype"
+        ))],
+      direction = "wide",
+      timevar = "t", idvar = "id"
+    )
+  )
   colnames(wideDataList[[1]])[1] <- c("trt")
   colnames(wideDataList[[1]])[2:(1 + ncol(adjustVars))] <- names(adjustVars)
   # set Nj0=0 for all j -- makes things easier to run in a loop later
-  eval(parse(text = paste0(paste0("wideDataList[[1]]$N", allJ, ".0",
-                                 collapse = "<-"),
-                          "<- wideDataList[[1]]$C.0 <- 0")))
- 
-  wideDataList[2:length(dataList)] <- lapply(dataList[2:length(dataList)],
-                                             function(x) {
-    out <- data.frame(dat[, names(adjustVars)], 
-                      stats::reshape(x[, !(names(x) %in%
-                                           c("trt", names(adjustVars), "ftime",
-                                             "ftype"))],
-                              direction = "wide", timevar = "t", idvar = "id")
-                      ,row.names = NULL)
-    out[, paste0("C.", 1:t0)] <- 0
-    names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
-    # set Nj0=0 for all j -- makes things easier to run in a loop later
-    eval(parse(text = paste0(paste0("out$N", allJ, ".0", collapse = "<-"),
-                            "<- out$C.0 <- 0")))
-    out
-  })
+  eval(parse(text = paste0(
+    paste0(
+      "wideDataList[[1]]$N", allJ, ".0",
+      collapse = "<-"
+    ),
+    "<- wideDataList[[1]]$C.0 <- 0"
+  )))
+
+  wideDataList[2:length(dataList)] <- lapply(
+    dataList[2:length(dataList)],
+    function(x) {
+      out <- data.frame(
+        dat[, names(adjustVars)],
+        stats::reshape(
+          x[, !(names(x) %in%
+            c(
+              "trt", names(adjustVars), "ftime",
+              "ftype"
+            ))],
+          direction = "wide", timevar = "t", idvar = "id"
+        )
+        , row.names = NULL
+      )
+      out[, paste0("C.", 1:t0)] <- 0
+      names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
+      # set Nj0=0 for all j -- makes things easier to run in a loop later
+      eval(parse(text = paste0(
+        paste0("out$N", allJ, ".0", collapse = "<-"),
+        "<- out$C.0 <- 0"
+      )))
+      out
+    }
+  )
   names(wideDataList) <- c("obs", uniqtrt)
 
-  for(z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
-  
-  wideDataList <- lapply(wideDataList, function(x){
+  for (z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
+
+  wideDataList <- lapply(wideDataList, function(x) {
     # make clever covariates
-    for(z in uniqtrt) {
-      for(t in 1:t0) {
-        x[[paste0("H",z,".",t)]] <- 
-          (x$trt==z & x[[paste0("C.",t-1)]]==0) / (x[[paste0("G_dC.",t)]]*x[[paste0("g_",z,".",t)]])
+    for (z in uniqtrt) {
+      for (t in 1:t0) {
+        x[[paste0("H", z, ".", t)]] <-
+          (x$trt == z & x[[paste0("C.", t - 1)]] == 0) / (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
       }
-        x[[paste0("H",z,".0")]] <- (x$trt==z) / x[[paste0("g_",z,".",t)]]
+      x[[paste0("H", z, ".0")]] <- (x$trt == z) / x[[paste0("g_", z, ".", t)]]
     }
     x
   })

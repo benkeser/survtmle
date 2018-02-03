@@ -25,7 +25,7 @@
 #' @param SL.ctime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
 #'        outcome regression (either cause-specific hazards or conditional mean).
-#'        See \code{?SuperLearner} for more information on how to specify valid 
+#'        See \code{?SuperLearner} for more information on how to specify valid
 #'        \code{SuperLearner} libraries. It is expected that the wrappers used
 #'        in the library will play nicely with the input variables, which will
 #'        be called \code{"trt"} and \code{names(adjustVars)}.
@@ -72,10 +72,9 @@ estimateCensoring <- function(dataList,
                               verbose = TRUE,
                               gtol = 1e-3,
                               ...) {
-
   include <- !(dataList[[1]]$t == dataList[[1]]$ftime & dataList[[1]]$C != 1 &
-               dataList[[1]]$t < t0) & !(dataList[[1]]$t == dataList[[1]]$ftime
-             & dataList[[1]]$C == 1 & dataList[[1]]$t == t0)
+    dataList[[1]]$t < t0) & !(dataList[[1]]$t == dataList[[1]]$ftime
+  & dataList[[1]]$C == 1 & dataList[[1]]$t == t0)
 
   ## determine whether to use linear or logistic regression in GLM fit
   if (!is.null(glm.family)) {
@@ -83,19 +82,22 @@ estimateCensoring <- function(dataList,
   }
 
   # if no SL library is specified, the code defaults to the specific GLM form
-  if(is.null(SL.ctime)){
-    if(!(any(c("glm", "speedglm") %in% class(glm.ctime)))) {
-      if(!all(dataList[[1]]$C == 0)) {
+  if (is.null(SL.ctime)) {
+    if (!(any(c("glm", "speedglm") %in% class(glm.ctime)))) {
+      if (!all(dataList[[1]]$C == 0)) {
         ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
-        ctimeMod <- fast_glm(reg_form = ctimeForm,
-                             data = dataList[[1]][include, ],
-                             family = eval(glm_family))
+        ctimeMod <- fast_glm(
+          reg_form = ctimeForm,
+          data = dataList[[1]][include, ],
+          family = eval(glm_family)
+        )
         if (unique(class(ctimeMod) %in% c("glm", "lm"))) {
           ctimeMod <- cleanglm(ctimeMod)
         }
       } else {
         dataList <- lapply(dataList, function(x) {
-          x$G_dC <- 1; x
+          x$G_dC <- 1
+          x
         })
         ctimeMod <- "No censoring observed"
         class(ctimeMod) <- "noCens"
@@ -105,10 +107,10 @@ estimateCensoring <- function(dataList,
     }
     # as long as there are some observed censoring events,
     # get predictions from ctimeMod
-    if(all(class(ctimeMod) != "noCens")) {
+    if (all(class(ctimeMod) != "noCens")) {
       dataList <- lapply(dataList, function(x) {
         g_dC <- rep(1, length(x[, 1]))
-        if(t0 != 1) {
+        if (t0 != 1) {
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
@@ -126,45 +128,54 @@ estimateCensoring <- function(dataList,
         x$G_dC <- as.numeric(unlist(by(g_dC, x$id, FUN = cumprod)))
         x
       })
-    # if no observed censoring events, everybody gets 1
-    } else {
-      dataList <- lapply(dataList, function(x) {
-        x$G_dC <- 1; x
-      })
-    }
-  } else {
-    if(class(SL.ctime) != "SuperLearner"){
-      if(!all(dataList[[1]]$C == 0)){
-        ctimeMod <- SuperLearner::SuperLearner(Y = dataList[[1]]$C[include],
-                                               X = dataList[[1]][include, c("t", "trt",
-                                                                            names(adjustVars))],
-                                               id = dataList[[1]]$id[include],
-                                               family = "binomial",
-                                               SL.library = SL.ctime,
-                                               verbose = verbose)
+      # if no observed censoring events, everybody gets 1
     } else {
       dataList <- lapply(dataList, function(x) {
         x$G_dC <- 1
         x
       })
-      ctimeMod <- "No censoring observed"
-      class(ctimeMod) <- "noCens"
     }
+  } else {
+    if (class(SL.ctime) != "SuperLearner") {
+      if (!all(dataList[[1]]$C == 0)) {
+        ctimeMod <- SuperLearner::SuperLearner(
+          Y = dataList[[1]]$C[include],
+          X = dataList[[1]][include, c(
+            "t", "trt",
+            names(adjustVars)
+          )],
+          id = dataList[[1]]$id[include],
+          family = "binomial",
+          SL.library = SL.ctime,
+          verbose = verbose
+        )
+      } else {
+        dataList <- lapply(dataList, function(x) {
+          x$G_dC <- 1
+          x
+        })
+        ctimeMod <- "No censoring observed"
+        class(ctimeMod) <- "noCens"
+      }
     } else { # if input SLlibrary.time is Super Learner object, just use that
       ctimeMod <- SL.ctime
     }
-    if(class(ctimeMod) != "noCens"){
+    if (class(ctimeMod) != "noCens") {
       dataList <- lapply(dataList, function(x) {
         g_dC <- rep(1, nrow(x))
-        if(t0 != 1){
+        if (t0 != 1) {
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
           g_dC <-
             suppressWarnings(
-              1 - predict(ctimeMod, newdata = x[, c("t", "trt",
-                                                    names(adjustVars))],
-                          onlySL = TRUE)[[1]]
+              1 - predict(
+                ctimeMod, newdata = x[, c(
+                  "t", "trt",
+                  names(adjustVars)
+                )],
+                onlySL = TRUE
+              )[[1]]
             )
 
           # put time back to normal
@@ -184,17 +195,18 @@ estimateCensoring <- function(dataList,
     }
   }
   # truncate small propensities at gtol
-  dataList <- lapply(dataList,function(x) {
-    x$G_dC[x$G_dC < gtol]  <- gtol
+  dataList <- lapply(dataList, function(x) {
+    x$G_dC[x$G_dC < gtol] <- gtol
     x
   })
 
-  out <- list(dataList = dataList,
-              ctimeMod = if(returnModels) {
-                            ctimeMod
-                         } else {
-                            NULL
-                        }
-             )
+  out <- list(
+    dataList = dataList,
+    ctimeMod = if (returnModels) {
+      ctimeMod
+    } else {
+      NULL
+    }
+  )
   return(out)
 }

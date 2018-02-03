@@ -4,7 +4,8 @@
 \alias{plot.tp.survtmle}
 \title{Plot Results of Cumulative Incidence Estimates}
 \usage{
-\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"))
+\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"),
+  pal = ggsci::scale_color_lancet())
 }
 \arguments{
 \item{x}{object of class \code{tp.survtmle} as produced by a sequence of
@@ -12,14 +13,20 @@ appropriate calls to \code{survtmle} and \code{timepoints}}
 
 \item{...}{additional arguments passed \code{plot} as necessary}
 
-\item{type}{character describing whether to provide a plot of raw ("raw") or
-monotonic ("iso") estimates in the resultant step function plot, with
-the latter being computed by a call to \code{stats::isoreg}}
+\item{type}{\code{character} describing whether to provide a plot of raw
+("raw") or monotonic ("iso") estimates in the resultant step function plot,
+with the latter being computed by a call to \code{stats::isoreg}}
+
+\item{pal}{A \code{ggplot2} palette object from the \code{ggsci} package. The
+default of \code{scale_color_lancet} is generally appropriate for medical
+and epidemiologic applications, though there are situations in which one
+might opt to change this. Note that this can also be overridden in the
+resultant plot object using standard \code{ggplot2} semantics.}
 }
 \value{
 object of class \code{ggplot} containing a step function plot of the
-       raw or smoothened point estimates of cumulative incidence across a
-       series of timepoints of interest.
+ raw or smoothened point estimates of cumulative incidence across a series of
+ timepoints of interest.
 }
 \description{
 Step function plots for both raw and smoothed (monotonic) estimates, the
@@ -44,5 +51,4 @@ suppressWarnings(
 )
 tpfit <- timepoints(fit, times = seq_len(t_0))
 plot(tpfit)
-
 }

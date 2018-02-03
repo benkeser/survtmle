@@ -14,7 +14,7 @@
 #'
 
 print.survtmle <- function(x, ...) {
-  if(length(x$est) <= 4) {
+  if (length(x$est) <= 4) {
     print(x[c("est", "var")])
   } else {
     out <- list(est = x$est, var = diag(x$var))
@@ -39,14 +39,20 @@ print.survtmle <- function(x, ...) {
 
 print.tp.survtmle <- function(x, ...) {
   # extract basic information from input `tp.survtmle` object
-  len_groups <- as.numeric(unique(lapply(lapply(x, FUN = `[[`, "est"),
-                                         FUN = length)))
-  names_groups <- unique(lapply(lapply(x, FUN = `[[`, "est"),
-                                FUN = rownames))[[1]]
+  len_groups <- as.numeric(unique(lapply(
+    lapply(x, FUN = `[[`, "est"),
+    FUN = length
+  )))
+  names_groups <- unique(lapply(
+    lapply(x, FUN = `[[`, "est"),
+    FUN = rownames
+  ))[[1]]
 
   # structure point estimates
-  est_only <- t(matrix(unlist(lapply(x, FUN = `[[`, "est")), ncol = len_groups,
-                       byrow = TRUE))
+  est_only <- t(matrix(
+    unlist(lapply(x, FUN = `[[`, "est")), ncol = len_groups,
+    byrow = TRUE
+  ))
   est_only <- as.data.frame(est_only)
   rownames(est_only) <- names_groups
   colnames(est_only) <- paste0("t", seq_len(ncol(est_only)))
