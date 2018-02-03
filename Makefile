@@ -1,17 +1,27 @@
 md:
-	r -e "rmarkdown::render('README.Rmd')"
+	Rscript -e "rmarkdown::render('README.Rmd', output_file = 'README.md')"
 
 site:
-	r -e "pkgdown::build_site()"
+	Rscript -e "pkgdown::build_site()"
+
+fastcheck:
+	Rscript -e "devtools::check(build_args = '--no-build-vignettes')"
 
 check:
-	r -e "devtools::check()"
+	Rscript -e "devtools::check()"
 
 test:
-	r -e "devtools::test()"
+	Rscript -e "devtools::test()"
 
 doc:
-	r -e "devtools::document()"
+	Rscript -e "devtools::document()"
 
 cov:
-	r -e "covr::package_coverage(type = 'all', combine_types = FALSE, line_exclusions = list('R/plots.R', 'R/printing.R', 'R/utils.R'))"
+	Rscipt -e "covr::package_coverage(type = 'all', combine_types = FALSE, line_exclusions = list('R/plots.R', 'R/printing.R', 'R/utils.R'))"
+
+build:
+		Rscript -e "devtools::build()"
+
+style:
+		Rscript -e "styler::style_pkg()"
+

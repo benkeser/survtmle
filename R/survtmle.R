@@ -192,77 +192,83 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      method = "hazard", bounds = NULL, verbose = FALSE,
                      tol = 1 / (sqrt(length(ftime))),
                      maxIter = 10, Gcomp = FALSE, gtol = 1e-3) {
-
   call <- match.call(expand.dots = TRUE)
 
   # check and clean inputs
-  clean <- checkInputs(ftime = ftime, ftype = ftype, trt = trt,
-                       t0 = t0, adjustVars = adjustVars,
-                       SL.ftime = SL.ftime,
-                       SL.ctime = SL.ctime,
-                       SL.trt = SL.trt,
-                       glm.ftime = glm.ftime,
-                       glm.ctime = glm.ctime,
-                       glm.trt = glm.trt,
-                       returnIC = returnIC,
-                       returnModels = returnModels,
-                       ftypeOfInterest = ftypeOfInterest,
-                       trtOfInterest = trtOfInterest,
-                       bounds = bounds, verbose = verbose, tol = tol,
-                       Gcomp = Gcomp, method = method)
+  clean <- checkInputs(
+    ftime = ftime, ftype = ftype, trt = trt,
+    t0 = t0, adjustVars = adjustVars,
+    SL.ftime = SL.ftime,
+    SL.ctime = SL.ctime,
+    SL.trt = SL.trt,
+    glm.ftime = glm.ftime,
+    glm.ctime = glm.ctime,
+    glm.trt = glm.trt,
+    returnIC = returnIC,
+    returnModels = returnModels,
+    ftypeOfInterest = ftypeOfInterest,
+    trtOfInterest = trtOfInterest,
+    bounds = bounds, verbose = verbose, tol = tol,
+    Gcomp = Gcomp, method = method
+  )
 
   # hazard-based TMLE
-  if(method == "hazard") {
-    tmle.fit <- hazard_tmle(ftime = clean$ftime,
-                            ftype = clean$ftype,
-                            trt = clean$trt,
-                            t0 = t0,
-                            adjustVars = clean$adjustVars,
-                            SL.ftime = clean$SL.ftime,
-                            SL.ctime = clean$SL.ctime,
-                            SL.trt = clean$SL.trt,
-                            glm.ftime = clean$glm.ftime,
-                            glm.ctime = clean$glm.ctime,
-                            glm.trt = clean$glm.trt,
-                            returnIC = returnIC,
-                            returnModels = returnModels,
-                            ftypeOfInterest = ftypeOfInterest,
-                            trtOfInterest = trtOfInterest,
-                            bounds = bounds,
-                            verbose = verbose,
-                            tol = tol,
-                            maxIter = maxIter,
-                            gtol = gtol)
+  if (method == "hazard") {
+    tmle.fit <- hazard_tmle(
+      ftime = clean$ftime,
+      ftype = clean$ftype,
+      trt = clean$trt,
+      t0 = t0,
+      adjustVars = clean$adjustVars,
+      SL.ftime = clean$SL.ftime,
+      SL.ctime = clean$SL.ctime,
+      SL.trt = clean$SL.trt,
+      glm.ftime = clean$glm.ftime,
+      glm.ctime = clean$glm.ctime,
+      glm.trt = clean$glm.trt,
+      returnIC = returnIC,
+      returnModels = returnModels,
+      ftypeOfInterest = ftypeOfInterest,
+      trtOfInterest = trtOfInterest,
+      bounds = bounds,
+      verbose = verbose,
+      tol = tol,
+      maxIter = maxIter,
+      gtol = gtol
+    )
   } else if (method == "mean") {
-    tmle.fit <- mean_tmle(ftime = clean$ftime,
-                          ftype = clean$ftype,
-                          trt = clean$trt,
-                          t0 = t0,
-                          adjustVars = clean$adjustVars,
-                          SL.ftime = clean$SL.ftime,
-                          SL.ctime = clean$SL.ctime,
-                          SL.trt = clean$SL.trt,
-                          glm.ftime = clean$glm.ftime,
-                          glm.ctime = clean$glm.ctime,
-                          glm.trt = clean$glm.trt,
-                          returnIC = returnIC,
-                          returnModels = returnModels,
-                          ftypeOfInterest = ftypeOfInterest,
-                          trtOfInterest = trtOfInterest,
-                          bounds = bounds,
-                          verbose = verbose,
-                          tol = tol,
-                          Gcomp = Gcomp,
-                          gtol = gtol
+    tmle.fit <- mean_tmle(
+      ftime = clean$ftime,
+      ftype = clean$ftype,
+      trt = clean$trt,
+      t0 = t0,
+      adjustVars = clean$adjustVars,
+      SL.ftime = clean$SL.ftime,
+      SL.ctime = clean$SL.ctime,
+      SL.trt = clean$SL.trt,
+      glm.ftime = clean$glm.ftime,
+      glm.ctime = clean$glm.ctime,
+      glm.trt = clean$glm.trt,
+      returnIC = returnIC,
+      returnModels = returnModels,
+      ftypeOfInterest = ftypeOfInterest,
+      trtOfInterest = trtOfInterest,
+      bounds = bounds,
+      verbose = verbose,
+      tol = tol,
+      Gcomp = Gcomp,
+      gtol = gtol
     )
   }
 
-  out <- list(call = call, est = tmle.fit$est, var = tmle.fit$var,
-              meanIC = tmle.fit$meanIC, ic = tmle.fit$ic,
-              ftimeMod = tmle.fit$ftimeMod, ctimeMod = tmle.fit$ctimeMod,
-              trtMod = tmle.fit$trtMod, t0 = t0, ftime = tmle.fit$ftime,
-              ftype = tmle.fit$ftype, trt = tmle.fit$trt,
-              adjustVars = tmle.fit$adjustVars)
+  out <- list(
+    call = call, est = tmle.fit$est, var = tmle.fit$var,
+    meanIC = tmle.fit$meanIC, ic = tmle.fit$ic,
+    ftimeMod = tmle.fit$ftimeMod, ctimeMod = tmle.fit$ctimeMod,
+    trtMod = tmle.fit$trtMod, t0 = t0, ftime = tmle.fit$ftime,
+    ftype = tmle.fit$ftype, trt = tmle.fit$trt,
+    adjustVars = tmle.fit$adjustVars
+  )
   class(out) <- "survtmle"
   return(out)
 }

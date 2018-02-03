@@ -34,7 +34,7 @@ default this is set to \code{max(ftime)}.}
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
 outcome regression (either cause-specific hazards or conditional mean).
-See \code{?SuperLearner} for more information on how to specify valid 
+See \code{?SuperLearner} for more information on how to specify valid
 \code{SuperLearner} libraries. It is expected that the wrappers used
 in the library will play nicely with the input variables, which will
 be called \code{"trt"} and \code{names(adjustVars)}.}
@@ -116,7 +116,7 @@ will continue performing targeting updates to the initial estimators
 until the empirical mean of the efficient influence function is
 smaller than \code{tol}. The default (\code{1/length(ftime)}) is a
 sensible value. Larger values can be used in situations where
-convergence of the algorithm is an issue; however, this may result in 
+convergence of the algorithm is an issue; however, this may result in
 large finite-sample bias.}
 
 \item{maxIter}{A maximum number of iterations for the algorithm when

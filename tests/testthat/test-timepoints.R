@@ -17,19 +17,33 @@ test_that("hazard_tmle and mean_tmle timepoints equal Kaplan-Meier without covar
 
   # hazard fit
   suppressWarnings(
-    fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                     adjustVars = adjustVars, glm.trt = "1",
-                     glm.ftime = paste0("trt + ",
-                                        paste0("I(t==", seq_len(max(ftime)), ")",
-                                               collapse = "+"), "+",
-                                        paste0("I(trt*t==", seq_len(max(ftime)), ")",
-                                               collapse = "+")),
-                     glm.ctime = paste0("trt + ",
-                                        paste0("I(t==", seq_len(max(ftime)), ")",
-                                               collapse = "+"), "+",
-                                        paste0("I(trt*t==", seq_len(max(ftime)), ")",
-                                               collapse = "+")),
-                     method = "hazard", t0 = t_0, returnModels = TRUE)
+    fit1 <- survtmle(
+      ftime = ftime, ftype = ftype, trt = trt,
+      adjustVars = adjustVars, glm.trt = "1",
+      glm.ftime = paste0(
+        "trt + ",
+        paste0(
+          "I(t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        ), "+",
+        paste0(
+          "I(trt*t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        )
+      ),
+      glm.ctime = paste0(
+        "trt + ",
+        paste0(
+          "I(t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        ), "+",
+        paste0(
+          "I(trt*t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        )
+      ),
+      method = "hazard", t0 = t_0, returnModels = TRUE
+    )
   )
   suppressWarnings(
     tp.fit1 <- timepoints(fit1, times = seq_len(t_0))
@@ -37,17 +51,21 @@ test_that("hazard_tmle and mean_tmle timepoints equal Kaplan-Meier without covar
   est.fit1 <- Reduce(cbind, lapply(tp.fit1, "[[", "est"))
 
   # mean fit
-  fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                   adjustVars = adjustVars, glm.trt = "1", glm.ftime = "trt",
-                   glm.ctime = "trt", method = "mean", t0 = t_0)
+  fit2 <- survtmle(
+    ftime = ftime, ftype = ftype, trt = trt,
+    adjustVars = adjustVars, glm.trt = "1", glm.ftime = "trt",
+    glm.ctime = "trt", method = "mean", t0 = t_0
+  )
   suppressWarnings(
     tp.fit2 <- timepoints(fit2, times = seq_len(t_0))
   )
   est.fit2 <- Reduce(cbind, lapply(tp.fit2, "[[", "est"))
 
   # compare to kaplan meier
-  km <- matrix(1 - summary(survfit(Surv(ftime, ftype) ~ trt))$surv, nrow = 2,
-               byrow = TRUE)
+  km <- matrix(
+    1 - summary(survfit(Surv(ftime, ftype) ~ trt))$surv, nrow = 2,
+    byrow = TRUE
+  )
 
   expect_equal(as.numeric(est.fit2), as.numeric(est.fit1))
   expect_equal(as.numeric(km), as.numeric(est.fit1))
@@ -68,19 +86,33 @@ test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
 
   # hazard fit
   suppressWarnings(
-    fit1 <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                     adjustVars = adjustVars, glm.trt = "1",
-                     glm.ftime = paste0("trt + ",
-                                        paste0("I(t==", seq_len(max(ftime)), ")",
-                                               collapse = "+"), "+",
-                                        paste0("I(trt*t==", seq_len(max(ftime)), ")",
-                                               collapse = "+")),
-                     glm.ctime = paste0("trt + ",
-                                        paste0("I(t==", seq_len(max(ftime)), ")",
-                                               collapse = "+"), "+",
-                                        paste0("I(trt*t==", seq_len(max(ftime)), ")",
-                                               collapse = "+")),
-                     method = "hazard", t0 = t_0, returnModels = TRUE)
+    fit1 <- survtmle(
+      ftime = ftime, ftype = ftype, trt = trt,
+      adjustVars = adjustVars, glm.trt = "1",
+      glm.ftime = paste0(
+        "trt + ",
+        paste0(
+          "I(t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        ), "+",
+        paste0(
+          "I(trt*t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        )
+      ),
+      glm.ctime = paste0(
+        "trt + ",
+        paste0(
+          "I(t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        ), "+",
+        paste0(
+          "I(trt*t==", seq_len(max(ftime)), ")",
+          collapse = "+"
+        )
+      ),
+      method = "hazard", t0 = t_0, returnModels = TRUE
+    )
   )
   suppressWarnings(
     tp.fit1 <- survtmle::timepoints(fit1, times = seq_len(t_0))
@@ -88,9 +120,11 @@ test_that("hazard_tmle and mean_tmle equal aalen-johansen with no covariates", {
   est.fit1 <- Reduce(cbind, lapply(tp.fit1, "[[", "est"))
 
   # mean fit
-  fit2 <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                   adjustVars = adjustVars, glm.trt = "1", glm.ftime = "trt",
-                   glm.ctime = "trt", method = "mean", t0 = t_0)
+  fit2 <- survtmle(
+    ftime = ftime, ftype = ftype, trt = trt,
+    adjustVars = adjustVars, glm.trt = "1", glm.ftime = "trt",
+    glm.ctime = "trt", method = "mean", t0 = t_0
+  )
   suppressWarnings(
     tp.fit2 <- survtmle::timepoints(fit2, times = seq_len(t_0))
   )
