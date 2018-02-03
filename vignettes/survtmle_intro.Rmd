@@ -521,12 +521,12 @@ fits. Below is an example of this.
 ```{r}
 # Refit Fit 4, setting returnModels=TRUE this time...
 fit4_rm <- survtmle(ftime = ftime, ftype = ftype,
-                 trt = trt, adjustVars = adjustVars,
-                 glm.trt = "W1 + W2",
-                 glm.ftime = "trt + W1 + W2 + t + I(t^2)",
-                 glm.ctime = "trt + W1 + W2*t",
-                 method = "hazard", t0 = t_0,
-                 returnModels = TRUE)
+                    trt = trt, adjustVars = adjustVars,
+                    glm.trt = "W1 + W2",
+                    glm.ftime = "trt + W1 + W2 + t + I(t^2)",
+                    glm.ctime = "trt + W1 + W2*t",
+                    method = "hazard", t0 = t_0,
+                    returnModels = TRUE)
 # call timepoints based on this fit
 tp.fit4 <- timepoints(fit4_rm, times = seq_len(t_0))
 # print the object

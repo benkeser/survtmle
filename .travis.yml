@@ -13,10 +13,17 @@ sudo: required
 cache: packages
 warnings_are_errors: true
 
+before_install:
+  Rscript -e 'update.packages(ask = FALSE)'
+
 r:
   - oldrel
   - release
   - devel
+
+r_packages:
+  - covr
+  - devtools
 
 r_github_packages:
   - jimhester/covr

@@ -4,7 +4,7 @@
 \alias{confint.survtmle}
 \title{confint.survtmle}
 \usage{
-\method{confint}{survtmle}(object, parm = 1:length(object$est),
+\method{confint}{survtmle}(object, parm = seq_along(object$est),
   level = 0.95, ...)
 }
 \arguments{
@@ -19,8 +19,8 @@ return confidence intervals for (default is to return all).}
 }
 \value{
 A matrix with columns giving the lower and upper confidence limits
-        for each parameter. These will be labeled as (1-level)/2 and
-        1 - (1-level)/2 in percent. The default is 2.5% and 97.5%.
+ for each parameter. These will be labeled as (1-level)/2 and 1 - (1-level)/2
+ in percent. The default is 2.5% and 97.5%.
 }
 \description{
 Computes confidence intervals for a fitted \code{survtmle} object.
@@ -42,5 +42,4 @@ fit <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
 # get confidence intervals
 ci <- confint(fit)
 ci
-
 }
