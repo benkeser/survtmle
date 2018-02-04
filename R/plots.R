@@ -1,4 +1,4 @@
-utils::globalVariables(c("value", "group"))
+utils::globalVariables(c(".", "value", "group", "ci_low", "ci_upper"))
 
 #' Plot Results of Cumulative Incidence Estimates
 #'
@@ -10,6 +10,9 @@ utils::globalVariables(c("value", "group"))
 #' @param type \code{character} describing whether to provide a plot of raw
 #'  ("raw") or monotonic ("iso") estimates in the resultant step function plot,
 #'  with the latter being computed by a call to \code{stats::isoreg}
+#' @param show_ci \code{logical} indicating whether or not to print error bars
+#'  based on the construction of a confidence interval for the input object of
+#'  class \code{tp.survtmle}.
 #' @param pal A \code{ggplot2} palette object from the \code{ggsci} package. The
 #'  default of \code{scale_color_lancet} is generally appropriate for medical
 #'  and epidemiologic applications, though there are situations in which one
@@ -21,6 +24,7 @@ utils::globalVariables(c("value", "group"))
 #' @importFrom ggsci scale_color_lancet
 #' @importFrom stringr str_length str_sub
 #' @importFrom tidyr gather
+#' @importFrom dplyr "%>%"
 #' @importFrom stats isoreg
 #'
 #' @return object of class \code{ggplot} containing a step function plot of the
@@ -54,6 +58,7 @@ utils::globalVariables(c("value", "group"))
 plot.tp.survtmle <- function(x,
                              ...,
                              type = c("iso", "raw"),
+                             show_ci = FALSE,
                              pal = ggsci::scale_color_lancet()) {
 
   # check that input for type is appropriate
@@ -71,6 +76,11 @@ plot.tp.survtmle <- function(x,
   times_labels <- as.numeric(unclass(times_labels))
   times_labels <- times_labels[order(times_labels)] # reorder
 
+  # get confidence interval for input object of class tp.survtmle
+  ci <- confint(x) %>%
+    Reduce(rbind, .)
+  row.names(ci) <- NULL
+
   if (type == "raw") {
     raw_est_in <- as.data.frame(cbind(t(est), times_labels))
     colnames(raw_est_in) <- c(gsub(
@@ -84,9 +94,10 @@ plot.tp.survtmle <- function(x,
         times_labels,
         length(unique(raw_est_in$t))
       ),
-      raw_est_in
+      raw_est_in,
+      ci
     ))
-    colnames(raw_est_in) <- c("t", "group", "value")
+    colnames(raw_est_in) <- c("t", "group", "value", "ci_low", "ci_high")
     raw_est_in[, "group"] <- as.factor(raw_est_in[, "group"])
     plot_in <- raw_est_in
   } else if (type == "iso") {
@@ -106,9 +117,10 @@ plot.tp.survtmle <- function(x,
         times_labels,
         length(unique(iso_est_in$t))
       ),
-      iso_est_in
+      iso_est_in,
+      ci
     ))
-    colnames(iso_est_in) <- c("t", "group", "value")
+    colnames(iso_est_in) <- c("t", "group", "value", "ci_low", "ci_high")
     iso_est_in[, "group"] <- as.factor(iso_est_in[, "group"])
     plot_in <- iso_est_in
   }
@@ -118,9 +130,15 @@ plot.tp.survtmle <- function(x,
     ggplot2::aes(x = t, y = value, colour = group)
   )
   if (length(unique(plot_in$t)) > 1) {
-    p <- p + ggplot2::geom_step()
+    p <- p + ggplot2::geom_step() + ggplot2::geom_point()
   } else {
     p <- p + ggplot2::geom_point()
+  }
+  if (show_ci == TRUE) {
+    p <- p +
+      ggplot2::geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = 0.2,
+                             show.legend = FALSE,
+                             position = ggplot2::position_dodge(0.05))
   }
   p <- p + ggplot2::xlab("Time") +
     ggplot2::ylab("Cumulative Incdicence Estimate") +
