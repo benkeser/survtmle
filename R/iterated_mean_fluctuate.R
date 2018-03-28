@@ -121,8 +121,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
         suppressWarnings(
           flucMod <- stats::glm(formula = stats::as.formula(flucForm),
                                 data = wideDataList[[1]][include,],
-                                family = stats::binomial(),
-                                start = rep(0, length(uniqtrt)))
+                                family = stats::binomial())
         )
         epsilon <- matrix(flucMod$coefficients)
         # get predictions back
