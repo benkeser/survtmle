@@ -1,7 +1,7 @@
+context("Testing hazard_tmle function")
 library(survtmle)
 library(survival)
 library(cmprsk)
-context("Testing hazard_tmle function")
 
 test_that("hazard_tmle with bounds of (0,1) gives same results as unbounded with one failure type", {
   set.seed(1234)

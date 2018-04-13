@@ -1,7 +1,7 @@
+context("Testing timepoints function")
 library(survtmle)
 library(survival)
 library(cmprsk)
-context("Testing timepoints function")
 
 ###############################################################################
 

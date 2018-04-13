@@ -1,7 +1,7 @@
+context("Testing checkInputs function")
 library(survtmle)
 library(survival)
 library(cmprsk)
-context("Testing checkInputs function")
 
 test_that("checkInputs errors with bad inputs", {
   ftime <- rep(10, 3)

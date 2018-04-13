@@ -42,11 +42,11 @@ confint.survtmle <- function(object,
                              parm = seq_along(object$est),
                              level = 0.95,
                              ...) {
-    estVec <- object$est[parm]
-    ses <- sqrt(diag(object$var)[parm])
     a <- (1 - level) / 2
     fac <- stats::qnorm(c(a, 1 - a))
     pct <- format.perc(c(a, 1 - a), 3)
+    estVec <- object$est[parm]
+    ses <- sqrt(diag(object$var)[parm])
     ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm, pct))
     ci[] <- estVec + outer(ses, fac)
     row.names(ci) <- row.names(object$est)[parm]
@@ -109,10 +109,12 @@ confint.tp.survtmle <- function(object,
     fac <- c(-1, 1) * abs(stats::qnorm(p = a))
 
     # extract vectors of point estimates and variance across all timepoints
-    est_allt <- lapply(object, `[[`, 2)
-    ses_allt <- lapply(object, `[[`, 3) %>%
-        lapply(., diag) %>%
-        lapply(., sqrt)
+    est_allt <- list()
+    ses_allt <- list()
+    for (i in seq_along(object)) {
+        est_allt[[i]] <- object[[i]]$est
+        ses_allt[[i]] <- sqrt(diag(object[[i]]$var))
+    }
 
     # find number of contrast groups
     n_grps <- est_allt %>%
@@ -123,9 +125,12 @@ confint.tp.survtmle <- function(object,
     # construct output object and fill across groups
     ci_tables <- list()
     for (i in seq_len(n_grps)) {
-        est <- lapply(est_allt, `[[`, i) %>% unlist()
-        se <- lapply(ses_allt, `[[`, i) %>% unlist() %>% outer(., fac)
-        ci <- est + se
+        est <- lapply(est_allt, `[[`, i) %>%
+            unlist()
+        ses <- lapply(ses_allt, `[[`, i) %>%
+            unlist() %>%
+            outer(., fac)
+        ci <- est + ses
         colnames(ci) <- format.perc(c(a, 1 - a), 3)
         ci_tables[[i]] <- ci
     }

@@ -1,6 +1,7 @@
 ---
 title: "Targeted Learning for Survival Analysis with Competing Risks"
-author: "David Benkeser & Nima Hejazi"
+author: "[David Benkeser](https://www.benkeserstatistics.com/) & [Nima
+  Hejazi](https://nimahejazi.org)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: refs.bib

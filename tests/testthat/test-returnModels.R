@@ -1,6 +1,6 @@
+context("Checking model types under differing runs with returnModels")
 library(survtmle)
 library(survival)
-context("Checking model types under differing runs with returnModels")
 
 test_that("Objects in fit are of correct classes for differing returnModels", {
   # simulation parameters
