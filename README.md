@@ -23,7 +23,7 @@ license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://openso
 > with Competing Risks
 
 **Authors:** [David Benkeser](https://www.benkeserstatistics.com/) and
-[Nima Hejazi](http://nimahejazi.org)
+[Nima Hejazi](https://nimahejazi.org)
 
 -----
 
@@ -53,16 +53,6 @@ You can install a stable release of `survtmle` from GitHub via
 devtools::install_github("benkeser/survtmle")
 ```
 
-<!--
-To contribute, install the _development version_ from GitHub via
-[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
-
-
-```r
-devtools::install_github("benkeser/survtmle", ref = "develop")
-```
--->
-
 -----
 
 ## Issues
@@ -78,8 +68,13 @@ This minimal example shows how to use `survtmle` to obtain cumulative
 incidence estimates with a very simple, simulated data set.
 
 ``` r
-# simulate data
+# load the package and set seed for reproducibility
+library(survtmle)
+#> survtmle: Targeted Learning for Survival Analysis
+#> Version: 1.0.3
 set.seed(341796)
+
+# simulate data
 n <- 100
 t_0 <- 10
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
@@ -88,11 +83,6 @@ T <- rgeom(n,plogis(-4 + W$W1 * W$W2 - A)) + 1
 C <- rgeom(n, plogis(-6 + W$W1)) + 1
 ftime <- pmin(T, C)
 ftype <- as.numeric(ftime == T)
-
-# load the package
-library(survtmle)
-#> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.3
 
 # apply survtmle for estimation
 fit <- survtmle(ftime = ftime, ftype = ftype,
@@ -134,8 +124,8 @@ plot(tpfit)
 ## Contributions
 
 Contributions are very welcome. Interested contributors can consult our
-[`contribution
-guidelines`](https://github.com/benkeser/survtmle/blob/master/CONTRIBUTING.md)
+[contribution
+guidelines](https://github.com/benkeser/survtmle/blob/master/CONTRIBUTING.md)
 prior to submitting a pull request.
 
 -----
@@ -170,14 +160,14 @@ After using the `survtmle` R package, please cite both of the following:
 
 ## License
 
-© 2016-2017 [David C. Benkeser](http://www.benkeserstatistics.com)
+© 2016-2018 [David C. Benkeser](http://www.benkeserstatistics.com)
 
 The contents of this repository are distributed under the MIT license.
 See below for details:
 
     The MIT License (MIT)
     
-    Copyright (c) 2016-2017 David C. Benkeser
+    Copyright (c) 2016-2018 David C. Benkeser
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

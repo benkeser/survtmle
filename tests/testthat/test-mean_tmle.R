@@ -1,6 +1,6 @@
+context("Testing mean_tmle function")
 library(survtmle)
 library(survival)
-context("Testing mean_tmle function")
 
 test_that("mean_tmle with bounds of (0,1) gives same results as unbounded with one failure type", {
   set.seed(1234)

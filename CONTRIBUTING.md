@@ -56,7 +56,7 @@ overwhelming the first time you get set up, but it gets easier with practice.
 If you're not familiar with git or GitHub, please start by reading
 <http://r-pkgs.had.co.nz/git.html>
 
-Pull requests will be evaluated against the a checklist:
+Pull requests will be evaluated against this checklist:
 
 1.  __Motivation__. Your pull request should clearly and concisely motivates the
    need for change. Plesae describe the problem your PR addresses and show
@@ -78,11 +78,14 @@ Pull requests will be evaluated against the a checklist:
     and don't submit any others until the first one has been processed.
 
 3.  __Use `survtmle` coding style__. Please follow the
-    [official ggplot2 style](http://adv-r.had.co.nz/Style.html). Maintaing
+    [official tidyverse style guide](http://style.tidyverse.org/). Maintaining
     a consistent style across the whole code base makes it much easier to
     jump into the code. If you're modifying existing `survtmle` code that
     doesn't follow the style guide, a separate pull request to fix the
-    style would be greatly appreciated.
+    style would be greatly appreciated. To lower the burden on contributors,
+    we've included a recipe `make style` that will re-format code to follow
+    these conventions, provided that you've installed the
+    [`styler`](http://styler.r-lib.org/) package.
 
 4.  If you're adding new parameters or a new function, you'll also need
     to document them with [roxygen](https://github.com/klutometis/roxygen).

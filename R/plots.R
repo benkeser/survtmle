@@ -1,4 +1,4 @@
-utils::globalVariables(c("value", "group"))
+utils::globalVariables(c(".", "value", "group"))
 
 #' Plot Results of Cumulative Incidence Estimates
 #'
@@ -21,6 +21,7 @@ utils::globalVariables(c("value", "group"))
 #' @importFrom ggsci scale_color_lancet
 #' @importFrom stringr str_length str_sub
 #' @importFrom tidyr gather
+#' @importFrom dplyr "%>%"
 #' @importFrom stats isoreg
 #'
 #' @return object of class \code{ggplot} containing a step function plot of the
@@ -65,11 +66,11 @@ plot.tp.survtmle <- function(x,
   })
   est <- Reduce(cbind, est)
 
-  # extract timepoints of interest by actual values rather than order
+  # extract time points of interest by actual values rather than order
   times <- objects(x)
   times_labels <- stringr::str_sub(times, 2, stringr::str_length(times))
   times_labels <- as.numeric(unclass(times_labels))
-  times_labels <- times_labels[order(times_labels)] # reorder
+  times_labels <- times_labels[order(times_labels)] # re-order
 
   if (type == "raw") {
     raw_est_in <- as.data.frame(cbind(t(est), times_labels))
@@ -118,7 +119,7 @@ plot.tp.survtmle <- function(x,
     ggplot2::aes(x = t, y = value, colour = group)
   )
   if (length(unique(plot_in$t)) > 1) {
-    p <- p + ggplot2::geom_step()
+    p <- p + ggplot2::geom_step() + ggplot2::geom_point()
   } else {
     p <- p + ggplot2::geom_point()
   }

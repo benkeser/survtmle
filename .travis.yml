@@ -14,7 +14,7 @@ cache: packages
 warnings_are_errors: true
 
 before_install:
-    Rscript -e 'update.packages(ask = FALSE)'
+  Rscript -e 'update.packages(ask = FALSE)'
 
 r:
   - oldrel
