@@ -113,7 +113,8 @@ timepoints <- function(object, times, returnModels = FALSE) {
       outList[[ct]] <- list(
         est = rep(0, length(object$est)),
         var = matrix(
-          NA, nrow = length(object$est),
+          NA,
+          nrow = length(object$est),
           ncol = length(object$est)
         )
       )

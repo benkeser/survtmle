@@ -8,8 +8,11 @@
 <title>Targeted Learning for Survival Analysis with Competing Risks • survtmle</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Targeted Learning for Survival Analysis with Competing Risks">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -29,7 +32,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -73,9 +76,11 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Targeted Learning for Survival Analysis with Competing Risks</h1>
-                        <h4 class="author">David Benkeser &amp; Nima Hejazi</h4>
+                        <h4 class="author">
+<a href="https://www.benkeserstatistics.com/">David Benkeser</a> &amp; <a href="https://nimahejazi.org">Nima Hejazi</a>
+</h4>
             
-            <h4 class="date">2017-08-24</h4>
+            <h4 class="date">2018-04-18</h4>
           </div>
 
     
@@ -91,31 +96,31 @@
 <h2 class="hasAnchor">
 <a href="#single-failure-type" class="anchor"></a>Single failure type</h2>
 <p>We examine the use of <code>survtmle</code> in a variety of simple examples. The package can be loaded as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(survtmle)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(survtmle)</a></code></pre></div>
 <pre><code>## survtmle: Targeted Learning for Survival Analysis</code></pre>
-<pre><code>## Version: 1.0.2.1</code></pre>
+<pre><code>## Version: 1.1.0</code></pre>
 <p>We simulate a simple data with no censoring and a single cause of failure to illustrate the machinery of the <code>survtmle</code> package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">200</span>
-t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>
-trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
-adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
-ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
-ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
 <p>The simple data structure contains a set of baseline covariates (<code>adjustVars</code>), a binary treatment variable (<code>trt</code>), a failure time that is a function of the treatment, adjustment variables, and a random error (<code>ftime</code>), and a failure type (<code>ftype</code>), which denotes the cause of failure (0 means no failure, 1 means failure). The first few rows of data can be viewed as follows.</p>
 <pre><code>## # A tibble: 200 x 5
 ##    ftype ftime   trt    W1    W2
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1     0     5     0     1     1
-##  2     1     4     1     1     1
-##  3     1     4     1     0     2
-##  4     0     6     1     1     2
-##  5     0     4     1     1     1
-##  6     1     3     1     1     0
-##  7     0     7     0     0     2
-##  8     0     3     0     0     0
-##  9     1     4     1     0     1
-## 10     0     4     1     1     1
+##  1    0.    5.     0    1.    1.
+##  2    1.    4.     1    1.    1.
+##  3    1.    4.     1    0.    2.
+##  4    0.    6.     1    1.    2.
+##  5    0.    4.     1    1.    1.
+##  6    1.    3.     1    1.    0.
+##  7    0.    7.     0    0.    2.
+##  8    0.    3.     0    0.    0.
+##  9    1.    4.     1    0.    1.
+## 10    0.    4.     1    1.    1.
 ## # ... with 190 more rows</code></pre>
 <hr>
 <div id="using-the-method-of-iterated-means" class="section level3">
@@ -124,20 +129,20 @@ ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="k
 <div id="covariate-adjustment-via-logistic-regression" class="section level4">
 <h4 class="hasAnchor">
 <a href="#covariate-adjustment-via-logistic-regression" class="anchor"></a>Covariate adjustment via logistic regression</h4>
-<p>A common goal is to compare the incidence of failure at a fixed time between the two treatment groups. Covariate adjustment is often desirable in this comparison to improve efficiency <span class="citation">(Moore and Laan 2009)</span>. This covariate adjustment may be facilitated by estimating a series of iterated covariate-conditional means <span class="citation">(J. M. Robins 1999,<span class="citation">Bang and Robins (2005)</span>,<span class="citation">Laan and Gruber (2012)</span>)</span>. The final iterated covariate-conditional mean is marginalized over the empirical distribution of baseline covariates to obtain an estimate of the marginal cumulative incidence.</p>
+<p>A common goal is to compare the incidence of failure at a fixed time between the two treatment groups. Covariate adjustment is often desirable in this comparison to improve efficiency <span class="citation">(Moore and Laan 2009)</span>. This covariate adjustment may be facilitated by estimating a series of iterated covariate-conditional means <span class="citation">(Robins 1999,<span class="citation">@bang2005doubly</span>,<span class="citation">@vdlgruber:2012:ijb</span>)</span>. The final iterated covariate-conditional mean is marginalized over the empirical distribution of baseline covariates to obtain an estimate of the marginal cumulative incidence.</p>
 <p>Here, we invoke the eponymous <code>survtmle</code> function to compute the iterated mean-based (<code>method = "mean"</code>) covariate-adjusted estimates of the cumulative incidence at time six (<code>t0 = 6</code>) in each of the treatment groups using quasi-logistic regression (formula specified via <code>glm.ftime</code>) to estimate the iterated means. The <code>glm.ftime</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code> and <code>"trt"</code>. Here we use a simple main terms regression.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 1: Use GLM-based estimators for failure w/ "mean" method</span>
-fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Fit 1: Use GLM-based estimators for failure w/ "mean" method</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 ## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
 <pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 ## glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.</code></pre>
 <pre><code>## Warning in chol.default(B, pivot = TRUE): the matrix is either rank-
 ## deficient or indefinite</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit1</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">fit1</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5667312
@@ -150,15 +155,15 @@ fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
 <p>Internally, <code>survtmle</code> estimates the covariate-conditional treatment probability (via <code>glm.trt</code> or <code>SL.trt</code>, see below) and covariate-conditional censoring distribution (via <code>glm.ctime</code> or <code>SL.ctime</code>, see below). In the above example, the treatment probability does not depend on covariates (as in e.g., a randomized trial) and so we did not specify a way to adjust for covariates in estimating the treatment probability. In this case, <code>survtmle</code> sets <code>glm.trt = "1"</code>, which corresponds with empirical estimates of treatment probability, and sets <code>glm.ctime</code> to be equivalent to the Kaplan-Meier censoring distribution estimates.</p>
 <p>In practice, we may wish to adjust for covariates when computing estimates of the covariate-conditional treatment and censoring probabilities. In observational studies, the distribution of treatment may differ by measured covariates, while in almost any study (including randomized trials) it is possible that censoring differs by covariates. Thus, we often wish to adjust for covariates to account for measured confounders of treatment receipt and censoring.</p>
 <p>This adjustment may be accomplished using logistic regression through the <code>glm.trt</code> and <code>glm.ctime</code> arguments, respectively. The <code>glm.trt</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>. The <code>glm.ctime</code> argument should be a valid right-hand-side formula specification based on <code>colnames(adjustVars)</code>, <code>"trt"</code>, and <code>"t"</code> used to model the hazard function for censoring. By including <code>"trt"</code> and <code>"t"</code>, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call <code>survtmle</code> again, now adjusting for covariates in the treatment and censoring fits.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 2: Use GLM-based estimators for failure, treatment, and censoring with the</span>
-<span class="co">#        "mean" method</span>
-fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit2</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># Fit 2: Use GLM-based estimators for failure, treatment, and censoring with the</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#        "mean" method</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb12-6" data-line-number="6">                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,</a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb12-8" data-line-number="8">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb12-9" data-line-number="9">fit2</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5657950
@@ -174,15 +179,15 @@ fit2</code></pre></div>
 <a href="#covariate-adjustment-via-super-learner" class="anchor"></a>Covariate adjustment via Super Learner</h4>
 <p>While we can certainly use logistic regression to model the treatment, censoring, and iterated means, a large benefit afforded by the <code>survtmle</code> package is how it leverages <code>SuperLearner</code> ensemble machine learning to estimate these quantities in a more flexible manner. The Super Learner method is a generalization of stacked regression <span class="citation">(Breiman 1996)</span> that uses cross-validation to select the best-performing estimator from a library of candidate estimators <span class="citation">(Laan, Polley, and Hubbard 2007)</span>. Many popular machine learning algorithms have been implemented in the <a href="https://cran.r-project.org/package=SuperLearner"><code>SuperLearner</code></a>.</p>
 <p>To utilize <code>SuperLearner</code> estimates, we can utilize options <code>SL.trt</code>, <code>SL.ctime</code>, and <code>SL.ftime</code> to estimate conditional treatment, censoring, and iterated means, respectively. See <code>?SuperLearner</code> for details on options for correctly specifying a super learner library and see <code>listWrappers()</code> to print the methods implemented in the <code>SuperLearner</code> package. Here we demonstrate a call to <code>survtmle</code> using a simple library that includes simple algorithms that are included in base <code>R</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 3: SuperLearner estimators for treatment, failure, and censoring.</span>
-fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># Fit 3: SuperLearner estimators for treatment, failure, and censoring.</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## Loading required package: nnls</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">fit3</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5541546
@@ -200,15 +205,15 @@ fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtm
 <h3 class="hasAnchor">
 <a href="#using-the-method-of-cause-specific-hazards" class="anchor"></a>Using the method of cause-specific hazards</h3>
 <p>An alternative method to the iterated mean-based TMLE for estimating cumulative incidence is based on estimated the (cause-specific) hazard function. This estimator is implemented by specifying <code>method = "hazard"</code> in a call to <code>survtmle</code>. Just as with <code>method = "mean"</code>, we can use either <code>glm.</code> or <code>SL.</code> to adjust for covariates. However, now the <code>glm.ftime</code> formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazards over time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 4: GLM estimators for treatment, censoring, and failure w/ "hazard" method</span>
-<span class="co"># Note the inclusion of 't' in the formula for glm.ftime.</span>
-fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit4</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># Fit 4: GLM estimators for treatment, censoring, and failure w/ "hazard" method</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="co"># Note the inclusion of 't' in the formula for glm.ftime.</span></a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">fit4</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5864610
@@ -219,16 +224,16 @@ fit4</code></pre></div>
 ## 0 1 0.0028138563 0.0002638809
 ## 1 1 0.0002638809 0.0018133124</code></pre>
 <p>Here’s an example using Super Learner.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 5: SuperLearner estimators for failure and censoring, alongside empirical</span>
-<span class="co">#        estimators for treatment (the default) using the "hazard" method.</span>
-<span class="co">#        Note that the super learner for ftime is also adjusting for time.</span>
-fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit5</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># Fit 5: SuperLearner estimators for failure and censoring, alongside empirical</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">#        estimators for treatment (the default) using the "hazard" method.</span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co">#        Note that the super learner for ftime is also adjusting for time.</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8">                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb20-9" data-line-number="9">                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb20-10" data-line-number="10">fit5</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5836815
@@ -246,26 +251,26 @@ fit5</code></pre></div>
 <h2 class="hasAnchor">
 <a href="#multiple-failure-types" class="anchor"></a>Multiple failure types</h2>
 <p>In all of the preceding examples, we have restricted our attention to the case where there is only a single failure type of interest. Now we consider more scenarios where we observe multiple failure types. First, we simulate data with two types of failure.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">200</span>
-trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
-adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
-ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
-ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6">ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</a></code></pre></div>
 <p>This simulated data structure is similar to the single failure type data; however, now the failure type variable (<code>ftype</code>) now contains two distinct types of failure (with 0 still reserved for no failure).</p>
 <pre><code>## # A tibble: 200 x 5
 ##    ftype ftime   trt    W1    W2
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1     0     5     0     1     1
-##  2     2     4     1     1     1
-##  3     1     4     1     0     2
-##  4     1     6     1     1     2
-##  5     1     4     1     1     1
-##  6     1     3     1     1     0
-##  7     0     7     0     0     2
-##  8     1     3     0     0     0
-##  9     1     4     1     0     1
-## 10     1     4     1     1     1
+##  1    0.    5.     0    1.    1.
+##  2    2.    4.     1    1.    1.
+##  3    1.    4.     1    0.    2.
+##  4    1.    6.     1    1.    2.
+##  5    1.    4.     1    1.    1.
+##  6    1.    3.     1    1.    0.
+##  7    0.    7.     0    0.    2.
+##  8    1.    3.     0    0.    0.
+##  9    1.    4.     1    0.    1.
+## 10    1.    4.     1    1.    1.
 ## # ... with 190 more rows</code></pre>
 <p>When multiple failure types are present, a common goal is to compare the cumulative incidence of a particular failure type at a fixed time between the two treatment groups, while accounting for the fact that participants may fail due to other failure types. Covariate adjustment is again desirable to improve efficiency and account for measured confounders of treatment and censoring.</p>
 <div id="using-the-method-of-iterated-means-1" class="section level3">
@@ -275,14 +280,14 @@ ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="k
 <h4 class="hasAnchor">
 <a href="#covariate-adjustment-via-logistic-regression-1" class="anchor"></a>Covariate adjustment via logistic regression</h4>
 <p>The call to invoke <code>survtmle</code> is exactly the same as in the single failure type case.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 6: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
-fit6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit6</code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># Fit 6: GLM estimators for treatment, censoring, and failure w/ "mean" method</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">fit6 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">fit6</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4229114
@@ -298,15 +303,15 @@ fit6</code></pre></div>
 ## 1 2  5.957709e-05 -2.382514e-03  7.728650e-05  2.615476e-03</code></pre>
 <p>The output object contains cumulative incidence estimates for each of the four groups defined by the two failure types and treatments.</p>
 <p>There are sometimes failure types that are not of direct interest to out study. Because <code>survtmle</code> invoked with <code>method = "mean"</code> computes an estimate of the cumulative incidence of each failure type separately, we can save on computation time by specifying which failure types we care about via the <code>ftypeOfInterest</code> option.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 7: GLM estimators for treatment, censoring, and failure w/ "mean" method</span>
-fit7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)
-fit7</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># Fit 7: GLM estimators for treatment, censoring, and failure w/ "mean" method</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">fit7 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8">                 <span class="dt">ftypeOfInterest =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb26-9" data-line-number="9">fit7</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4229114
@@ -321,15 +326,15 @@ fit7</code></pre></div>
 <h4 class="hasAnchor">
 <a href="#covariate-adjustment-via-super-learner-1" class="anchor"></a>Covariate adjustment via Super Learner</h4>
 <p>As before, we can use the <code>SuperLearner</code> ensemble learning algorithm to adjust for covariates in multiple failure type settings as well.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 8: SuperLearner estimators for failure and censoring and empirical</span>
-<span class="co">#        estimators for treatment (default) using the "mean" method.</span>
-fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit8</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># Fit 8: SuperLearner estimators for failure and censoring and empirical</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="co">#        estimators for treatment (default) using the "mean" method.</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">                 <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">                 <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">                 <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb28-8" data-line-number="8">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb28-9" data-line-number="9">fit8</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4347158
@@ -353,14 +358,14 @@ fit8</code></pre></div>
 <h4 class="hasAnchor">
 <a href="#covariate-adjustment-via-logistic-regression-2" class="anchor"></a>Covariate adjustment via logistic regression</h4>
 <p>The TMLE based on cause-specific hazards can also be used to compute cumulative incidence estimates in settings with multiple failure types. As above, the <code>glm.ftime</code> formula may additionally include functions of time, as this formula is now being used in a pooled regression to estimate cause-specific hazard of each failure type over time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 9: same as Fit 8 above, but using the "hazard" method</span>
-fit9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit9</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># Fit 9: same as Fit 8 above, but using the "hazard" method</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">fit9 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">fit9</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4590612
@@ -375,14 +380,14 @@ fit9</code></pre></div>
 ## 0 2  5.883916e-05 -5.379741e-05  3.877006e-03 -3.037918e-03
 ## 1 2 -4.525266e-05  8.922855e-05 -3.037918e-03  3.410066e-03</code></pre>
 <p>We can also leverage the <code>SuperLearner</code> algorithm when using the method of cause-specific hazards with multiple failure types of interest.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 10: same as Fit 7 above, but using the "hazard" method</span>
-fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                  <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),
-                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)
-fit10</code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># Fit 10: same as Fit 7 above, but using the "hazard" method</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">                  <span class="dt">SL.trt =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">                  <span class="dt">SL.ftime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb32-6" data-line-number="6">                  <span class="dt">SL.ctime =</span> <span class="kw">c</span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb32-8" data-line-number="8">fit10</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4561936
@@ -406,8 +411,8 @@ fit10</code></pre></div>
 <p>In certain situations, we have knowledge that the incidence of an event is bounded below/above for every strata in the population. It is possible to incorporate these bounds into the TMLE estimation procedure to ensure that any resulting estimate of cumulative incidence is compatible with these bounds. Please refer to <span class="citation">Benkeser, Carone, and Gilbert (2017)</span> for more on bounded TMLEs and their potential benefits.</p>
 <p>Bounds can be passed to <code>survtmle</code> by creating a <code>data.frame</code> that contains columns with specific names. In particular, there should be a column named <code>"t"</code>. There should additionally be columns for the lower and upper bound for each type of failure. For example if there is only one type of failure (<code>ftype = 1</code> or <code>ftype = 0</code>) then the bounds <code>data.frame</code> can contain columns <code>"l1"</code>, and <code>"u1"</code> denote the lower and upper bounds, respectively, on the iterated conditional mean (for <code>method = "mean"</code>) or the conditional hazard function (for <code>method = "hazard"</code>). If there are two types of failure (<code>ftype = 1</code>, <code>ftype = 2</code>, or <code>ftype = 0</code>) then there can additionally be columns <code>"l2"</code> and <code>"u2"</code> denoting the lower and upper bounds, respectively, on the iterated conditional mean for type two failures (for <code>method = "mean"</code>) or the conditional cause-specific hazard function for type two failures (for <code>method = "hazard"</code>).</p>
 <p>Here is a simple example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bf1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>), <span class="dt">l1 =</span> <span class="kw">rep</span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>))
-bf1</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">bf1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>), <span class="dt">l1 =</span> <span class="kw">rep</span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">bf1</a></code></pre></div>
 <pre><code>##   t   l1   u1
 ## 1 1 0.01 0.99
 ## 2 2 0.01 0.99
@@ -416,15 +421,15 @@ bf1</code></pre></div>
 ## 5 5 0.01 0.99
 ## 6 6 0.01 0.99</code></pre>
 <p>Now that we have specified our bounds, we can invoke <code>survtmle</code> repeating our first example (“Fit 1”), but now restricting the iterated conditional means to follow the bounds specified above.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 11: Fit 2, but now specifying bounds on the iterated conditional means</span>
-fit11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">bounds =</span> bf1)
-fit11</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="co"># Fit 11: Fit 2, but now specifying bounds on the iterated conditional means</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">fit11 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb36-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb36-4" data-line-number="4">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb36-5" data-line-number="5">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb36-8" data-line-number="8">                 <span class="dt">bounds =</span> bf1)</a>
+<a class="sourceLine" id="cb36-9" data-line-number="9">fit11</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4230616
@@ -439,14 +444,14 @@ fit11</code></pre></div>
 ## 0 2 -1.688921e-03 -2.394680e-05  2.544824e-03  7.730107e-05
 ## 1 2  5.968034e-05 -2.382745e-03  7.730107e-05  2.615547e-03</code></pre>
 <p>When there are multiple failure types of interest, we can still provide bounds for the iterated conditional means (or the conditional hazard function, whichever is appropriate based on our specification of the <code>method</code> argument).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># need to make a data.frame of bounds in proper format two types of failure that</span>
-<span class="co"># are labeled with ftype = 1 and ftype = 2, so bounds should have columns 't',</span>
-<span class="co"># 'l1', 'u1', 'l2', and 'u2'.</span>
-bf2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>),
-                  <span class="dt">l1 =</span> <span class="kw">rep</span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>),
-                  <span class="dt">l2 =</span> <span class="kw">rep</span>(<span class="fl">0.02</span>, t_<span class="dv">0</span>), <span class="dt">u2 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>)
-                 )
-bf2</code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># need to make a data.frame of bounds in proper format two types of failure that</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="co"># are labeled with ftype = 1 and ftype = 2, so bounds should have columns 't',</span></a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="co"># 'l1', 'u1', 'l2', and 'u2'.</span></a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">bf2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">t =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb38-5" data-line-number="5">                  <span class="dt">l1 =</span> <span class="kw">rep</span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb38-6" data-line-number="6">                  <span class="dt">l2 =</span> <span class="kw">rep</span>(<span class="fl">0.02</span>, t_<span class="dv">0</span>), <span class="dt">u2 =</span> <span class="kw">rep</span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb38-7" data-line-number="7">                 )</a>
+<a class="sourceLine" id="cb38-8" data-line-number="8">bf2</a></code></pre></div>
 <pre><code>##   t   l1   u1   l2   u2
 ## 1 1 0.01 0.99 0.02 0.99
 ## 2 2 0.01 0.99 0.02 0.99
@@ -455,15 +460,15 @@ bf2</code></pre></div>
 ## 5 5 0.01 0.99 0.02 0.99
 ## 6 6 0.01 0.99 0.02 0.99</code></pre>
 <p>Now, we invoke <code>survtmle</code>, passing in the specified bounds using the appropriate argument:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit 12: same as Fit 5 above, but now include bounds</span>
-fit12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,
-                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                  <span class="dt">bounds =</span> bf2)
-fit12</code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="co"># Fit 12: same as Fit 5 above, but now include bounds</span></a>
+<a class="sourceLine" id="cb40-2" data-line-number="2">fit12 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb40-3" data-line-number="3">                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb40-4" data-line-number="4">                  <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb40-5" data-line-number="5">                  <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb40-6" data-line-number="6">                  <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb40-7" data-line-number="7">                  <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb40-8" data-line-number="8">                  <span class="dt">bounds =</span> bf2)</a>
+<a class="sourceLine" id="cb40-9" data-line-number="9">fit12</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.4230616
@@ -490,23 +495,23 @@ fit12</code></pre></div>
 <p>The <code>survtmle</code> function provides the function <code>timepoints</code> to compute the estimated cumulative incidence over multiple timepoints. This function is invoked after an initial call to <code>survtmle</code> with option <code>returnModels = TRUE</code>. By setting this option, the <code>timepoints</code> function is able to recycle fits for the conditional treatment probability, censoring distribution, and, in the case of <code>method = "hazard"</code>, the hazard fits. Thus, invoking <code>timepoints</code> is faster than making repeated calls to <code>survtmle</code> with different <code>t0</code>.</p>
 <p>There is some subtlety involved to properly leveraging this facility. Recall that the censoring distribution fit (and cause-specific hazard fit) pools over all time points. Thus, in order to most efficiently use <code>timepoints</code>, the initial call to <code>survtmle</code> should be made setting option <code>t0</code> equal to the final time point at which one wants estimates of cumulative incidence. This allows these hazard fitting procedures to utilize all of the data to estimate the conditional hazard function.</p>
 <p>We demonstrate the use of <code>timepoints</code> below based on the following simulated data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">200</span>
-t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span>
-trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)
-adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))
-ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)
-ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb42-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb42-3" data-line-number="3">t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb42-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb42-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">W1 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n)), <span class="dt">W2 =</span> <span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb42-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb42-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
 <p>Imagine that we would like cumulative incidence estimates at times <code>seq_len(t_0)</code> based on <code>fit2</code> above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called <code>fit2</code> the option <code>returnModels</code> was set to its default value <code>FALSE</code>. Thus, we must refit this object setting the function to return the model fits.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Refit fit 2 returning models</span>
-fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,
-                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)
-fit2_rm</code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># Refit fit 2 returning models</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb43-4" data-line-number="4">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">                 <span class="dt">glm.ctime =</span> <span class="st">"W1 + trt + t + I(t^2)"</span>,</a>
+<a class="sourceLine" id="cb43-6" data-line-number="6">                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb43-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb43-8" data-line-number="8">                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb43-9" data-line-number="9">fit2_rm</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
 ## 0 1 0.5657950
@@ -517,9 +522,9 @@ fit2_rm</code></pre></div>
 ## 0 1 0.0029470633 0.0002170549
 ## 1 1 0.0002170549 0.0016411250</code></pre>
 <p>Now we can call <code>timepoints</code> to return estimates of cumulative incidence at each time <code>seq_len(t_0)</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
-<span class="co"># print the object</span>
-tp.fit2</code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="co"># print the object</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3">tp.fit2</a></code></pre></div>
 <pre><code>## $est
 ##   t1         t2         t3        t4        t5        t6
 ## 1  0 0.01616033 0.08976902 0.1610393 0.3918143 0.5657950
@@ -530,18 +535,18 @@ tp.fit2</code></pre></div>
 ## 1 NA 0.0001427635 0.0007369614 0.001131293 0.002291745 0.002947063
 ## 2 NA 0.0006741195 0.0015590438 0.002276863 0.002277642 0.001641125</code></pre>
 <p>Internally, <code>timepoints</code> is making calls to <code>survtmle</code>, but is passing in the fitted treatment and censoring fits from <code>fit2_rm$trtMod</code> and <code>fit2_rm$ctimeMod</code>. However, for <code>method = "mean"</code> the function is still fitting the iterated means separately for each time required by the call to <code>timepoints</code>. Thus, the call to <code>timepoints</code> may be quite slow if <code>method = "mean"</code>, <code>SL.ftime</code> is specified (as opposed to <code>glm.ftime</code>), and/or many times are passed in via <code>times</code>. Future implementations may attempt to avoid this extra model fitting. For now, if many times are required, we recommend using <code>method = "hazard"</code>, which is able to recycle all of the model fits. Below is an example of this.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Refit Fit 4, setting returnModels=TRUE this time...</span>
-fit4_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,
-                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,
-                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,
-                 <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,
-                 <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,
-                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,
-                 <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)
-<span class="co"># call timepoints based on this fit</span>
-tp.fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit4_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))
-<span class="co"># print the object</span>
-tp.fit4</code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># Refit Fit 4, setting returnModels=TRUE this time...</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">fit4_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
+<a class="sourceLine" id="cb47-3" data-line-number="3">                    <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
+<a class="sourceLine" id="cb47-4" data-line-number="4">                    <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
+<a class="sourceLine" id="cb47-5" data-line-number="5">                    <span class="dt">glm.ftime =</span> <span class="st">"trt + W1 + W2 + t + I(t^2)"</span>,</a>
+<a class="sourceLine" id="cb47-6" data-line-number="6">                    <span class="dt">glm.ctime =</span> <span class="st">"trt + W1 + W2*t"</span>,</a>
+<a class="sourceLine" id="cb47-7" data-line-number="7">                    <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb47-8" data-line-number="8">                    <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb47-9" data-line-number="9"><span class="co"># call timepoints based on this fit</span></a>
+<a class="sourceLine" id="cb47-10" data-line-number="10">tp.fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit4_rm, <span class="dt">times =</span> <span class="kw">seq_len</span>(t_<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb47-11" data-line-number="11"><span class="co"># print the object</span></a>
+<a class="sourceLine" id="cb47-12" data-line-number="12">tp.fit4</a></code></pre></div>
 <pre><code>## $est
 ##   t1         t2         t3        t4        t5        t6
 ## 1  0 0.03457851 0.09883419 0.2215276 0.3966049 0.5864610
@@ -552,12 +557,12 @@ tp.fit4</code></pre></div>
 ## 1 NA 0.0001481315 0.000799149 0.001273434 0.002852316 0.002813856
 ## 2 NA 0.0007267294 0.001906479 0.003232722 0.003374974 0.001813312</code></pre>
 <p>There is a plotting method available for <code>timepoints</code> to plot cumulative incidence over time in each treatment group and for each failure type.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot raw cumulative incidence</span>
-<span class="kw">plot</span>(tp.fit4, <span class="dt">type =</span> <span class="st">"raw"</span>)</code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="co"># plot raw cumulative incidence</span></a>
+<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="kw">plot</span>(tp.fit4, <span class="dt">type =</span> <span class="st">"raw"</span>)</a></code></pre></div>
 <p><img src="survtmle_intro_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 <p>Because the cumulative incidence function is being invoked pointwise, it is possible that the resulting curve is not monotone. However, it is possible to show that projecting this curve onto a monotone function via isotonic regression results in an estimate with identical asymptotic properties to the pointwise estimate. Therefore, we additionally provide an option <code>type = "iso"</code> (the default) that provides these smoothed curves.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot smoothed cumulative incidence</span>
-<span class="kw">plot</span>(tp.fit4)</code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co"># plot smoothed cumulative incidence</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw">plot</span>(tp.fit4)</a></code></pre></div>
 </div>
 </div>
 <div id="section" class="section level2">
@@ -568,9 +573,9 @@ tp.fit4</code></pre></div>
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session Information</h2>
-<pre><code>## R version 3.4.1 (2017-06-30)
-## Platform: x86_64-apple-darwin16.7.0 (64-bit)
-## Running under: macOS Sierra 10.12.6
+<pre><code>## R version 3.4.4 (2018-03-15)
+## Platform: x86_64-apple-darwin17.3.0 (64-bit)
+## Running under: macOS High Sierra 10.13.4
 ## 
 ## Matrix products: default
 ## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
@@ -580,28 +585,38 @@ tp.fit4</code></pre></div>
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] stats     graphics  grDevices utils     datasets  base     
 ## 
 ## other attached packages:
-## [1] nnls_1.4         survtmle_1.0.2.1 tibble_1.3.4    
+## [1] nnls_1.4       survtmle_1.1.0 tibble_1.4.2  
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.12             knitr_1.17              
-##  [3] magrittr_1.5             MASS_7.3-47             
-##  [5] munsell_0.4.3            speedglm_0.3-2          
-##  [7] colorspace_1.3-2         lattice_0.20-35         
-##  [9] rlang_0.1.2.9000         stringr_1.2.0.9000      
-## [11] plyr_1.8.4               tools_3.4.1             
-## [13] grid_3.4.1               gtable_0.2.0            
-## [15] SuperLearner_2.0-23-9000 htmltools_0.3.6         
-## [17] yaml_2.1.14              lazyeval_0.2.0          
-## [19] rprojroot_1.2            digest_0.6.12           
-## [21] Matrix_1.2-11            purrr_0.2.3             
-## [23] tidyr_0.7.0              ggplot2_2.2.1           
-## [25] glue_1.1.1               evaluate_0.10.1         
-## [27] rmarkdown_1.6            labeling_0.3            
-## [29] stringi_1.1.5            compiler_3.4.1          
-## [31] scales_0.4.1.9002        backports_1.1.0</code></pre>
+##  [1] Rcpp_0.12.16             pillar_1.2.1            
+##  [3] compiler_3.4.4           plyr_1.8.4              
+##  [5] bindr_0.1.1              prettyunits_1.0.2       
+##  [7] progress_1.1.2.9003      methods_3.4.4           
+##  [9] tools_3.4.4              digest_0.6.15           
+## [11] evaluate_0.10.1          gtable_0.2.0            
+## [13] lattice_0.20-35          pkgconfig_2.0.1         
+## [15] rlang_0.2.0.9000         Matrix_1.2-13           
+## [17] cli_1.0.0.9002           ggsci_2.8               
+## [19] yaml_2.1.18              speedglm_0.3-2          
+## [21] bindrcpp_0.2.2           xml2_1.2.0              
+## [23] withr_2.1.2              SuperLearner_2.0-23-9000
+## [25] dplyr_0.7.4              stringr_1.3.0           
+## [27] knitr_1.20               hms_0.4.2               
+## [29] rprojroot_1.3-2          grid_3.4.4              
+## [31] glue_1.2.0               R6_2.2.2                
+## [33] rmarkdown_1.9.8          selectr_0.4-1           
+## [35] ggplot2_2.2.1            tidyr_0.8.0             
+## [37] purrr_0.2.4              magrittr_1.5            
+## [39] ansistrings_1.0.0.9000   backports_1.1.2         
+## [41] scales_0.5.0.9000        htmltools_0.3.6         
+## [43] MASS_7.3-49              assertthat_0.2.0        
+## [45] colorspace_1.3-2         labeling_0.3            
+## [47] utf8_1.1.3               stringi_1.1.7           
+## [49] lazyeval_0.2.1           munsell_0.4.3           
+## [51] crayon_1.3.4</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -609,22 +624,22 @@ tp.fit4</code></pre></div>
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
 <div id="ref-bang2005doubly">
-<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4). Wiley Online Library: 962–73. doi:<a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x">10.1111/j.1541-0420.2005.00377.x</a>.</p>
+<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4). Wiley Online Library:962–73. <a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x" class="uri">https://doi.org/10.1111/j.1541-0420.2005.00377.x</a>.</p>
 </div>
 <div id="ref-benkeser2017improved">
-<p>Benkeser, David, Marco Carone, and Peter B Gilbert. 2017. “Improved Estimation of the Cumulative Incidence of Rare Outcomes.” <em>Statistics in Medicine</em>. Wiley Online Library. doi:<a href="https://doi.org/10.1002/sim.7337">10.1002/sim.7337</a>.</p>
+<p>Benkeser, David, Marco Carone, and Peter B Gilbert. 2017. “Improved Estimation of the Cumulative Incidence of Rare Outcomes.” <em>Statistics in Medicine</em>. Wiley Online Library. <a href="https://doi.org/10.1002/sim.7337" class="uri">https://doi.org/10.1002/sim.7337</a>.</p>
 </div>
 <div id="ref-breiman1996stacked">
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64. doi:<a href="https://doi.org/10.1007/BF00117832">10.1007/BF00117832</a>.</p>
+<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer:49–64. <a href="https://doi.org/10.1007/BF00117832" class="uri">https://doi.org/10.1007/BF00117832</a>.</p>
 </div>
 <div id="ref-vdlgruber:2012:ijb">
-<p>Laan, Mark J van der, and Susan Gruber. 2012. “Targeted Minimum Loss Based Estimation of Causal Effects of Multiple Time Point Interventions.” Journal Article. <em>The International Journal of Biostatistics</em> 8 (1): 1–34. doi:<a href="https://doi.org/10.1515/1557-4679.1370">10.1515/1557-4679.1370</a>.</p>
+<p>Laan, Mark J van der, and Susan Gruber. 2012. “Targeted Minimum Loss Based Estimation of Causal Effects of Multiple Time Point Interventions.” Journal Article. <em>The International Journal of Biostatistics</em> 8 (1):1–34. <a href="https://doi.org/10.1515/1557-4679.1370" class="uri">https://doi.org/10.1515/1557-4679.1370</a>.</p>
 </div>
 <div id="ref-vdlpolley:2007:statappgenetics">
-<p>Laan, Mark J van der, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” Journal Article. <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1): 1–23. doi:<a href="https://doi.org/10.2202/1544-6115.1309">10.2202/1544-6115.1309</a>.</p>
+<p>Laan, Mark J van der, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” Journal Article. <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1):1–23. <a href="https://doi.org/10.2202/1544-6115.1309" class="uri">https://doi.org/10.2202/1544-6115.1309</a>.</p>
 </div>
 <div id="ref-moore2009increasing">
-<p>Moore, Kelly L, and Mark J van der Laan. 2009. “Increasing Power in Randomized Trials with Right Censored Outcomes Through Covariate Adjustment.” <em>Journal of Biopharmaceutical Statistics</em> 19 (6). Taylor &amp; Francis: 1099–1131. doi:<a href="https://doi.org/10.1080/10543400903243017">10.1080/10543400903243017</a>.</p>
+<p>Moore, Kelly L, and Mark J van der Laan. 2009. “Increasing Power in Randomized Trials with Right Censored Outcomes Through Covariate Adjustment.” <em>Journal of Biopharmaceutical Statistics</em> 19 (6). Taylor &amp; Francis:1099–1131. <a href="https://doi.org/10.1080/10543400903243017" class="uri">https://doi.org/10.1080/10543400903243017</a>.</p>
 </div>
 <div id="ref-robins1999ltmle">
 <p>Robins, Jamie M. 1999. “Robust Estimation in Sequentially Ignorable Missing Data and Causal Inference Models.” Proceedings of the American Statistical Association Section on Bayesian Statistical Science. <a href="http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf" class="uri">http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf</a>.</p>
@@ -659,7 +674,7 @@ tp.fit4</code></pre></div>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

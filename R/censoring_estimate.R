@@ -170,7 +170,8 @@ estimateCensoring <- function(dataList,
           g_dC <-
             suppressWarnings(
               1 - predict(
-                ctimeMod, newdata = x[, c(
+                ctimeMod,
+                newdata = x[, c(
                   "t", "trt",
                   names(adjustVars)
                 )],

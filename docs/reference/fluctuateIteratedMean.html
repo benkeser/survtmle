@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,37 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Fluctuation for the Method of Iterated Means — fluctuateIteratedMean" />
+
+<meta property="og:description" content="This function performs a fluctuation of an initial estimate of the
+G-computation regression at a specified time t using a call to
+glm (i.e., a logistic submodel) or a call to optim (if bounds
+are specified). The structure of the function is specific to how it is called
+within mean_tmle. In particular, wideDataList must have a very
+specific structure for this function to run properly. The list should consist
+of data.frame objects. The first should have all rows set to their
+observed value of trt. The remaining should in turn have all rows set
+to each value of trtOfInterest in the survtmle call. The latter
+will be used to obtain predictions that are then mapped into the estimates of
+the cumulative incidence function at t0. Currently the code requires
+each data.frame to have named columns for each name in
+names(adjustVars), as well as a column named trt. It must also
+have a columns named Nj.Y where j corresponds with the numeric values
+input in allJ. These are the indicators of failure due to the various
+causes before time t and are necessary for determining who to include
+in the fluctuation regression. Similarly, each data.frame should have
+a column call C.Y where Y is again t-1, so that right censored
+observations are not included in the regressions. The function will fit a
+logistic regression with Qj.star.t + 1 as outcome (also needed as a
+column in wideDataList) with offset qlogis(Qj.star.t) and
+number of additional covariates given by length(trtOfInterest). These
+additional covariates should be columns in the each data.frame in
+wideDataList called H.z.t where z corresponds to a each
+unique value of trtOfInterest. The function returns the same
+wideDataList, but with a column called Qj.star.t added to it,
+which is the fluctuated initial regression estimate evaluated at the observed
+data points." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,7 +85,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -206,7 +239,7 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -214,3 +247,4 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
 
   </body>
 </html>
+

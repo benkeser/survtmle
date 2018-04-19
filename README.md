@@ -71,7 +71,7 @@ incidence estimates with a very simple, simulated data set.
 # load the package and set seed for reproducibility
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.0.3
+#> Version: 1.1.0
 set.seed(341796)
 
 # simulate data

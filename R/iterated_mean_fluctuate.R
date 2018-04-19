@@ -84,7 +84,8 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
     flucForm <- paste(
       outcomeName, "~ -1 + offset(stats::qlogis(Q", whichJ,
       ".", t, ")) +",
-      paste0("H", uniqtrt, ".", t, collapse = "+"), sep = ""
+      paste0("H", uniqtrt, ".", t, collapse = "+"),
+      sep = ""
     )
 
     if (!Gcomp) {
@@ -101,7 +102,8 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       wideDataList <- lapply(wideDataList, function(x, t) {
         suppressWarnings(
           x[[paste0("Q", whichJ, "star.", t)]] <- predict(
-            flucMod, newdata = x,
+            flucMod,
+            newdata = x,
             type = "response"
           )
         )

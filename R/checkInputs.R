@@ -306,7 +306,8 @@ checkInputs <- function(ftime,
       glm.ftime <- paste0(
         "-1 + ", paste0(
           "I(t == ", unique(ftime[ftype > 0]),
-          ")", collapse = "+"
+          ")",
+          collapse = "+"
         ), "+",
         paste0(
           "I(trt*t == ", unique(ftime[ftype > 0]), ")",
@@ -323,7 +324,8 @@ checkInputs <- function(ftime,
     glm.ctime <- paste0(
       "-1 + ", paste0(
         "I(t == ", unique(ftime[ftype == 0]),
-        ")", collapse = "+"
+        ")",
+        collapse = "+"
       ), "+",
       paste0(
         "I(trt*t == ", unique(ftime[ftype == 0]), ")",
@@ -342,7 +344,8 @@ checkInputs <- function(ftime,
       glm.ctime <- paste0(
         "-1 + ", paste0(
           "I(t == ", unique(ftime[ftype == 0]),
-          ")", collapse = "+"
+          ")",
+          collapse = "+"
         ), "+",
         paste0(
           "I(trt*t == ", unique(ftime[ftype == 0]), ")",
@@ -354,7 +357,8 @@ checkInputs <- function(ftime,
       glm.ftime <- paste0(
         "-1 + ", paste0(
           "I(t==", unique(ftime[ftype > 0]),
-          ")", collapse = "+"
+          ")",
+          collapse = "+"
         ), "+",
         paste0(
           "I(trt*t == ", unique(ftime[ftype > 0]), ")",
@@ -382,7 +386,8 @@ checkInputs <- function(ftime,
           ), "+",
           paste0(
             "I(trt*t == ", unique(ftime[ftype == 0]),
-            ")", collapse = "+"
+            ")",
+            collapse = "+"
           )
         )
       }
@@ -390,7 +395,8 @@ checkInputs <- function(ftime,
         glm.ftime <- paste0(
           "-1 + ", paste0(
             "I(t == ", unique(ftime[ftype > 0]),
-            ")", collapse = "+"
+            ")",
+            collapse = "+"
           ), "+",
           paste0(
             "I(trt*t == ", unique(ftime[ftype > 0]), ")",

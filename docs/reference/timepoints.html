@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,20 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Evaluate Results over Time Points of Interest — timepoints" />
+
+<meta property="og:description" content="Wrapper function for survtmle that takes a fitted survtmle
+object and computes the TMLE estimated incidence for all times specified in
+the times argument. For this function to work, the original call to
+survtmle should have been executed with returnModels = TRUE.
+This allows the function to be more efficient than repeated calls to
+survtmle in that timepoints will use fitted censoring (and
+hazard if method="hazard" was used in the original call) estimates. It
+is therefore advisable that the vector times used in the call to
+timepoints not include times beyond the time specified in t0 in
+the original call to survtmle. This can be ensured be making the
+original call to survtmle with t0 = max(ftime)." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,7 +68,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -210,7 +226,7 @@ the Super Learner library.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -218,3 +234,4 @@ the Super Learner library.</p></td>
 
   </body>
 </html>
+

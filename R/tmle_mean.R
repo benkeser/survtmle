@@ -294,13 +294,15 @@ mean_tmle <- function(ftime,
     for (z in seq_along(uniqtrt)) {
       thisEst <- eval(parse(text = paste(
         "mean(wideDataList[[", z + 1, "]]$Q",
-        j, "star.1)", sep = ""
+        j, "star.1)",
+        sep = ""
       )))
       est <- rbind(est, thisEst)
       rowNames <- c(rowNames, paste(c(uniqtrt[z], j), collapse = " "))
       eval(parse(text = paste(
         "wideDataList[[1]]$Q", j, "star.0.Z", uniqtrt[z],
-        " <- rep(thisEst,n)", sep = ""
+        " <- rep(thisEst,n)",
+        sep = ""
       )))
       eval(parse(text = paste(
         "wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
@@ -323,14 +325,16 @@ mean_tmle <- function(ftime,
           "star.", t, " <- wideDataList[[1]]$H",
           uniqtrt[z], ".", t,
           "*(wideDataList[[1]][,outcomeName] - wideDataList[[1]]$Q",
-          j, "star.", t, ")", sep = ""
+          j, "star.", t, ")",
+          sep = ""
         )))
       }
       eval(parse(text = paste(
         "wideDataList[[1]]$D.Z", uniqtrt[z], ".", j,
         "star.0 <- wideDataList[[1]]$Q", j, "star.1.Z",
         uniqtrt[z], " - wideDataList[[1]]$Q", j,
-        "star.0.Z", uniqtrt[z], sep = ""
+        "star.0.Z", uniqtrt[z],
+        sep = ""
       )))
       ind <- eval(parse(text = paste(
         "grep('D.Z", uniqtrt[z], ".", j,
@@ -351,7 +355,7 @@ mean_tmle <- function(ftime,
     drop = FALSE
   ]
   meanIC <- apply(infCurves, MARGIN = 2, FUN = mean)
-  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n ^ 2)
+  var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / (n^2)
   row.names(var) <- colnames(var) <- rowNames
 
   out <- list(

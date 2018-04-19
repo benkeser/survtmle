@@ -126,7 +126,7 @@ test_that("hazard_tmle and mean_tmle equal kaplan-meier with no covariates", {
   )
 
   # compare to kaplan meier
-  km <- 1 - summary(survfit(Surv(ftime, ftype)~trt))$surv[c(5, 10)]
+  km <- 1 - summary(survfit(Surv(ftime, ftype) ~ trt))$surv[c(5, 10)]
 
   expect_equal(km, as.numeric(fit1$est))
   expect_equal(km, as.numeric(fit2$est))

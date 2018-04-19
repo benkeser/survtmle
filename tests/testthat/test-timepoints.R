@@ -63,7 +63,8 @@ test_that("hazard_tmle and mean_tmle timepoints equal Kaplan-Meier without covar
 
   # compare to kaplan meier
   km <- matrix(
-    1 - summary(survfit(Surv(ftime, ftype) ~ trt))$surv, nrow = 2,
+    1 - summary(survfit(Surv(ftime, ftype) ~ trt))$surv,
+    nrow = 2,
     byrow = TRUE
   )
 

@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,31 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Estimation for the Method of Cause-Specific Hazards — estimateHazards" />
+
+<meta property="og:description" content="This function computes an estimate of the cause-specific hazard functions
+over all times using either glm or SuperLearner. The structure
+of the function is specific to how it is called within hazard_tmle. In
+particular, dataList must have a very specific structure for this
+function to run properly. The list should consist of data.frame
+objects. The first will have the number of rows for each observation equal to
+the ftime corresponding to that observation. The subsequent entries
+will have t0 rows for each observation and will set trt column
+equal to each value of trtOfInterest in turn. The function uses the
+first entry in dataList to iteratively fit hazard regression models
+for each cause of failure. Thus, this data.frame needs to have a
+column called Nj for each value of j in J. The first fit
+estimates the hazard of min(J), while subsequent fits estimate the
+pseudo-hazard of all other values of j, where pseudo-hazard is used to mean
+the probability of a failure due to type j at a particular timepoint given
+no failure of any type at any previous timepoint AND no failure due to type
+k &lt; j at a particular timepoint. The hazard estimates of causes j'
+can then be used to map this pseudo-hazard back into the hazard at a
+particular time. This is nothing more than the re-framing of a conditional
+multinomial probability into a series of conditional binomial probabilities.
+This structure ensures that no strata have estimated hazards that sum to more
+than one over all possible causes of failure at a particular timepoint." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,7 +79,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -219,7 +246,7 @@ messages to indicate progress.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -227,3 +254,4 @@ messages to indicate progress.</p></td>
 
   </body>
 </html>
+

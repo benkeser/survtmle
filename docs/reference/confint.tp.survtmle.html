@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>confint.survtmle — confint.survtmle • survtmle</title>
+<title>confint.tp.survtmle — confint.tp.survtmle • survtmle</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -27,9 +27,9 @@
 <script src="../pkgdown.js"></script>
   
   
-<meta property="og:title" content="confint.survtmle — confint.survtmle" />
+<meta property="og:title" content="confint.tp.survtmle — confint.tp.survtmle" />
 
-<meta property="og:description" content="Computes confidence intervals for a fitted survtmle object." />
+<meta property="og:description" content="Computes confidence intervals for a fitted tp.survtmle object." />
 <meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -101,32 +101,34 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>confint.survtmle</h1>
+    <h1>confint.tp.survtmle</h1>
     </div>
 
     
-    <p>Computes confidence intervals for a fitted <code>survtmle</code> object.</p>
+    <p>Computes confidence intervals for a fitted <code>tp.survtmle</code> object.</p>
     
 
-    <pre class="usage"><span class='co'># S3 method for survtmle</span>
-<span class='fu'>confint</span>(<span class='no'>object</span>, <span class='kw'>parm</span> <span class='kw'>=</span> <span class='fu'>seq_along</span>(<span class='no'>object</span>$<span class='no'>est</span>),
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for tp.survtmle</span>
+<span class='fu'>confint</span>(<span class='no'>object</span>, <span class='no'>parm</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An object of class <code>survtmle</code>.</p></td>
+      <td><p>An object of class <code>tp.survtmle</code>, as produced by invoking
+the function <code>timepoints</code> on an object produced by <code>survtmle</code>, for
+which a confidence interval is to be computed.</p></td>
     </tr>
     <tr>
       <th>parm</th>
       <td><p>A numeric vector indicating which indexes of <code>object$est</code> to
-return confidence intervals for (default is to return all).</p></td>
+return confidence intervals for (default is to return all). NOT USED NOW.</p></td>
     </tr>
     <tr>
       <th>level</th>
-      <td><p>The confidence level requested.</p></td>
+      <td><p>A <code>numeric</code> indicating the level of the confidence interval
+to be computed.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -136,9 +138,10 @@ return confidence intervals for (default is to return all).</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A matrix with columns giving the lower and upper confidence limits
- for each parameter. These will be labeled as (1-level)/2 and 1 - (1-level)/2
- in percent. The default is 2.5<!-- % and 97.5%. --></p>
+    <p>A list of matrices, each with columns giving the lower and upper
+ confidence limits for each parameter. These will be labeled as (1-level)/2
+ and 1 - (1-level)/2 in percent. The default is 2.5<!-- % and 97.5%. The list -->
+ contains as many matrices as their are comparison groups in the input data.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -155,13 +158,38 @@ return confidence intervals for (default is to return all).</p></td>
                 <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>, <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
                 <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
                 <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"mean"</span>, <span class='kw'>t0</span> <span class='kw'>=</span> <span class='fl'>4</span>)
+<span class='co'># extract cumulative incidence at each timepoint</span>
+<span class='no'>tpfit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='timepoints.html'>timepoints</a></span>(<span class='no'>fit</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'>seq_len</span>(<span class='fl'>4</span>))
 <span class='co'># get confidence intervals</span>
-<span class='no'>ci</span> <span class='kw'>&lt;-</span> <span class='fu'>confint</span>(<span class='no'>fit</span>)
-<span class='no'>ci</span></div><div class='output co'>#&gt;         2.5 %    97.5 %
-#&gt; 0 1 0.5278856 0.8163684
-#&gt; 1 1 0.5115048 0.8154636
-#&gt; 0 2 0.1429834 0.4144070
-#&gt; 1 2 0.1477728 0.4465727</div></pre>
+<span class='no'>ci</span> <span class='kw'>&lt;-</span> <span class='fu'>confint</span>(<span class='no'>tpfit</span>)
+<span class='no'>ci</span></div><div class='output co'>#&gt; $`0 1`
+#&gt;           2.5 %    97.5 %
+#&gt; [1,] 0.02051147 0.2203985
+#&gt; [2,] 0.14377001 0.4277158
+#&gt; [3,] 0.37010678 0.6893026
+#&gt; [4,] 0.52788559 0.8163684
+#&gt; 
+#&gt; $`1 1`
+#&gt;           2.5 %    97.5 %
+#&gt; [1,] 0.01559901 0.1637990
+#&gt; [2,] 0.12088193 0.3682067
+#&gt; [3,] 0.32871642 0.6789132
+#&gt; [4,] 0.51150476 0.8154636
+#&gt; 
+#&gt; $`0 2`
+#&gt;           2.5 %    97.5 %
+#&gt; [1,] 0.01489704 0.1761972
+#&gt; [2,] 0.05076566 0.2649678
+#&gt; [3,] 0.10734906 0.3669373
+#&gt; [4,] 0.14298335 0.4144070
+#&gt; 
+#&gt; $`1 2`
+#&gt;            2.5 %     97.5 %
+#&gt; [1,] -0.01712068 0.05484094
+#&gt; [2,]  0.06936804 0.29914468
+#&gt; [3,]  0.12298079 0.41717367
+#&gt; [4,]  0.14777282 0.44657266
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

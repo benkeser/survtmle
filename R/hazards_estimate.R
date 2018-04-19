@@ -117,7 +117,8 @@ estimateHazards <- function(dataList,
         dataList <- lapply(dataList, function(x, j) {
           suppressWarnings(
             x[[paste0("Q", j, "PseudoHaz")]] <- predict(
-              Qj_mod, newdata = x,
+              Qj_mod,
+              newdata = x,
               type = "response"
             )
           )
@@ -215,7 +216,8 @@ estimateHazards <- function(dataList,
       dataList <- lapply(dataList, function(x, j) {
         suppressWarnings(
           x[[paste0("Q", j, "PseudoHaz")]] <- predict(
-            Qj_mod, onlySL = TRUE,
+            Qj_mod,
+            onlySL = TRUE,
             newdata = x[, c("t", "trt", names(adjustVars))]
           )[[1]]
         )

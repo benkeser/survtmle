@@ -50,7 +50,8 @@ print.tp.survtmle <- function(x, ...) {
 
   # structure point estimates
   est_only <- t(matrix(
-    unlist(lapply(x, FUN = `[[`, "est")), ncol = len_groups,
+    unlist(lapply(x, FUN = `[[`, "est")),
+    ncol = len_groups,
     byrow = TRUE
   ))
   est_only <- as.data.frame(est_only)
