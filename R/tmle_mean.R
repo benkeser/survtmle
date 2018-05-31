@@ -96,6 +96,8 @@
 #' @param gtol The truncation level of predicted censoring survival. Setting to
 #'        larger values can help performance in data sets with practical
 #'        positivity violations.
+#' @param weights Optional vector of weights passed to fluctuation submodels
+#'        and used when computing parameter. 
 #' @param ... Other options. Not currently used.
 #'
 #' @return An object of class \code{survtmle}.
@@ -178,6 +180,7 @@ mean_tmle <- function(ftime,
                       verbose = FALSE,
                       Gcomp = FALSE,
                       gtol = 1e-3,
+                      weights,
                       ...) {
 
   # assemble data frame of necessary variables
@@ -211,6 +214,7 @@ mean_tmle <- function(ftime,
   )
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
+  dat$weights <- weights
 
   # make long version of data sets needed for estimation of censoring
   dataList <- makeDataList(
@@ -293,7 +297,7 @@ mean_tmle <- function(ftime,
   for (j in ofInterestJ) {
     for (z in seq_along(uniqtrt)) {
       thisEst <- eval(parse(text = paste(
-        "mean(wideDataList[[", z + 1, "]]$Q",
+        "mean(weights * wideDataList[[", z + 1, "]]$Q",
         j, "star.1)",
         sep = ""
       )))
@@ -306,7 +310,7 @@ mean_tmle <- function(ftime,
       )))
       eval(parse(text = paste(
         "wideDataList[[1]]$Q", j, "star.1.Z", uniqtrt[z],
-        " <- wideDataList[[(z+1)]]$Q", j, "star.1",
+        " <- weights * wideDataList[[(z+1)]]$Q", j, "star.1",
         sep = ""
       )))
     }

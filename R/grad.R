@@ -31,10 +31,10 @@ grad <- function(beta, Y, X) {
 #' @return Numeric vector of the gradient of the parameter vector
 
 
-grad_offset <- function(beta, Y, H, offset=NULL) {
+grad_offset <- function(beta, Y, H, offset=NULL, weights) {
   pi <- stats::plogis(cbind(offset, H) %*% c(1, beta))
   pi[pi == 0] <- .Machine$double.neg.eps
   pi[pi == 1] <- 1 - .Machine$double.neg.eps
-  gr <- crossprod(H, Y - pi)
+  gr <- crossprod(weights * H, Y - pi)
   return(-gr)
 }

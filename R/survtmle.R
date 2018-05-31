@@ -109,6 +109,8 @@
 #' @param gtol The truncation level of predicted censoring survival. Setting to
 #'        larger values can help performance in data sets with practical
 #'        positivity violations.
+#' @param weights Optional vector of weights passed to fluctuation submodels
+#'        and used when computing parameter. 
 #'
 #' @return An object of class \code{survtmle}.
 #' \describe{
@@ -191,7 +193,8 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      trtOfInterest = unique(trt),
                      method = "hazard", bounds = NULL, verbose = FALSE,
                      tol = 1 / (sqrt(length(ftime))),
-                     maxIter = 10, Gcomp = FALSE, gtol = 1e-3) {
+                     maxIter = 10, Gcomp = FALSE, gtol = 1e-3,
+                     weights = rep(1, length(ftime))) {
   call <- match.call(expand.dots = TRUE)
 
   # check and clean inputs
@@ -234,7 +237,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       verbose = verbose,
       tol = tol,
       maxIter = maxIter,
-      gtol = gtol
+      gtol = gtol, weights = weights
     )
   } else if (method == "mean") {
     tmle.fit <- mean_tmle(
@@ -257,7 +260,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       verbose = verbose,
       tol = tol,
       Gcomp = Gcomp,
-      gtol = gtol
+      gtol = gtol, weights = weights
     )
   }
 

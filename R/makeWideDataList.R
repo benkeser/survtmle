@@ -34,11 +34,11 @@ makeWideDataList <- function(dat,
                              t0, ...) {
   wideDataList <- vector(mode = "list", length = length(dataList))
   wideDataList[[1]] <- data.frame(
-    dat$trt, dat[, names(adjustVars)],
+    dat$trt, dat[, c("weights",names(adjustVars))],
     stats::reshape(
       dataList[[2]][, !(names(dataList[[2]]) %in%
         c(
-          "trt", names(adjustVars),
+          "trt", names(adjustVars),"weights",
           "ftime", "ftype"
         ))],
       direction = "wide",
@@ -46,7 +46,7 @@ makeWideDataList <- function(dat,
     )
   )
   colnames(wideDataList[[1]])[1] <- c("trt")
-  colnames(wideDataList[[1]])[2:(1 + ncol(adjustVars))] <- names(adjustVars)
+  colnames(wideDataList[[1]])[2:(2 + ncol(adjustVars))] <- c("weights", names(adjustVars))
   # set Nj0=0 for all j -- makes things easier to run in a loop later
   eval(parse(text = paste0(
     paste0(
@@ -60,7 +60,7 @@ makeWideDataList <- function(dat,
     dataList[2:length(dataList)],
     function(x) {
       out <- data.frame(
-        dat[, names(adjustVars)],
+        dat[, c("weights",names(adjustVars))],
         stats::reshape(
           x[, !(names(x) %in%
             c(
@@ -73,7 +73,7 @@ makeWideDataList <- function(dat,
         row.names = NULL
       )
       out[, paste0("C.", 1:t0)] <- 0
-      names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
+      names(out)[1:(ncol(adjustVars) + 1)] <- c("weights", names(adjustVars))
       # set Nj0=0 for all j -- makes things easier to run in a loop later
       eval(parse(text = paste0(
         paste0("out$N", allJ, ".0", collapse = "<-"),
@@ -91,7 +91,7 @@ makeWideDataList <- function(dat,
     for (z in uniqtrt) {
       for (t in 1:t0) {
         x[[paste0("H", z, ".", t)]] <-
-          (x$trt == z & x[[paste0("C.", t - 1)]] == 0) / (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
+          x$weights * (x$trt == z & x[[paste0("C.", t - 1)]] == 0) / (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
       }
       x[[paste0("H", z, ".0")]] <- (x$trt == z) / x[[paste0("g_", z, ".", t)]]
     }

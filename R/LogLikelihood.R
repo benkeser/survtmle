@@ -33,11 +33,11 @@ LogLikelihood <- function(beta, X, Y) {
 #' @return Numeric of the summed negative log-likelihood loss over observations.
 #'
 
-LogLikelihood_offset <- function(beta, Y, H, offset) {
+LogLikelihood_offset <- function(beta, Y, H, offset, weights) {
   X <- as.matrix(cbind(offset, H))
   pi <- stats::plogis(X %*% as.matrix(c(1, beta)))
   pi[pi == 0] <- .Machine$double.neg.eps
   pi[pi == 1] <- 1 - .Machine$double.neg.eps
-  log_like <- sum(Y * log(pi) + (1 - Y) * log(1 - pi))
+  log_like <- sum(weights * (Y * log(pi) + (1 - Y) * log(1 - pi)))
   return(-log_like)
 }

@@ -85,6 +85,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
             )]))
         ),
         offset = dataList[[1]]$thisOffset,
+        weights = dataList[[1]]$weights, 
         method = "BFGS", gr = grad_offset,
         control = list(reltol = 1e-7, maxit = 50000)
       )

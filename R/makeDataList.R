@@ -16,6 +16,8 @@
 #'        \code{mean_tmle}.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param bounds Minimum and maximum values to be placed on the \code{ftype}.
+#' @param weights Optional vector of weights passed to fluctuation submodels
+#'        and used when computing parameter. 
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom plyr join
