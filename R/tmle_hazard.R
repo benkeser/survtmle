@@ -275,7 +275,11 @@ hazard_tmle <- function(ftime,
     verbose = verbose, t0 = t0
   )
   infCurves <- dat[, grep("D.j", names(dat))]
-  meanIC <- colMeans(infCurves)
+  if(!is.numeric(infCurves)){
+    meanIC <- colMeans(infCurves)    
+  }else{
+    meanIC <- mean(infCurves)
+  }
 
   attr(dataList, "fluc") <- rep(Inf, ntrt * nJ^2)
   ct <- 0

@@ -66,6 +66,11 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     ofInterestJ,
     ".t"
   )))
+  if(ntrt == 1){
+    merge_vars <- c("id", "t")
+  }else{
+    merge_vars <- c("id", "t", "trt")
+  }
   # the first time it's called these columns won't exist
   if (length(colInd) == 0) {
     dataList[[1]] <- merge(
@@ -81,14 +86,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
           ".t"
         )
       )],
-      by = c("id", "t", "trt")
+      by = merge_vars
     )
   } else {
     # the next times it's called those columns will exist but we want them replaced
     # with the values from dataList[[>1]]
     dataList[[1]] <- merge(
-      dataList[[1]][, -colInd],
-      Reduce(
+      x = dataList[[1]][, -colInd],
+      y = Reduce(
         rbind,
         dataList[2:(ntrt + 1)]
       )[, c(
@@ -100,8 +105,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
           ".t"
         )
       )],
-      by = c("id", "t", "trt")
+      by = merge_vars
     )
+  }
+
+  # drop merged trt columns
+  if(ntrt == 1){
+    dataList[[1]]$trt <- dataList[[1]]$trt.x
+    dataList[[1]] <- subset(dataList[[1]], select = -c(trt.x,trt.y))
   }
 
   dataList <- lapply(dataList, function(x, allJ) {
