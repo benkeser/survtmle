@@ -4,8 +4,8 @@
 \alias{estimateHazards}
 \title{Estimation for the Method of Cause-Specific Hazards}
 \usage{
-estimateHazards(dataList, J, adjustVars, SL.ftime = NULL, glm.ftime = NULL,
-  glm.family, returnModels, bounds, verbose, ...)
+estimateHazards(dataList, J, adjustVars, SL.ftime = NULL,
+  glm.ftime = NULL, glm.family, returnModels, bounds, verbose, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}

@@ -4,8 +4,8 @@
 \alias{fluctuateHazards}
 \title{Fluctuation for the Method of Cause-Specific Hazards}
 \usage{
-fluctuateHazards(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
-  ...)
+fluctuateHazards(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
+  verbose, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}

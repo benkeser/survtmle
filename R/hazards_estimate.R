@@ -64,7 +64,7 @@
 #'         \code{dataList}, but with additional columns corresponding to the
 #'         hazard, pseudo-hazard, and the total hazard for summed over all
 #'         causes \code{k < j}.
-#'
+#' @export
 
 estimateHazards <- function(dataList,
                             J,
