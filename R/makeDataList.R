@@ -21,7 +21,7 @@
 #' @importFrom plyr join
 #'
 #' @return A list of \code{data.frame} objects as described above.
-#'
+#' @export
 
 makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   n <- nrow(dat)

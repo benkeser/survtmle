@@ -4,12 +4,13 @@
 \alias{mean_tmle}
 \title{TMLE for G-Computation of Cumulative Incidence}
 \usage{
-mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]), adjustVars = NULL,
-  SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, glm.ftime = NULL,
-  glm.ctime = NULL, glm.trt = "1", glm.family = "binomial",
-  returnIC = TRUE, returnModels = FALSE,
-  ftypeOfInterest = unique(ftype[ftype != 0]), trtOfInterest = unique(trt),
-  bounds = NULL, verbose = FALSE, Gcomp = FALSE, gtol = 0.001, ...)
+mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]),
+  adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL,
+  SL.trt = NULL, glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1",
+  glm.family = "binomial", returnIC = TRUE, returnModels = FALSE,
+  ftypeOfInterest = unique(ftype[ftype != 0]),
+  trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
+  Gcomp = FALSE, gtol = 0.001, ...)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Right-censored observations

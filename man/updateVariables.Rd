@@ -4,8 +4,8 @@
 \alias{updateVariables}
 \title{Update TMLEs for Hazard to Cumulative Incidence}
 \usage{
-updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0, verbose,
-  ...)
+updateVariables(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
+  verbose, ...)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects.}
