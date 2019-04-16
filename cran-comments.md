@@ -14,4 +14,4 @@ There were 0 NOTEs.
 Nothing to report.
 
 ## Additional Notes
-Updated version of package, version 1.1.0
+Updated version of package, version 1.1.1
