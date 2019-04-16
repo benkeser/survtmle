@@ -16,7 +16,9 @@ There were 0 ERRORs.
 
 There were 0 WARNINGs.
 
-There were 0 NOTEs.
+There were 1 NOTEs (only on win-builder)
+Maintainer: 'David Benkeser <benkeser@emory.edu>'
+
 
 ## Downstream dependencies
 Nothing to report.
