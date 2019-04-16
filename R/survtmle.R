@@ -3,9 +3,9 @@
 #' This function estimates the marginal cumulative incidence for failures of
 #' specified types using targeted minimum loss-based estimation.
 #'
-#' @param ftime A numeric vector of failure times. Right-censored observations
+#' @param ftime An integer-valued vector of failure times. Right-censored observations
 #'        should have corresponding \code{ftype} set to 0.
-#' @param ftype A numeric vector indicating the type of failure. Observations
+#' @param ftype An integer-valued vector indicating the type of failure. Observations
 #'        with \code{ftype=0} are treated as a right-censored observation. Each
 #'        unique value besides zero is treated as a separate type of failure.
 #' @param trt A numeric vector indicating observed treatment assignment. Each

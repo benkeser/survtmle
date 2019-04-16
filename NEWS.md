@@ -1,3 +1,6 @@
+# survtmle 1.1.1 
+* Minor bug fixes and documentation updates. 
+
 # survtmle 1.1.0
 * Adds support for the use of `speedglm` to fit the numerous regressions fit in
     the estimation procedure. Users may see warnings when `speedglm` fails, in

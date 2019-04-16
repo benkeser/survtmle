@@ -60,6 +60,12 @@ d <- as_data_frame(cbind(ftype, ftime, trt, adjustVars))
 d
 ```
 
+It is important to note that the current `survtmle` distribution **only supports
+integer-valued failure times**. If failure times are continuous-valued, then, 
+unfortunately, we require the user to perform an additional pre-processing step
+to convert the observed failure times to ranked integers prior to applying the
+`survtmle` function. We hope to build support for this situation in future versions of the package. 
+
 ---
 
 ### Using the method of iterated means

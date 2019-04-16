@@ -14,10 +14,10 @@ survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   Gcomp = FALSE, gtol = 0.001)
 }
 \arguments{
-\item{ftime}{A numeric vector of failure times. Right-censored observations
+\item{ftime}{An integer-valued vector of failure times. Right-censored observations
 should have corresponding \code{ftype} set to 0.}
 
-\item{ftype}{A numeric vector indicating the type of failure. Observations
+\item{ftype}{An integer-valued vector indicating the type of failure. Observations
 with \code{ftype=0} are treated as a right-censored observation. Each
 unique value besides zero is treated as a separate type of failure.}
 
