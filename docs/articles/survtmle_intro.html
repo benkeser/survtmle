@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Targeted Learning for Survival Analysis with Competing Risks • survtmle</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Targeted Learning for Survival Analysis with Competing Risks">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -64,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/benkeser/survtmle">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -77,6 +78,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -85,7 +87,7 @@
 <a href="https://www.benkeserstatistics.com/">David Benkeser</a> &amp; <a href="https://nimahejazi.org">Nima Hejazi</a>
 </h4>
             
-            <h4 class="date">2019-04-16</h4>
+            <h4 class="date">2019-11-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/benkeser/survtmle/blob/master/vignettes/survtmle_intro.Rmd"><code>vignettes/survtmle_intro.Rmd</code></a></small>
       <div class="hidden name"><code>survtmle_intro.Rmd</code></div>
@@ -104,17 +106,17 @@
 <h2 class="hasAnchor">
 <a href="#single-failure-type" class="anchor"></a>Single failure type</h2>
 <p>We examine the use of <code>survtmle</code> in a variety of simple examples. The package can be loaded as follows:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(survtmle)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survtmle)</a></code></pre></div>
 <pre><code>## survtmle: Targeted Learning for Survival Analysis</code></pre>
-<pre><code>## Version: 1.1.0</code></pre>
+<pre><code>## Version: 1.1.2</code></pre>
 <p>We simulate a simple data with no censoring and a single cause of failure to illustrate the machinery of the <code>survtmle</code> package.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb4-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
 <p>The simple data structure contains a set of baseline covariates (<code>adjustVars</code>), a binary treatment variable (<code>trt</code>), a failure time that is a function of the treatment, adjustment variables, and a random error (<code>ftime</code>), and a failure type (<code>ftype</code>), which denotes the cause of failure (0 means no failure, 1 means failure). The first few rows of data can be viewed as follows.</p>
 <pre><code>## Warning: `as_data_frame()` is deprecated, use `as_tibble()` (but mind the new semantics).
 ## This warning is displayed once per session.</code></pre>
@@ -141,7 +143,7 @@
 <h4 class="hasAnchor">
 <a href="#covariate-adjustment-via-logistic-regression" class="anchor"></a>Covariate adjustment via logistic regression</h4>
 <p>A common goal is to compare the incidence of failure at a fixed time between the two treatment groups. Covariate adjustment is often desirable in this comparison to improve efficiency <span class="citation">(Moore and Laan 2009)</span>. This covariate adjustment may be facilitated by estimating a series of iterated covariate-conditional means <span class="citation">(Robins 1999,<span class="citation">@bang2005doubly</span>,<span class="citation">@vdlgruber:2012:ijb</span>)</span>. The final iterated covariate-conditional mean is marginalized over the empirical distribution of baseline covariates to obtain an estimate of the marginal cumulative incidence.</p>
-<p>Here, we invoke the eponymous <code>survtmle</code> function to compute the iterated mean-based (<code>method = "mean"</code>) covariate-adjusted estimates of the cumulative incidence at time six (<code>t0 = 6</code>) in each of the treatment groups using quasi-logistic regression (formula specified via <code>glm.ftime</code>) to estimate the iterated means. The <code>glm.ftime</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames(adjustVars)</a></code> and <code>"trt"</code>. Here we use a simple main terms regression.</p>
+<p>Here, we invoke the eponymous <code>survtmle</code> function to compute the iterated mean-based (<code>method = "mean"</code>) covariate-adjusted estimates of the cumulative incidence at time six (<code>t0 = 6</code>) in each of the treatment groups using quasi-logistic regression (formula specified via <code>glm.ftime</code>) to estimate the iterated means. The <code>glm.ftime</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://rdrr.io/r/base/colnames.html">colnames(adjustVars)</a></code> and <code>"trt"</code>. Here we use a simple main terms regression.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Fit 1: Use GLM-based estimators for failure w/ "mean" method</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">fit1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
@@ -151,8 +153,8 @@
 ## glm.trt and SL.trt not specified. Proceeding with glm.trt = '1'</code></pre>
 <pre><code>## Warning in checkInputs(ftime = ftime, ftype = ftype, trt = trt, t0 = t0, :
 ## glm.ctime and SL.ctime not specified. Computing Kaplan-Meier estimates.</code></pre>
-<pre><code>## Warning in chol.default(B, pivot = TRUE): the matrix is either rank-
-## deficient or indefinite</code></pre>
+<pre><code>## Warning in chol.default(B, pivot = TRUE): the matrix is either rank-deficient or
+## indefinite</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">fit1</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
@@ -162,12 +164,12 @@
 ## $var
 ##              0 1          1 1
 ## 0 1 0.0261215098 0.0002153689
-## 1 1 0.0002153689 0.0185303037</code></pre>
+## 1 1 0.0002153689 0.0185303036</code></pre>
 <p>Internally, <code>survtmle</code> estimates the covariate-conditional treatment probability (via <code>glm.trt</code> or <code>SL.trt</code>, see below) and covariate-conditional censoring distribution (via <code>glm.ctime</code> or <code>SL.ctime</code>, see below). In the above example, the treatment probability does not depend on covariates (as in e.g., a randomized trial) and so we did not specify a way to adjust for covariates in estimating the treatment probability. In this case, <code>survtmle</code> sets <code>glm.trt = "1"</code>, which corresponds with empirical estimates of treatment probability, and sets <code>glm.ctime</code> to be equivalent to the Kaplan-Meier censoring distribution estimates.</p>
 <p>In practice, we may wish to adjust for covariates when computing estimates of the covariate-conditional treatment and censoring probabilities. In observational studies, the distribution of treatment may differ by measured covariates, while in almost any study (including randomized trials) it is possible that censoring differs by covariates. Thus, we often wish to adjust for covariates to account for measured confounders of treatment receipt and censoring.</p>
-<p>This adjustment may be accomplished using logistic regression through the <code>glm.trt</code> and <code>glm.ctime</code> arguments, respectively. The <code>glm.trt</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames(adjustVars)</a></code>. The <code>glm.ctime</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames(adjustVars)</a></code>, <code>"trt"</code>, and <code>"t"</code> used to model the hazard function for censoring. By including <code>"trt"</code> and <code>"t"</code>, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call <code>survtmle</code> again, now adjusting for covariates in the treatment and censoring fits.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Fit 2: Use GLM-based estimators for failure, treatment, and censoring with the</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#        "mean" method</span></a>
+<p>This adjustment may be accomplished using logistic regression through the <code>glm.trt</code> and <code>glm.ctime</code> arguments, respectively. The <code>glm.trt</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://rdrr.io/r/base/colnames.html">colnames(adjustVars)</a></code>. The <code>glm.ctime</code> argument should be a valid right-hand-side formula specification based on <code><a href="https://rdrr.io/r/base/colnames.html">colnames(adjustVars)</a></code>, <code>"trt"</code>, and <code>"t"</code> used to model the hazard function for censoring. By including <code>"trt"</code> and <code>"t"</code>, the function allows censoring probabilities to depend on treatment assignment and time, respectively. Here we call <code>survtmle</code> again, now adjusting for covariates in the treatment and censoring fits.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Fit 2: Use GLM-based estimators for failure, treatment, and censoring with</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#        the "mean" method</span></a>
 <a class="sourceLine" id="cb13-3" data-line-number="3">fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb13-4" data-line-number="4">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">                 <span class="dt">glm.trt =</span> <span class="st">"W1 + W2"</span>,</a>
@@ -193,22 +195,22 @@
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># Fit 3: SuperLearner estimators for treatment, failure, and censoring.</span></a>
 <a class="sourceLine" id="cb15-2" data-line-number="2">fit3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb15-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
 <a class="sourceLine" id="cb15-7" data-line-number="7">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## Loading required package: nnls</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">fit3</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5541546
-## 1 1 0.7140480
+## 0 1 0.5549964
+## 1 1 0.7030729
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0027940998 0.0001872402
-## 1 1 0.0001872402 0.0017399509</code></pre>
-<p><strong>Remark:</strong> Invoking <code>survtmle</code> with <code>method = "mean"</code> and <code>SL.ftime</code> requires fitting a Super Learner <em>for each time point</em> from <code><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len(t0)</a></code>. If there are many unique time points observed in the data, this can become a computationally intensive process. In such cases, we recommend either redefining the <code>ftime</code> variable to pool across time points <em>or</em> using <code>method = "hazard"</code> (see below).</p>
+## 0 1 0.0027827002 0.0001810706
+## 1 1 0.0001810706 0.0017976563</code></pre>
+<p><strong>Remark:</strong> Invoking <code>survtmle</code> with <code>method = "mean"</code> and <code>SL.ftime</code> requires fitting a Super Learner <em>for each time point</em> from <code><a href="https://rdrr.io/r/base/seq.html">seq_len(t0)</a></code>. If there are many unique time points observed in the data, this can become a computationally intensive process. In such cases, we recommend either redefining the <code>ftime</code> variable to pool across time points <em>or</em> using <code>method = "hazard"</code> (see below).</p>
 <hr>
 </div>
 </div>
@@ -240,21 +242,21 @@
 <a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co">#        Note that the super learner for ftime is also adjusting for time.</span></a>
 <a class="sourceLine" id="cb21-4" data-line-number="4">fit5 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb21-5" data-line-number="5">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
-<a class="sourceLine" id="cb21-6" data-line-number="6">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb21-7" data-line-number="7">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb21-8" data-line-number="8">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>, <span class="st">"SL.mean"</span>, <span class="st">"SL.step"</span>),</a>
 <a class="sourceLine" id="cb21-9" data-line-number="9">                 <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb21-10" data-line-number="10">fit5</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.5836815
-## 1 1 0.7634571
+## 0 1 0.5852444
+## 1 1 0.7580051
 ## 
 ## $var
 ##              0 1          1 1
-## 0 1 0.0026784034 0.0002269052
-## 1 1 0.0002269052 0.0020455780</code></pre>
-<p><strong>Remark:</strong> The TMLE algorithm for the hazard-based estimator differs from the iterated mean-based TMLE. In particular, the algorithm is iterative and has no guarantee of convergence. While we have not identified instances where convergence is a serious problem, we encourage users to submit any such situations as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or to write directly to <a href="mailto:benkeser@emory.edu" class="email">benkeser@emory.edu</a>. The stopping criteria for the iteration may be adjusted via <code>tol</code> and <code>maxIter</code> options. Increasing <code>tol</code> or decreasing <code>maxIter</code> will lead to faster convergence; however, it is recommended that <code>tol</code> be set no larger than <code>1 / sqrt(length(ftime))</code>. If <code>maxIter</code> is reached without convergence, one should check that <code>fit$meanIC</code> are all less than <code>1 / sqrt(length(ftime))</code>.</p>
+## 0 1 0.0026806641 0.0002155895
+## 1 1 0.0002155895 0.0020802570</code></pre>
+<p><strong>Remark:</strong> The TMLE algorithm for the hazard-based estimator differs from the iterated mean-based TMLE. In particular, the algorithm is iterative and has no guarantee of convergence. While we have not identified instances where convergence is a serious problem, we encourage users to submit any such situations as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or to write directly to <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>. The stopping criteria for the iteration may be adjusted via <code>tol</code> and <code>maxIter</code> options. Increasing <code>tol</code> or decreasing <code>maxIter</code> will lead to faster convergence; however, it is recommended that <code>tol</code> be set no larger than <code>1 / sqrt(length(ftime))</code>. If <code>maxIter</code> is reached without convergence, one should check that <code>fit$meanIC</code> are all less than <code>1 / sqrt(length(ftime))</code>.</p>
 <hr>
 </div>
 </div>
@@ -262,12 +264,12 @@
 <h2 class="hasAnchor">
 <a href="#multiple-failure-types" class="anchor"></a>Multiple failure types</h2>
 <p>In all of the preceding examples, we have restricted our attention to the case where there is only a single failure type of interest. Now we consider more scenarios where we observe multiple failure types. First, we simulate data with two types of failure.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb23-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
-<a class="sourceLine" id="cb23-3" data-line-number="3">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb23-4" data-line-number="4">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
-<a class="sourceLine" id="cb23-5" data-line-number="5">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
-<a class="sourceLine" id="cb23-6" data-line-number="6">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb23-3" data-line-number="3">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>))</a></code></pre></div>
 <p>This simulated data structure is similar to the single failure type data; however, now the failure type variable (<code>ftype</code>) now contains two distinct types of failure (with 0 still reserved for no failure).</p>
 <pre><code>## # A tibble: 200 x 5
 ##    ftype ftime   trt    W1    W2
@@ -341,24 +343,24 @@
 <a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#        estimators for treatment (default) using the "mean" method.</span></a>
 <a class="sourceLine" id="cb29-3" data-line-number="3">fit8 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb29-4" data-line-number="4">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb29-7" data-line-number="7">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">                 <span class="dt">SL.trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">                 <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">                 <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
 <a class="sourceLine" id="cb29-8" data-line-number="8">                 <span class="dt">method =</span> <span class="st">"mean"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb29-9" data-line-number="9">fit8</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.4347158
-## 1 1 0.6060303
-## 0 2 0.2501808
-## 1 2 0.2751184
+## 0 1 0.4383856
+## 1 1 0.6010818
+## 0 2 0.2467913
+## 1 2 0.2655850
 ## 
 ## $var
 ##               0 1           1 1           0 2           1 2
-## 0 1  2.689783e-03  2.060343e-05 -1.301778e-03  4.322551e-05
-## 1 1  2.060343e-05  2.514412e-03 -6.451645e-06 -1.707281e-03
-## 0 2 -1.301778e-03 -6.451645e-06  2.059196e-03  6.360288e-05
-## 1 2  4.322551e-05 -1.707281e-03  6.360288e-05  1.954279e-03</code></pre>
+## 0 1  2.647338e-03  1.664337e-05 -1.268230e-03  3.235180e-05
+## 1 1  1.664337e-05  2.465004e-03  1.656666e-06 -1.668038e-03
+## 0 2 -1.268230e-03  1.656666e-06  2.072453e-03  4.130544e-05
+## 1 2  3.235180e-05 -1.668038e-03  4.130544e-05  1.944617e-03</code></pre>
 <p><strong>Remark:</strong> As with single failure type, the <code>method = "mean"</code> call to <code>survtmle</code> may be computationally intensive with many time points. This is especially true when there are additionally multiple failure types, as the function must repeat these calls to <code>SuperLearner</code> separately for each type of failure. In this case, calls to <code>survtmle</code> could be parallelized with one call to <code>survtmle</code> for each type of failure specifying <code>ftypeOfInterest</code>.</p>
 </div>
 </div>
@@ -394,25 +396,25 @@
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># Fit 10: same as Fit 7 above, but using the "hazard" method</span></a>
 <a class="sourceLine" id="cb33-2" data-line-number="2">fit10 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb33-3" data-line-number="3">                  <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4">                  <span class="dt">SL.trt =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb33-5" data-line-number="5">                  <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
-<a class="sourceLine" id="cb33-6" data-line-number="6">                  <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">                  <span class="dt">SL.trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">                  <span class="dt">SL.ftime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">                  <span class="dt">SL.ctime =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SL.glm"</span>,<span class="st">"SL.mean"</span>,<span class="st">"SL.step"</span>),</a>
 <a class="sourceLine" id="cb33-7" data-line-number="7">                  <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb33-8" data-line-number="8">fit10</a></code></pre></div>
 <pre><code>## $est
 ##          [,1]
-## 0 1 0.4561936
-## 1 1 0.6098020
-## 0 2 0.2895448
-## 1 2 0.2627577
+## 0 1 0.4568904
+## 1 1 0.6058038
+## 0 2 0.2902240
+## 1 2 0.2649739
 ## 
 ## $var
 ##               0 1           1 1           0 2           1 2
-## 0 1  2.599773e-03 -1.309696e-03  4.811715e-05  5.362138e-05
-## 1 1 -1.309696e-03  2.011762e-03 -1.172315e-05  6.302634e-05
-## 0 2  4.811715e-05 -1.172315e-05  3.036662e-03 -2.161558e-03
-## 1 2  5.362138e-05  6.302634e-05 -2.161558e-03  2.523458e-03</code></pre>
-<p>As with the iterated-mean based TMLE, we can obtain estimates of cumulative incidence of only certain failure types (via <code>ftypeOfInterest</code>); however, this does not necessarily result in faster computation, as it did in the case above. In situations where the convergence of the algorithm is an issue, it may be useful to invoke multiple calls to <code>survtmle</code> with singular <code>ftypeOfInterest</code>. If such convergence issues arise, please report them as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or contact us at <a href="mailto:benkeser@emory.edu" class="email">benkeser@emory.edu</a>.</p>
+## 0 1  2.602789e-03 -1.316328e-03  4.805231e-05  5.155684e-05
+## 1 1 -1.316328e-03  2.013086e-03 -9.997808e-06  5.809581e-05
+## 0 2  4.805231e-05 -9.997808e-06  3.042096e-03 -2.158941e-03
+## 1 2  5.155684e-05  5.809581e-05 -2.158941e-03  2.520370e-03</code></pre>
+<p>As with the iterated-mean based TMLE, we can obtain estimates of cumulative incidence of only certain failure types (via <code>ftypeOfInterest</code>); however, this does not necessarily result in faster computation, as it did in the case above. In situations where the convergence of the algorithm is an issue, it may be useful to invoke multiple calls to <code>survtmle</code> with singular <code>ftypeOfInterest</code>. If such convergence issues arise, please report them as <a href="https://github.com/benkeser/survtmle/issues">GitHub issues</a> or contact us at <a href="mailto:benkeser@emory.edu">benkeser@emory.edu</a>.</p>
 </div>
 </div>
 </div>
@@ -422,7 +424,7 @@
 <p>In certain situations, we have knowledge that the incidence of an event is bounded below/above for every strata in the population. It is possible to incorporate these bounds into the TMLE estimation procedure to ensure that any resulting estimate of cumulative incidence is compatible with these bounds. Please refer to <span class="citation">Benkeser, Carone, and Gilbert (2017)</span> for more on bounded TMLEs and their potential benefits.</p>
 <p>Bounds can be passed to <code>survtmle</code> by creating a <code>data.frame</code> that contains columns with specific names. In particular, there should be a column named <code>"t"</code>. There should additionally be columns for the lower and upper bound for each type of failure. For example if there is only one type of failure (<code>ftype = 1</code> or <code>ftype = 0</code>) then the bounds <code>data.frame</code> can contain columns <code>"l1"</code>, and <code>"u1"</code> denote the lower and upper bounds, respectively, on the iterated conditional mean (for <code>method = "mean"</code>) or the conditional hazard function (for <code>method = "hazard"</code>). If there are two types of failure (<code>ftype = 1</code>, <code>ftype = 2</code>, or <code>ftype = 0</code>) then there can additionally be columns <code>"l2"</code> and <code>"u2"</code> denoting the lower and upper bounds, respectively, on the iterated conditional mean for type two failures (for <code>method = "mean"</code>) or the conditional cause-specific hazard function for type two failures (for <code>method = "hazard"</code>).</p>
 <p>Here is a simple example.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">bf1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">t =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(t_<span class="dv">0</span>), <span class="dt">l1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>))</a>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">bf1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">t =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(t_<span class="dv">0</span>), <span class="dt">l1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>))</a>
 <a class="sourceLine" id="cb35-2" data-line-number="2">bf1</a></code></pre></div>
 <pre><code>##   t   l1   u1
 ## 1 1 0.01 0.99
@@ -458,9 +460,9 @@
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># need to make a data.frame of bounds in proper format two types of failure that</span></a>
 <a class="sourceLine" id="cb39-2" data-line-number="2"><span class="co"># are labeled with ftype = 1 and ftype = 2, so bounds should have columns 't',</span></a>
 <a class="sourceLine" id="cb39-3" data-line-number="3"><span class="co"># 'l1', 'u1', 'l2', and 'u2'.</span></a>
-<a class="sourceLine" id="cb39-4" data-line-number="4">bf2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">t =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(t_<span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb39-5" data-line-number="5">                  <span class="dt">l1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb39-6" data-line-number="6">                  <span class="dt">l2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.02</span>, t_<span class="dv">0</span>), <span class="dt">u2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">bf2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">t =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(t_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb39-5" data-line-number="5">                  <span class="dt">l1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.01</span>, t_<span class="dv">0</span>), <span class="dt">u1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb39-6" data-line-number="6">                  <span class="dt">l2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.02</span>, t_<span class="dv">0</span>), <span class="dt">u2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0.99</span>, t_<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb39-7" data-line-number="7">                 )</a>
 <a class="sourceLine" id="cb39-8" data-line-number="8">bf2</a></code></pre></div>
 <pre><code>##   t   l1   u1   l2   u2
@@ -506,14 +508,14 @@
 <p>The <code>survtmle</code> function provides the function <code>timepoints</code> to compute the estimated cumulative incidence over multiple timepoints. This function is invoked after an initial call to <code>survtmle</code> with option <code>returnModels = TRUE</code>. By setting this option, the <code>timepoints</code> function is able to recycle fits for the conditional treatment probability, censoring distribution, and, in the case of <code>method = "hazard"</code>, the hazard fits. Thus, invoking <code>timepoints</code> is faster than making repeated calls to <code>survtmle</code> with different <code>t0</code>.</p>
 <p>There is some subtlety involved to properly leveraging this facility. Recall that the censoring distribution fit (and cause-specific hazard fit) pools over all time points. Thus, in order to most efficiently use <code>timepoints</code>, the initial call to <code>survtmle</code> should be made setting option <code>t0</code> equal to the final time point at which one wants estimates of cumulative incidence. This allows these hazard fitting procedures to utilize all of the data to estimate the conditional hazard function.</p>
 <p>We demonstrate the use of <code>timepoints</code> below based on the following simulated data.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb43-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">200</span></a>
 <a class="sourceLine" id="cb43-3" data-line-number="3">t_<span class="dv">0</span> &lt;-<span class="st"> </span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb43-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
-<a class="sourceLine" id="cb43-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
-<a class="sourceLine" id="cb43-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
-<p>Imagine that we would like cumulative incidence estimates at times <code><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len(t_0)</a></code> based on <code>fit2</code> above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called <code>fit2</code> the option <code>returnModels</code> was set to its default value <code>FALSE</code>. Thus, we must refit this object setting the function to return the model fits.</p>
+<a class="sourceLine" id="cb43-4" data-line-number="4">trt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">adjustVars &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">W1 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n)), <span class="dt">W2 =</span> <span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">2</span>)))</a>
+<a class="sourceLine" id="cb43-6" data-line-number="6">ftime &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">1</span>, <span class="dv">4</span>) <span class="op">-</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W1 <span class="op">+</span><span class="st"> </span>adjustVars<span class="op">$</span>W2)</a>
+<a class="sourceLine" id="cb43-7" data-line-number="7">ftype &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(n, <span class="dv">0</span>, <span class="dv">1</span>))</a></code></pre></div>
+<p>Imagine that we would like cumulative incidence estimates at times <code><a href="https://rdrr.io/r/base/seq.html">seq_len(t_0)</a></code> based on <code>fit2</code> above (mean-based TMLE using glm covariate adjustment). However, note that when we originally called <code>fit2</code> the option <code>returnModels</code> was set to its default value <code>FALSE</code>. Thus, we must refit this object setting the function to return the model fits.</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="co"># Refit fit 2 returning models</span></a>
 <a class="sourceLine" id="cb44-2" data-line-number="2">fit2_rm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/survtmle.html">survtmle</a></span>(<span class="dt">ftime =</span> ftime, <span class="dt">ftype =</span> ftype,</a>
 <a class="sourceLine" id="cb44-3" data-line-number="3">                 <span class="dt">trt =</span> trt, <span class="dt">adjustVars =</span> adjustVars,</a>
@@ -532,8 +534,8 @@
 ##              0 1          1 1
 ## 0 1 0.0029470633 0.0002170549
 ## 1 1 0.0002170549 0.0016411250</code></pre>
-<p>Now we can call <code>timepoints</code> to return estimates of cumulative incidence at each time <code><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len(t_0)</a></code>.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(t_<span class="dv">0</span>))</a>
+<p>Now we can call <code>timepoints</code> to return estimates of cumulative incidence at each time <code><a href="https://rdrr.io/r/base/seq.html">seq_len(t_0)</a></code>.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">tp.fit2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit2_rm, <span class="dt">times =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(t_<span class="dv">0</span>))</a>
 <a class="sourceLine" id="cb46-2" data-line-number="2"><span class="co"># print the object</span></a>
 <a class="sourceLine" id="cb46-3" data-line-number="3">tp.fit2</a></code></pre></div>
 <pre><code>## $est
@@ -555,7 +557,7 @@
 <a class="sourceLine" id="cb48-7" data-line-number="7">                    <span class="dt">method =</span> <span class="st">"hazard"</span>, <span class="dt">t0 =</span> t_<span class="dv">0</span>,</a>
 <a class="sourceLine" id="cb48-8" data-line-number="8">                    <span class="dt">returnModels =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb48-9" data-line-number="9"><span class="co"># call timepoints based on this fit</span></a>
-<a class="sourceLine" id="cb48-10" data-line-number="10">tp.fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit4_rm, <span class="dt">times =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(t_<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb48-10" data-line-number="10">tp.fit4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/timepoints.html">timepoints</a></span>(fit4_rm, <span class="dt">times =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(t_<span class="dv">0</span>))</a>
 <a class="sourceLine" id="cb48-11" data-line-number="11"><span class="co"># print the object</span></a>
 <a class="sourceLine" id="cb48-12" data-line-number="12">tp.fit4</a></code></pre></div>
 <pre><code>## $est
@@ -569,11 +571,11 @@
 ## 2 NA 0.0007267294 0.001906479 0.003232722 0.003374974 0.001813312</code></pre>
 <p>There is a plotting method available for <code>timepoints</code> to plot cumulative incidence over time in each treatment group and for each failure type.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co"># plot raw cumulative incidence</span></a>
-<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(tp.fit4, <span class="dt">type =</span> <span class="st">"raw"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(tp.fit4, <span class="dt">type =</span> <span class="st">"raw"</span>)</a></code></pre></div>
 <p><img src="survtmle_intro_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Because the cumulative incidence function is being invoked pointwise, it is possible that the resulting curve is not monotone. However, it is possible to show that projecting this curve onto a monotone function via isotonic regression results in an estimate with identical asymptotic properties to the pointwise estimate. Therefore, we additionally provide an option <code>type = "iso"</code> (the default) that provides these smoothed curves.</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co"># plot smoothed cumulative incidence</span></a>
-<a class="sourceLine" id="cb51-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(tp.fit4)</a></code></pre></div>
+<a class="sourceLine" id="cb51-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(tp.fit4)</a></code></pre></div>
 </div>
 </div>
 <div id="section" class="section level2">
@@ -584,41 +586,47 @@
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session Information</h2>
-<pre><code>## R version 3.5.3 (2019-03-11)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS Mojave 10.14
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.3 LTS
 ## 
 ## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+## LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] nnls_1.4       survtmle_1.1.0 tibble_2.1.1  
+## [1] nnls_1.4       survtmle_1.1.2 tibble_2.1.3  
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1          plyr_1.8.4          compiler_3.5.3     
-##  [4] pillar_1.3.1        tools_3.5.3         digest_0.6.18      
-##  [7] evaluate_0.13       memoise_1.1.0       gtable_0.3.0       
-## [10] lattice_0.20-38     pkgconfig_2.0.2     rlang_0.3.3        
-## [13] Matrix_1.2-17       cli_1.1.0           ggsci_2.9          
-## [16] commonmark_1.7      yaml_2.2.0          speedglm_0.3-2     
-## [19] pkgdown_1.3.0       xfun_0.6            SuperLearner_2.0-24
-## [22] stringr_1.4.0       dplyr_0.8.0.1       roxygen2_6.1.1     
-## [25] xml2_1.2.0          knitr_1.22          desc_1.2.0         
-## [28] fs_1.2.7            rprojroot_1.3-2     grid_3.5.3         
-## [31] tidyselect_0.2.5    glue_1.3.1          R6_2.4.0           
-## [34] fansi_0.4.0         rmarkdown_1.12      tidyr_0.8.3        
-## [37] purrr_0.3.2         ggplot2_3.1.0       magrittr_1.5       
-## [40] backports_1.1.3     scales_1.0.0        htmltools_0.3.6    
-## [43] MASS_7.3-51.4       assertthat_0.2.1    colorspace_1.4-1   
-## [46] labeling_0.3        utf8_1.1.4          stringi_1.4.3      
-## [49] lazyeval_0.2.2      munsell_0.5.0       crayon_1.3.4</code></pre>
+##  [1] Rcpp_1.0.3          plyr_1.8.4          pillar_1.4.2       
+##  [4] compiler_3.6.1      tools_3.6.1         zeallot_0.1.0      
+##  [7] digest_0.6.23       evaluate_0.14       memoise_1.1.0      
+## [10] lifecycle_0.1.0     gtable_0.3.0        lattice_0.20-38    
+## [13] pkgconfig_2.0.3     rlang_0.4.2         Matrix_1.2-18      
+## [16] cli_1.1.0           ggsci_2.9           yaml_2.2.0         
+## [19] speedglm_0.3-2      pkgdown_1.4.1       xfun_0.11          
+## [22] SuperLearner_2.0-25 stringr_1.4.0       dplyr_0.8.3        
+## [25] knitr_1.26          vctrs_0.2.0         desc_1.2.0         
+## [28] fs_1.3.1            rprojroot_1.3-2     grid_3.6.1         
+## [31] tidyselect_0.2.5    glue_1.3.1          R6_2.4.1           
+## [34] fansi_0.4.0         rmarkdown_1.18      farver_2.0.1       
+## [37] tidyr_1.0.0         purrr_0.3.3         ggplot2_3.2.1      
+## [40] magrittr_1.5        ellipsis_0.3.0      backports_1.1.5    
+## [43] scales_1.1.0        htmltools_0.4.0     MASS_7.3-51.4      
+## [46] assertthat_0.2.1    colorspace_1.4-1    labeling_0.3       
+## [49] utf8_1.1.4          stringi_1.4.3       lazyeval_0.2.2     
+## [52] munsell_0.5.0       crayon_1.3.4</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -626,31 +634,32 @@
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
 <div id="ref-bang2005doubly">
-<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4): 962–73. <a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x">https://doi.org/10.1111/j.1541-0420.2005.00377.x</a>.</p>
+<p>Bang, Heejung, and James M Robins. 2005. “Doubly Robust Estimation in Missing Data and Causal Inference Models.” <em>Biometrics</em> 61 (4). Wiley Online Library: 962–73. <a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x" class="uri">https://doi.org/10.1111/j.1541-0420.2005.00377.x</a>.</p>
 </div>
 <div id="ref-benkeser2017improved">
-<p>Benkeser, David, Marco Carone, and Peter B Gilbert. 2017. “Improved Estimation of the Cumulative Incidence of Rare Outcomes.” <em>Statistics in Medicine</em>. <a href="https://doi.org/10.1002/sim.7337">https://doi.org/10.1002/sim.7337</a>.</p>
+<p>Benkeser, David, Marco Carone, and Peter B Gilbert. 2017. “Improved Estimation of the Cumulative Incidence of Rare Outcomes.” <em>Statistics in Medicine</em>. Wiley Online Library. <a href="https://doi.org/10.1002/sim.7337" class="uri">https://doi.org/10.1002/sim.7337</a>.</p>
 </div>
 <div id="ref-breiman1996stacked">
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1): 49–64. <a href="https://doi.org/10.1007/BF00117832">https://doi.org/10.1007/BF00117832</a>.</p>
+<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64. <a href="https://doi.org/10.1007/BF00117832" class="uri">https://doi.org/10.1007/BF00117832</a>.</p>
 </div>
 <div id="ref-vdlgruber:2012:ijb">
-<p>Laan, Mark J van der, and Susan Gruber. 2012. “Targeted Minimum Loss Based Estimation of Causal Effects of Multiple Time Point Interventions.” Journal Article. <em>The International Journal of Biostatistics</em> 8 (1): 1–34. <a href="https://doi.org/10.1515/1557-4679.1370">https://doi.org/10.1515/1557-4679.1370</a>.</p>
+<p>Laan, Mark J van der, and Susan Gruber. 2012. “Targeted Minimum Loss Based Estimation of Causal Effects of Multiple Time Point Interventions.” Journal Article. <em>The International Journal of Biostatistics</em> 8 (1): 1–34. <a href="https://doi.org/10.1515/1557-4679.1370" class="uri">https://doi.org/10.1515/1557-4679.1370</a>.</p>
 </div>
 <div id="ref-vdlpolley:2007:statappgenetics">
-<p>Laan, Mark J van der, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” Journal Article. <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1): 1–23. <a href="https://doi.org/10.2202/1544-6115.1309">https://doi.org/10.2202/1544-6115.1309</a>.</p>
+<p>Laan, Mark J van der, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” Journal Article. <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1): 1–23. <a href="https://doi.org/10.2202/1544-6115.1309" class="uri">https://doi.org/10.2202/1544-6115.1309</a>.</p>
 </div>
 <div id="ref-moore2009increasing">
-<p>Moore, Kelly L, and Mark J van der Laan. 2009. “Increasing Power in Randomized Trials with Right Censored Outcomes Through Covariate Adjustment.” <em>Journal of Biopharmaceutical Statistics</em> 19 (6): 1099–1131. <a href="https://doi.org/10.1080/10543400903243017">https://doi.org/10.1080/10543400903243017</a>.</p>
+<p>Moore, Kelly L, and Mark J van der Laan. 2009. “Increasing Power in Randomized Trials with Right Censored Outcomes Through Covariate Adjustment.” <em>Journal of Biopharmaceutical Statistics</em> 19 (6). Taylor &amp; Francis: 1099–1131. <a href="https://doi.org/10.1080/10543400903243017" class="uri">https://doi.org/10.1080/10543400903243017</a>.</p>
 </div>
 <div id="ref-robins1999ltmle">
-<p>Robins, Jamie M. 1999. “Robust Estimation in Sequentially Ignorable Missing Data and Causal Inference Models.” Proceedings of the American Statistical Association Section on Bayesian Statistical Science. <a href="http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf">http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf</a>.</p>
+<p>Robins, Jamie M. 1999. “Robust Estimation in Sequentially Ignorable Missing Data and Causal Inference Models.” Proceedings of the American Statistical Association Section on Bayesian Statistical Science. <a href="http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf" class="uri">http://www.biostat.harvard.edu/robins/jsaprocpat1.pdf</a>.</p>
 </div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -670,17 +679,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by David Benkeser, Nima Hejazi.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

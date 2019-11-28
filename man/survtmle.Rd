@@ -4,14 +4,31 @@
 \alias{survtmle}
 \title{Compute Targeted Minimum Loss-Based Estimators in Survival Analysis Settings}
 \usage{
-survtmle(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-  SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
-  glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL,
-  returnIC = TRUE, returnModels = TRUE,
+survtmle(
+  ftime,
+  ftype,
+  trt,
+  adjustVars,
+  t0 = max(ftime[ftype > 0]),
+  SL.ftime = NULL,
+  SL.ctime = NULL,
+  SL.trt = NULL,
+  glm.ftime = NULL,
+  glm.ctime = NULL,
+  glm.trt = NULL,
+  returnIC = TRUE,
+  returnModels = TRUE,
   ftypeOfInterest = unique(ftype[ftype != 0]),
-  trtOfInterest = unique(trt), method = "hazard", bounds = NULL,
-  verbose = FALSE, tol = 1/(sqrt(length(ftime))), maxIter = 10,
-  Gcomp = FALSE, gtol = 0.001)
+  trtOfInterest = unique(trt),
+  cvControl = list(V = 10L, stratifyCV = FALSE, shuffle = TRUE, validRows = NULL),
+  method = "hazard",
+  bounds = NULL,
+  verbose = FALSE,
+  tol = 1/(sqrt(length(ftime))),
+  maxIter = 10,
+  Gcomp = FALSE,
+  gtol = 0.001
+)
 }
 \arguments{
 \item{ftime}{An integer-valued vector of failure times. Right-censored observations
@@ -94,6 +111,11 @@ values found in \code{ftype}.}
 interest. The default value computes estimates for values
 \code{unique(trt)}. Can alternatively be set to a vector of values
 found in \code{trt}.}
+
+\item{cvControl}{A \code{list} providing control options to be fed directly
+into calls to \code{SuperLearner}. This should match the contents of
+\code{SuperLearner.CV.control} exactly. For further details, consult
+the documentation of the \pkg{SuperLearner} package.}
 
 \item{method}{A character specification of how the targeted minimum
 loss-based estimators should be computed, either \code{"mean"} or

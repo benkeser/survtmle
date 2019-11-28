@@ -24,23 +24,28 @@
 #'        \code{t == t0} is different than if \code{t != t0}.
 #' @param SL.ctime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression (either cause-specific hazards or conditional mean).
-#'        See \code{?SuperLearner} for more information on how to specify valid
-#'        \code{SuperLearner} libraries. It is expected that the wrappers used
-#'        in the library will play nicely with the input variables, which will
-#'        be called \code{"trt"} and \code{names(adjustVars)}.
+#'        outcome regression (either cause-specific hazards or conditional
+#'        mean). See \code{?SuperLearner} for more information on how to specify
+#'        valid \code{SuperLearner} libraries. It is expected that the wrappers
+#'        used in the library will play nicely with the input variables, which
+#'        will be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ctime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
 #'        for the outcome regression (either cause-specific hazards or
-#'        conditional mean). Ignored if \code{SL.ctime != NULL}. Use \code{"trt"}
-#'        to specify the treatment in this formula (see examples). The formula
-#'        can additionally include any variables found in
+#'        conditional mean). Ignored if \code{SL.ctime != NULL}. Use
+#'        \code{"trt"} to specify the treatment in this formula (see examples).
+#'        The formula can additionally include any variables found in
 #'        \code{names(adjustVars)}.
 #' @param glm.family The type of regression to be performed if fitting GLMs in
 #'        the estimation and fluctuation procedures. The default is "binomial"
 #'        for logistic regression. Only change this from the default if there
 #'        are justifications that are well understood. This is inherited from
 #'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is passed in
+#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
 #' @param returnModels A boolean indicating whether to return the
 #'        \code{SuperLearner} or \code{glm} objects used to estimate the
 #'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
@@ -68,6 +73,7 @@ estimateCensoring <- function(dataList,
                               SL.ctime = NULL,
                               glm.ctime = NULL,
                               glm.family,
+                              cvControl,
                               returnModels = FALSE,
                               verbose = TRUE,
                               gtol = 1e-3,
@@ -147,7 +153,8 @@ estimateCensoring <- function(dataList,
           id = dataList[[1]]$id[include],
           family = "binomial",
           SL.library = SL.ctime,
-          verbose = verbose
+          verbose = verbose,
+          cvControl = cvControl
         )
       } else {
         dataList <- lapply(dataList, function(x) {

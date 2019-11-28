@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mock RTSS/AS01 data set — rtss • survtmle</title>
+<title>Page not found (404) • survtmle</title>
 
 
 <!-- jquery -->
@@ -29,21 +29,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script>
+<link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Mock RTSS/AS01 data set — rtss" />
-<meta property="og:description" content="A dataset containing data that is similar in structure to the RTSS/AS01
-malaria vaccine trial. Privacy agreements prevent the sharing of the real
-data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA. The data set is a
-list of 10 simulated multiple outputation draws. The covariate data,
-ftime, and vaccine stay the same across the data sets; however,
-the ftype variable changes, simulating output data sets of multiply
-infected trial participants." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Page not found (404)" />
 
 
 
@@ -62,7 +54,7 @@ infected trial participants." />
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -74,7 +66,7 @@ infected trial participants." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">survtmle</a>
+        <a class="navbar-link" href="index.html">survtmle</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
@@ -82,13 +74,13 @@ infected trial participants." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
+  <a href="index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -98,12 +90,12 @@ infected trial participants." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/survtmle_intro.html">Targeted Learning for Survival Analysis with Competing Risks</a>
+      <a href="articles/survtmle_intro.html">Targeted Learning for Survival Analysis with Competing Risks</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -124,59 +116,17 @@ infected trial participants." />
       </header>
 
 <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Mock RTSS/AS01 data set</h1>
-    <small class="dont-index">Source: <a href='https://github.com/benkeser/survtmle/blob/master/R/rtss.R'><code>R/rtss.R</code></a></small>
-    <div class="hidden name"><code>rtss.Rd</code></div>
+      <h1>Page not found (404)</h1>
     </div>
 
-    <div class="ref-description">
-    <p>A dataset containing data that is similar in structure to the RTSS/AS01
-malaria vaccine trial. Privacy agreements prevent the sharing of the real
-data, so please note THAT THIS IS NOT THE REAL RTSS,S DATA. The data set is a
-<code>list</code> of 10 simulated multiple outputation draws. The covariate data,
-<code>ftime</code>, and <code>vaccine</code> stay the same across the data sets; however,
-the <code>ftype</code> variable changes, simulating output data sets of multiply
-infected trial participants.</p>
-    </div>
-
-    <pre class="usage"><span class='no'>rtss</span></pre>
-
-
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>A <code>list</code> with 10 entries, each a <code>data.frame</code> with 6,890
-        rows and 18 columns.</p><dl class='dl-horizontal'>
-  <dt>ftime</dt><dd><p>number of months until first recorded malaria disease</p></dd>
-  <dt>ftype</dt><dd><p>the genotype of sampled malaria parasite
-  (0 = censored, 1 = CSP matched, 2 = CSP mismatched)</p></dd>
-  <dt>vaccine</dt><dd><p>vaccine assignment (0 = control vaccine, 1 = vaccine)</p></dd>
-  <dt>ageWeeks</dt><dd><p>participant's age in weeks at trial enrollment</p></dd>
-  <dt>weightForAgeZscore</dt><dd><p>WHO weight-for-age Z-score</p></dd>
-  <dt>sex</dt><dd><p>participant's sex (0 = male, 1 = female)</p></dd>
-  <dt>site1-5</dt><dd><p>Indicator of study site</p></dd>
-  <dt>heightForAgeZscore</dt><dd><p>WHO height-for-age Z-score</p></dd>
-  <dt>weightForHeightZscore</dt><dd><p>WHO weight-for-height Z-score</p></dd>
-  <dt>armCircumZscore</dt><dd><p>WHO arm circumference Z-score</p></dd>
-  <dt>hemog</dt><dd><p>hemoglobin</p></dd>
-  <dt>distInpatient</dt><dd><p>distance from nearest inpatient clinic</p></dd>
-  <dt>distOutpatient</dt><dd><p>distance from nearest outpatient clinic</p></dd>
-  <dt>startMonthCat</dt><dd><p>study site-specific indicator of rainy (=1) versus dry
-                       (=0) season</p></dd>
-  ...
-
-</dl>
+Content not found. Please use links in the navbar.
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-    </ul>
 
-  </div>
 </div>
+
 
 
       <footer>

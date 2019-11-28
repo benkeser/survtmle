@@ -4,7 +4,7 @@ author: "[David Benkeser](https://www.benkeserstatistics.com/) & [Nima
   Hejazi](https://nimahejazi.org)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: refs.bib
+bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{Targeted Learning for Survival Analysis with Competing Risks}
   %\VignetteEngine{knitr::rmarkdown}
@@ -49,7 +49,7 @@ ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
 ftype <- round(runif(n, 0, 1))
 ```
 
-The simple data structure contains a set of baseline covariates (`adjustVars`), 
+The simple data structure contains a set of baseline covariates (`adjustVars`),
 a binary treatment variable (`trt`), a failure time that is a function of the
 treatment, adjustment variables, and a random error (`ftime`), and a failure
 type (`ftype`), which denotes the cause of failure (0 means no failure, 1 means
@@ -61,10 +61,11 @@ d
 ```
 
 It is important to note that the current `survtmle` distribution **only supports
-integer-valued failure times**. If failure times are continuous-valued, then, 
+integer-valued failure times**. If failure times are continuous-valued, then,
 unfortunately, we require the user to perform an additional pre-processing step
 to convert the observed failure times to ranked integers prior to applying the
-`survtmle` function. We hope to build support for this situation in future versions of the package. 
+`survtmle` function. We hope to build support for this situation in future
+versions of the package.
 
 ---
 
@@ -78,7 +79,7 @@ to improve efficiency [@moore2009increasing]. This covariate adjustment may be
 facilitated by estimating a series of iterated covariate-conditional means
 [@robins1999ltmle,@bang2005doubly,@vdlgruber:2012:ijb]. The final iterated
 covariate-conditional mean is marginalized over the empirical distribution of
-baseline covariates to obtain an estimate of the marginal cumulative incidence. 
+baseline covariates to obtain an estimate of the marginal cumulative incidence.
 
 Here, we invoke the eponymous `survtmle` function to compute the iterated
 mean-based (`method = "mean"`)  covariate-adjusted estimates of the cumulative
@@ -126,8 +127,8 @@ assignment and time, respectively. Here we call `survtmle` again, now adjusting
 for covariates in the treatment and censoring fits.
 
 ```{r example_glm_mean_2}
-# Fit 2: Use GLM-based estimators for failure, treatment, and censoring with the
-#        "mean" method
+# Fit 2: Use GLM-based estimators for failure, treatment, and censoring with
+#        the "mean" method
 fit2 <- survtmle(ftime = ftime, ftype = ftype,
                  trt = trt, adjustVars = adjustVars,
                  glm.trt = "W1 + W2",
@@ -172,7 +173,7 @@ fit3
 fitting a Super Learner *for each time point* from `seq_len(t0)`. If there are
 many unique time points observed in the data, this can become a computationally
 intensive process. In such cases, we recommend either redefining the `ftime`
-variable to pool across time points *or* using `method = "hazard"` (see below). 
+variable to pool across time points *or* using `method = "hazard"` (see below).
 
 ---
 
@@ -570,3 +571,4 @@ sessionInfo()
 ---
 
 ## References
+

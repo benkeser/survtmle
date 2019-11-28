@@ -117,7 +117,7 @@ checkInputs <- function(ftime,
                         returnIC = TRUE,
                         returnModels = TRUE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
-                        trtOfInterest=unique(trt),
+                        trtOfInterest = unique(trt),
                         method = "hazard",
                         bounds = NULL,
                         verbose = FALSE,
@@ -271,27 +271,36 @@ checkInputs <- function(ftime,
   }
   # check glm formulas
   if (!is.null(glm.trt)) {
-    tryCatch({
-      tmp <- as.formula(paste0("trt ~", glm.trt))
-    }, error = function(e) {
-      stop("glm.trt formula appears to be invalid.")
-    })
+    tryCatch(
+      {
+        tmp <- as.formula(paste0("trt ~", glm.trt))
+      },
+      error = function(e) {
+        stop("glm.trt formula appears to be invalid.")
+      }
+    )
   }
   if (!is.null(glm.ctime)) {
     if (all(glm.ctime != "No censoring observed")) {
-      tryCatch({
-        tmp <- as.formula(paste0("C ~", glm.ctime))
-      }, error = function(e) {
-        stop("glm.ctime formula appears to be invalid.")
-      })
+      tryCatch(
+        {
+          tmp <- as.formula(paste0("C ~", glm.ctime))
+        },
+        error = function(e) {
+          stop("glm.ctime formula appears to be invalid.")
+        }
+      )
     }
   }
   if (!is.null(glm.ftime)) {
-    tryCatch({
-      tmp <- as.formula(paste0("N ~", glm.ftime))
-    }, error = function(e) {
-      stop("glm.ftime formula appears to be invalid.")
-    })
+    tryCatch(
+      {
+        tmp <- as.formula(paste0("N ~", glm.ftime))
+      },
+      error = function(e) {
+        stop("glm.ftime formula appears to be invalid.")
+      }
+    )
   }
 
   # check that one of glm.trt or SL.trt is specified

@@ -4,9 +4,21 @@
 \alias{estimateIteratedMean}
 \title{Estimation for the Method of Iterated Means}
 \usage{
-estimateIteratedMean(wideDataList, t, whichJ, allJ, t0, adjustVars,
-  SL.ftime = NULL, glm.ftime = NULL, verbose, returnModels = FALSE,
-  bounds = NULL, ...)
+estimateIteratedMean(
+  wideDataList,
+  t,
+  whichJ,
+  allJ,
+  t0,
+  adjustVars,
+  SL.ftime = NULL,
+  glm.ftime = NULL,
+  verbose,
+  cvControl,
+  returnModels = FALSE,
+  bounds = NULL,
+  ...
+)
 }
 \arguments{
 \item{wideDataList}{A list of \code{data.frame} objects.}
@@ -27,22 +39,28 @@ variables to adjust for in the regression.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
-outcome regression (either cause-specific hazards or conditional mean).
-See \code{?SuperLearner} for more information on how to specify valid
-\code{SuperLearner} libraries. It is expected that the wrappers used
-in the library will play nicely with the input variables, which will
-be called \code{"trt"} and \code{names(adjustVars)}.}
+outcome regression (either cause-specific hazards or conditional
+mean). See \code{?SuperLearner} for more information on how to specify
+valid \code{SuperLearner} libraries. It is expected that the wrappers
+used in the library will play nicely with the input variables, which
+will be called \code{"trt"} and \code{names(adjustVars)}.}
 
 \item{glm.ftime}{A character specification of the right-hand side of the
 equation passed to the \code{formula} option of a call to \code{glm}
 for the outcome regression (either cause-specific hazards or
-conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
-to specify the treatment in this formula (see examples). The formula
-can additionally include any variables found in
+conditional mean). Ignored if \code{SL.ftime != NULL}. Use
+\code{"trt"} to specify the treatment in this formula (see examples).
+The formula can additionally include any variables found in
 \code{names(adjustVars)}.}
 
 \item{verbose}{A boolean indicating whether the function should print
 messages to indicate progress.}
+
+\item{cvControl}{A \code{list} providing control options to be fed directly
+into calls to \code{SuperLearner}. This should match the contents of
+\code{SuperLearner.CV.control} exactly. For further details, consult
+the documentation of the \pkg{SuperLearner} package. This is passed in
+from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.}
 
 \item{returnModels}{A boolean indicating whether to return the
 \code{SuperLearner} or \code{glm} objects used to estimate the

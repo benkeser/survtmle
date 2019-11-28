@@ -22,6 +22,11 @@
 #'        Alternatively, this could be an object of class \code{SuperLearner}
 #'        (as in calls to this function via \code{timepoints}), in which case
 #'        predictions are obtained using this object with no new fitting.
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is passed in
+#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
 #' @param returnModels A boolean indicating whether fitted model objects should
 #'        be returned.
 #' @param verbose A boolean passed to the \code{verbose} option of the call to
@@ -40,9 +45,15 @@
 #' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
 #' @export
 
-estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
-                              returnModels = FALSE, verbose = FALSE,
-                              gtol = 1e-3, ...) {
+estimateTreatment <- function(dat,
+                              adjustVars,
+                              glm.trt = NULL,
+                              SL.trt = NULL,
+                              cvControl,
+                              returnModels = FALSE,
+                              verbose = FALSE,
+                              gtol = 1e-3,
+                              ...) {
   if (length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
   } else {
@@ -57,7 +68,8 @@ estimateTreatment <- function(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
           newX = adjustVars,
           SL.library = SL.trt,
           id = dat$id, verbose = verbose,
-          family = "binomial"
+          family = "binomial",
+          cvControl = cvControl
         )
       } else {
         trtMod <- SL.trt

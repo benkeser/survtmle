@@ -4,8 +4,17 @@
 \alias{getHazardInfluenceCurve}
 \title{Extract Influence Curve for Estimated Hazard Functions}
 \usage{
-getHazardInfluenceCurve(dataList, dat, allJ, ofInterestJ, nJ, uniqtrt, t0,
-  verbose, ...)
+getHazardInfluenceCurve(
+  dataList,
+  dat,
+  allJ,
+  ofInterestJ,
+  nJ,
+  uniqtrt,
+  t0,
+  verbose,
+  ...
+)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects. See \code{?makeDataList}

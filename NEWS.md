@@ -1,5 +1,11 @@
-# survtmle 1.1.1 
-* Minor bug fixes and documentation updates. 
+# survtmle 1.1.2
+* Minor functionality updates, bug fixes and documentation edits:
+  * Removal of `geom_point` when `plot.tp.survtmle` with more than 1 time point.
+  * Add `CITATION` functionality for using of `citation("survtmle")`.
+  * Add argument `cv` to allow altering cross-validation in `SuperLearner`.
+
+# survtmle 1.1.1
+* Minor bug fixes and documentation updates.
 
 # survtmle 1.1.0
 * Adds support for the use of `speedglm` to fit the numerous regressions fit in

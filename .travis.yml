@@ -24,9 +24,11 @@ r:
 r_packages:
   - covr
   - devtools
+  - sessioninfo
 
 r_github_packages:
-  - jimhester/covr
+  - r-lib/covr
+  - r-lib/sessioninfo
 
 after_success:
   - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/printing.R', 'R/utils.R'))"

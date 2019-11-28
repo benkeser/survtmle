@@ -30,14 +30,16 @@ utils::globalVariables(c("."))
 #' adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 #'
 #' # fit a survtmle object
-#' fit <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-#'                 adjustVars = adjustVars, glm.trt = "W1 + W2",
-#'                 glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
-#'                 method = "mean", t0 = 4)
+#' fit <- survtmle(
+#'   ftime = ftime, ftype = ftype, trt = trt,
+#'   adjustVars = adjustVars, glm.trt = "W1 + W2",
+#'   glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
+#'   method = "mean", t0 = 4
+#' )
 #' # get confidence intervals
 #' ci <- confint(fit)
 #' ci
-#
+#' #
 confint.survtmle <- function(object,
                              parm = seq_along(object$est),
                              level = 0.95,
@@ -90,16 +92,18 @@ confint.survtmle <- function(object,
 #' adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 #'
 #' # fit a survtmle object
-#' fit <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-#'                 adjustVars = adjustVars, glm.trt = "W1 + W2",
-#'                 glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
-#'                 method = "mean", t0 = 4)
+#' fit <- survtmle(
+#'   ftime = ftime, ftype = ftype, trt = trt,
+#'   adjustVars = adjustVars, glm.trt = "W1 + W2",
+#'   glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
+#'   method = "mean", t0 = 4
+#' )
 #' # extract cumulative incidence at each timepoint
 #' tpfit <- timepoints(fit, times = seq_len(4))
 #' # get confidence intervals
 #' ci <- confint(tpfit)
 #' ci
-#
+#' #
 confint.tp.survtmle <- function(object,
                                 parm,
                                 level = 0.95,

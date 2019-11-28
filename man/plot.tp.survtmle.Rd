@@ -4,8 +4,7 @@
 \alias{plot.tp.survtmle}
 \title{Plot Results of Cumulative Incidence Estimates}
 \usage{
-\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"),
-  pal = ggsci::scale_color_lancet())
+\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"), pal = ggsci::scale_color_lancet())
 }
 \arguments{
 \item{x}{object of class \code{tp.survtmle} as produced by a sequence of

@@ -4,13 +4,30 @@
 \alias{mean_tmle}
 \title{TMLE for G-Computation of Cumulative Incidence}
 \usage{
-mean_tmle(ftime, ftype, trt, t0 = max(ftime[ftype > 0]),
-  adjustVars = NULL, SL.ftime = NULL, SL.ctime = NULL,
-  SL.trt = NULL, glm.ftime = NULL, glm.ctime = NULL, glm.trt = "1",
-  glm.family = "binomial", returnIC = TRUE, returnModels = FALSE,
+mean_tmle(
+  ftime,
+  ftype,
+  trt,
+  t0 = max(ftime[ftype > 0]),
+  adjustVars = NULL,
+  SL.ftime = NULL,
+  SL.ctime = NULL,
+  SL.trt = NULL,
+  glm.ftime = NULL,
+  glm.ctime = NULL,
+  glm.trt = "1",
+  glm.family = "binomial",
+  returnIC = TRUE,
+  returnModels = FALSE,
   ftypeOfInterest = unique(ftype[ftype != 0]),
-  trtOfInterest = unique(trt), bounds = NULL, verbose = FALSE,
-  Gcomp = FALSE, gtol = 0.001, ...)
+  trtOfInterest = unique(trt),
+  cvControl,
+  bounds = NULL,
+  verbose = FALSE,
+  Gcomp = FALSE,
+  gtol = 0.001,
+  ...
+)
 }
 \arguments{
 \item{ftime}{A numeric vector of failure times. Right-censored observations
@@ -99,6 +116,12 @@ values found in \code{ftype}.}
 interest. The default value computes estimates for values
 \code{unique(trt)}. Can alternatively be set to a vector of values
 found in \code{trt}.}
+
+\item{cvControl}{A \code{list} providing control options to be fed directly
+into calls to \code{SuperLearner}. This should match the contents of
+\code{SuperLearner.CV.control} exactly. For further details, consult
+the documentation of the \pkg{SuperLearner} package. This is usually
+passed in through the \code{survtmle} wrapper function.}
 
 \item{bounds}{A \code{data.frame} of bounds on the conditional hazard
 function (if \code{method = "hazard"}) or on the iterated conditional
