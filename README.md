@@ -71,7 +71,7 @@ incidence estimates with a very simple, simulated data set.
 # load the package and set seed for reproducibility
 library(survtmle)
 #> survtmle: Targeted Learning for Survival Analysis
-#> Version: 1.1.0
+#> Version: 1.1.2
 set.seed(341796)
 
 # simulate data
@@ -89,7 +89,8 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 trt = A, adjustVars = W,
                 glm.trt = "1",
                 glm.ftime = "I(W1*W2) + trt + t",
-                glm.ctime = "W1 + t", method = "hazard",
+                glm.ctime = "W1 + t",
+                method = "hazard",
                 t0 = t_0)
 
 # extract cumulative incidence at each timepoint
@@ -135,7 +136,7 @@ prior to submitting a pull request.
 After using the `survtmle` R package, please cite both of the following:
 
 ``` 
-    @misc{benkeser2017survtmle,
+    @manual{benkeser2017survtmle,
       author = {Benkeser, David C and Hejazi, Nima S},
       title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
                Survival Analysis in {R}},
@@ -160,14 +161,14 @@ After using the `survtmle` R package, please cite both of the following:
 
 ## License
 
-© 2016-2018 [David C. Benkeser](http://www.benkeserstatistics.com)
+© 2016-2019 [David C. Benkeser](http://www.benkeserstatistics.com)
 
 The contents of this repository are distributed under the MIT license.
 See below for details:
 
     The MIT License (MIT)
     
-    Copyright (c) 2016-2018 David C. Benkeser
+    Copyright (c) 2016-2019 David C. Benkeser
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
