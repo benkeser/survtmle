@@ -4,7 +4,7 @@ author: "[David Benkeser](https://www.benkeserstatistics.com/) & [Nima
   Hejazi](https://nimahejazi.org)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: refs.bib
+bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{Targeted Learning for Survival Analysis with Competing Risks}
   %\VignetteEngine{knitr::rmarkdown}

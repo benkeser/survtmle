@@ -4,8 +4,7 @@
 \alias{confint.survtmle}
 \title{confint.survtmle}
 \usage{
-\method{confint}{survtmle}(object, parm = seq_along(object$est),
-  level = 0.95, ...)
+\method{confint}{survtmle}(object, parm = seq_along(object$est), level = 0.95, ...)
 }
 \arguments{
 \item{object}{An object of class \code{survtmle}.}

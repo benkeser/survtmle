@@ -119,7 +119,7 @@ prior to submitting a pull request.
 
 After using the `survtmle` R package, please cite both of the following:
 
-        @misc{benkeser2017survtmle,
+        @manual{benkeser2017survtmle,
           author = {Benkeser, David C and Hejazi, Nima S},
           title = {{survtmle}: Targeted Minimum Loss-Based Estimation for
                    Survival Analysis in {R}},
@@ -143,14 +143,14 @@ After using the `survtmle` R package, please cite both of the following:
 
 ## License
 
-&copy; 2016-2018 [David C. Benkeser](http://www.benkeserstatistics.com)
+&copy; 2016-2019 [David C. Benkeser](http://www.benkeserstatistics.com)
 
 The contents of this repository are distributed under the MIT license. See
 below for details:
 ```
 The MIT License (MIT)
 
-Copyright (c) 2016-2018 David C. Benkeser
+Copyright (c) 2016-2019 David C. Benkeser
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

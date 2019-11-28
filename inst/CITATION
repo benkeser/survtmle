@@ -1,0 +1,24 @@
+citHeader("Please cite the following works when using the 'survtmle' software
+           package, including both the software tool and the article describing
+           the statistical methodology.")
+
+year <- format(Sys.Date(), "%Y")
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "{survtmle}: Targeted minimum loss-based estimation for survival analysis",
+         author = c(person("David", "Benkeser"),
+                    person("Nima", "Hejazi")),
+         year = year,
+         note = note,
+         doi = "10.5281/zenodo.835868",
+         url = "https://github.com/benkeser/survtmle")
+
+bibentry(bibtype = "Article",
+         journal = "Statistics in Medicine",
+         title = "Improved estimation of the cumulative incidence of rare outcomes",
+         author = c(person("David", "Benkeser", "C"),
+                    person("Marco", "Carone"),
+                    person("Peter", "Gilbert", "B")),
+         year = "2017",
+         doi = "10.1002/sim.7337")

@@ -69,6 +69,10 @@
 #'        interest. The default value computes estimates for values
 #'        \code{unique(trt)}. Can alternatively be set to a vector of values
 #'        found in \code{trt}.
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package.
 #' @param method A character specification of how the targeted minimum
 #'        loss-based estimators should be computed, either \code{"mean"} or
 #'        \code{"hazard"}. The \code{"mean"} specification uses a closed-form
@@ -148,6 +152,8 @@
 #' \item{adjustVars}{The data.frame of failure times used in the fit.}
 #' }
 #'
+#' @importFrom SuperLearner SuperLearner.CV.control
+#'
 #' @examples
 #'
 #' # simulate data
@@ -189,9 +195,12 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      returnIC = TRUE, returnModels = TRUE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
                      trtOfInterest = unique(trt),
+                     cvControl = list(V = 10L, stratifyCV = FALSE,
+                                      shuffle = TRUE, validRows = NULL),
                      method = "hazard", bounds = NULL, verbose = FALSE,
                      tol = 1 / (sqrt(length(ftime))),
                      maxIter = 10, Gcomp = FALSE, gtol = 1e-3) {
+  # catch function call
   call <- match.call(expand.dots = TRUE)
 
   # check and clean inputs
@@ -212,6 +221,9 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
     Gcomp = Gcomp, method = method
   )
 
+  # run cross-validation arguments through reformatting helper
+  cvControl <- do.call(SuperLearner::SuperLearner.CV.control, cvControl)
+
   # hazard-based TMLE
   if (method == "hazard") {
     tmle.fit <- hazard_tmle(
@@ -230,6 +242,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       returnModels = returnModels,
       ftypeOfInterest = ftypeOfInterest,
       trtOfInterest = trtOfInterest,
+      cvControl = cvControl,
       bounds = bounds,
       verbose = verbose,
       tol = tol,
@@ -253,6 +266,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       returnModels = returnModels,
       ftypeOfInterest = ftypeOfInterest,
       trtOfInterest = trtOfInterest,
+      cvControl = cvControl,
       bounds = bounds,
       verbose = verbose,
       tol = tol,

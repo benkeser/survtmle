@@ -4,8 +4,17 @@
 \alias{estimateTreatment}
 \title{Estimate Treatment Mechanisms}
 \usage{
-estimateTreatment(dat, adjustVars, glm.trt = NULL, SL.trt = NULL,
-  returnModels = FALSE, verbose = FALSE, gtol = 0.001, ...)
+estimateTreatment(
+  dat,
+  adjustVars,
+  glm.trt = NULL,
+  SL.trt = NULL,
+  cvControl,
+  returnModels = FALSE,
+  verbose = FALSE,
+  gtol = 0.001,
+  ...
+)
 }
 \arguments{
 \item{dat}{An object of class \code{data.frame}. Must have named column
@@ -26,6 +35,12 @@ to \code{SuperLearner}. See \code{?survtmle} for more documentation.
 Alternatively, this could be an object of class \code{SuperLearner}
 (as in calls to this function via \code{timepoints}), in which case
 predictions are obtained using this object with no new fitting.}
+
+\item{cvControl}{A \code{list} providing control options to be fed directly
+into calls to \code{SuperLearner}. This should match the contents of
+\code{SuperLearner.CV.control} exactly. For further details, consult
+the documentation of the \pkg{SuperLearner} package. This is passed in
+from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.}
 
 \item{returnModels}{A boolean indicating whether fitted model objects should
 be returned.}

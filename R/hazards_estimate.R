@@ -29,23 +29,28 @@
 #'        variables to adjust for in the regression.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression (either cause-specific hazards or conditional mean).
-#'        See \code{?SuperLearner} for more information on how to specify valid
-#'        \code{SuperLearner} libraries. It is expected that the wrappers used
-#'        in the library will play nicely with the input variables, which will
-#'        be called \code{"trt"} and \code{names(adjustVars)}.
+#'        outcome regression (either cause-specific hazards or conditional
+#'        mean). See \code{?SuperLearner} for more information on how to specify
+#'        valid \code{SuperLearner} libraries. It is expected that the wrappers
+#'        used in the library will play nicely with the input variables, which
+#'        will be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
 #'        for the outcome regression (either using cause-specific hazards or
-#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
-#'        to specify the treatment in this formula (see examples). The formula
-#'        can additionally include any variables found in
+#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use
+#'        \code{"trt"} to specify the treatment in this formula (see examples).
+#'        The formula can additionally include any variables found in
 #'        \code{names(adjustVars)}.
 #' @param glm.family The type of regression to be performed if fitting GLMs in
 #'        the estimation and fluctuation procedures. The default is "binomial"
 #'        for logistic regression. Only change this from the default if there
 #'        are justifications that are well understood. This is inherited from
 #'        the calling function (either \code{mean_tmle} or \code{hazard_tmle}).
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is passed in
+#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
 #' @param returnModels A boolean indicating whether to return the
 #'        \code{SuperLearner} or \code{glm} objects used to estimate the
 #'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
@@ -72,6 +77,7 @@ estimateHazards <- function(dataList,
                             SL.ftime = NULL,
                             glm.ftime = NULL,
                             glm.family,
+                            cvControl,
                             returnModels,
                             bounds,
                             verbose,
@@ -127,7 +133,8 @@ estimateHazards <- function(dataList,
               rep(0, nrow(x)),
               x[, paste0("Q", J[J < j], "Haz")]
             ))
-            x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]] * (1 - x[[paste0("hazLessThan", j)]])
+            x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]] *
+              (1 - x[[paste0("hazLessThan", j)]])
           } else {
             x[[paste0("hazLessThan", j)]] <- 0
             x[[paste0("Q", j, "Haz")]] <- x[[paste0("Q", j, "PseudoHaz")]]
@@ -159,8 +166,10 @@ estimateHazards <- function(dataList,
           }
           x
         }, j = j)
-        Ytilde <- (dataList[[1]][[paste0("N", j)]] - dataList[[1]][[paste0("l", j)]]) /
-          (pmin(dataList[[1]][[paste0("u", j)]], 1 - dataList[[1]][[paste0("hazLessThan", j)]]) -
+        Ytilde <- (dataList[[1]][[paste0("N", j)]] -
+                   dataList[[1]][[paste0("l", j)]]) /
+          (pmin(dataList[[1]][[paste0("u", j)]], 1 -
+                dataList[[1]][[paste0("hazLessThan", j)]]) -
             dataList[[1]][[paste0("l", j)]])
 
         if (class("glm.ftime") != "list") {
@@ -180,8 +189,10 @@ estimateHazards <- function(dataList,
           dataList <- lapply(dataList, function(x, j) {
             newX <- stats::model.matrix(stats::as.formula(Qj_form), data = x)
             x[[paste0("Q", j, "PseudoHaz")]] <- plogis(newX %*% beta)
-            x[[paste0("Q", j, "Haz")]] <- (pmin(x[[paste0("u", j)]], 1 - x[[paste0("hazLessThan", j)]]) -
-              x[[paste0("l", j)]]) * x[[paste0("Q", j, "PseudoHaz")]] + x[[paste0("l", j)]]
+            x[[paste0("Q", j, "Haz")]] <-
+              (pmin(x[[paste0("u", j)]], 1 - x[[paste0("hazLessThan", j)]]) -
+              x[[paste0("l", j)]]) * x[[paste0("Q", j, "PseudoHaz")]] +
+                             x[[paste0("l", j)]]
             x
           }, j = j)
         }
@@ -205,6 +216,7 @@ estimateHazards <- function(dataList,
           id = dataList[[1]]$id[NlessthanJ == 0],
           family = stats::binomial(),
           SL.library = SL.ftime,
+          cvControl = cvControl,
           verbose = verbose
         )
       } else {

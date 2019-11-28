@@ -4,9 +4,19 @@
 \alias{estimateCensoring}
 \title{Estimate Censoring Mechanisms}
 \usage{
-estimateCensoring(dataList, adjustVars, t0, SL.ctime = NULL,
-  glm.ctime = NULL, glm.family, returnModels = FALSE, verbose = TRUE,
-  gtol = 0.001, ...)
+estimateCensoring(
+  dataList,
+  adjustVars,
+  t0,
+  SL.ctime = NULL,
+  glm.ctime = NULL,
+  glm.family,
+  cvControl,
+  returnModels = FALSE,
+  verbose = TRUE,
+  gtol = 0.001,
+  ...
+)
 }
 \arguments{
 \item{dataList}{A list of \code{data.frame} objects as described in
@@ -21,18 +31,18 @@ Needed only because the naming convention for the regression if
 
 \item{SL.ctime}{A character vector or list specification to be passed to the
 \code{SL.library} argument in the call to \code{SuperLearner} for the
-outcome regression (either cause-specific hazards or conditional mean).
-See \code{?SuperLearner} for more information on how to specify valid
-\code{SuperLearner} libraries. It is expected that the wrappers used
-in the library will play nicely with the input variables, which will
-be called \code{"trt"} and \code{names(adjustVars)}.}
+outcome regression (either cause-specific hazards or conditional
+mean). See \code{?SuperLearner} for more information on how to specify
+valid \code{SuperLearner} libraries. It is expected that the wrappers
+used in the library will play nicely with the input variables, which
+will be called \code{"trt"} and \code{names(adjustVars)}.}
 
 \item{glm.ctime}{A character specification of the right-hand side of the
 equation passed to the \code{formula} option of a call to \code{glm}
 for the outcome regression (either cause-specific hazards or
-conditional mean). Ignored if \code{SL.ctime != NULL}. Use \code{"trt"}
-to specify the treatment in this formula (see examples). The formula
-can additionally include any variables found in
+conditional mean). Ignored if \code{SL.ctime != NULL}. Use
+\code{"trt"} to specify the treatment in this formula (see examples).
+The formula can additionally include any variables found in
 \code{names(adjustVars)}.}
 
 \item{glm.family}{The type of regression to be performed if fitting GLMs in
@@ -40,6 +50,12 @@ the estimation and fluctuation procedures. The default is "binomial"
 for logistic regression. Only change this from the default if there
 are justifications that are well understood. This is inherited from
 the calling function (either \code{mean_tmle} or \code{hazard_tmle}).}
+
+\item{cvControl}{A \code{list} providing control options to be fed directly
+into calls to \code{SuperLearner}. This should match the contents of
+\code{SuperLearner.CV.control} exactly. For further details, consult
+the documentation of the \pkg{SuperLearner} package. This is passed in
+from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.}
 
 \item{returnModels}{A boolean indicating whether to return the
 \code{SuperLearner} or \code{glm} objects used to estimate the

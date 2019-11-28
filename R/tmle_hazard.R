@@ -77,6 +77,11 @@
 #'        interest. The default value computes estimates for values
 #'        \code{unique(trt)}. Can alternatively be set to a vector of values
 #'        found in \code{trt}.
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is usually
+#'        passed in through the \code{survtmle} wrapper function.
 #' @param bounds A \code{data.frame} of bounds on the conditional hazard
 #'        function. The \code{data.frame} should have a column named \code{"t"}
 #'        that includes values \code{seq_len(t0)}. The other columns should be
@@ -180,6 +185,7 @@ hazard_tmle <- function(ftime,
                         returnModels = FALSE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
                         trtOfInterest = unique(trt),
+                        cvControl,
                         bounds = NULL,
                         verbose = FALSE,
                         tol = 1 / (length(ftime)),
@@ -209,6 +215,7 @@ hazard_tmle <- function(ftime,
     adjustVars = adjustVars,
     SL.trt = SL.trt,
     glm.trt = glm.trt,
+    cvControl = cvControl,
     returnModels = returnModels,
     gtol = gtol
   )
@@ -232,6 +239,7 @@ hazard_tmle <- function(ftime,
     SL.ctime = SL.ctime,
     glm.ctime = glm.ctime,
     glm.family = glm.family,
+    cvControl = cvControl,
     returnModels = returnModels,
     gtol = gtol
   )
@@ -248,6 +256,7 @@ hazard_tmle <- function(ftime,
     SL.ftime = SL.ftime,
     glm.ftime = glm.ftime,
     glm.family = glm.family,
+    cvControl = cvControl,
     returnModels = returnModels
   )
   dataList <- estOut$dataList
@@ -276,7 +285,7 @@ hazard_tmle <- function(ftime,
   )
   infCurves <- dat[, grep("D.j", names(dat))]
   if(!is.numeric(infCurves)){
-    meanIC <- colMeans(infCurves)    
+    meanIC <- colMeans(infCurves)
   }else{
     meanIC <- mean(infCurves)
   }
@@ -313,8 +322,8 @@ hazard_tmle <- function(ftime,
     }
   }
   if (ct == maxIter + 1) {
-    warning("TMLE fluctuations did not converge. Check that meanIC is adequately
-            small and proceed with caution.")
+    warning("TMLE fluctuations did not converge. Check that meanIC is
+             adequately small and proceed with caution.")
   }
 
   # calculate point estimate

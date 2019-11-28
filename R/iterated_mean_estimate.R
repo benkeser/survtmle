@@ -32,20 +32,25 @@
 #'        variables to adjust for in the regression.
 #' @param SL.ftime A character vector or list specification to be passed to the
 #'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression (either cause-specific hazards or conditional mean).
-#'        See \code{?SuperLearner} for more information on how to specify valid
-#'        \code{SuperLearner} libraries. It is expected that the wrappers used
-#'        in the library will play nicely with the input variables, which will
-#'        be called \code{"trt"} and \code{names(adjustVars)}.
+#'        outcome regression (either cause-specific hazards or conditional
+#'        mean). See \code{?SuperLearner} for more information on how to specify
+#'        valid \code{SuperLearner} libraries. It is expected that the wrappers
+#'        used in the library will play nicely with the input variables, which
+#'        will be called \code{"trt"} and \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
 #'        equation passed to the \code{formula} option of a call to \code{glm}
 #'        for the outcome regression (either cause-specific hazards or
-#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use \code{"trt"}
-#'        to specify the treatment in this formula (see examples). The formula
-#'        can additionally include any variables found in
+#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use
+#'        \code{"trt"} to specify the treatment in this formula (see examples).
+#'        The formula can additionally include any variables found in
 #'        \code{names(adjustVars)}.
 #' @param verbose A boolean indicating whether the function should print
 #'        messages to indicate progress.
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is passed in
+#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
 #' @param returnModels A boolean indicating whether to return the
 #'        \code{SuperLearner} or \code{glm} objects used to estimate the
 #'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
@@ -55,9 +60,9 @@
 #'        regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control
 #' @importFrom stats as.formula predict model.matrix optim glm binomial gaussian
 #' @importFrom speedglm speedglm
+#' @importFrom SuperLearner SuperLearner
 #'
 #' @return The function then returns a list that is exactly the same as the
 #'         input \code{wideDataList}, but with a column named \code{Qj.t} added
@@ -66,9 +71,19 @@
 #'         \code{wideDataList}.
 #'
 
-estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
-                                 SL.ftime = NULL, glm.ftime = NULL, verbose,
-                                 returnModels = FALSE, bounds = NULL, ...) {
+estimateIteratedMean <- function(wideDataList,
+                                 t,
+                                 whichJ,
+                                 allJ,
+                                 t0,
+                                 adjustVars,
+                                 SL.ftime = NULL,
+                                 glm.ftime = NULL,
+                                 verbose,
+                                 cvControl,
+                                 returnModels = FALSE,
+                                 bounds = NULL,
+                                 ...) {
   ## determine who to include in estimation
   include <- rep(TRUE, nrow(wideDataList[[1]]))
   if (t != 1) {
@@ -89,7 +104,8 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
   wideDataList <- lapply(wideDataList, function(x, t) {
     if (length(allJ) > 1) {
       x[[paste0("NnotJ.", t - 1)]] <-
-        rowSums(cbind(rep(0, nrow(x)), x[, paste0("N", allJ[allJ != whichJ], ".", t - 1)]))
+        rowSums(cbind(rep(0, nrow(x)), x[, paste0("N", allJ[allJ != whichJ],
+                                                  ".", t - 1)]))
     } else {
       x[[paste0("NnotJ.", t - 1)]] <- 0
     }
@@ -151,7 +167,6 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
       # some stability checks
       # number of unique outcome values
       nUniq <- length(unique(wideDataList[[1]][include, outcomeName]))
-      cvControl <- SuperLearner::SuperLearner.CV.control()
       if (t == t0) {
         # if there are less than 2 events at t0, just fit regression using only Z
         nE <- sum(wideDataList[[1]][include, outcomeName])
@@ -180,14 +195,15 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
               Y = wideDataList[[1]][include, outcomeName],
               X = wideDataList[[1]][include, c("trt", names(adjustVars))],
               SL.library = SL.ftime,
-              cvControl = cvControl,
               family = "binomial",
+              cvControl = cvControl,
               verbose = verbose
             )
           )
           wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
-              predict(Qmod, newdata = x[, c("trt", names(adjustVars))], onlySL = TRUE)$pred
+              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
+                      onlySL = TRUE)$pred
             x
           }, t = t, whichJ = whichJ)
         }
@@ -205,7 +221,8 @@ estimateIteratedMean <- function(wideDataList, t, whichJ, allJ, t0, adjustVars,
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[Nj.tm1]] - x[[NnotJ.tm1]]) *
-              predict(Qmod, newdata = x[, c("trt", names(adjustVars))], onlySL = TRUE)$pred
+              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
+                      onlySL = TRUE)$pred
           )
           x
         }, t = t, whichJ = whichJ)

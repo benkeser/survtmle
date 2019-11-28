@@ -77,6 +77,11 @@
 #'        interest. The default value computes estimates for values
 #'        \code{unique(trt)}. Can alternatively be set to a vector of values
 #'        found in \code{trt}.
+#' @param cvControl A \code{list} providing control options to be fed directly
+#'        into calls to \code{SuperLearner}. This should match the contents of
+#'        \code{SuperLearner.CV.control} exactly. For further details, consult
+#'        the documentation of the \pkg{SuperLearner} package. This is usually
+#'        passed in through the \code{survtmle} wrapper function.
 #' @param bounds A \code{data.frame} of bounds on the conditional hazard
 #'        function (if \code{method = "hazard"}) or on the iterated conditional
 #'        means (if \code{method = "mean"}). The \code{data.frame} should have a
@@ -174,6 +179,7 @@ mean_tmle <- function(ftime,
                       returnModels = FALSE,
                       ftypeOfInterest = unique(ftype[ftype != 0]),
                       trtOfInterest = unique(trt),
+                      cvControl,
                       bounds = NULL,
                       verbose = FALSE,
                       Gcomp = FALSE,
@@ -206,6 +212,7 @@ mean_tmle <- function(ftime,
     adjustVars = adjustVars,
     SL.trt = SL.trt,
     glm.trt = glm.trt,
+    cvControl = cvControl,
     returnModels = returnModels,
     gtol = gtol
   )
@@ -229,6 +236,7 @@ mean_tmle <- function(ftime,
     SL.ctime = SL.ctime,
     glm.ctime = glm.ctime,
     glm.family = glm.family,
+    cvControl = cvControl,
     returnModels = returnModels,
     gtol = gtol
   )
@@ -265,6 +273,7 @@ mean_tmle <- function(ftime,
       adjustVars = adjustVars,
       glm.ftime = glm.ftime,
       verbose = verbose,
+      cvControl = cvControl,
       returnModels = returnModels,
       bounds = bounds
     )

@@ -4,8 +4,17 @@
 \alias{fluctuateIteratedMean}
 \title{Fluctuation for the Method of Iterated Means}
 \usage{
-fluctuateIteratedMean(wideDataList, t, uniqtrt, whichJ, allJ, t0,
-  Gcomp = FALSE, bounds = NULL, ...)
+fluctuateIteratedMean(
+  wideDataList,
+  t,
+  uniqtrt,
+  whichJ,
+  allJ,
+  t0,
+  Gcomp = FALSE,
+  bounds = NULL,
+  ...
+)
 }
 \arguments{
 \item{wideDataList}{A list of \code{data.frame} objects.}
