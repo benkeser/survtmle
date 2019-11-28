@@ -35,11 +35,13 @@
 #' adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 #'
 #' # fit an initial survtmle object with t0=max(ftime)
-#' fm <- survtmle(ftime = ftime, ftype = ftype,
-#'                trt = trt, adjustVars = adjustVars,
-#'                glm.trt = "1", glm.ftime = "trt + W1 + W2",
-#'                glm.ctime = "trt + W1 + W2", method="mean",
-#'                returnModels = TRUE)
+#' fm <- survtmle(
+#'   ftime = ftime, ftype = ftype,
+#'   trt = trt, adjustVars = adjustVars,
+#'   glm.trt = "1", glm.ftime = "trt + W1 + W2",
+#'   glm.ctime = "trt + W1 + W2", method = "mean",
+#'   returnModels = TRUE
+#' )
 #'
 #' # call timepoints to get cumulative incidence estimates at each timepoint
 #' allTimes <- timepoints(object = fm, times = 1:4, returnModels = FALSE)
@@ -49,8 +51,6 @@
 #' allTimes$t1
 #' # look at results for time 2
 #' allTimes$t2
-#'
-
 timepoints <- function(object, times, returnModels = FALSE) {
   if (is.null(object$trtMod)) {
     stop("object must have returnModels = TRUE")

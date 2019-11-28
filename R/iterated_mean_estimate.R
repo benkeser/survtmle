@@ -104,8 +104,10 @@ estimateIteratedMean <- function(wideDataList,
   wideDataList <- lapply(wideDataList, function(x, t) {
     if (length(allJ) > 1) {
       x[[paste0("NnotJ.", t - 1)]] <-
-        rowSums(cbind(rep(0, nrow(x)), x[, paste0("N", allJ[allJ != whichJ],
-                                                  ".", t - 1)]))
+        rowSums(cbind(rep(0, nrow(x)), x[, paste0(
+          "N", allJ[allJ != whichJ],
+          ".", t - 1
+        )]))
     } else {
       x[[paste0("NnotJ.", t - 1)]] <- 0
     }
@@ -202,8 +204,10 @@ estimateIteratedMean <- function(wideDataList,
           )
           wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
-              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
-                      onlySL = TRUE)$pred
+              predict(Qmod,
+                newdata = x[, c("trt", names(adjustVars))],
+                onlySL = TRUE
+              )$pred
             x
           }, t = t, whichJ = whichJ)
         }
@@ -221,8 +225,10 @@ estimateIteratedMean <- function(wideDataList,
         wideDataList <- lapply(wideDataList, function(x, whichJ, t) {
           suppressWarnings(
             x[[Qj.t]] <- x[[Nj.tm1]] + (1 - x[[Nj.tm1]] - x[[NnotJ.tm1]]) *
-              predict(Qmod, newdata = x[, c("trt", names(adjustVars))],
-                      onlySL = TRUE)$pred
+              predict(Qmod,
+                newdata = x[, c("trt", names(adjustVars))],
+                onlySL = TRUE
+              )$pred
           )
           x
         }, t = t, whichJ = whichJ)

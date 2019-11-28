@@ -66,9 +66,9 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     ofInterestJ,
     ".t"
   )))
-  if(ntrt == 1){
+  if (ntrt == 1) {
     merge_vars <- c("id", "t")
-  }else{
+  } else {
     merge_vars <- c("id", "t", "trt")
   }
   # the first time it's called these columns won't exist
@@ -110,9 +110,9 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   }
 
   # drop merged trt columns
-  if(ntrt == 1){
+  if (ntrt == 1) {
     dataList[[1]]$trt <- dataList[[1]]$trt.x
-    dataList[[1]] <- subset(dataList[[1]], select = -c("trt.x","trt.y"))
+    dataList[[1]] <- subset(dataList[[1]], select = -c("trt.x", "trt.y"))
   }
 
   dataList <- lapply(dataList, function(x, allJ) {

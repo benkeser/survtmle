@@ -167,9 +167,9 @@ estimateHazards <- function(dataList,
           x
         }, j = j)
         Ytilde <- (dataList[[1]][[paste0("N", j)]] -
-                   dataList[[1]][[paste0("l", j)]]) /
+          dataList[[1]][[paste0("l", j)]]) /
           (pmin(dataList[[1]][[paste0("u", j)]], 1 -
-                dataList[[1]][[paste0("hazLessThan", j)]]) -
+            dataList[[1]][[paste0("hazLessThan", j)]]) -
             dataList[[1]][[paste0("l", j)]])
 
         if (class("glm.ftime") != "list") {
@@ -191,8 +191,8 @@ estimateHazards <- function(dataList,
             x[[paste0("Q", j, "PseudoHaz")]] <- plogis(newX %*% beta)
             x[[paste0("Q", j, "Haz")]] <-
               (pmin(x[[paste0("u", j)]], 1 - x[[paste0("hazLessThan", j)]]) -
-              x[[paste0("l", j)]]) * x[[paste0("Q", j, "PseudoHaz")]] +
-                             x[[paste0("l", j)]]
+                x[[paste0("l", j)]]) * x[[paste0("Q", j, "PseudoHaz")]] +
+              x[[paste0("l", j)]]
             x
           }, j = j)
         }

@@ -168,24 +168,27 @@
 #' # Fit 1
 #' # fit a survtmle object with glm estimators for treatment, censoring, and
 #' # failure using the "mean" method
-#' fit1 <- survtmle(ftime = ftime, ftype = ftype,
-#'                  trt = trt, adjustVars = adjustVars,
-#'                  glm.trt = "W1 + W2",
-#'                  glm.ftime = "trt + W1 + W2",
-#'                  glm.ctime = "trt + W1 + W2",
-#'                  method = "mean", t0 = 6)
+#' fit1 <- survtmle(
+#'   ftime = ftime, ftype = ftype,
+#'   trt = trt, adjustVars = adjustVars,
+#'   glm.trt = "W1 + W2",
+#'   glm.ftime = "trt + W1 + W2",
+#'   glm.ctime = "trt + W1 + W2",
+#'   method = "mean", t0 = 6
+#' )
 #' fit1
 #'
 #' # Fit 2
 #' # fit an survtmle object with SuperLearner estimators for failure and
 #' # censoring and empirical estimators for treatment using the "mean" method
-#' fit2 <- survtmle(ftime = ftime, ftype = ftype,
-#'                  trt = trt, adjustVars = adjustVars,
-#'                  SL.ftime = c("SL.mean"),
-#'                  SL.ctime = c("SL.mean"),
-#'                  method = "mean", t0 = 6)
+#' fit2 <- survtmle(
+#'   ftime = ftime, ftype = ftype,
+#'   trt = trt, adjustVars = adjustVars,
+#'   SL.ftime = c("SL.mean"),
+#'   SL.ctime = c("SL.mean"),
+#'   method = "mean", t0 = 6
+#' )
 #' fit2
-#'
 #' @export
 #'
 
@@ -195,8 +198,10 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      returnIC = TRUE, returnModels = TRUE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
                      trtOfInterest = unique(trt),
-                     cvControl = list(V = 10L, stratifyCV = FALSE,
-                                      shuffle = TRUE, validRows = NULL),
+                     cvControl = list(
+                       V = 10L, stratifyCV = FALSE,
+                       shuffle = TRUE, validRows = NULL
+                     ),
                      method = "hazard", bounds = NULL, verbose = FALSE,
                      tol = 1 / (sqrt(length(ftime))),
                      maxIter = 10, Gcomp = FALSE, gtol = 1e-3) {

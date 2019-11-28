@@ -68,8 +68,7 @@ makeWideDataList <- function(dat,
               "ftype"
             ))],
           direction = "wide", timevar = "t", idvar = "id"
-        )
-        ,
+        ),
         row.names = NULL
       )
       out[, paste0("C.", 1:t0)] <- 0
