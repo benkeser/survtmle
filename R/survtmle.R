@@ -193,7 +193,6 @@
 #'   method = "mean", t0 = 6
 #' )
 #' fit2
-#'
 #' @export
 survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,

@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,26 +40,27 @@
 
 
 <meta property="og:title" content="Estimation for the Method of Iterated Means — estimateIteratedMean" />
-<meta property="og:description" content="This function computes an estimate of the G-computation regression at a
-specified time t using either glm or SuperLearner. The
-structure of the function is specific to how it is called within
-mean_tmle. In particular, wideDataList must have a very
-specific structure for this function to run properly. The list should consist
-of data.frame objects. The first should have all rows set to their
-observed value of trt. The remaining should in turn have all rows set
-to each value of trtOfInterest in the survtmle call. Currently
-the code requires each data.frame to have named columns for each name
-in names(adjustVars), as well as a column named trt. It must
-also have a columns named Nj.Y where j corresponds with the numeric
-values input in allJ. These are the indicators of failure due to the
-various causes before time t and are necessary for determining who to
-include in the regression. Similarly, each data.frame should have a
-column call C.Y where Y is again t - 1, so that right censored
-observations are not included in the regressions. The function will fit a
-regression with Qj.star.t+1 (also needed as a column in
-wideDataList) on functions of trt and names(adjustVars)
-as specified by glm.ftime or SL.ftime." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="This function computes an estimate of the G-computation
+ regression at a specified time t using glm or
+ SuperLearner. The structure of the function is
+ specific to how it is called within mean_tmle. In particular,
+ wideDataList must have a very specific structure for this function
+ to run properly. The list should consist of data.frame objects. The
+ first should have all rows set to their observed value of trt. The
+ remaining should in turn have all rows set to each value of
+ trtOfInterest in the survtmle call. Currently the code
+ requires each data.frame to have named columns for each name in
+ names(adjustVars), as well as a column named trt. It must
+ also have a columns named Nj.Y where j corresponds with the numeric
+ values input in allJ. These are the indicators of failure due to the
+ various causes before time t and are necessary for determining who
+ to include in the regression. Similarly, each data.frame should have
+ a column call C.Y where Y is again t - 1, such that
+ right-censored observations are not included in the regressions. The
+ function will fit a regression with Qj.star.t+1 (also needed as a
+ column in wideDataList) on functions of trt and
+ names(adjustVars) as specified by glm.ftime or
+ SL.ftime." />
 
 
 
@@ -73,7 +78,7 @@ as specified by glm.ftime or SL.ftime." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,7 +92,7 @@ as specified by glm.ftime or SL.ftime." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -120,7 +125,7 @@ as specified by glm.ftime or SL.ftime." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -144,25 +149,27 @@ as specified by glm.ftime or SL.ftime." />
     </div>
 
     <div class="ref-description">
-    <p>This function computes an estimate of the G-computation regression at a
-specified time <code>t</code> using either <code>glm</code> or <code>SuperLearner</code>. The
-structure of the function is specific to how it is called within
-<code>mean_tmle</code>. In particular, <code>wideDataList</code> must have a very
-specific structure for this function to run properly. The list should consist
-of <code>data.frame</code> objects. The first should have all rows set to their
-observed value of <code>trt</code>. The remaining should in turn have all rows set
-to each value of <code>trtOfInterest</code> in the <code>survtmle</code> call. Currently
-the code requires each <code>data.frame</code> to have named columns for each name
-in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, as well as a column named <code>trt</code>. It must
-also have a columns named <code>Nj.Y</code> where j corresponds with the numeric
-values input in <code>allJ</code>. These are the indicators of failure due to the
-various causes before time <code>t</code> and are necessary for determining who to
-include in the regression. Similarly, each <code>data.frame</code> should have a
-column call <code>C.Y</code> where Y is again <code>t - 1</code>, so that right censored
-observations are not included in the regressions. The function will fit a
-regression with <code>Qj.star.t+1</code> (also needed as a column in
-<code>wideDataList</code>) on functions of <code>trt</code> and <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>
-as specified by <code>glm.ftime</code> or <code>SL.ftime</code>.</p>
+    <p>This function computes an estimate of the G-computation
+ regression at a specified time <code>t</code> using <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> or
+ <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>. The structure of the function is
+ specific to how it is called within <code><a href='mean_tmle.html'>mean_tmle</a></code>. In particular,
+ <code>wideDataList</code> must have a very specific structure for this function
+ to run properly. The list should consist of <code>data.frame</code> objects. The
+ first should have all rows set to their observed value of <code>trt</code>. The
+ remaining should in turn have all rows set to each value of
+ <code>trtOfInterest</code> in the <code><a href='survtmle.html'>survtmle</a></code> call. Currently the code
+ requires each <code>data.frame</code> to have named columns for each name in
+ <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, as well as a column named <code>trt</code>. It must
+ also have a columns named <code>Nj.Y</code> where j corresponds with the numeric
+ values input in <code>allJ</code>. These are the indicators of failure due to the
+ various causes before time <code>t</code> and are necessary for determining who
+ to include in the regression. Similarly, each <code>data.frame</code> should have
+ a column call <code>C.Y</code> where Y is again <code>t - 1</code>, such that
+ right-censored observations are not included in the regressions. The
+ function will fit a regression with <code>Qj.star.t+1</code> (also needed as a
+ column in <code>wideDataList</code>) on functions of <code>trt</code> and
+ <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code> as specified by <code>glm.ftime</code> or
+ <code>SL.ftime</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>estimateIteratedMean</span>(
@@ -204,8 +211,8 @@ regression should be computed.</p></td>
     <tr>
       <th>t0</th>
       <td><p>The timepoint at which <code>survtmle</code> was called to evaluate.
-Needed only because the naming convention for the regression if
-<code>t == t0</code> is different than if <code>t != t0</code>.</p></td>
+Needed only because the naming convention for the regression if <code>t ==
+t0</code> is different than if <code>t != t0</code>.</p></td>
     </tr>
     <tr>
       <th>adjustVars</th>
@@ -216,42 +223,45 @@ variables to adjust for in the regression.</p></td>
       <th>SL.ftime</th>
       <td><p>A character vector or list specification to be passed to the
 <code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-outcome regression (either cause-specific hazards or conditional
-mean). See <code>?SuperLearner</code> for more information on how to specify
-valid <code>SuperLearner</code> libraries. It is expected that the wrappers
-used in the library will play nicely with the input variables, which
-will be called <code>"trt"</code> and <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+outcome regression (either cause-specific hazards or conditional mean). See
+the documentation of <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for more
+information on how to specify valid <code>SuperLearner</code> libraries. It is
+expected that the wrappers used in the library will play nicely with the
+input variables, which will be called <code>"trt"</code> and
+<code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the outcome regression (either cause-specific hazards or
-conditional mean). Ignored if <code>SL.ftime != NULL</code>. Use
-<code>"trt"</code> to specify the treatment in this formula (see examples).
-The formula can additionally include any variables found in
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the outcome regression (either cause-specific
+hazards or conditional mean). Ignored if <code>SL.ftime != NULL</code>. Use
+<code>"trt"</code> to specify the treatment in this formula (see examples). The
+formula can additionally include any variables found in
 <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print
+      <td><p>A <code>logical</code> indicating whether the function should print
 messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>cvControl</th>
       <td><p>A <code>list</code> providing control options to be fed directly
-into calls to <code>SuperLearner</code>. This should match the contents of
-<code>SuperLearner.CV.control</code> exactly. For further details, consult
-the documentation of the <span class="pkg">SuperLearner</span> package. This is passed in
-from <code>mean_tmle</code> or <code>hazard_tmle</code> via <code>survtmle</code>.</p></td>
+into calls to <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>. This should match
+the contents of <code>SuperLearner.CV.control</code> exactly. For details,
+consult the documentation of the <span class="pkg">SuperLearner</span> package. This is passed
+in from <code><a href='mean_tmle.html'>mean_tmle</a></code> or <code><a href='hazard_tmle.html'>hazard_tmle</a></code> via
+<code><a href='survtmle.html'>survtmle</a></code>.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the
-<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
-nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
-use calls to <code>timepoints</code> to obtain estimates at times other than
-<code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
+      <td><p>A <code>logical</code> indicating whether to return the
+<code>glm</code> or <code>SuperLearner</code> objects used to estimate the nuisance
+parameters. Must be set to <code>TRUE</code> to make downstream calls to
+<code><a href='timepoints.html'>timepoints</a></code> for obtaining estimates at times other than
+<code>t0</code>. See documentation of <code><a href='timepoints.html'>timepoints</a></code> for more
+information.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
@@ -267,19 +277,15 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The function then returns a list that is exactly the same as the
-        input <code>wideDataList</code>, but with a column named <code>Qj.t</code> added
-        to it, which is the estimated conditional mean of <code>Qj.star.t+1</code>
-        evaluated at the each of the rows of each <code>data.frame</code> in
-        <code>wideDataList</code>.</p>
+ input <code>wideDataList</code>, but with a column named <code>Qj.t</code> added to it,
+ which is the estimated conditional mean of <code>Qj.star.t+1</code> evaluated at
+ the each of the rows of each <code>data.frame</code> in <code>wideDataList</code>.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -290,7 +296,7 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

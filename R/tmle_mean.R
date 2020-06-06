@@ -161,7 +161,6 @@
 #'   glm.ftime = "trt + W1 + W2",
 #'   glm.ctime = "trt + W1 + W2"
 #' )
-#'
 #' @export
 mean_tmle <- function(ftime,
                       ftype,

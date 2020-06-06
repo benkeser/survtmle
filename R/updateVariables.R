@@ -36,7 +36,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     for (j in ofInterestJ) {
       # calculate CIF at time t
       x[[paste0("F", j, ".t")]] <- unlist(by(x[, paste0("Q", j, "Haz")] *
-                                             S.tminus1, x$id, FUN = cumsum))
+        S.tminus1, x$id, FUN = cumsum))
     }
     x
   }, allJ = allJ)
@@ -119,7 +119,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   dataList <- lapply(dataList, function(x, allJ) {
     for (j in allJ) {
       if (length(allJ) > 1) {
-        x[[paste0("hazNot", j)]] <- 
+        x[[paste0("hazNot", j)]] <-
           rowSums(cbind(rep(0, nrow(x)), x[, paste0("Q", allJ[allJ != j], "Haz")]))
         x[[paste0("hazNot", j)]][x[[paste0("hazNot", j)]] == 1] <-
           1 - .Machine$double.neg.eps

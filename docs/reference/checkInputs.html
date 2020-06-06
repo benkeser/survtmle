@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,7 +41,6 @@
 
 <meta property="og:title" content="Check Function Inputs — checkInputs" />
 <meta property="og:description" content="Check the input values of function parameters for errors." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -55,7 +58,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -69,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -102,7 +105,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -164,15 +167,14 @@ should have corresponding <code>ftype</code> set to 0.</p></td>
     <tr>
       <th>ftype</th>
       <td><p>A numeric vector indicating the type of failure. Observations
-with <code>ftype == 0</code> are treated as right-censored. Each unique
-value besides zero is treated as a separate type of failure.</p></td>
+with <code>ftype == 0</code> are treated as right-censored. Each unique value
+besides zero is treated as a separate type of failure.</p></td>
     </tr>
     <tr>
       <th>trt</th>
       <td><p>A numeric vector indicating observed treatment assignment. Each
-unique value will be treated as an (unordered) separate type of
-treatment. Currently, only two unique values of <code>trt</code> are
-supported.</p></td>
+unique value will be treated as an (unordered) separate type of treatment.
+Currently, only two unique values of <code>trt</code> are supported.</p></td>
     </tr>
     <tr>
       <th>adjustVars</th>
@@ -189,83 +191,83 @@ default this is set to <code><a href='https://rdrr.io/r/base/Extremes.html'>max(
       <th>SL.ftime</th>
       <td><p>A character vector or list specification to be passed to the
 <code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-outcome regression (either cause-specific hazards or conditional mean).
-See <code>?SuperLearner</code> for more information on how to specify valid
-<code>SuperLearner</code> libraries. It is expected that the wrappers used
-in the library will play nicely with the input variables, which will
-be called <code>"trt"</code> and <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>SL.ctime</th>
-      <td><p>A character vector or list specification to be passed to the
-<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-estimate of the conditional hazard for censoring. It is expected that
-the wrappers used in the library will play nicely with the input
-variables, which will be called <code>"trt"</code> and
+outcome regression (either cause-specific hazards or conditional mean). See
+the documentation of <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for more
+information on how to specify valid <code>SuperLearner</code> libraries. It is
+expected that the wrappers used in the library will play nicely with the
+input variables, which will be called <code>"trt"</code> and
 <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
-      <th>SL.trt</th>
-      <td><p>A character vector or list specification to be passed to the
-<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-estimate of the conditional probability of treatment. It is expected
+      <th>SL.ctime</th>
+      <td><p>A character vector or list specification to be passed to
+<code>SL.library</code> in the call to <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>
+for the estimate of the conditional hazard for censoring. It is expected
 that the wrappers used in the library will play nicely with the input
-variables, which will be <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+variables, which will be called <code>"trt"</code> and <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>SL.trt</th>
+      <td><p>A character vector or list specification to be passed to
+<code>SL.library</code> in the call to <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>
+for the estimate of the conditional probability of treatment. It is
+expected that the wrappers used in the library will play nicely with the
+input variables, which will be <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the outcome regression (either cause-specific hazards or
-conditional mean). Ignored if <code>SL.ftime != NULL</code>. Use <code>"trt"</code>
-to specify the treatment in this formula (see examples). The formula
-can additionally include any variables found in
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the outcome regression (either cause-specific
+hazards or conditional mean). Ignored if <code>SL.ftime != NULL</code>. Use
+<code>"trt"</code> to specify the treatment in this formula (see examples). The
+formula can additionally include any variables found in
 <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.ctime</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the estimate of the conditional hazard for censoring. Ignored if
-<code>SL.ctime != NULL</code>. Use <code>"trt"</code> to specify the treatment in
-this formula (see examples). The formula can additionally include any
-variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the estimate of the conditional hazard for
+censoring. Ignored if <code>SL.ctime != NULL</code>. Use <code>"trt"</code> to specify
+the treatment in this formula (see examples). The formula can additionally
+include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.trt</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the estimate of the conditional probability of treatment. Ignored
-if <code>SL.trt != NULL</code>. By default set to "1", corresponding to
-using empirical estimates of each value of <code>trt</code>. The formula can
-include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the estimate of the conditional probability of
+treatment. Ignored if <code>SL.trt != NULL</code>. By default set to "1",
+corresponding to using empirical estimates of each value of <code>trt</code>. The
+formula can include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>returnIC</th>
-      <td><p>A boolean indicating whether to return vectors of influence
-curve estimates. These are needed for some post-hoc comparisons, so it
-is recommended to leave as <code>TRUE</code> (the default) unless the user
+      <td><p>A <code>logical</code> indicating whether to return vectors of
+influence curve estimates. These are needed for some post-hoc comparisons,
+so it is recommended to leave as <code>TRUE</code> (the default) unless the user
 is sure these estimates will not be needed later.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the
-<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
-nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
-use calls to <code>timepoints</code> to obtain estimates at times other
-than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
+      <td><p>A <code>logical</code> indicating whether to return the
+<code>glm</code> or <code>SuperLearner</code> objects used to estimate the nuisance
+parameters. Must be set to <code>TRUE</code> if the user plans to use
+<code><a href='timepoints.html'>timepoints</a></code> to obtain estimates at times other than <code>t0</code>.
+See the documentation of <code><a href='timepoints.html'>timepoints</a></code> for more information.</p></td>
     </tr>
     <tr>
       <th>ftypeOfInterest</th>
       <td><p>An input specifying what failure types to compute
-estimates of incidence for. The default value computes estimates for
-values <code><a href='https://rdrr.io/r/base/unique.html'>unique(ftype)</a></code>. Can alternatively be set to a vector of
-values found in <code>ftype</code>.</p></td>
+estimates of incidence for. The default value computes estimates for values
+<code><a href='https://rdrr.io/r/base/unique.html'>unique(ftype)</a></code>. Can alternatively be set to a vector of values found
+in <code>ftype</code>.</p></td>
     </tr>
     <tr>
       <th>trtOfInterest</th>
       <td><p>An input specifying which levels of <code>trt</code> are of
-interest. The default value computes estimates for values
+interest. The default value computes estimates for all of the values in
 <code><a href='https://rdrr.io/r/base/unique.html'>unique(trt)</a></code>. Can alternatively be set to a vector of values
 found in <code>trt</code>.</p></td>
     </tr>
@@ -274,13 +276,13 @@ found in <code>trt</code>.</p></td>
       <td><p>A character specification of how the targeted minimum
 loss-based estimators should be computer, either <code>"mean"</code> or
 <code>"hazard"</code>. The <code>"mean"</code> specification uses a closed-form
-targeted minimum loss-based estimation based on the G-computation
-formula of Bang and Robins (2005). The <code>"hazard"</code> specification
-uses an iteratively algorithm based on cause-specific hazard functions.
-The latter specification has no guarantee of convergence in finite
-samples. The convergence can be influenced by the stopping criteria
-specified in the <code>tol</code>. Future versions may implement a closed
-form version of this hazard-based estimator.</p></td>
+targeted minimum loss-based estimation based on the G-computation formula
+of Bang and Robins (2005). The <code>"hazard"</code> specification uses an
+iterative algorithm based on cause-specific hazard functions. The latter
+specification has no guarantee of convergence in finite samples. The
+convergence can be influenced by the stopping criteria specified in the
+<code>tol</code>. Future versions may implement a closed form version of this
+hazard-based estimator.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
@@ -288,18 +290,17 @@ form version of this hazard-based estimator.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print
+      <td><p>A <code>logical</code> indicating whether the function should print
 messages to indicate progress.</p></td>
     </tr>
     <tr>
       <th>tol</th>
-      <td><p>The stopping criteria when <code>method = "hazard"</code>. The algorithm
-will continue performing targeting updates to the initial estimators
-until the empirical mean of the efficient influence function is
-smaller than <code>tol</code>. The default (<code>1/length(ftime)</code>) is a
-sensible value. Larger values can be used in situations where
-convergence of the algorithm is an issue; however, this may result in
-large finite-sample bias.</p></td>
+      <td><p>The stopping criteria when <code>method = "hazard"</code>. The
+algorithm will continue performing targeting updates to the initial
+estimators until the empirical mean of the efficient influence function is
+smaller than <code>tol</code>. The default (<code>1/length(ftime)</code>) is a sensible
+value. Larger values can be used in situations where convergence of the
+algorithm is an issue; however, this may lead to large finite-sample bias.</p></td>
     </tr>
     <tr>
       <th>maxIter</th>
@@ -310,9 +311,9 @@ empirical mean of the efficient influence function is smaller than
     </tr>
     <tr>
       <th>Gcomp</th>
-      <td><p>A boolean indicating whether to compute the G-computation
-estimator (i.e., a substitution estimator with no targeting step).
-Note, theory does not support inference for the G-computation
+      <td><p>A <code>logical</code> indicating whether to compute the
+G-computation estimator (i.e., a substitution estimator with no targeting
+step). Note: theory does not support inference for the G-computation
 estimator if Super Learner is used to estimate failure and censoring
 mechanisms. Only implemented for <code>method = "mean"</code>.</p></td>
     </tr>
@@ -320,16 +321,14 @@ mechanisms. Only implemented for <code>method = "mean"</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Options to be passed to <code>mean_tmle</code> or <code>hazard_tmle</code>.</p>
+    <p>Options to be passed to either <code><a href='mean_tmle.html'>mean_tmle</a></code> or
+ <code><a href='hazard_tmle.html'>hazard_tmle</a></code>.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -340,7 +339,7 @@ mechanisms. Only implemented for <code>method = "mean"</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -1,3 +1,10 @@
+# survtmle 1.1.3
+* Extensive improvement to documentation throughout the package, including the
+  use of Roxygen macros like `\link{}`.
+* Addition of a new argument `returnCall` to `survtmle` that allows disabling
+  of the return of `call` objects. This is useful for resolving the efficiency
+  issues described in https://github.com/benkeser/survtmle/issues/40.
+
 # survtmle 1.1.2
 * Minor functionality updates, bug fixes and documentation edits:
   * Removal of `geom_point` when `plot.tp.survtmle` with more than 1 time point.

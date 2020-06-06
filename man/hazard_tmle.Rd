@@ -221,5 +221,4 @@ fit1 <- hazard_tmle(
   glm.ctime = "trt + W1 + W2",
   returnModels = TRUE
 )
-
 }

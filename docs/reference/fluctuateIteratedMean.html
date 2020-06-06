@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,35 +40,35 @@
 
 
 <meta property="og:title" content="Fluctuation for the Method of Iterated Means — fluctuateIteratedMean" />
-<meta property="og:description" content="This function performs a fluctuation of an initial estimate of the
-G-computation regression at a specified time t using a call to
-glm (i.e., a logistic submodel) or a call to optim (if bounds
-are specified). The structure of the function is specific to how it is called
-within mean_tmle. In particular, wideDataList must have a very
-specific structure for this function to run properly. The list should consist
-of data.frame objects. The first should have all rows set to their
-observed value of trt. The remaining should in turn have all rows set
-to each value of trtOfInterest in the survtmle call. The latter
-will be used to obtain predictions that are then mapped into the estimates of
-the cumulative incidence function at t0. Currently the code requires
-each data.frame to have named columns for each name in
-names(adjustVars), as well as a column named trt. It must also
-have a columns named Nj.Y where j corresponds with the numeric values
-input in allJ. These are the indicators of failure due to the various
-causes before time t and are necessary for determining who to include
-in the fluctuation regression. Similarly, each data.frame should have
-a column call C.Y where Y is again t-1, so that right censored
-observations are not included in the regressions. The function will fit a
-logistic regression with Qj.star.t + 1 as outcome (also needed as a
-column in wideDataList) with offset qlogis(Qj.star.t) and
-number of additional covariates given by length(trtOfInterest). These
-additional covariates should be columns in the each data.frame in
-wideDataList called H.z.t where z corresponds to a each
-unique value of trtOfInterest. The function returns the same
-wideDataList, but with a column called Qj.star.t added to it,
-which is the fluctuated initial regression estimate evaluated at the observed
-data points." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="This function performs a fluctuation of an initial estimate of
+ the G-computation regression at a specified time t using a call to
+ glm (i.e., a logistic submodel) or a call to
+ optim (if bounds are specified). The structure of the
+ function is specific to how it is called within mean_tmle. In
+ particular, wideDataList must have a very specific structure for
+ this function to run properly. The list should consist of data.frame
+ objects. The first should have all rows set to their observed value of
+ trt. The remaining should in turn have all rows set to each value of
+ trtOfInterest in the survtmle call. The latter will be
+ used to obtain predictions that are then mapped into the estimates of the
+ cumulative incidence function at t0. Currently the code requires
+ each data.frame to have named columns for each name in
+ names(adjustVars), as well as a column named trt. It must
+ also have a columns named Nj.Y where j corresponds with the numeric
+ values input in allJ. These are the indicators of failure due to the
+ various causes before time t and are necessary for determining who
+ to include in the fluctuation regression. Similarly, each data.frame
+ should have a column call C.Y where Y is again t-1, so that
+ right-censored observations are not included in the regressions. The
+ function will fit a logistic regression with Qj.star.t + 1 as
+ outcome (also needed as a column in wideDataList) with offset
+ qlogis(Qj.star.t) and number of additional covariates given by
+ length(trtOfInterest). These additional covariates should be columns
+ in the each data.frame in wideDataList called H.z.t
+ where z corresponds to a each unique value of trtOfInterest.
+ The function returns the same wideDataList, but with a column called
+ Qj.star.t added to it, which is the fluctuated initial regression
+ estimate evaluated at the observed data points." />
 
 
 
@@ -82,7 +86,7 @@ data points." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -96,7 +100,7 @@ data points." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -129,7 +133,7 @@ data points." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -153,34 +157,35 @@ data points." />
     </div>
 
     <div class="ref-description">
-    <p>This function performs a fluctuation of an initial estimate of the
-G-computation regression at a specified time <code>t</code> using a call to
-<code>glm</code> (i.e., a logistic submodel) or a call to <code>optim</code> (if bounds
-are specified). The structure of the function is specific to how it is called
-within <code>mean_tmle</code>. In particular, <code>wideDataList</code> must have a very
-specific structure for this function to run properly. The list should consist
-of <code>data.frame</code> objects. The first should have all rows set to their
-observed value of <code>trt</code>. The remaining should in turn have all rows set
-to each value of <code>trtOfInterest</code> in the <code>survtmle</code> call. The latter
-will be used to obtain predictions that are then mapped into the estimates of
-the cumulative incidence function at <code>t0</code>. Currently the code requires
-each <code>data.frame</code> to have named columns for each name in
-<code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, as well as a column named <code>trt</code>. It must also
-have a columns named <code>Nj.Y</code> where j corresponds with the numeric values
-input in <code>allJ</code>. These are the indicators of failure due to the various
-causes before time <code>t</code> and are necessary for determining who to include
-in the fluctuation regression. Similarly, each <code>data.frame</code> should have
-a column call <code>C.Y</code> where Y is again <code>t-1</code>, so that right censored
-observations are not included in the regressions. The function will fit a
-logistic regression with <code>Qj.star.t + 1</code> as outcome (also needed as a
-column in <code>wideDataList</code>) with offset <code><a href='https://rdrr.io/r/stats/Logistic.html'>qlogis(Qj.star.t)</a></code> and
-number of additional covariates given by <code><a href='https://rdrr.io/r/base/length.html'>length(trtOfInterest)</a></code>. These
-additional covariates should be columns in the each <code>data.frame</code> in
-<code>wideDataList</code> called <code>H.z.t</code> where <code>z</code> corresponds to a each
-unique value of <code>trtOfInterest</code>. The function returns the same
-<code>wideDataList</code>, but with a column called <code>Qj.star.t</code> added to it,
-which is the fluctuated initial regression estimate evaluated at the observed
-data points.</p>
+    <p>This function performs a fluctuation of an initial estimate of
+ the G-computation regression at a specified time <code>t</code> using a call to
+ <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> (i.e., a logistic submodel) or a call to
+ <code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code> (if bounds are specified). The structure of the
+ function is specific to how it is called within <code><a href='mean_tmle.html'>mean_tmle</a></code>. In
+ particular, <code>wideDataList</code> must have a very specific structure for
+ this function to run properly. The list should consist of <code>data.frame</code>
+ objects. The first should have all rows set to their observed value of
+ <code>trt</code>. The remaining should in turn have all rows set to each value of
+ <code>trtOfInterest</code> in the <code><a href='survtmle.html'>survtmle</a></code> call. The latter will be
+ used to obtain predictions that are then mapped into the estimates of the
+ cumulative incidence function at <code>t0</code>. Currently the code requires
+ each <code>data.frame</code> to have named columns for each name in
+ <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, as well as a column named <code>trt</code>. It must
+ also have a columns named <code>Nj.Y</code> where j corresponds with the numeric
+ values input in <code>allJ</code>. These are the indicators of failure due to the
+ various causes before time <code>t</code> and are necessary for determining who
+ to include in the fluctuation regression. Similarly, each <code>data.frame</code>
+ should have a column call <code>C.Y</code> where Y is again <code>t-1</code>, so that
+ right-censored observations are not included in the regressions. The
+ function will fit a logistic regression with <code>Qj.star.t + 1</code> as
+ outcome (also needed as a column in <code>wideDataList</code>) with offset
+ <code><a href='https://rdrr.io/r/stats/Logistic.html'>qlogis(Qj.star.t)</a></code> and number of additional covariates given by
+ <code><a href='https://rdrr.io/r/base/length.html'>length(trtOfInterest)</a></code>. These additional covariates should be columns
+ in the each <code>data.frame</code> in <code>wideDataList</code> called <code>H.z.t</code>
+ where <code>z</code> corresponds to a each unique value of <code>trtOfInterest</code>.
+ The function returns the same <code>wideDataList</code>, but with a column called
+ <code>Qj.star.t</code> added to it, which is the fluctuated initial regression
+ estimate evaluated at the observed data points.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fluctuateIteratedMean</span>(
@@ -208,7 +213,8 @@ data points.</p>
     </tr>
     <tr>
       <th>uniqtrt</th>
-      <td><p>The values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</p></td>
+      <td><p>The values of <code>trtOfInterest</code> passed to
+<code><a href='mean_tmle.html'>mean_tmle</a></code>.</p></td>
     </tr>
     <tr>
       <th>whichJ</th>
@@ -227,9 +233,9 @@ Needed only because the naming convention for the regression if
     </tr>
     <tr>
       <th>Gcomp</th>
-      <td><p>A boolean indicating whether <code>mean_tmle</code> was called to
-evaluate the G-computation estimator, in which case this function does
-nothing but re-label columns.</p></td>
+      <td><p>A <code>logical</code> indicating whether <code><a href='mean_tmle.html'>mean_tmle</a></code> was
+called to evaluate the G-computation estimator, in which case this function
+does nothing but re-label columns.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
@@ -245,19 +251,16 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The function then returns a list that is exactly the same as the
-        input <code>wideDataList</code>, but with a column named <code>Qj.star.t</code>
-        added to it, which is the fluctuated conditional mean of
-        <code>Qj.star.t+1</code> evaluated at the each of the rows of each
-        <code>data.frame</code> in <code>wideDataList</code>.</p>
+ input <code>wideDataList</code>, but with a column named <code>Qj.star.t</code> added
+ to it, which is the fluctuated conditional mean of <code>Qj.star.t+1</code>
+ evaluated at the each of the rows of each <code>data.frame</code> in
+ <code>wideDataList</code>.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -268,7 +271,7 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

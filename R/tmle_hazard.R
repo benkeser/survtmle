@@ -166,7 +166,6 @@
 #'   glm.ctime = "trt + W1 + W2",
 #'   returnModels = TRUE
 #' )
-#'
 #' @export
 hazard_tmle <- function(ftime,
                         ftype,

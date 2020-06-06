@@ -62,7 +62,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
       # calculate offset term and outcome
       dataList <- lapply(dataList, function(x, j, allJ) {
         x$thisScale <- pmin(x[[paste0("u", j)]], 1 - x[[paste0("hazNot", j)]])
-        - x[[paste0("l", j)]]
+        -x[[paste0("l", j)]]
         x$thisOffset <- stats::qlogis(pmin(
           (x[[paste0("Q", j, "Haz")]] - x[[paste0("l", j)]]) / x$thisScale,
           1 - .Machine$double.neg.eps
@@ -103,13 +103,15 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
       dataList <- lapply(dataList, function(x, j) {
         x[[paste0("Q", j, "PseudoHaz")]][x$trt == z] <-
           plogis(x$thisOffset[x$trt == z] +
-          suppressWarnings(
-            as.matrix(
-              Matrix::Diagonal(x = x$thisScale[x$trt == z]) %*%
-                as.matrix(x[x$trt == z, c(cleverCovariatesNotSelf,
-                                          cleverCovariatesSelf)])
-            ) %*% as.matrix(beta)
-          ))
+            suppressWarnings(
+              as.matrix(
+                Matrix::Diagonal(x = x$thisScale[x$trt == z]) %*%
+                  as.matrix(x[x$trt == z, c(
+                    cleverCovariatesNotSelf,
+                    cleverCovariatesSelf
+                  )])
+              ) %*% as.matrix(beta)
+            ))
         x[[paste0("Q", j, "Haz")]][x$trt == z] <-
           x[[paste0("Q", j, "PseudoHaz")]][x$trt == z] *
           x$thisScale[x$trt == z] + x[[paste0("l", j)]][x$trt == z]

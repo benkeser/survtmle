@@ -214,5 +214,4 @@ fit1 <- mean_tmle(
   glm.ftime = "trt + W1 + W2",
   glm.ctime = "trt + W1 + W2"
 )
-
 }

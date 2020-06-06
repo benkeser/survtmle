@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,13 +40,12 @@
 
 
 <meta property="og:title" content="TMLE for Cause-Specific Hazard Functions — hazard_tmle" />
-<meta property="og:description" content="This function estimates the marginal cumulative incidence for failures of
-specified types using targeted minimum loss-based estimation based on the
-initial estimates of the cause-specific hazard functions for failures of each
-type. The function is called by survtmle whenever
-method = &quot;hazard&quot; is specified. However, power users could, in theory,
-make calls directly to this function." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="This function estimates the marginal cumulative incidence for
+ failures of specified types using targeted minimum loss-based estimation
+ based on the initial estimates of the cause-specific hazard functions for
+ failures of each type. The function is called by survtmle
+ whenever method = &quot;hazard&quot; is specified. However, power users could,
+ in theory, make calls directly to this function." />
 
 
 
@@ -60,7 +63,7 @@ make calls directly to this function." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -74,7 +77,7 @@ make calls directly to this function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -107,7 +110,7 @@ make calls directly to this function." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -131,12 +134,12 @@ make calls directly to this function." />
     </div>
 
     <div class="ref-description">
-    <p>This function estimates the marginal cumulative incidence for failures of
-specified types using targeted minimum loss-based estimation based on the
-initial estimates of the cause-specific hazard functions for failures of each
-type. The function is called by <code>survtmle</code> whenever
-<code>method = "hazard"</code> is specified. However, power users could, in theory,
-make calls directly to this function.</p>
+    <p>This function estimates the marginal cumulative incidence for
+ failures of specified types using targeted minimum loss-based estimation
+ based on the initial estimates of the cause-specific hazard functions for
+ failures of each type. The function is called by <code><a href='survtmle.html'>survtmle</a></code>
+ whenever <code>method = "hazard"</code> is specified. However, power users could,
+ in theory, make calls directly to this function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>hazard_tmle</span>(
@@ -176,14 +179,14 @@ should have corresponding <code>ftype</code> set to 0.</p></td>
     <tr>
       <th>ftype</th>
       <td><p>A numeric vector indicating the type of failure. Observations
-with <code>ftype=0</code> are treated as a right-censored observation. Each
-unique value besides zero is treated as a separate type of failure.</p></td>
+with <code>ftype=0</code> are treated as having been right-censored. Each unique
+value besides zero is treated as a separate type of failure.</p></td>
     </tr>
     <tr>
       <th>trt</th>
       <td><p>A numeric vector indicating observed treatment assignment. Each
-unique value will be treated as a different type of treatment.
-Currently, only two unique values are supported.</p></td>
+unique value will be treated as a different type of treatment. Currently,
+only two unique values are supported.</p></td>
     </tr>
     <tr>
       <th>t0</th>
@@ -193,145 +196,145 @@ default this is set to <code>max(ftime[ftype &gt; 0])</code>.</p></td>
     <tr>
       <th>adjustVars</th>
       <td><p>A data.frame of adjustment variables that will be used in
-estimating the conditional treatment, censoring, and failure (hazard
-or conditional mean) probabilities.</p></td>
+estimating the conditional treatment, censoring, and failure (hazard or
+conditional mean) probabilities.</p></td>
     </tr>
     <tr>
       <th>SL.ftime</th>
       <td><p>A character vector or list specification to be passed to the
-<code>SL.library</code> option in the call to <code>SuperLearner</code> for the
-cause-specific hazards. See <code>?SuperLearner</code> for more information
-on how to specify valid <code>SuperLearner</code> libraries. It is expected
-that the wrappers used in the library will play nicely with the input
-variables, which will be called <code>"trt"</code>,
-<code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, and <code>"t"</code> if <code>method = "hazard"</code>.</p></td>
+<code>SL.library</code> option of <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for
+the cause-specific hazards. See the documentation of
+<code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for more information on how to
+specify valid <code>SuperLearner</code> libraries. It is expected that the
+wrappers used in the library will play nicely with the input variables,
+which will be called <code>"trt"</code>, <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>, and <code>"t"</code>
+if <code>method = "hazard"</code>.</p></td>
     </tr>
     <tr>
       <th>SL.ctime</th>
       <td><p>A character vector or list specification to be passed to the
-<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-estimate of the conditional hazard for censoring. It is expected that
-the wrappers used in the library will play nicely with the input
-variables, which will be called <code>"trt"</code> and
-<code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+<code>SL.library</code> option of <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for
+the estimate of the conditional hazard for censoring. It is expected that
+the wrappers used in the library will play nicely with the input variables,
+which will be called <code>"trt"</code> and <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>SL.trt</th>
       <td><p>A character vector or list specification to be passed to the
-<code>SL.library</code> argument in the call to <code>SuperLearner</code> for the
-estimate of the conditional probability of treatment. It is expected
+<code>SL.library</code> option of <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for
+the estimate of the conditional probability of treatment. It is expected
 that the wrappers used in the library will play nicely with the input
 variables, which will be <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.ftime</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the outcome regression. Ignored if <code>SL.ftime</code> is not equal to
-<code>NULL</code>. Use <code>"trt"</code> to specify the treatment in this formula
-(see examples). The formula can additionally include any variables
-found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the outcome regression. Ignored if
+<code>SL.ftime</code> is not equal to <code>NULL</code>. Use <code>"trt"</code> to specify
+the treatment in this formula (see examples). The formula can additionally
+include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.ctime</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the estimate of the conditional hazard for censoring. Ignored if
-<code>SL.ctime</code> is not equal to <code>NULL</code>. Use <code>"trt"</code> to
-specify the treatment in this formula (see examples). The formula can
-additionally include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the estimate of the conditional hazard for
+censoring. Ignored if <code>SL.ctime</code> is not equal to <code>NULL</code>. Use
+<code>"trt"</code> to specify the treatment in this formula (see examples). The
+formula can additionally include any variables found in
+<code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.trt</th>
       <td><p>A character specification of the right-hand side of the
-equation passed to the <code>formula</code> option of a call to <code>glm</code>
-for the estimate of the conditional probability of treatment. Ignored
-if <code>SL.trt</code> is not equal to <code>NULL</code>. The formula can include
-any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
+equation passed to the <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> option of a call to
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> for the estimate of the conditional probability of
+treatment. Ignored if <code>SL.trt</code> is not equal to <code>NULL</code>. The
+formula can include any variables found in <code><a href='https://rdrr.io/r/base/names.html'>names(adjustVars)</a></code>.</p></td>
     </tr>
     <tr>
       <th>glm.family</th>
       <td><p>The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is passed directly
-to <code>estimateCensoring</code> and <code>estimateHazards</code>.</p></td>
+the estimation and fluctuation procedures. The default is "binomial" for
+logistic regression. Only change this from the default if there are
+justifications that are well understood. This is passed directly to
+<code><a href='estimateCensoring.html'>estimateCensoring</a></code> and <code><a href='estimateHazards.html'>estimateHazards</a></code>.</p></td>
     </tr>
     <tr>
       <th>returnIC</th>
-      <td><p>A boolean indicating whether to return vectors of influence
-curve estimates. These are needed for some post-hoc comparisons, so it
-is recommended to leave as <code>TRUE</code> (the default) unless the user
+      <td><p>A <code>logical</code> indicating whether to return vectors of
+influence curve estimates. These are needed for some post-hoc comparisons,
+so it is recommended to leave as <code>TRUE</code> (the default) unless the user
 is sure these estimates will not be needed later.</p></td>
     </tr>
     <tr>
       <th>returnModels</th>
-      <td><p>A boolean indicating whether to return the
-<code>SuperLearner</code> or <code>glm</code> objects used to estimate the
-nuisance parameters. Must be set to <code>TRUE</code> if the user plans to
-use <code>timepoints</code> to obtain estimates of incidence at times other
-than <code>t0</code>. See <code><a href='timepoints.html'>?timepoints</a></code> for more information.</p></td>
+      <td><p>A <code>logical</code> indicating whether to return the
+<code>glm</code> or <code>SuperLearner</code> objects used to estimate the nuisance
+parameters. Must be set to <code>TRUE</code> if the user plans to use
+<code><a href='timepoints.html'>timepoints</a></code> to obtain estimates of incidence at times other
+than <code>t0</code>. See the documentation of <code><a href='timepoints.html'>timepoints</a></code> for more
+information.</p></td>
     </tr>
     <tr>
       <th>ftypeOfInterest</th>
       <td><p>An input specifying what failure types to compute
-estimates of incidence for. The default value computes estimates for
-values <code><a href='https://rdrr.io/r/base/unique.html'>unique(ftype)</a></code>. Can alternatively be set to a vector of
-values found in <code>ftype</code>.</p></td>
+estimates of incidence for. The default value computes estimates for values
+<code><a href='https://rdrr.io/r/base/unique.html'>unique(ftype)</a></code>. Can alternatively be set to a vector of values found
+in <code>ftype</code>.</p></td>
     </tr>
     <tr>
       <th>trtOfInterest</th>
       <td><p>An input specifying which levels of <code>trt</code> are of
-interest. The default value computes estimates for values
-<code><a href='https://rdrr.io/r/base/unique.html'>unique(trt)</a></code>. Can alternatively be set to a vector of values
-found in <code>trt</code>.</p></td>
+interest. The default value computes estimates for all values in
+<code><a href='https://rdrr.io/r/base/unique.html'>unique(trt)</a></code>. Can alternatively be set to a vector of values found in
+<code>trt</code>.</p></td>
     </tr>
     <tr>
       <th>cvControl</th>
       <td><p>A <code>list</code> providing control options to be fed directly
-into calls to <code>SuperLearner</code>. This should match the contents of
-<code>SuperLearner.CV.control</code> exactly. For further details, consult
-the documentation of the <span class="pkg">SuperLearner</span> package. This is usually
-passed in through the <code>survtmle</code> wrapper function.</p></td>
+into calls to <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>. This should match
+the contents of <code>SuperLearner.CV.control</code> exactly. For details,
+consult the documentation of the <span class="pkg">SuperLearner</span> package. This is
+usually passed in through the <code><a href='survtmle.html'>survtmle</a></code> wrapper function.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
       <td><p>A <code>data.frame</code> of bounds on the conditional hazard
-function. The <code>data.frame</code> should have a column named <code>"t"</code>
-that includes values <code><a href='https://rdrr.io/r/base/seq.html'>seq_len(t0)</a></code>. The other columns should be
-names <code><a href='https://rdrr.io/r/base/paste.html'>paste0("l",j)</a></code> and <code><a href='https://rdrr.io/r/base/paste.html'>paste0("u",j)</a></code> for each unique
-failure type label j, denoting lower and upper bounds, respectively.
-See examples.</p></td>
+function. The <code>data.frame</code> should have a column named <code>"t"</code> that
+includes values <code><a href='https://rdrr.io/r/base/seq.html'>seq_len(t0)</a></code>. The other columns should be names
+<code><a href='https://rdrr.io/r/base/paste.html'>paste0("l",j)</a></code> and <code><a href='https://rdrr.io/r/base/paste.html'>paste0("u",j)</a></code> for each unique failure type
+label j, denoting lower and upper bounds, respectively. See examples.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print
-messages to indicate progress. If <code>SuperLearner</code> is called
-internally, this option will additionally be passed to
-<code>SuperLearner</code>.</p></td>
+      <td><p>A <code>logical</code> indicating whether the function should print
+messages to indicate progress. If <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>
+is called internally, this option will additionally be passed to
+<code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>.</p></td>
     </tr>
     <tr>
       <th>tol</th>
       <td><p>The stopping criteria. The TMLE algorithm performs updates to the
 initial estimators until the empirical mean of the efficient influence
-function is smaller than <code>tol</code> or until <code>maxIter</code> iterations
-have been completed. The default (<code>1 / length(ftime)</code>) is a
-sensible value. Larger values can be used in situations where
-convergence of the algorithm is an issue; however, this may result in
-large finite-sample bias.</p></td>
+function is smaller than <code>tol</code> or until <code>maxIter</code> iterations have
+been completed. The default (<code>1 / length(ftime)</code>) is a sensible value.
+Larger values can be used in situations where convergence of the algorithm
+is an issue; however, this may result in large finite-sample bias.</p></td>
     </tr>
     <tr>
       <th>maxIter</th>
       <td><p>The maximum number of iterations for the algorithm. The
-algorithm will iterate until either the empirical mean of the
-efficient influence function is smaller than <code>tol</code> or until
-<code>maxIter</code> iterations have been completed.</p></td>
+algorithm will iterate until either the empirical mean of the efficient
+influence function is smaller than <code>tol</code> or until <code>maxIter</code>
+iterations have been completed.</p></td>
     </tr>
     <tr>
       <th>gtol</th>
       <td><p>The truncation level of predicted censoring survival. Setting to
-larger values can help performance in data sets with practical
-positivity violations.</p></td>
+larger values can help performance in data sets with practical positivity
+violations.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -341,48 +344,47 @@ positivity violations.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>survtmle</code>.</p><dl class='dl-horizontal'>
-<dt>call</dt><dd><p>The call to <code>survtmle</code>.</p></dd>
-<dt>est</dt><dd><p>A numeric vector of point estimates -- one for each combination of
-           <code>ftypeOfInterest</code> and <code>trtOfInterest</code>.</p></dd>
-<dt>var</dt><dd><p>A covariance matrix for the point estimates.</p></dd>
-<dt>meanIC</dt><dd><p>The empirical mean of the efficient influence function at the
-              estimated, targeted nuisance parameters. Each value should be
-              small or the user will be warned that excessive finite-sample
-              bias may exist in the point estimates.</p></dd>
-<dt>ic</dt><dd><p>The efficient influence function at the estimated, fluctuated
-          nuisance parameters, evaluated on each of the observations. These
-          are used to construct confidence intervals for post-hoc
-          comparisons.</p></dd>
-<dt>ftimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object(s) for the call
-                to <code>glm</code> or <code>SuperLearner</code> for the outcome
-                regression models. If <code>method="mean"</code> this will be a
-                list of length <code><a href='https://rdrr.io/r/base/length.html'>length(ftypeOfInterest)</a></code> each of length
-                <code>t0</code> (one regression for each failure type and for each
-                timepoint). If <code>method = "hazard"</code> this will be a list
-                of length <code><a href='https://rdrr.io/r/base/length.html'>length(ftypeOfInterest)</a></code> with one fit
-                corresponding to the hazard for each cause of failure. If
-                <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
-<dt>ctimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call to
-                <code>glm</code> or <code>SuperLearner</code> for the pooled hazard
-                regression model for the censoring distribution. If
-                <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
-<dt>trtMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call to
-              <code>glm</code> or <code>SuperLearner</code> for the conditional
-              probability of <code>trt</code> regression model. If
-              <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
-<dt>t0</dt><dd><p>The timepoint at which the function was evaluated.</p></dd>
-<dt>ftime</dt><dd><p>The numeric vector of failure times used in the fit.</p></dd>
-<dt>ftype</dt><dd><p>The numeric vector of failure types used in the fit.</p></dd>
-<dt>trt</dt><dd><p>The numeric vector of treatment assignments used in the fit.</p></dd>
-<dt>adjustVars</dt><dd><p>The data.frame of failure times used in the fit.</p></dd>
+    <p>An object of class <code>survtmle</code>.</p><dl'>
+  <dt>call</dt><dd><p>The call to <code>survtmle</code>.</p></dd>
+  <dt>est</dt><dd><p>A numeric vector of point estimates -- one for each combination
+    of <code>ftypeOfInterest</code> and <code>trtOfInterest</code>.</p></dd>
+  <dt>var</dt><dd><p>A covariance matrix for the point estimates.</p></dd>
+  <dt>meanIC</dt><dd><p>The empirical mean of the efficient influence function at
+    the estimated, targeted nuisance parameters. Each value should be small
+    or the user will be warned that excessive finite-sample bias may exist
+    in the point estimates.</p></dd>
+  <dt>ic</dt><dd><p>The efficient influence function at the estimated, fluctuated
+    nuisance parameters, evaluated on each of the observations. These are
+    used to construct confidence intervals for post-hoc comparisons.</p></dd>
+  <dt>ftimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object(s) for calls
+    to <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>
+    for the outcome regression models. If <code>method="mean"</code> this will be
+    a list of length <code><a href='https://rdrr.io/r/base/length.html'>length(ftypeOfInterest)</a></code> each of length <code>t0</code>
+    (one regression for each failure type and for each timepoint). If
+    <code>method = "hazard"</code> this will be a list of length
+    <code><a href='https://rdrr.io/r/base/length.html'>length(ftypeOfInterest)</a></code> with one fit corresponding to the hazard
+    for each cause of failure. If <code>returnModels = FALSE</code>, this entry
+    will be <code>NULL</code>.</p></dd>
+  <dt>ctimeMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call
+    to <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> or <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code>
+    for the pooled hazard regression model for the censoring distribution.
+    If <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
+  <dt>trtMod</dt><dd><p>If <code>returnModels = TRUE</code> the fit object for the call to
+    <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> or <code><a href='https://rdrr.io/pkg/SuperLearner/man/SuperLearner.html'>SuperLearner</a></code> for
+    the conditional probability of <code>trt</code> regression model. If
+    <code>returnModels = FALSE</code>, this entry will be <code>NULL</code>.</p></dd>
+  <dt>t0</dt><dd><p>The timepoint at which the function was evaluated.</p></dd>
+  <dt>ftime</dt><dd><p>The <code>numeric</code> vector of failure times used in the fit.</p></dd>
+  <dt>ftype</dt><dd><p>The <code>numeric</code> vector of failure types used in the fit.</p></dd>
+  <dt>trt</dt><dd><p>The <code>numeric</code> vector of treatment assignments used in the
+    fit.</p></dd>
+  <dt>adjustVars</dt><dd><p>The <code>data.frame</code> of failure times used in the fit.</p></dd>
 
 </dl>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## Single failure type examples</span>
+    <pre class="examples"><div class='input'><span class='co'>## Single failure type examples</span>
 <span class='co'># simulate data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1234</span>)
 <span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>100</span>
@@ -393,21 +395,19 @@ positivity violations.</p></td>
 <span class='no'>ftype</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span>))
 
 <span class='co'># Fit 1 - fit hazard_tmle object with GLMs for treatment, censoring, failure</span>
-<span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>hazard_tmle</span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
-                    <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-                    <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
-                    <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-                    <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-                    <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
+<span class='no'>fit1</span> <span class='kw'>&lt;-</span> <span class='fu'>hazard_tmle</span>(
+  <span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
+  <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
+  <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"W1 + W2"</span>,
+  <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -418,7 +418,7 @@ positivity violations.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

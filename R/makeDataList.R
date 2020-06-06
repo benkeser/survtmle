@@ -92,7 +92,7 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
       typejEvents <- dat$id[which(dat$ftype == j)]
       dataList[[i + 1]][[paste0("N", j)]] <- 0
       dataList[[i + 1]][[paste0("N", j)]][dataList[[i + 1]]$id %in%
-                                          typejEvents &
+        typejEvents &
         dataList[[i + 1]]$t >= dataList[[i + 1]]$ftime] <- 1
     }
     censEvents <- dat$id[which(dat$ftype == 0)]

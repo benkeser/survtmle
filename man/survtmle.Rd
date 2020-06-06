@@ -248,5 +248,4 @@ fit2 <- survtmle(
   method = "mean", t0 = 6
 )
 fit2
-
 }

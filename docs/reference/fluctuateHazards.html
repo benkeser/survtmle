@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,22 +40,22 @@
 
 
 <meta property="og:title" content="Fluctuation for the Method of Cause-Specific Hazards — fluctuateHazards" />
-<meta property="og:description" content="This function performs a fluctuation of an initial estimate of the
-cause-specific hazard functions using a call to glm (i.e., a logistic
-submodel) or a call to optim (to ensure fluctuations stay within model
-space). The structure of the function is specific to how it is called within
-hazard_tmle. In particular, dataList must have a very specific
-structure for this function to run properly. The list should consist of
-data.frame objects. The first will have the number of rows for each
-observation equal to the ftime corresponding to that observation. The
-subsequent entries will have t0 rows for each observation and will set
-trt column equal to each value of trtOfInterest in turn. The
-function will fit a logistic regression with (a scaled version of) Nj
-as outcome, the logit of the current (pseudo-) hazard estimate as offset and
-the targeted minimum loss-based estimation &quot;clever covariates&quot;. The function
-then obtains predictions based on this fit on each of the data.frame
-objects in dataList." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="This function performs a fluctuation of an initial estimate of
+ the cause-specific hazard functions via a call to glm
+ (i.e., a logistic submodel) or a call to optim (to
+ ensure fluctuations stay within model space). The structure of the function
+ is specific to how it is called within hazard_tmle. In
+ particular, dataList must have a very specific structure for this
+ function to run properly. The list should consist of data.frame
+ objects. The first will have the number of rows for each observation equal
+ to the ftime corresponding to that observation. Subsequent entries
+ will have t0 rows for each observation and will set trt
+ column equal to each value of trtOfInterest in turn. The function
+ will fit a logistic regression with (a scaled version of) Nj as
+ outcome, the logit of the current (pseudo-) hazard estimate as offset and
+ the targeted minimum loss-based estimation &quot;clever covariates&quot;. The
+ function then obtains predictions based on this fit on each of the
+ data.frame objects in dataList." />
 
 
 
@@ -69,7 +73,7 @@ objects in dataList." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +87,7 @@ objects in dataList." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -116,7 +120,7 @@ objects in dataList." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -140,21 +144,22 @@ objects in dataList." />
     </div>
 
     <div class="ref-description">
-    <p>This function performs a fluctuation of an initial estimate of the
-cause-specific hazard functions using a call to <code>glm</code> (i.e., a logistic
-submodel) or a call to <code>optim</code> (to ensure fluctuations stay within model
-space). The structure of the function is specific to how it is called within
-<code>hazard_tmle</code>. In particular, <code>dataList</code> must have a very specific
-structure for this function to run properly. The list should consist of
-<code>data.frame</code> objects. The first will have the number of rows for each
-observation equal to the <code>ftime</code> corresponding to that observation. The
-subsequent entries will have <code>t0</code> rows for each observation and will set
-<code>trt</code> column equal to each value of <code>trtOfInterest</code> in turn. The
-function will fit a logistic regression with (a scaled version of) <code>Nj</code>
-as outcome, the logit of the current (pseudo-) hazard estimate as offset and
-the targeted minimum loss-based estimation "clever covariates". The function
-then obtains predictions based on this fit on each of the <code>data.frame</code>
-objects in <code>dataList</code>.</p>
+    <p>This function performs a fluctuation of an initial estimate of
+ the cause-specific hazard functions via a call to <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>
+ (i.e., a logistic submodel) or a call to <code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code> (to
+ ensure fluctuations stay within model space). The structure of the function
+ is specific to how it is called within <code><a href='hazard_tmle.html'>hazard_tmle</a></code>. In
+ particular, <code>dataList</code> must have a very specific structure for this
+ function to run properly. The list should consist of <code>data.frame</code>
+ objects. The first will have the number of rows for each observation equal
+ to the <code>ftime</code> corresponding to that observation. Subsequent entries
+ will have <code>t0</code> rows for each observation and will set <code>trt</code>
+ column equal to each value of <code>trtOfInterest</code> in turn. The function
+ will fit a logistic regression with (a scaled version of) <code>Nj</code> as
+ outcome, the logit of the current (pseudo-) hazard estimate as offset and
+ the targeted minimum loss-based estimation "clever covariates". The
+ function then obtains predictions based on this fit on each of the
+ <code>data.frame</code> objects in <code>dataList</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fluctuateHazards</span>(
@@ -183,7 +188,7 @@ objects in <code>dataList</code>.</p>
     <tr>
       <th>ofInterestJ</th>
       <td><p>Numeric vector indicating <code>ftypeOfInterest</code> that was
-passed to <code>hazard_tmle</code>.</p></td>
+passed to <code><a href='hazard_tmle.html'>hazard_tmle</a></code>.</p></td>
     </tr>
     <tr>
       <th>nJ</th>
@@ -191,7 +196,8 @@ passed to <code>hazard_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>uniqtrt</th>
-      <td><p>The values of <code>trtOfInterest</code> passed to <code>mean_tmle</code>.</p></td>
+      <td><p>The values of <code>trtOfInterest</code> passed to
+<code><a href='mean_tmle.html'>mean_tmle</a></code>.</p></td>
     </tr>
     <tr>
       <th>ntrt</th>
@@ -203,7 +209,7 @@ passed to <code>hazard_tmle</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>A boolean indicating whether the function should print
+      <td><p>A <code>logical</code> indicating whether the function should print
 messages to indicate progress.</p></td>
     </tr>
     <tr>
@@ -215,18 +221,15 @@ messages to indicate progress.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The function returns a list that is exactly the same as the input
-        <code>dataList</code>, but with updated columns corresponding with
-        estimated cumulative incidence at each time and estimated "clever
-        covariates" at each time.</p>
+ <code>dataList</code>, but with updated columns corresponding with estimated
+ cumulative incidence at each time and estimated "clever covariates" at each
+ time.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -237,7 +240,7 @@ messages to indicate progress.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

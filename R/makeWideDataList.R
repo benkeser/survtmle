@@ -91,7 +91,7 @@ makeWideDataList <- function(dat,
       for (t in 1:t0) {
         x[[paste0("H", z, ".", t)]] <-
           (x$trt == z & x[[paste0("C.", t - 1)]] == 0) /
-          (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
+            (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
       }
       x[[paste0("H", z, ".0")]] <- (x$trt == z) / x[[paste0("g_", z, ".", t)]]
     }

@@ -130,7 +130,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
       # calculate offset term and outcome
       wideDataList <- lapply(wideDataList, function(x) {
         x[["thisOutcome"]] <- (x[[outcomeName]] - x[[lj.t]]) / (x[[uj.t]] -
-                                                                x[[lj.t]])
+          x[[lj.t]])
         x[["thisScale"]] <- x[[uj.t]] - x[[lj.t]]
         x[[Qtildej.t]] <- x[[Nj.tm1]] + (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) *
           (x[[Qj.t]] - x[[lj.t]]) / x[["thisScale"]]
@@ -164,7 +164,7 @@ fluctuateIteratedMean <- function(wideDataList, t, uniqtrt, whichJ, allJ, t0,
           x[[paste0("Q", whichJ, "star.", t)]] <- x[[Nj.tm1]] +
             (1 - x[[NnotJ.tm1]] - x[[Nj.tm1]]) * (plogis(x$thisOffset +
               as.matrix(x[, cleverCovariates]) %*% as.matrix(beta)) *
-                                                  x$thisScale + x[[lj.t]])
+              x$thisScale + x[[lj.t]])
           x
         })
       }

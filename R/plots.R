@@ -115,7 +115,6 @@ plot.tp.survtmle <- function(x,
   p <- ggplot2::ggplot(
     data = plot_in,
     ggplot2::aes_string(x = "t", y = "value", colour = "group")
-
   )
   if (length(unique(plot_in$t)) > 1) {
     p <- p + ggplot2::geom_step()
