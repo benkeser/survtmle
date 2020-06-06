@@ -139,7 +139,7 @@ unique failure type label j, denoting lower and upper bounds, respectively.
 See examples.}
 
 \item{verbose}{A \code{logical} indicating whether the function should print
-messages to indicate progress. If \code{\link[SuperLeaner]{SuperLearner}}
+messages to indicate progress. If \code{\link[SuperLearner]{SuperLearner}}
 is called internally, this option will be passed to it.}
 
 \item{tol}{The stopping criteria when \code{method="hazard"}. The TMLE
