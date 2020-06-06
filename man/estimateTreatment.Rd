@@ -45,11 +45,11 @@ consult the documentation of the \pkg{SuperLearner} package. This is passed
 in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
 \code{\link{survtmle}}.}
 
-\item{returnModels}{A boolean indicating whether fitted model objects should
-be returned.}
+\item{returnModels}{A \code{logical} indicating whether fitted model objects
+should be returned.}
 
-\item{verbose}{A boolean passed to the \code{verbose} option of the call to
-\code{\link[SuperLearner]{SuperLearner}}.}
+\item{verbose}{A \code{logical} passed to the \code{verbose} option of the
+call to \code{\link[SuperLearner]{SuperLearner}}.}
 
 \item{gtol}{The truncation level of predicted trt probabilities to handle
 positivity violations.}

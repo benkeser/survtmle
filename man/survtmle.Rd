@@ -92,16 +92,17 @@ equation passed to the \code{\link[stats]{formula}} option of a call to
 treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. The
 formula can include any variables found in \code{names(adjustVars)}.}
 
-\item{returnIC}{A boolean indicating whether to return vectors of influence
-curve estimates. These are needed for some post-hoc comparisons, so it is
-recommended to leave as \code{TRUE} (the default) unless the user is sure
-these estimates will not be needed later.}
+\item{returnIC}{A \code{logical} indicating whether to return vectors of
+influence curve estimates. These are needed for some post-hoc comparisons,
+so it is recommended to leave as \code{TRUE} (the default) unless the user
+is sure these estimates will not be needed later.}
 
-\item{returnModels}{A boolean indicating whether to return the \code{glm} or
-\code{SuperLearner} objects used to estimate the nuisance parameters. Must
-be set to \code{TRUE} if the user plans to use \code{\link{timepoints}} to
-obtain estimates of incidence at times other than \code{t0}. See the
-documentation of \code{\link{timepoints}} for more information.}
+\item{returnModels}{A \code{logical} indicating whether to return the
+\code{glm} or \code{SuperLearner} objects used to estimate the nuisance
+parameters. Must be set to \code{TRUE} if the user plans to use
+\code{\link{timepoints}} to obtain estimates of incidence at times other
+than \code{t0}. See the documentation of \code{\link{timepoints}} for more
+information.}
 
 \item{ftypeOfInterest}{An input specifying what failure types to compute
 estimates of incidence for. The default value computes estimates for values
@@ -137,7 +138,7 @@ should be names \code{paste0("l",j)} and \code{paste0("u",j)} for each
 unique failure type label j, denoting lower and upper bounds, respectively.
 See examples.}
 
-\item{verbose}{A boolean indicating whether the function should print
+\item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress. If \code{\link[SuperLeaner]{SuperLearner}}
 is called internally, this option will be passed to it.}
 
@@ -154,11 +155,11 @@ may result in large finite-sample bias.}
 empirical mean of the efficient influence function is smaller than
 \code{tol} or until \code{maxIter} iterations have been completed.}
 
-\item{Gcomp}{A boolean indicating whether to compute the G-computation
-estimator (i.e., a substitution estimator with no targeting step). Theory
-does not support inference for the G-computation estimator if Super Learner
-is used to estimate failure and censoring distributions. The G-computation
-is only implemented for \code{method = "mean"}.}
+\item{Gcomp}{A \code{logical} indicating whether to compute the
+G-computation estimator (i.e., a substitution estimator with no targeting
+step). Theory does not support inference for the G-computation estimator if
+Super Learner is used to estimate failure and censoring distributions. The
+G-computation is only implemented for \code{method = "mean"}.}
 
 \item{gtol}{The truncation level of predicted censoring survival. Setting to
 larger values can help performance in data sets with practical positivity
@@ -202,10 +203,11 @@ An object of class \code{survtmle}.
     the conditional probability of \code{trt} regression model. If
     \code{returnModels = FALSE}, this entry will be \code{NULL}.}
   \item{t0}{The timepoint at which the function was evaluated.}
-  \item{ftime}{The numeric vector of failure times used in the fit.}
-  \item{ftype}{The numeric vector of failure types used in the fit.}
-  \item{trt}{The numeric vector of treatment assignments used in the fit.}
-  \item{adjustVars}{The data.frame of failure times used in the fit.}
+  \item{ftime}{The \code{numeric} vector of failure times used in the fit.}
+  \item{ftype}{The \code{numeric} vector of failure types used in the fit.}
+  \item{trt}{The \code{numeric} vector of treatment assignments used in the
+    fit.}
+  \item{adjustVars}{The \code{data.frame} of failure times used in the fit.}
 }
 }
 \description{

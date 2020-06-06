@@ -35,174 +35,173 @@ hazard_tmle(
 should have corresponding \code{ftype} set to 0.}
 
 \item{ftype}{A numeric vector indicating the type of failure. Observations
-with \code{ftype=0} are treated as a right-censored observation. Each
-unique value besides zero is treated as a separate type of failure.}
+with \code{ftype=0} are treated as having been right-censored. Each unique
+value besides zero is treated as a separate type of failure.}
 
 \item{trt}{A numeric vector indicating observed treatment assignment. Each
-unique value will be treated as a different type of treatment.
-Currently, only two unique values are supported.}
+unique value will be treated as a different type of treatment. Currently,
+only two unique values are supported.}
 
 \item{t0}{The time at which to return cumulative incidence estimates. By
 default this is set to \code{max(ftime[ftype > 0])}.}
 
 \item{adjustVars}{A data.frame of adjustment variables that will be used in
-estimating the conditional treatment, censoring, and failure (hazard
-or conditional mean) probabilities.}
+estimating the conditional treatment, censoring, and failure (hazard or
+conditional mean) probabilities.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
-\code{SL.library} option in the call to \code{SuperLearner} for the
-cause-specific hazards. See \code{?SuperLearner} for more information
-on how to specify valid \code{SuperLearner} libraries. It is expected
-that the wrappers used in the library will play nicely with the input
-variables, which will be called \code{"trt"},
-\code{names(adjustVars)}, and \code{"t"} if \code{method = "hazard"}.}
+\code{SL.library} option of \code{\link[SuperLearner]{SuperLearner}} for
+the cause-specific hazards. See the documentation of
+\code{\link[SuperLearner]{SuperLearner}} for more information on how to
+specify valid \code{SuperLearner} libraries. It is expected that the
+wrappers used in the library will play nicely with the input variables,
+which will be called \code{"trt"}, \code{names(adjustVars)}, and \code{"t"}
+if \code{method = "hazard"}.}
 
 \item{SL.ctime}{A character vector or list specification to be passed to the
-\code{SL.library} argument in the call to \code{SuperLearner} for the
-estimate of the conditional hazard for censoring. It is expected that
-the wrappers used in the library will play nicely with the input
-variables, which will be called \code{"trt"} and
-\code{names(adjustVars)}.}
+\code{SL.library} option of \code{\link[SuperLearner]{SuperLearner}} for
+the estimate of the conditional hazard for censoring. It is expected that
+the wrappers used in the library will play nicely with the input variables,
+which will be called \code{"trt"} and \code{names(adjustVars)}.}
 
 \item{SL.trt}{A character vector or list specification to be passed to the
-\code{SL.library} argument in the call to \code{SuperLearner} for the
-estimate of the conditional probability of treatment. It is expected
+\code{SL.library} option of \code{\link[SuperLearner]{SuperLearner}} for
+the estimate of the conditional probability of treatment. It is expected
 that the wrappers used in the library will play nicely with the input
 variables, which will be \code{names(adjustVars)}.}
 
 \item{glm.ftime}{A character specification of the right-hand side of the
-equation passed to the \code{formula} option of a call to \code{glm}
-for the outcome regression. Ignored if \code{SL.ftime} is not equal to
-\code{NULL}. Use \code{"trt"} to specify the treatment in this formula
-(see examples). The formula can additionally include any variables
-found in \code{names(adjustVars)}.}
+equation passed to the \code{\link[stats]{formula}} option of a call to
+\code{\link[stats]{glm}} for the outcome regression. Ignored if
+\code{SL.ftime} is not equal to \code{NULL}. Use \code{"trt"} to specify
+the treatment in this formula (see examples). The formula can additionally
+include any variables found in \code{names(adjustVars)}.}
 
 \item{glm.ctime}{A character specification of the right-hand side of the
-equation passed to the \code{formula} option of a call to \code{glm}
-for the estimate of the conditional hazard for censoring. Ignored if
-\code{SL.ctime} is not equal to \code{NULL}. Use \code{"trt"} to
-specify the treatment in this formula (see examples). The formula can
-additionally include any variables found in \code{names(adjustVars)}.}
+equation passed to the \code{\link[stats]{formula}} option of a call to
+\code{\link[stats]{glm}} for the estimate of the conditional hazard for
+censoring. Ignored if \code{SL.ctime} is not equal to \code{NULL}. Use
+\code{"trt"} to specify the treatment in this formula (see examples). The
+formula can additionally include any variables found in
+\code{names(adjustVars)}.}
 
 \item{glm.trt}{A character specification of the right-hand side of the
-equation passed to the \code{formula} option of a call to \code{glm}
-for the estimate of the conditional probability of treatment. Ignored
-if \code{SL.trt} is not equal to \code{NULL}. The formula can include
-any variables found in \code{names(adjustVars)}.}
+equation passed to the \code{\link[stats]{formula}} option of a call to
+\code{\link[stats]{glm}} for the estimate of the conditional probability of
+treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. The
+formula can include any variables found in \code{names(adjustVars)}.}
 
 \item{glm.family}{The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is passed directly
-to \code{estimateCensoring} and \code{estimateHazards}.}
+the estimation and fluctuation procedures. The default is "binomial" for
+logistic regression. Only change this from the default if there are
+justifications that are well understood. This is passed directly to
+\code{\link{estimateCensoring}} and \code{\link{estimateHazards}}.}
 
-\item{returnIC}{A boolean indicating whether to return vectors of influence
-curve estimates. These are needed for some post-hoc comparisons, so it
-is recommended to leave as \code{TRUE} (the default) unless the user
+\item{returnIC}{A \code{logical} indicating whether to return vectors of
+influence curve estimates. These are needed for some post-hoc comparisons,
+so it is recommended to leave as \code{TRUE} (the default) unless the user
 is sure these estimates will not be needed later.}
 
-\item{returnModels}{A boolean indicating whether to return the
-\code{SuperLearner} or \code{glm} objects used to estimate the
-nuisance parameters. Must be set to \code{TRUE} if the user plans to
-use \code{timepoints} to obtain estimates of incidence at times other
-than \code{t0}. See \code{?timepoints} for more information.}
+\item{returnModels}{A \code{logical} indicating whether to return the
+\code{glm} or \code{SuperLearner} objects used to estimate the nuisance
+parameters. Must be set to \code{TRUE} if the user plans to use
+\code{\link{timepoints}} to obtain estimates of incidence at times other
+than \code{t0}. See the documentation of \code{\link{timepoints}} for more
+information.}
 
 \item{ftypeOfInterest}{An input specifying what failure types to compute
-estimates of incidence for. The default value computes estimates for
-values \code{unique(ftype)}. Can alternatively be set to a vector of
-values found in \code{ftype}.}
+estimates of incidence for. The default value computes estimates for values
+\code{unique(ftype)}. Can alternatively be set to a vector of values found
+in \code{ftype}.}
 
 \item{trtOfInterest}{An input specifying which levels of \code{trt} are of
-interest. The default value computes estimates for values
-\code{unique(trt)}. Can alternatively be set to a vector of values
-found in \code{trt}.}
+interest. The default value computes estimates for all values in
+\code{unique(trt)}. Can alternatively be set to a vector of values found in
+\code{trt}.}
 
 \item{cvControl}{A \code{list} providing control options to be fed directly
-into calls to \code{SuperLearner}. This should match the contents of
-\code{SuperLearner.CV.control} exactly. For further details, consult
-the documentation of the \pkg{SuperLearner} package. This is usually
-passed in through the \code{survtmle} wrapper function.}
+into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
+the contents of \code{SuperLearner.CV.control} exactly. For details,
+consult the documentation of the \pkg{SuperLearner} package. This is
+usually passed in through the \code{\link{survtmle}} wrapper function.}
 
 \item{bounds}{A \code{data.frame} of bounds on the conditional hazard
-function. The \code{data.frame} should have a column named \code{"t"}
-that includes values \code{seq_len(t0)}. The other columns should be
-names \code{paste0("l",j)} and \code{paste0("u",j)} for each unique
-failure type label j, denoting lower and upper bounds, respectively.
-See examples.}
+function. The \code{data.frame} should have a column named \code{"t"} that
+includes values \code{seq_len(t0)}. The other columns should be names
+\code{paste0("l",j)} and \code{paste0("u",j)} for each unique failure type
+label j, denoting lower and upper bounds, respectively. See examples.}
 
-\item{verbose}{A boolean indicating whether the function should print
-messages to indicate progress. If \code{SuperLearner} is called
-internally, this option will additionally be passed to
-\code{SuperLearner}.}
+\item{verbose}{A \code{logical} indicating whether the function should print
+messages to indicate progress. If \code{\link[SuperLearner]{SuperLearner}}
+is called internally, this option will additionally be passed to
+\code{\link[SuperLearner]{SuperLearner}}.}
 
 \item{tol}{The stopping criteria. The TMLE algorithm performs updates to the
 initial estimators until the empirical mean of the efficient influence
-function is smaller than \code{tol} or until \code{maxIter} iterations
-have been completed. The default (\code{1 / length(ftime)}) is a
-sensible value. Larger values can be used in situations where
-convergence of the algorithm is an issue; however, this may result in
-large finite-sample bias.}
+function is smaller than \code{tol} or until \code{maxIter} iterations have
+been completed. The default (\code{1 / length(ftime)}) is a sensible value.
+Larger values can be used in situations where convergence of the algorithm
+is an issue; however, this may result in large finite-sample bias.}
 
 \item{maxIter}{The maximum number of iterations for the algorithm. The
-algorithm will iterate until either the empirical mean of the
-efficient influence function is smaller than \code{tol} or until
-\code{maxIter} iterations have been completed.}
+algorithm will iterate until either the empirical mean of the efficient
+influence function is smaller than \code{tol} or until \code{maxIter}
+iterations have been completed.}
 
 \item{gtol}{The truncation level of predicted censoring survival. Setting to
-larger values can help performance in data sets with practical
-positivity violations.}
+larger values can help performance in data sets with practical positivity
+violations.}
 
 \item{...}{Other options. Not currently used.}
 }
 \value{
 An object of class \code{survtmle}.
 \describe{
-\item{call}{The call to \code{survtmle}.}
-\item{est}{A numeric vector of point estimates -- one for each combination of
-           \code{ftypeOfInterest} and \code{trtOfInterest}.}
-\item{var}{A covariance matrix for the point estimates.}
-\item{meanIC}{The empirical mean of the efficient influence function at the
-              estimated, targeted nuisance parameters. Each value should be
-              small or the user will be warned that excessive finite-sample
-              bias may exist in the point estimates.}
-\item{ic}{The efficient influence function at the estimated, fluctuated
-          nuisance parameters, evaluated on each of the observations. These
-          are used to construct confidence intervals for post-hoc
-          comparisons.}
-\item{ftimeMod}{If \code{returnModels = TRUE} the fit object(s) for the call
-                to \code{glm} or \code{SuperLearner} for the outcome
-                regression models. If \code{method="mean"} this will be a
-                list of length \code{length(ftypeOfInterest)} each of length
-                \code{t0} (one regression for each failure type and for each
-                timepoint). If \code{method = "hazard"} this will be a list
-                of length \code{length(ftypeOfInterest)} with one fit
-                corresponding to the hazard for each cause of failure. If
-                \code{returnModels = FALSE}, this entry will be \code{NULL}.}
-\item{ctimeMod}{If \code{returnModels = TRUE} the fit object for the call to
-                \code{glm} or \code{SuperLearner} for the pooled hazard
-                regression model for the censoring distribution. If
-                \code{returnModels = FALSE}, this entry will be \code{NULL}.}
-\item{trtMod}{If \code{returnModels = TRUE} the fit object for the call to
-              \code{glm} or \code{SuperLearner} for the conditional
-              probability of \code{trt} regression model. If
-              \code{returnModels = FALSE}, this entry will be \code{NULL}.}
-\item{t0}{The timepoint at which the function was evaluated.}
-\item{ftime}{The numeric vector of failure times used in the fit.}
-\item{ftype}{The numeric vector of failure types used in the fit.}
-\item{trt}{The numeric vector of treatment assignments used in the fit.}
-\item{adjustVars}{The data.frame of failure times used in the fit.}
+  \item{call}{The call to \code{survtmle}.}
+  \item{est}{A numeric vector of point estimates -- one for each combination
+    of \code{ftypeOfInterest} and \code{trtOfInterest}.}
+  \item{var}{A covariance matrix for the point estimates.}
+  \item{meanIC}{The empirical mean of the efficient influence function at
+    the estimated, targeted nuisance parameters. Each value should be small
+    or the user will be warned that excessive finite-sample bias may exist
+    in the point estimates.}
+  \item{ic}{The efficient influence function at the estimated, fluctuated
+    nuisance parameters, evaluated on each of the observations. These are
+    used to construct confidence intervals for post-hoc comparisons.}
+  \item{ftimeMod}{If \code{returnModels = TRUE} the fit object(s) for calls
+    to \code{\link[SuperLearner]{SuperLearner}} or \code{\link[stats]{glm}}
+    for the outcome regression models. If \code{method="mean"} this will be
+    a list of length \code{length(ftypeOfInterest)} each of length \code{t0}
+    (one regression for each failure type and for each timepoint). If
+    \code{method = "hazard"} this will be a list of length
+    \code{length(ftypeOfInterest)} with one fit corresponding to the hazard
+    for each cause of failure. If \code{returnModels = FALSE}, this entry
+    will be \code{NULL}.}
+  \item{ctimeMod}{If \code{returnModels = TRUE} the fit object for the call
+    to \code{\link[stats]{glm}} or \code{\link[SuperLearner]{SuperLearner}}
+    for the pooled hazard regression model for the censoring distribution.
+    If \code{returnModels = FALSE}, this entry will be \code{NULL}.}
+  \item{trtMod}{If \code{returnModels = TRUE} the fit object for the call to
+    \code{\link[stats]{glm}} or \code{\link[SuperLearner]{SuperLearner}} for
+    the conditional probability of \code{trt} regression model. If
+    \code{returnModels = FALSE}, this entry will be \code{NULL}.}
+  \item{t0}{The timepoint at which the function was evaluated.}
+  \item{ftime}{The \code{numeric} vector of failure times used in the fit.}
+  \item{ftype}{The \code{numeric} vector of failure types used in the fit.}
+  \item{trt}{The \code{numeric} vector of treatment assignments used in the
+    fit.}
+  \item{adjustVars}{The \code{data.frame} of failure times used in the fit.}
 }
 }
 \description{
-This function estimates the marginal cumulative incidence for failures of
-specified types using targeted minimum loss-based estimation based on the
-initial estimates of the cause-specific hazard functions for failures of each
-type. The function is called by \code{survtmle} whenever
-\code{method = "hazard"} is specified. However, power users could, in theory,
-make calls directly to this function.
+This function estimates the marginal cumulative incidence for
+ failures of specified types using targeted minimum loss-based estimation
+ based on the initial estimates of the cause-specific hazard functions for
+ failures of each type. The function is called by \code{\link{survtmle}}
+ whenever \code{method = "hazard"} is specified. However, power users could,
+ in theory, make calls directly to this function.
 }
 \examples{
-
 ## Single failure type examples
 # simulate data
 set.seed(1234)
@@ -222,4 +221,5 @@ fit1 <- hazard_tmle(
   glm.ctime = "trt + W1 + W2",
   returnModels = TRUE
 )
+
 }

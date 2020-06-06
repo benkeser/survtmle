@@ -47,7 +47,7 @@
 #'  \code{"trt"} to specify the treatment in this formula (see examples). The
 #'  formula can additionally include any variables found in
 #'  \code{names(adjustVars)}.
-#' @param verbose A boolean indicating whether the function should print
+#' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
 #' @param cvControl A \code{list} providing control options to be fed directly
 #'  into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
@@ -55,11 +55,12 @@
 #'  consult the documentation of the \pkg{SuperLearner} package. This is passed
 #'  in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
 #'  \code{\link{survtmle}}.
-#' @param returnModels A boolean indicating whether to return the \code{glm} or
-#'  \code{SuperLearner} objects used to estimate the nuisance parameters. Must
-#'  be set to \code{TRUE} to make downstream calls to \code{\link{timepoints}}
-#'  for obtaining estimates at times other than \code{t0}. See documentation of
-#'  \code{\link{timepoints}} for more information.
+#' @param returnModels A \code{logical} indicating whether to return the
+#'  \code{glm} or \code{SuperLearner} objects used to estimate the nuisance
+#'  parameters. Must be set to \code{TRUE} to make downstream calls to
+#'  \code{\link{timepoints}} for obtaining estimates at times other than
+#'  \code{t0}. See documentation of \code{\link{timepoints}} for more
+#'  information.
 #' @param bounds A list of bounds to be used when performing the outcome
 #'  regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
 #' @param ... Other arguments. Not currently used.

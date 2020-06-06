@@ -90,16 +90,16 @@ treatment. Ignored if \code{SL.trt != NULL}. By default set to "1",
 corresponding to using empirical estimates of each value of \code{trt}. The
 formula can include any variables found in \code{names(adjustVars)}.}
 
-\item{returnIC}{A boolean indicating whether to return vectors of influence
-curve estimates. These are needed for some post-hoc comparisons, so it is
-recommended to leave as \code{TRUE} (the default) unless the user is sure
-these estimates will not be needed later.}
+\item{returnIC}{A \code{logical} indicating whether to return vectors of
+influence curve estimates. These are needed for some post-hoc comparisons,
+so it is recommended to leave as \code{TRUE} (the default) unless the user
+is sure these estimates will not be needed later.}
 
-\item{returnModels}{A boolean indicating whether to return the \code{glm} or
-\code{SuperLearner} objects used to estimate the nuisance parameters. Must
-be set to \code{TRUE} if the user plans to use \code{\link{timepoints}} to
-obtain estimates at times other than \code{t0}. See the documentation of
-\code{\link{timepoints}} for more information.}
+\item{returnModels}{A \code{logical} indicating whether to return the
+\code{glm} or \code{SuperLearner} objects used to estimate the nuisance
+parameters. Must be set to \code{TRUE} if the user plans to use
+\code{\link{timepoints}} to obtain estimates at times other than \code{t0}.
+See the documentation of \code{\link{timepoints}} for more information.}
 
 \item{ftypeOfInterest}{An input specifying what failure types to compute
 estimates of incidence for. The default value computes estimates for values
@@ -124,7 +124,7 @@ hazard-based estimator.}
 
 \item{bounds}{A list of bounds.}
 
-\item{verbose}{A boolean indicating whether the function should print
+\item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress.}
 
 \item{tol}{The stopping criteria when \code{method = "hazard"}. The
@@ -139,11 +139,11 @@ algorithm is an issue; however, this may lead to large finite-sample bias.}
 empirical mean of the efficient influence function is smaller than
 \code{tol} or until \code{maxIter} iterations have been completed.}
 
-\item{Gcomp}{A boolean indicating whether to compute the G-computation
-estimator (i.e., a substitution estimator with no targeting step). Note,
-theory does not support inference for the G-computation estimator if Super
-Learner is used to estimate failure and censoring mechanisms. Only
-implemented for \code{method = "mean"}.}
+\item{Gcomp}{A \code{logical} indicating whether to compute the
+G-computation estimator (i.e., a substitution estimator with no targeting
+step). Note: theory does not support inference for the G-computation
+estimator if Super Learner is used to estimate failure and censoring
+mechanisms. Only implemented for \code{method = "mean"}.}
 }
 \value{
 Options to be passed to either \code{\link{mean_tmle}} or

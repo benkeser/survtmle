@@ -36,7 +36,7 @@ passed to \code{\link{hazard_tmle}}.}
 \item{t0}{The timepoint at which \code{\link{survtmle}} was called to
 evaluate.}
 
-\item{verbose}{A boolean indicating whether the function should print
+\item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress.}
 
 \item{...}{Other arguments. Not currently used.}

@@ -42,9 +42,9 @@
 #'  \code{t == t0} is different than if \code{t != t0}.
 #' @param bounds A list of bounds to be used when performing the outcome
 #'  regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
-#' @param Gcomp A boolean indicating whether \code{mean_tmle} was called to
-#'  evaluate the G-computation estimator, in which case this function does
-#'  nothing but re-label columns.
+#' @param Gcomp A \code{logical} indicating whether \code{\link{mean_tmle}} was
+#'  called to evaluate the G-computation estimator, in which case this function
+#'  does nothing but re-label columns.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula optim glm qlogis binomial

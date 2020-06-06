@@ -20,7 +20,7 @@
 #'  \code{\link{mean_tmle}}.
 #' @param t0 The timepoint at which \code{\link{survtmle}} was called to
 #'  evaluate.
-#' @param verbose A boolean indicating whether the function should print
+#' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
 #' @param ... Other arguments. Not currently used.
 #'

@@ -54,7 +54,7 @@ hazards or conditional mean). Ignored if \code{SL.ftime != NULL}. Use
 formula can additionally include any variables found in
 \code{names(adjustVars)}.}
 
-\item{verbose}{A boolean indicating whether the function should print
+\item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress.}
 
 \item{cvControl}{A \code{list} providing control options to be fed directly
@@ -64,11 +64,12 @@ consult the documentation of the \pkg{SuperLearner} package. This is passed
 in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
 \code{\link{survtmle}}.}
 
-\item{returnModels}{A boolean indicating whether to return the \code{glm} or
-\code{SuperLearner} objects used to estimate the nuisance parameters. Must
-be set to \code{TRUE} to make downstream calls to \code{\link{timepoints}}
-for obtaining estimates at times other than \code{t0}. See documentation of
-\code{\link{timepoints}} for more information.}
+\item{returnModels}{A \code{logical} indicating whether to return the
+\code{glm} or \code{SuperLearner} objects used to estimate the nuisance
+parameters. Must be set to \code{TRUE} to make downstream calls to
+\code{\link{timepoints}} for obtaining estimates at times other than
+\code{t0}. See documentation of \code{\link{timepoints}} for more
+information.}
 
 \item{bounds}{A list of bounds to be used when performing the outcome
 regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.}

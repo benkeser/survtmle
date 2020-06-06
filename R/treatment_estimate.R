@@ -31,10 +31,10 @@
 #'  consult the documentation of the \pkg{SuperLearner} package. This is passed
 #'  in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
 #'  \code{\link{survtmle}}.
-#' @param returnModels A boolean indicating whether fitted model objects should
-#'  be returned.
-#' @param verbose A boolean passed to the \code{verbose} option of the call to
-#'  \code{\link[SuperLearner]{SuperLearner}}.
+#' @param returnModels A \code{logical} indicating whether fitted model objects
+#'  should be returned.
+#' @param verbose A \code{logical} passed to the \code{verbose} option of the
+#'  call to \code{\link[SuperLearner]{SuperLearner}}.
 #' @param gtol The truncation level of predicted trt probabilities to handle
 #'  positivity violations.
 #' @param ... Other arguments. Not currently used
