@@ -9,8 +9,8 @@
 \arguments{
 \item{object}{An object of class \code{survtmle}.}
 
-\item{parm}{A numeric vector indicating which indexes of \code{object$est} to
-return confidence intervals for (default is to return all).}
+\item{parm}{A numeric vector indicating which indexes of \code{object$est}
+to return confidence intervals for (default is to return all).}
 
 \item{level}{The confidence level requested.}
 
@@ -18,8 +18,8 @@ return confidence intervals for (default is to return all).}
 }
 \value{
 A matrix with columns giving the lower and upper confidence limits
- for each parameter. These will be labeled as (1-level)/2 and 1 - (1-level)/2
- in percent. The default is 2.5% and 97.5%.
+ for each parameter. These will be labeled as (1-level) / 2 and
+ 1 - (1-level)/2 in percent. The default is 2.5% and 97.5%.
 }
 \description{
 Computes confidence intervals for a fitted \code{survtmle} object.
@@ -34,11 +34,14 @@ trt <- rbinom(n, 1, 0.5)
 adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 
 # fit a survtmle object
-fit <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                adjustVars = adjustVars, glm.trt = "W1 + W2",
-                glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
-                method = "mean", t0 = 4)
+fit <- survtmle(
+  ftime = ftime, ftype = ftype, trt = trt,
+  adjustVars = adjustVars, glm.trt = "W1 + W2",
+  glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
+  method = "mean", t0 = 4
+)
 # get confidence intervals
 ci <- confint(fit)
 ci
+#
 }

@@ -1,50 +1,55 @@
 #' Estimate Treatment Mechanisms
 #'
-#' This function computes the conditional probability of having \code{trt} for
-#' each specified level either using \code{glm} or \code{SuperLearner}.
-#' Currently only two unique values of treatment are acceptable. By default the
-#' function will compute estimates of the conditional probability of
-#' \code{trt == max(trt)} and compute the probability of \code{trt == min(trt)}
-#' as one minus this probability.
+#' @description This function computes the conditional probability of having
+#'  \code{trt} for each specified level either using \code{\link[stats]{glm}}
+#'  or \code{\link[SuperLearner]{SuperLearner}}. Currently, only two unique
+#'  values of treatment are acceptable. By default the function will compute
+#'  estimates of the conditional probability of \code{trt == max(trt)} and
+#'  compute the probability of \code{trt == min(trt)} as one minus this
+#'  probability.
 #'
 #' @param dat An object of class \code{data.frame}. Must have named column
-#'        \code{trt}.
+#'  \code{trt}.
 #' @param adjustVars An object of class \code{data.frame} that will be used
-#'        either as the \code{data} argument in a call to \code{glm} or as the
-#'        \code{X} object in a call to \code{SuperLearner}.
-#' @param glm.trt A character formula for the right-hand side of \code{formula}
-#'        in a call to \code{glm}. See \code{?survtmle} for more documentation.
-#'        Alternatively, this could be an object of class \code{glm} (as in
-#'        calls to this function via \code{timepoints}), in which case
-#'        predictions are obtained using this object with no new fitting.
-#' @param SL.trt A valid specification of the \code{SL.library} option of a call
-#'        to \code{SuperLearner}. See \code{?survtmle} for more documentation.
-#'        Alternatively, this could be an object of class \code{SuperLearner}
-#'        (as in calls to this function via \code{timepoints}), in which case
-#'        predictions are obtained using this object with no new fitting.
+#'  either as the \code{data} argument in a call to \code{\link[stats]{glm}} or
+#'  as \code{X} in a call to \code{\link[SuperLearner]{SuperLearner}}.
+#' @param glm.trt A character formula for the right-hand side of the
+#'  \code{\link[stats]{formula}} in a call to \code{\link[stats]{glm}}. See the
+#'  documentation of \code{\link{survtmle}} for information. Alternatively,
+#'  this could be an object of class \code{\link[stats]{glm}} (as in calls to
+#'  this function via \code{\link{timepoints}}), in which case predictions are
+#'  obtained using this object with no new fitting.
+#' @param SL.trt A specification of the \code{SL.library} option of a call to
+#'  \code{\link[SuperLearner]{SuperLearner}}. See the documentation of
+#'  \code{\link{survtmle}} for more information. Alternatively, this could be
+#'  an object of class \code{SuperLearner} (as in calls to this function via
+#'  \code{\link{timepoints}}), in which case predictions are obtained using
+#'  this object with no new fitting.
 #' @param cvControl A \code{list} providing control options to be fed directly
-#'        into calls to \code{SuperLearner}. This should match the contents of
-#'        \code{SuperLearner.CV.control} exactly. For further details, consult
-#'        the documentation of the \pkg{SuperLearner} package. This is passed in
-#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
+#'  into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
+#'  the contents of \code{SuperLearner.CV.control} exactly. For details,
+#'  consult the documentation of the \pkg{SuperLearner} package. This is passed
+#'  in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
+#'  \code{\link{survtmle}}.
 #' @param returnModels A boolean indicating whether fitted model objects should
-#'        be returned.
+#'  be returned.
 #' @param verbose A boolean passed to the \code{verbose} option of the call to
-#'        \code{SuperLearner}.
+#'  \code{\link[SuperLearner]{SuperLearner}}.
 #' @param gtol The truncation level of predicted trt probabilities to handle
-#'        positivity violations.
+#'  positivity violations.
 #' @param ... Other arguments. Not currently used
 #'
 #' @return dat The input \code{data.frame} object with two added columns
-#'         corresponding with the conditional probability (given
-#'         \code{adjustVars}) of \code{trt==max(trt)} and \code{trt==min(trt)}.
+#'  corresponding with the conditional probability (given \code{adjustVars}) of
+#'  \code{trt==max(trt)} and \code{trt==min(trt)}.
 #' @return trtMod If \code{returnModels = TRUE}, the fitted \code{glm} or
-#'         \code{SuperLearner} object. Otherwise, \code{NULL}
+#'  \code{SuperLearner} object. Otherwise, \code{NULL}
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm
-#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean SL.glm SL.step
+#' @importFrom SuperLearner SuperLearner SuperLearner.CV.control All SL.mean
+#'  SL.glm SL.step
+#'
 #' @export
-
 estimateTreatment <- function(dat,
                               adjustVars,
                               glm.trt = NULL,

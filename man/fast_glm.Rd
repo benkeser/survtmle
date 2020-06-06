@@ -7,23 +7,25 @@
 fast_glm(reg_form, data, family, ...)
 }
 \arguments{
-\item{reg_form}{Object of class \code{formula} indicating the regression to
-be fit.}
+\item{reg_form}{Object of class \code{\link[stats]{formula}} indicating the
+regression to be fit.}
 
 \item{data}{Object of class \code{data.frame} containing the data.}
 
-\item{family}{Object of class \code{family} from package \code{stats}
+\item{family}{Object of class \code{\link[stats]{family}} from \pkg{stats}
 indicating the error distribution. Appropriate options are limited to
-\code{gaussian} and \code{binomial}.}
+\code{\link[stats]{gaussian}} and \code{\link[stats]{binomial}}.}
 
-\item{...}{Additional arguments passed to \code{glm} or \code{speedglm}.}
+\item{...}{Additional arguments passed to \code{\link[stats]{glm}} or
+\code{\link[speedglm]{speedglm}}.}
 }
 \value{
 Object of class \code{glm} or \code{speedglm}.
 }
 \description{
-A convenience utility to fit regression models more quickly in the main
-internal functions for estimation, which usually require logistic regression.
-Use of \code{speedglm} appears to provide roughly an order of magnitude
-improvement in speed when compared to \code{glm} in custom benchmarks.
+A convenience utility to fit regression models more quickly in
+ the main internal functions for estimation, which usually require logistic
+ regression. Use of \code{\link[speedglm]{speedglm}} appears to provide
+ roughly an order of magnitude improvement in speed when compared to
+ \code{\link[stats]{glm}} in custom benchmarks.
 }

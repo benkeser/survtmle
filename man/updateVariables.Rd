@@ -22,11 +22,12 @@ updateVariables(
 \item{allJ}{Numeric vector indicating the labels of all causes of failure.}
 
 \item{ofInterestJ}{Numeric vector indicating \code{ftypeOfInterest} that was
-passed to \code{hazard_tmle}.}
+passed to \code{\link{hazard_tmle}}.}
 
 \item{nJ}{The number of unique failure types.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to
+\code{\link{mean_tmle}}.}
 
 \item{ntrt}{The number of \code{trt} values of interest.}
 
@@ -39,12 +40,12 @@ messages to indicate progress.}
 }
 \value{
 The function returns a list that is exactly the same as the input
-        \code{dataList}, but with updated columns corresponding with
-        estimated cumulative incidence at each time and estimated "clever
-        covariates" at each time.
+ \code{dataList}, but with updated columns corresponding with estimated
+ cumulative incidence at each time and estimated "clever covariates" at each
+ time.
 }
 \description{
-A helper function that maps hazard estimates into estimates of cumulative
-incidence and updates the "clever covariates" used by the targeted minimum
-loss-based estimation fluctuation step.
+A helper function that maps hazard estimates into estimates of
+ cumulative incidence and updates the "clever covariates" used by the
+ targeted minimum loss-based estimation fluctuation step.
 }

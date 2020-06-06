@@ -12,8 +12,8 @@
 \item{...}{Other options (not currently used).}
 }
 \value{
-Prints the estimates of cumulative incidence and the diagonal
-        of the estimated covariance matrix.
+Prints the estimates of cumulative incidence and the diagonal of the
+ estimated covariance matrix.
 }
 \description{
 The print method for a timepoints object of class \code{tp.survtmle}

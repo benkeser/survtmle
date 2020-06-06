@@ -214,11 +214,12 @@ ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
 ftype <- round(runif(n, 0, 1))
 
 # Fit 1 - fit hazard_tmle object with GLMs for treatment, censoring, failure
-fit1 <- hazard_tmle(ftime = ftime, ftype = ftype,
-                    trt = trt, adjustVars = adjustVars,
-                    glm.trt = "W1 + W2",
-                    glm.ftime = "trt + W1 + W2",
-                    glm.ctime = "trt + W1 + W2",
-                    returnModels = TRUE)
-
+fit1 <- hazard_tmle(
+  ftime = ftime, ftype = ftype,
+  trt = trt, adjustVars = adjustVars,
+  glm.trt = "W1 + W2",
+  glm.ftime = "trt + W1 + W2",
+  glm.ctime = "trt + W1 + W2",
+  returnModels = TRUE
+)
 }

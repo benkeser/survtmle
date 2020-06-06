@@ -14,9 +14,9 @@ grad(beta, Y, X)
 \item{X}{The design matrix}
 }
 \value{
-Numeric vector of the gradient of the parameter vector
+Numeric vector of the gradient of the parameter vector.
 }
 \description{
-A function that computes the gradient of the for a logistic regression
-model. Used by \code{optim} on occasion.
+A function that computes the gradient of the for a logistic
+ regression model. Used by \code{\link[stats]{optim}} on occasion.
 }

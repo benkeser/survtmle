@@ -5,14 +5,14 @@ utils::globalVariables(c("."))
 #' Computes confidence intervals for a fitted \code{survtmle} object.
 #'
 #' @param object An object of class \code{survtmle}.
-#' @param parm A numeric vector indicating which indexes of \code{object$est} to
-#'  return confidence intervals for (default is to return all).
+#' @param parm A numeric vector indicating which indexes of \code{object$est}
+#'  to return confidence intervals for (default is to return all).
 #' @param level The confidence level requested.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return A matrix with columns giving the lower and upper confidence limits
-#'  for each parameter. These will be labeled as (1-level)/2 and 1 - (1-level)/2
-#'  in percent. The default is 2.5% and 97.5%.
+#'  for each parameter. These will be labeled as (1-level) / 2 and
+#'  1 - (1-level)/2 in percent. The default is 2.5% and 97.5%.
 #'
 #' @export
 #'
@@ -55,19 +55,18 @@ confint.survtmle <- function(object,
   return(ci)
 }
 
-################################################################################
-
 #' confint.tp.survtmle
 #'
 #' Computes confidence intervals for a fitted \code{tp.survtmle} object.
 #'
 #' @param object An object of class \code{tp.survtmle}, as produced by invoking
-#'  the function \code{timepoints} on an object produced by \code{survtmle}, for
-#'  which a confidence interval is to be computed.
-#' @param parm A numeric vector indicating which indexes of \code{object$est} to
-#'  return confidence intervals for (default is to return all). NOT USED NOW.
-#' @param level A \code{numeric} indicating the level of the confidence interval
-#'  to be computed.
+#'  for the function \code{\link{timepoints}} on an object produced by
+#'  \code{\link{survtmle}}, for which a confidence interval is to be computed.
+#' @param parm A numeric vector indicating which indexes of \code{object$est}
+#'  to return confidence intervals for (default is to return all). NOT USED
+#'  NOW.
+#' @param level A \code{numeric} indicating the level of the confidence
+#'  interval to be computed.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return A list of matrices, each with columns giving the lower and upper
@@ -103,7 +102,6 @@ confint.survtmle <- function(object,
 #' # get confidence intervals
 #' ci <- confint(tpfit)
 #' ci
-#' #
 confint.tp.survtmle <- function(object,
                                 parm,
                                 level = 0.95,
@@ -144,15 +142,12 @@ confint.tp.survtmle <- function(object,
   return(ci_tables)
 }
 
-################################################################################
-
 #' format.perc
 #'
-#' Copied from package \code{stats}.
+#' Copied from package \pkg{stats}.
 #'
-#' @param probs Probabilities
-#' @param digits Number of digits to round to
-#
+#' @param probs Probabilities.
+#' @param digits Number of digits to which to round.
 format.perc <- function(probs, digits) {
   paste(format(100 * probs,
     trim = TRUE,

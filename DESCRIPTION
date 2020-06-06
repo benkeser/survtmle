@@ -39,4 +39,4 @@ BugReports: https://github.com/benkeser/survtmle/issues
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.0.1
+RoxygenNote: 7.1.0

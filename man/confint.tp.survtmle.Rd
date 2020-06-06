@@ -8,14 +8,15 @@
 }
 \arguments{
 \item{object}{An object of class \code{tp.survtmle}, as produced by invoking
-the function \code{timepoints} on an object produced by \code{survtmle}, for
-which a confidence interval is to be computed.}
+for the function \code{\link{timepoints}} on an object produced by
+\code{\link{survtmle}}, for which a confidence interval is to be computed.}
 
-\item{parm}{A numeric vector indicating which indexes of \code{object$est} to
-return confidence intervals for (default is to return all). NOT USED NOW.}
+\item{parm}{A numeric vector indicating which indexes of \code{object$est}
+to return confidence intervals for (default is to return all). NOT USED
+NOW.}
 
-\item{level}{A \code{numeric} indicating the level of the confidence interval
-to be computed.}
+\item{level}{A \code{numeric} indicating the level of the confidence
+interval to be computed.}
 
 \item{...}{Other arguments. Not currently used.}
 }
@@ -38,10 +39,12 @@ trt <- rbinom(n, 1, 0.5)
 adjustVars <- data.frame(W1 = rnorm(n), W2 = rnorm(n))
 
 # fit a survtmle object
-fit <- survtmle(ftime = ftime, ftype = ftype, trt = trt,
-                adjustVars = adjustVars, glm.trt = "W1 + W2",
-                glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
-                method = "mean", t0 = 4)
+fit <- survtmle(
+  ftime = ftime, ftype = ftype, trt = trt,
+  adjustVars = adjustVars, glm.trt = "W1 + W2",
+  glm.ftime = "trt + W1 + W2", glm.ctime = "trt + W1 + W2",
+  method = "mean", t0 = 4
+)
 # extract cumulative incidence at each timepoint
 tpfit <- timepoints(fit, times = seq_len(4))
 # get confidence intervals

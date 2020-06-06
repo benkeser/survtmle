@@ -1,76 +1,78 @@
 #' Estimation for the Method of Iterated Means
 #'
-#' This function computes an estimate of the G-computation regression at a
-#' specified time \code{t} using either \code{glm} or \code{SuperLearner}. The
-#' structure of the function is specific to how it is called within
-#' \code{mean_tmle}. In particular, \code{wideDataList} must have a very
-#' specific structure for this function to run properly. The list should consist
-#' of \code{data.frame} objects. The first should have all rows set to their
-#' observed value of \code{trt}. The remaining should in turn have all rows set
-#' to each value of \code{trtOfInterest} in the \code{survtmle} call. Currently
-#' the code requires each \code{data.frame} to have named columns for each name
-#' in \code{names(adjustVars)}, as well as a column named \code{trt}. It must
-#' also have a columns named \code{Nj.Y} where j corresponds with the numeric
-#' values input in \code{allJ}. These are the indicators of failure due to the
-#' various causes before time \code{t} and are necessary for determining who to
-#' include in the regression. Similarly, each \code{data.frame} should have a
-#' column call \code{C.Y} where Y is again \code{t - 1}, so that right censored
-#' observations are not included in the regressions. The function will fit a
-#' regression with \code{Qj.star.t+1} (also needed as a column in
-#' \code{wideDataList}) on functions of \code{trt} and \code{names(adjustVars)}
-#' as specified by \code{glm.ftime} or \code{SL.ftime}.
+#' @description This function computes an estimate of the G-computation
+#'  regression at a specified time \code{t} using \code{\link[stats]{glm}} or
+#'  \code{\link[SuperLearner]{SuperLearner}}. The structure of the function is
+#'  specific to how it is called within \code{\link{mean_tmle}}. In particular,
+#'  \code{wideDataList} must have a very specific structure for this function
+#'  to run properly. The list should consist of \code{data.frame} objects. The
+#'  first should have all rows set to their observed value of \code{trt}. The
+#'  remaining should in turn have all rows set to each value of
+#'  \code{trtOfInterest} in the \code{\link{survtmle}} call. Currently the code
+#'  requires each \code{data.frame} to have named columns for each name in
+#'  \code{names(adjustVars)}, as well as a column named \code{trt}. It must
+#'  also have a columns named \code{Nj.Y} where j corresponds with the numeric
+#'  values input in \code{allJ}. These are the indicators of failure due to the
+#'  various causes before time \code{t} and are necessary for determining who
+#'  to include in the regression. Similarly, each \code{data.frame} should have
+#'  a column call \code{C.Y} where Y is again \code{t - 1}, such that
+#'  right-censored observations are not included in the regressions. The
+#'  function will fit a regression with \code{Qj.star.t+1} (also needed as a
+#'  column in \code{wideDataList}) on functions of \code{trt} and
+#'  \code{names(adjustVars)} as specified by \code{glm.ftime} or
+#'  \code{SL.ftime}.
 #'
 #' @param wideDataList A list of \code{data.frame} objects.
 #' @param t The timepoint at which to compute the iterated mean.
 #' @param whichJ Numeric value indicating the cause of failure for which
-#'        regression should be computed.
+#'  regression should be computed.
 #' @param allJ Numeric vector indicating the labels of all causes of failure.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
-#'        Needed only because the naming convention for the regression if
-#'        \code{t == t0} is different than if \code{t != t0}.
+#'  Needed only because the naming convention for the regression if \code{t ==
+#'  t0} is different than if \code{t != t0}.
 #' @param adjustVars Object of class \code{data.frame} that contains the
-#'        variables to adjust for in the regression.
+#'  variables to adjust for in the regression.
 #' @param SL.ftime A character vector or list specification to be passed to the
-#'        \code{SL.library} argument in the call to \code{SuperLearner} for the
-#'        outcome regression (either cause-specific hazards or conditional
-#'        mean). See \code{?SuperLearner} for more information on how to specify
-#'        valid \code{SuperLearner} libraries. It is expected that the wrappers
-#'        used in the library will play nicely with the input variables, which
-#'        will be called \code{"trt"} and \code{names(adjustVars)}.
+#'  \code{SL.library} argument in the call to \code{SuperLearner} for the
+#'  outcome regression (either cause-specific hazards or conditional mean). See
+#'  the documentation of \code{\link[SuperLearner]{SuperLearner}} for more
+#'  information on how to specify valid \code{SuperLearner} libraries. It is
+#'  expected that the wrappers used in the library will play nicely with the
+#'  input variables, which will be called \code{"trt"} and
+#'  \code{names(adjustVars)}.
 #' @param glm.ftime A character specification of the right-hand side of the
-#'        equation passed to the \code{formula} option of a call to \code{glm}
-#'        for the outcome regression (either cause-specific hazards or
-#'        conditional mean). Ignored if \code{SL.ftime != NULL}. Use
-#'        \code{"trt"} to specify the treatment in this formula (see examples).
-#'        The formula can additionally include any variables found in
-#'        \code{names(adjustVars)}.
+#'  equation passed to the \code{\link[stats]{formula}} option of a call to
+#'  \code{\link[stats]{glm}} for the outcome regression (either cause-specific
+#'  hazards or conditional mean). Ignored if \code{SL.ftime != NULL}. Use
+#'  \code{"trt"} to specify the treatment in this formula (see examples). The
+#'  formula can additionally include any variables found in
+#'  \code{names(adjustVars)}.
 #' @param verbose A boolean indicating whether the function should print
-#'        messages to indicate progress.
+#'  messages to indicate progress.
 #' @param cvControl A \code{list} providing control options to be fed directly
-#'        into calls to \code{SuperLearner}. This should match the contents of
-#'        \code{SuperLearner.CV.control} exactly. For further details, consult
-#'        the documentation of the \pkg{SuperLearner} package. This is passed in
-#'        from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.
-#' @param returnModels A boolean indicating whether to return the
-#'        \code{SuperLearner} or \code{glm} objects used to estimate the
-#'        nuisance parameters. Must be set to \code{TRUE} if the user plans to
-#'        use calls to \code{timepoints} to obtain estimates at times other than
-#'        \code{t0}. See \code{?timepoints} for more information.
+#'  into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
+#'  the contents of \code{SuperLearner.CV.control} exactly. For details,
+#'  consult the documentation of the \pkg{SuperLearner} package. This is passed
+#'  in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
+#'  \code{\link{survtmle}}.
+#' @param returnModels A boolean indicating whether to return the \code{glm} or
+#'  \code{SuperLearner} objects used to estimate the nuisance parameters. Must
+#'  be set to \code{TRUE} to make downstream calls to \code{\link{timepoints}}
+#'  for obtaining estimates at times other than \code{t0}. See documentation of
+#'  \code{\link{timepoints}} for more information.
 #' @param bounds A list of bounds to be used when performing the outcome
-#'        regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
+#'  regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.
 #' @param ... Other arguments. Not currently used.
 #'
-#' @importFrom stats as.formula predict model.matrix optim glm binomial gaussian
+#' @importFrom stats as.formula predict model.matrix optim glm binomial
+#'  gaussian
 #' @importFrom speedglm speedglm
 #' @importFrom SuperLearner SuperLearner
 #'
 #' @return The function then returns a list that is exactly the same as the
-#'         input \code{wideDataList}, but with a column named \code{Qj.t} added
-#'         to it, which is the estimated conditional mean of \code{Qj.star.t+1}
-#'         evaluated at the each of the rows of each \code{data.frame} in
-#'         \code{wideDataList}.
-#'
-
+#'  input \code{wideDataList}, but with a column named \code{Qj.t} added to it,
+#'  which is the estimated conditional mean of \code{Qj.star.t+1} evaluated at
+#'  the each of the rows of each \code{data.frame} in \code{wideDataList}.
 estimateIteratedMean <- function(wideDataList,
                                  t,
                                  whichJ,

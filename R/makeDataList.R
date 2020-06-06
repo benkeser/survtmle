@@ -1,28 +1,30 @@
 #' Convert Short Form Data to List of Wide Form Data
 #'
-#' The function takes a \code{data.frame} of short format right-censored failure
-#' times and reshapes the long format into the wide format needed for calls to
-#' both \code{mean_tmle} and \code{hazard_tmle}. The list returned will have a
-#' number of entries equal to \code{length(trtOfInterest) + 1}. The first will
-#' have number of rows for each observation equal to the \code{ftime}
-#' corresponding to that observation. The subsequent entries will have \code{t0}
-#' rows for each observation and will set \code{trt} column equal to each value
-#' of \code{trtOfInterest} in turn.
+#' @description The function takes a \code{data.frame} of short format
+#'  right-censored failure times and reshapes the long format into the wide
+#'  format needed for calls to both \code{\link{mean_tmle}} and
+#'  \code{\link{hazard_tmle}}. The list returned will have a number of entries
+#'  equal to \code{length(trtOfInterest) + 1}. The first will have number of
+#'  rows for each observation equal to the \code{ftime} corresponding to that
+#'  observation. The subsequent entries will have \code{t0} rows for each
+#'  observation and will set \code{trt} column equal to each value of
+#'  \code{trtOfInterest} in turn.
 #'
 #' @param dat The short form \code{data.frame}
-#' @param J The unique values of \code{ftype} passed to \code{survtmle}.
+#' @param J The unique values of \code{ftype} passed to \code{\link{survtmle}}.
 #' @param ntrt The number of \code{trt} values of interest.
 #' @param uniqtrt The unique values of \code{trtOfInterest} passed to
-#'        \code{mean_tmle}.
-#' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
+#'  \code{\link{mean_tmle}}.
+#' @param t0 The timepoint at which \code{\link{survtmle}} was called to
+#'  evaluate.
 #' @param bounds Minimum and maximum values to be placed on the \code{ftype}.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom plyr join
 #'
 #' @return A list of \code{data.frame} objects as described above.
+#'
 #' @export
-
 makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   n <- nrow(dat)
   dataList <- vector(mode = "list", length = ntrt + 1)
@@ -32,7 +34,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
   dataList[[1]] <- dat[rep(1:nrow(dat), rankftime), ]
   for (j in J) {
     dataList[[1]][[paste0("N", j)]] <- 0
-    dataList[[1]][[paste0("N", j)]][cumsum(rankftime)] <- as.numeric(dat$ftype == j)
+    dataList[[1]][[paste0("N", j)]][cumsum(rankftime)] <-
+      as.numeric(dat$ftype == j)
   }
   dataList[[1]]$C <- 0
   dataList[[1]]$C[cumsum(rankftime)] <- as.numeric(dat$ftype == 0)
@@ -88,7 +91,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
     for (j in J) {
       typejEvents <- dat$id[which(dat$ftype == j)]
       dataList[[i + 1]][[paste0("N", j)]] <- 0
-      dataList[[i + 1]][[paste0("N", j)]][dataList[[i + 1]]$id %in% typejEvents &
+      dataList[[i + 1]][[paste0("N", j)]][dataList[[i + 1]]$id %in%
+                                          typejEvents &
         dataList[[i + 1]]$t >= dataList[[i + 1]]$ftime] <- 1
     }
     censEvents <- dat$id[which(dat$ftype == 0)]

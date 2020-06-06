@@ -19,46 +19,48 @@ estimateHazards(
 )
 }
 \arguments{
-\item{dataList}{A list of \code{data.frame} objects.}
+\item{dataList}{A \code{list} of \code{data.frame} objects.}
 
 \item{J}{Numeric vector indicating the labels of all causes of failure.}
 
-\item{adjustVars}{Object of class \code{data.frame} that contains the
-variables to adjust for in the regression.}
+\item{adjustVars}{Object of class \code{data.frame} containing the variables
+to adjust for in the regression.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
-\code{SL.library} argument in the call to \code{SuperLearner} for the
-outcome regression (either cause-specific hazards or conditional
-mean). See \code{?SuperLearner} for more information on how to specify
-valid \code{SuperLearner} libraries. It is expected that the wrappers
-used in the library will play nicely with the input variables, which
-will be called \code{"trt"} and \code{names(adjustVars)}.}
+\code{SL.library} argument of \code{\link[SuperLearner]{SuperLearner}} for
+the outcome regression (either cause-specific hazards or conditional mean).
+See the documentation of \code{\link[SuperLearner]{SuperLearner}} for more
+information on how to specify valid \code{SuperLearner} libraries. It is
+expected that the wrappers used in the library will play nicely with the
+input variables, which will be called \code{"trt"} and
+\code{names(adjustVars)}.}
 
 \item{glm.ftime}{A character specification of the right-hand side of the
-equation passed to the \code{formula} option of a call to \code{glm}
-for the outcome regression (either using cause-specific hazards or
-conditional mean). Ignored if \code{SL.ftime != NULL}. Use
-\code{"trt"} to specify the treatment in this formula (see examples).
-The formula can additionally include any variables found in
+equation passed to the \code{\link[stats]{formula}} option of a call to
+\code{\link[stats]{glm}} for the outcome regression (either using
+cause-specific hazards or conditional mean). Ignored if \code{SL.ftime !=
+NULL}. Use \code{"trt"} to specify the treatment in this formula (see
+examples). The formula can additionally include any variables found in
 \code{names(adjustVars)}.}
 
 \item{glm.family}{The type of regression to be performed if fitting GLMs in
-the estimation and fluctuation procedures. The default is "binomial"
-for logistic regression. Only change this from the default if there
-are justifications that are well understood. This is inherited from
-the calling function (either \code{mean_tmle} or \code{hazard_tmle}).}
+the estimation and fluctuation procedures. The default is "binomial" for
+logistic regression. Only change this from the default if there are
+justifications that are well understood. This is inherited from the calling
+function (either \code{\link{mean_tmle}} or \code{\link{hazard_tmle}}).}
 
 \item{cvControl}{A \code{list} providing control options to be fed directly
-into calls to \code{SuperLearner}. This should match the contents of
-\code{SuperLearner.CV.control} exactly. For further details, consult
-the documentation of the \pkg{SuperLearner} package. This is passed in
-from \code{mean_tmle} or \code{hazard_tmle} via \code{survtmle}.}
+into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
+the contents of \code{SuperLearner.CV.control} exactly. For details,
+consult the documentation of the \pkg{SuperLearner} package. This is passed
+in from \code{\link{mean_tmle}} or \code{\link{hazard_tmle}} via
+\code{\link{survtmle}}.}
 
-\item{returnModels}{A boolean indicating whether to return the
-\code{SuperLearner} or \code{glm} objects used to estimate the
-nuisance parameters. Must be set to \code{TRUE} if the user plans to
-use calls to \code{timepoints} to obtain estimates at times other than
-\code{t0}. See \code{?timepoints} for more information.}
+\item{returnModels}{A boolean indicating whether to return the \code{glm} or
+\code{SuperLearner} objects used to estimate the nuisance parameters. Must
+be set to \code{TRUE} to make downstream calls to \code{\link{timepoints}}
+for obtaining estimates at times other than \code{t0}. See documentation of
+\code{\link{timepoints}} for more information.}
 
 \item{bounds}{A list of bounds... TODO: Add more description here.}
 
@@ -69,31 +71,32 @@ messages to indicate progress.}
 }
 \value{
 The function returns a list that is exactly the same as the input
-        \code{dataList}, but with additional columns corresponding to the
-        hazard, pseudo-hazard, and the total hazard for summed over all
-        causes \code{k < j}.
+ \code{dataList}, but with additional columns corresponding to the hazard
+ pseudo-hazard, and the total hazard summed over all causes \code{k < j}.
 }
 \description{
-This function computes an estimate of the cause-specific hazard functions
-over all times using either \code{glm} or \code{SuperLearner}. The structure
-of the function is specific to how it is called within \code{hazard_tmle}. In
-particular, \code{dataList} must have a very specific structure for this
-function to run properly. The list should consist of \code{data.frame}
-objects. The first will have the number of rows for each observation equal to
-the \code{ftime} corresponding to that observation. The subsequent entries
-will have \code{t0} rows for each observation and will set \code{trt} column
-equal to each value of \code{trtOfInterest} in turn. The function uses the
-first entry in \code{dataList} to iteratively fit hazard regression models
-for each cause of failure. Thus, this \code{data.frame} needs to have a
-column called \code{Nj} for each value of j in \code{J}. The first fit
-estimates the hazard of \code{min(J)}, while subsequent fits estimate the
-pseudo-hazard of all other values of j, where pseudo-hazard is used to mean
-the probability of a failure due to type j at a particular timepoint given
-no failure of any type at any previous timepoint AND no failure due to type
-\code{k < j} at a particular timepoint. The hazard estimates of causes j'
-can then be used to map this pseudo-hazard back into the hazard at a
-particular time. This is nothing more than the re-framing of a conditional
-multinomial probability into a series of conditional binomial probabilities.
-This structure ensures that no strata have estimated hazards that sum to more
-than one over all possible causes of failure at a particular timepoint.
+This function computes an estimate of the cause-specific hazard
+ functions over all times using either \code{\link[stats]{glm}} or
+ \code{\link[SuperLearner]{SuperLearner}}. The structure of the function is
+ specific to how it is called within \code{\link{hazard_tmle}}. In
+ particular, \code{dataList} must have a very specific structure for this
+ function to run properly. The list should consist of \code{data.frame}
+ objects. The first will have the number of rows for each observation equal
+ to the \code{ftime} corresponding to that observation. Subsequent entries
+ will have \code{t0} rows for each observation and will set the \code{trt}
+ column equal to each value of \code{trtOfInterest} in turn. The function
+ uses the first entry in \code{dataList} to iteratively fit hazard
+ regression models for each cause of failure. Thus, this \code{data.frame}
+ needs to have a column called \code{Nj} for each value of j in \code{J}.
+ The first fit estimates the hazard of \code{min(J)}, while subsequent fits
+ estimate the pseudo-hazard of all other values of j, where pseudo-hazard is
+ used to mean the probability of a failure due to type j at a particular
+ timepoint given no failure of any type at any previous timepoint AND no
+ failure due to type \code{k < j} at a particular timepoint. The hazard
+ estimates of causes j' can then be used to map this pseudo-hazard back into
+ the hazard at a particular time. This is nothing more than the re-framing
+ of a conditional multinomial probability into a series of conditional
+ binomial probabilities. This structure ensures that no strata have
+ estimated hazards that sum to more than one over all possible causes of
+ failure at a particular timepoint.
 }

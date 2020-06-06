@@ -1,27 +1,26 @@
 #' Update TMLEs for Hazard to Cumulative Incidence
 #'
-#' A helper function that maps hazard estimates into estimates of cumulative
-#' incidence and updates the "clever covariates" used by the targeted minimum
-#' loss-based estimation fluctuation step.
+#' @description A helper function that maps hazard estimates into estimates of
+#'  cumulative incidence and updates the "clever covariates" used by the
+#'  targeted minimum loss-based estimation fluctuation step.
 #'
 #' @param dataList A list of \code{data.frame} objects.
 #' @param allJ Numeric vector indicating the labels of all causes of failure.
 #' @param ofInterestJ Numeric vector indicating \code{ftypeOfInterest} that was
-#'        passed to \code{hazard_tmle}.
+#'  passed to \code{\link{hazard_tmle}}.
 #' @param nJ The number of unique failure types.
-#' @param uniqtrt The values of \code{trtOfInterest} passed to \code{mean_tmle}.
+#' @param uniqtrt The values of \code{trtOfInterest} passed to
+#'  \code{\link{mean_tmle}}.
 #' @param ntrt The number of \code{trt} values of interest.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A boolean indicating whether the function should print
-#'        messages to indicate progress.
+#'  messages to indicate progress.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return The function returns a list that is exactly the same as the input
-#'         \code{dataList}, but with updated columns corresponding with
-#'         estimated cumulative incidence at each time and estimated "clever
-#'         covariates" at each time.
-#'
-
+#'  \code{dataList}, but with updated columns corresponding with estimated
+#'  cumulative incidence at each time and estimated "clever covariates" at each
+#'  time.
 updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
                             verbose, ...) {
   dataList[2:(ntrt + 1)] <- lapply(dataList[2:(ntrt + 1)], function(x, allJ) {
@@ -36,7 +35,8 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
     for (j in ofInterestJ) {
       # calculate CIF at time t
-      x[[paste0("F", j, ".t")]] <- unlist(by(x[, paste0("Q", j, "Haz")] * S.tminus1, x$id, FUN = cumsum))
+      x[[paste0("F", j, ".t")]] <- unlist(by(x[, paste0("Q", j, "Haz")] *
+                                             S.tminus1, x$id, FUN = cumsum))
     }
     x
   }, allJ = allJ)
@@ -47,7 +47,8 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
     Fj.t0.allZ <- vector(mode = "list", length = ntrt)
     for (i in 1:ntrt) {
       t0.mod <- dataList[[i + 1]]$ftime[1]
-      Fj.t0.allZ[[i]] <- dataList[[i + 1]][[paste0("F", j, ".t")]][dataList[[i + 1]]$t == t0.mod]
+      Fj.t0.allZ[[i]] <-
+        dataList[[i + 1]][[paste0("F", j, ".t")]][dataList[[i + 1]]$t == t0.mod]
     }
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
@@ -89,8 +90,8 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
       by = merge_vars
     )
   } else {
-    # the next times it's called those columns will exist but we want them replaced
-    # with the values from dataList[[>1]]
+    # the next times it's called those columns will exist but we want them
+    # replaced with the values from dataList[[>1]]
     dataList[[1]] <- merge(
       x = dataList[[1]][, -colInd],
       y = Reduce(
@@ -118,8 +119,10 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   dataList <- lapply(dataList, function(x, allJ) {
     for (j in allJ) {
       if (length(allJ) > 1) {
-        x[[paste0("hazNot", j)]] <- rowSums(cbind(rep(0, nrow(x)), x[, paste0("Q", allJ[allJ != j], "Haz")]))
-        x[[paste0("hazNot", j)]][x[[paste0("hazNot", j)]] == 1] <- 1 - .Machine$double.neg.eps
+        x[[paste0("hazNot", j)]] <- 
+          rowSums(cbind(rep(0, nrow(x)), x[, paste0("Q", allJ[allJ != j], "Haz")]))
+        x[[paste0("hazNot", j)]][x[[paste0("hazNot", j)]] == 1] <-
+          1 - .Machine$double.neg.eps
       } else {
         x[[paste0("hazNot", j)]] <- 0
       }

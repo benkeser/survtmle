@@ -14,18 +14,18 @@ appropriate calls to \code{survtmle} and \code{timepoints}}
 
 \item{type}{\code{character} describing whether to provide a plot of raw
 ("raw") or monotonic ("iso") estimates in the resultant step function plot,
-with the latter being computed by a call to \code{stats::isoreg}}
+with the latter being computed by a call to \code{\link[stats]{isoreg}}}
 
-\item{pal}{A \code{ggplot2} palette object from the \code{ggsci} package. The
-default of \code{scale_color_lancet} is generally appropriate for medical
-and epidemiologic applications, though there are situations in which one
-might opt to change this. Note that this can also be overridden in the
-resultant plot object using standard \code{ggplot2} semantics.}
+\item{pal}{A \code{ggplot2} palette object from the \pkg{ggsci} package. The
+default of \code{\link[ggsci]{scale_color_lancet}} is generally appropriate
+for medical and epidemiologic applications, though there are situations in
+which one might opt to change this. Note that this can also be overridden
+in the resultant plot object using standard \pkg{ggplot2} semantics.}
 }
 \value{
 object of class \code{ggplot} containing a step function plot of the
- raw or smoothened point estimates of cumulative incidence across a series of
- timepoints of interest.
+ raw or smoothened point estimates of cumulative incidence across a series
+ of timepoints of interest.
 }
 \description{
 Step function plots for both raw and smoothed (monotonic) estimates, the
@@ -38,15 +38,17 @@ n <- 100
 t_0 <- 10
 W <- data.frame(W1 = runif(n), W2 = rbinom(n, 1, 0.5))
 A <- rbinom(n, 1, 0.5)
-T <- rgeom(n,plogis(-4 + W$W1 * W$W2 - A)) + 1
+T <- rgeom(n, plogis(-4 + W$W1 * W$W2 - A)) + 1
 C <- rgeom(n, plogis(-6 + W$W1)) + 1
 ftime <- pmin(T, C)
 ftype <- as.numeric(ftime == T)
 suppressWarnings(
-  fit <- survtmle(ftime = ftime, ftype = ftype,
-                  adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
-                  trt = A, glm.ctime = "W1 + t", method = "hazard",
-                  verbose = TRUE,  t0 = t_0, maxIter = 2)
+  fit <- survtmle(
+    ftime = ftime, ftype = ftype,
+    adjustVars = W, glm.ftime = "I(W1*W2) + trt + t",
+    trt = A, glm.ctime = "W1 + t", method = "hazard",
+    verbose = TRUE, t0 = t_0, maxIter = 2
+  )
 )
 tpfit <- timepoints(fit, times = seq_len(t_0))
 plot(tpfit)

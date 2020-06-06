@@ -16,9 +16,10 @@ grad_offset(beta, Y, H, offset = NULL)
 \item{offset}{The offset vector}
 }
 \value{
-Numeric vector of the gradient of the parameter vector
+Numeric vector of the gradient of the parameter vector.
 }
 \description{
-A function that computes the gradient of the for a logistic regression
-model with an offset term. Used by \code{optim} on occasion.
+A function that computes the gradient of the for a logistic
+ regression model with an offset term. Used by \code{\link[stats]{optim}} on
+ occasion.
 }

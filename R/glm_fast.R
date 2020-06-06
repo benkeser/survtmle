@@ -1,25 +1,25 @@
 #' Wrapper for faster Generalized Linear Models
 #'
-#' A convenience utility to fit regression models more quickly in the main
-#' internal functions for estimation, which usually require logistic regression.
-#' Use of \code{speedglm} appears to provide roughly an order of magnitude
-#' improvement in speed when compared to \code{glm} in custom benchmarks.
+#' @description A convenience utility to fit regression models more quickly in
+#'  the main internal functions for estimation, which usually require logistic
+#'  regression. Use of \code{\link[speedglm]{speedglm}} appears to provide
+#'  roughly an order of magnitude improvement in speed when compared to
+#'  \code{\link[stats]{glm}} in custom benchmarks.
 #'
-#' @param reg_form Object of class \code{formula} indicating the regression to
-#'        be fit.
+#' @param reg_form Object of class \code{\link[stats]{formula}} indicating the
+#'  regression to be fit.
 #' @param data Object of class \code{data.frame} containing the data.
-#' @param family Object of class \code{family} from package \code{stats}
-#'        indicating the error distribution. Appropriate options are limited to
-#'        \code{gaussian} and \code{binomial}.
-#' @param ... Additional arguments passed to \code{glm} or \code{speedglm}.
+#' @param family Object of class \code{\link[stats]{family}} from \pkg{stats}
+#'  indicating the error distribution. Appropriate options are limited to
+#'  \code{\link[stats]{gaussian}} and \code{\link[stats]{binomial}}.
+#' @param ... Additional arguments passed to \code{\link[stats]{glm}} or
+#'  \code{\link[speedglm]{speedglm}}.
 #'
 #' @importFrom speedglm speedglm
 #' @importFrom stats glm gaussian binomial
 #' @importFrom stringr str_split
 #'
 #' @return Object of class \code{glm} or \code{speedglm}.
-#'
-
 fast_glm <- function(reg_form, data, family, ...) {
   # a quick type check for safety
   stopifnot(
