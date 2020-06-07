@@ -7,10 +7,10 @@
 \method{format}{perc}(probs, digits)
 }
 \arguments{
-\item{probs}{Probabilities}
+\item{probs}{Probabilities.}
 
-\item{digits}{Number of digits to round to}
+\item{digits}{Number of digits to which to round.}
 }
 \description{
-Copied from package \code{stats}.
+Copied from package \pkg{stats}.
 }

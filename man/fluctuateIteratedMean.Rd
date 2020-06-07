@@ -21,7 +21,8 @@ fluctuateIteratedMean(
 
 \item{t}{The timepoint at which to compute the iterated mean.}
 
-\item{uniqtrt}{The values of \code{trtOfInterest} passed to \code{mean_tmle}.}
+\item{uniqtrt}{The values of \code{trtOfInterest} passed to
+\code{\link{mean_tmle}}.}
 
 \item{whichJ}{Numeric value indicating the cause of failure for which
 regression should be computed.}
@@ -32,9 +33,9 @@ regression should be computed.}
 Needed only because the naming convention for the regression if
 \code{t == t0} is different than if \code{t != t0}.}
 
-\item{Gcomp}{A boolean indicating whether \code{mean_tmle} was called to
-evaluate the G-computation estimator, in which case this function does
-nothing but re-label columns.}
+\item{Gcomp}{A \code{logical} indicating whether \code{\link{mean_tmle}} was
+called to evaluate the G-computation estimator, in which case this function
+does nothing but re-label columns.}
 
 \item{bounds}{A list of bounds to be used when performing the outcome
 regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.}
@@ -43,38 +44,39 @@ regression (Q) with the Super Learner algorithm. NOT YET IMPLEMENTED.}
 }
 \value{
 The function then returns a list that is exactly the same as the
-        input \code{wideDataList}, but with a column named \code{Qj.star.t}
-        added to it, which is the fluctuated conditional mean of
-        \code{Qj.star.t+1} evaluated at the each of the rows of each
-        \code{data.frame} in \code{wideDataList}.
+ input \code{wideDataList}, but with a column named \code{Qj.star.t} added
+ to it, which is the fluctuated conditional mean of \code{Qj.star.t+1}
+ evaluated at the each of the rows of each \code{data.frame} in
+ \code{wideDataList}.
 }
 \description{
-This function performs a fluctuation of an initial estimate of the
-G-computation regression at a specified time \code{t} using a call to
-\code{glm} (i.e., a logistic submodel) or a call to \code{optim} (if bounds
-are specified). The structure of the function is specific to how it is called
-within \code{mean_tmle}. In particular, \code{wideDataList} must have a very
-specific structure for this function to run properly. The list should consist
-of \code{data.frame} objects. The first should have all rows set to their
-observed value of \code{trt}. The remaining should in turn have all rows set
-to each value of \code{trtOfInterest} in the \code{survtmle} call. The latter
-will be used to obtain predictions that are then mapped into the estimates of
-the cumulative incidence function at \code{t0}. Currently the code requires
-each \code{data.frame} to have named columns for each name in
-\code{names(adjustVars)}, as well as a column named \code{trt}. It must also
-have a columns named \code{Nj.Y} where j corresponds with the numeric values
-input in \code{allJ}. These are the indicators of failure due to the various
-causes before time \code{t} and are necessary for determining who to include
-in the fluctuation regression. Similarly, each \code{data.frame} should have
-a column call \code{C.Y} where Y is again \code{t-1}, so that right censored
-observations are not included in the regressions. The function will fit a
-logistic regression with \code{Qj.star.t + 1} as outcome (also needed as a
-column in \code{wideDataList}) with offset \code{qlogis(Qj.star.t)} and
-number of additional covariates given by \code{length(trtOfInterest)}. These
-additional covariates should be columns in the each \code{data.frame} in
-\code{wideDataList} called \code{H.z.t} where \code{z} corresponds to a each
-unique value of \code{trtOfInterest}. The function returns the same
-\code{wideDataList}, but with a column called \code{Qj.star.t} added to it,
-which is the fluctuated initial regression estimate evaluated at the observed
-data points.
+This function performs a fluctuation of an initial estimate of
+ the G-computation regression at a specified time \code{t} using a call to
+ \code{\link[stats]{glm}} (i.e., a logistic submodel) or a call to
+ \code{\link[stats]{optim}} (if bounds are specified). The structure of the
+ function is specific to how it is called within \code{\link{mean_tmle}}. In
+ particular, \code{wideDataList} must have a very specific structure for
+ this function to run properly. The list should consist of \code{data.frame}
+ objects. The first should have all rows set to their observed value of
+ \code{trt}. The remaining should in turn have all rows set to each value of
+ \code{trtOfInterest} in the \code{\link{survtmle}} call. The latter will be
+ used to obtain predictions that are then mapped into the estimates of the
+ cumulative incidence function at \code{t0}. Currently the code requires
+ each \code{data.frame} to have named columns for each name in
+ \code{names(adjustVars)}, as well as a column named \code{trt}. It must
+ also have a columns named \code{Nj.Y} where j corresponds with the numeric
+ values input in \code{allJ}. These are the indicators of failure due to the
+ various causes before time \code{t} and are necessary for determining who
+ to include in the fluctuation regression. Similarly, each \code{data.frame}
+ should have a column call \code{C.Y} where Y is again \code{t-1}, so that
+ right-censored observations are not included in the regressions. The
+ function will fit a logistic regression with \code{Qj.star.t + 1} as
+ outcome (also needed as a column in \code{wideDataList}) with offset
+ \code{qlogis(Qj.star.t)} and number of additional covariates given by
+ \code{length(trtOfInterest)}. These additional covariates should be columns
+ in the each \code{data.frame} in \code{wideDataList} called \code{H.z.t}
+ where \code{z} corresponds to a each unique value of \code{trtOfInterest}.
+ The function returns the same \code{wideDataList}, but with a column called
+ \code{Qj.star.t} added to it, which is the fluctuated initial regression
+ estimate evaluated at the observed data points.
 }

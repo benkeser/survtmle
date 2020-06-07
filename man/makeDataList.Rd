@@ -9,14 +9,15 @@ makeDataList(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...)
 \arguments{
 \item{dat}{The short form \code{data.frame}}
 
-\item{J}{The unique values of \code{ftype} passed to \code{survtmle}.}
+\item{J}{The unique values of \code{ftype} passed to \code{\link{survtmle}}.}
 
 \item{ntrt}{The number of \code{trt} values of interest.}
 
 \item{uniqtrt}{The unique values of \code{trtOfInterest} passed to
-\code{mean_tmle}.}
+\code{\link{mean_tmle}}.}
 
-\item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
+\item{t0}{The timepoint at which \code{\link{survtmle}} was called to
+evaluate.}
 
 \item{bounds}{Minimum and maximum values to be placed on the \code{ftype}.}
 
@@ -26,12 +27,13 @@ makeDataList(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...)
 A list of \code{data.frame} objects as described above.
 }
 \description{
-The function takes a \code{data.frame} of short format right-censored failure
-times and reshapes the long format into the wide format needed for calls to
-both \code{mean_tmle} and \code{hazard_tmle}. The list returned will have a
-number of entries equal to \code{length(trtOfInterest) + 1}. The first will
-have number of rows for each observation equal to the \code{ftime}
-corresponding to that observation. The subsequent entries will have \code{t0}
-rows for each observation and will set \code{trt} column equal to each value
-of \code{trtOfInterest} in turn.
+The function takes a \code{data.frame} of short format
+ right-censored failure times and reshapes the long format into the wide
+ format needed for calls to both \code{\link{mean_tmle}} and
+ \code{\link{hazard_tmle}}. The list returned will have a number of entries
+ equal to \code{length(trtOfInterest) + 1}. The first will have number of
+ rows for each observation equal to the \code{ftime} corresponding to that
+ observation. The subsequent entries will have \code{t0} rows for each
+ observation and will set \code{trt} column equal to each value of
+ \code{trtOfInterest} in turn.
 }

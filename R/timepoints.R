@@ -1,27 +1,30 @@
 #' Evaluate Results over Time Points of Interest
 #'
-#' Wrapper function for \code{survtmle} that takes a fitted \code{survtmle}
-#' object and computes the TMLE estimated incidence for all times specified in
-#' the \code{times} argument. For this function to work, the original call to
-#' \code{survtmle} should have been executed with \code{returnModels = TRUE}.
-#' This allows the function to be more efficient than repeated calls to
-#' \code{survtmle} in that \code{timepoints} will use fitted censoring (and
-#' hazard if \code{method="hazard"} was used in the original call) estimates. It
-#' is therefore advisable that the vector \code{times} used in the call to
-#' \code{timepoints} not include times beyond the time specified in \code{t0} in
-#' the original call to \code{survtmle}. This can be ensured be making the
-#' original call to \code{survtmle} with \code{t0 = max(ftime)}.
+#' @description Wrapper function for \code{\link{survtmle}} that takes a fitted
+#'  \code{survtmle} object and computes the TMLE estimated incidence for all
+#'  times specified in the \code{times} argument. For this function to work,
+#'  the original call to \code{\link{survtmle}} should have been executed with
+#'  \code{returnModels = TRUE}. This allows the function to be more efficient
+#'  than repeated calls to \code{\link{survtmle}} in that
+#'  \code{\link{timepoints}} will use fitted censoring (and hazard if
+#'  \code{method="hazard"} was used in the original call) estimates. It is
+#'  therefore advisable that the vector \code{times} used in the call to
+#'  \code{\link{timepoints}} not include times beyond the time specified in
+#'  \code{t0} in the original call to \code{\link{survtmle}}. This can be
+#'  ensured be making the original call to \code{\link{survtmle}} with
+#'  \code{t0 = max(ftime)}.
 #'
-#' @param object A fitted \code{survtmle} object with \code{returnModels = TRUE}
+#' @param object A fitted \code{survtmle} object with
+#'  \code{returnModels = TRUE}
 #' @param times The times to evaluate incidence.
 #' @param returnModels Should the function return fitted GLM or Super Learner
-#'        models at each timepoint. If set to \code{TRUE}, memory issues could
-#'        arise depending on the number of timepoints specified and the size of
-#'        the Super Learner library.
+#'  models at each timepoint. If set to \code{TRUE}, memory issues could arise
+#'  depending on the number of timepoints specified and the size of the Super
+#'  Learner library.
 #'
-#' @return An object of class \code{tp.survtmle} with number of entries equal to
-#'         \code{length(times)}. Each entry is named "tX", where X denotes a
-#'         single value of \code{times}.
+#' @return An object of class \code{tp.survtmle} with number of entries equal
+#'  to \code{length(times)}. Each entry is named "tX", where X denotes a single
+#'  value of \code{times}.
 #'
 #' @export
 #'

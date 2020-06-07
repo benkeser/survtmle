@@ -14,8 +14,10 @@ LogLikelihood(beta, X, Y)
 \item{Y}{The outcome.}
 }
 \value{
-Numeric of the summed negative log-likelihood loss over observations.
+Numeric of the summed negative log-likelihood loss over
+ observations.
 }
 \description{
-Computes the log-likelihood for a model. Used by \code{optim} on occasion.
+Computes the log-likelihood for a model. Used by
+ \code{\link[stats]{optim}} on occasion.
 }

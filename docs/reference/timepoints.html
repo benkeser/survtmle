@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -36,18 +40,19 @@
 
 
 <meta property="og:title" content="Evaluate Results over Time Points of Interest — timepoints" />
-<meta property="og:description" content="Wrapper function for survtmle that takes a fitted survtmle
-object and computes the TMLE estimated incidence for all times specified in
-the times argument. For this function to work, the original call to
-survtmle should have been executed with returnModels = TRUE.
-This allows the function to be more efficient than repeated calls to
-survtmle in that timepoints will use fitted censoring (and
-hazard if method=&quot;hazard&quot; was used in the original call) estimates. It
-is therefore advisable that the vector times used in the call to
-timepoints not include times beyond the time specified in t0 in
-the original call to survtmle. This can be ensured be making the
-original call to survtmle with t0 = max(ftime)." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:description" content="Wrapper function for survtmle that takes a fitted
+ survtmle object and computes the TMLE estimated incidence for all
+ times specified in the times argument. For this function to work,
+ the original call to survtmle should have been executed with
+ returnModels = TRUE. This allows the function to be more efficient
+ than repeated calls to survtmle in that
+ timepoints will use fitted censoring (and hazard if
+ method=&quot;hazard&quot; was used in the original call) estimates. It is
+ therefore advisable that the vector times used in the call to
+ timepoints not include times beyond the time specified in
+ t0 in the original call to survtmle. This can be
+ ensured be making the original call to survtmle with
+ t0 = max(ftime)." />
 
 
 
@@ -65,7 +70,7 @@ original call to survtmle with t0 = max(ftime)." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,7 +84,7 @@ original call to survtmle with t0 = max(ftime)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survtmle</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -112,7 +117,7 @@ original call to survtmle with t0 = max(ftime)." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/benkeser/survtmle">
+  <a href="https://github.com/benkeser/survtmle/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -136,17 +141,19 @@ original call to survtmle with t0 = max(ftime)." />
     </div>
 
     <div class="ref-description">
-    <p>Wrapper function for <code>survtmle</code> that takes a fitted <code>survtmle</code>
-object and computes the TMLE estimated incidence for all times specified in
-the <code>times</code> argument. For this function to work, the original call to
-<code>survtmle</code> should have been executed with <code>returnModels = TRUE</code>.
-This allows the function to be more efficient than repeated calls to
-<code>survtmle</code> in that <code>timepoints</code> will use fitted censoring (and
-hazard if <code>method="hazard"</code> was used in the original call) estimates. It
-is therefore advisable that the vector <code>times</code> used in the call to
-<code>timepoints</code> not include times beyond the time specified in <code>t0</code> in
-the original call to <code>survtmle</code>. This can be ensured be making the
-original call to <code>survtmle</code> with <code>t0 = max(ftime)</code>.</p>
+    <p>Wrapper function for <code><a href='survtmle.html'>survtmle</a></code> that takes a fitted
+ <code>survtmle</code> object and computes the TMLE estimated incidence for all
+ times specified in the <code>times</code> argument. For this function to work,
+ the original call to <code><a href='survtmle.html'>survtmle</a></code> should have been executed with
+ <code>returnModels = TRUE</code>. This allows the function to be more efficient
+ than repeated calls to <code><a href='survtmle.html'>survtmle</a></code> in that
+ <code>timepoints</code> will use fitted censoring (and hazard if
+ <code>method="hazard"</code> was used in the original call) estimates. It is
+ therefore advisable that the vector <code>times</code> used in the call to
+ <code>timepoints</code> not include times beyond the time specified in
+ <code>t0</code> in the original call to <code><a href='survtmle.html'>survtmle</a></code>. This can be
+ ensured be making the original call to <code><a href='survtmle.html'>survtmle</a></code> with
+ <code>t0 = max(ftime)</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>timepoints</span>(<span class='no'>object</span>, <span class='no'>times</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -156,7 +163,8 @@ original call to <code>survtmle</code> with <code>t0 = max(ftime)</code>.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A fitted <code>survtmle</code> object with <code>returnModels = TRUE</code></p></td>
+      <td><p>A fitted <code>survtmle</code> object with
+<code>returnModels = TRUE</code></p></td>
     </tr>
     <tr>
       <th>times</th>
@@ -165,17 +173,17 @@ original call to <code>survtmle</code> with <code>t0 = max(ftime)</code>.</p>
     <tr>
       <th>returnModels</th>
       <td><p>Should the function return fitted GLM or Super Learner
-models at each timepoint. If set to <code>TRUE</code>, memory issues could
-arise depending on the number of timepoints specified and the size of
-the Super Learner library.</p></td>
+models at each timepoint. If set to <code>TRUE</code>, memory issues could arise
+depending on the number of timepoints specified and the size of the Super
+Learner library.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>tp.survtmle</code> with number of entries equal to
-        <code><a href='https://rdrr.io/r/base/length.html'>length(times)</a></code>. Each entry is named "tX", where X denotes a
-        single value of <code>times</code>.</p>
+    <p>An object of class <code>tp.survtmle</code> with number of entries equal
+ to <code><a href='https://rdrr.io/r/base/length.html'>length(times)</a></code>. Each entry is named "tX", where X denotes a single
+ value of <code>times</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simulate data</span>
@@ -187,11 +195,13 @@ the Super Learner library.</p></td>
 <span class='no'>adjustVars</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>W1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>), <span class='kw'>W2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>))
 
 <span class='co'># fit an initial survtmle object with t0=max(ftime)</span>
-<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='survtmle.html'>survtmle</a></span>(<span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
-               <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
-               <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
-               <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>method</span><span class='kw'>=</span><span class='st'>"mean"</span>,
-               <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='survtmle.html'>survtmle</a></span>(
+  <span class='kw'>ftime</span> <span class='kw'>=</span> <span class='no'>ftime</span>, <span class='kw'>ftype</span> <span class='kw'>=</span> <span class='no'>ftype</span>,
+  <span class='kw'>trt</span> <span class='kw'>=</span> <span class='no'>trt</span>, <span class='kw'>adjustVars</span> <span class='kw'>=</span> <span class='no'>adjustVars</span>,
+  <span class='kw'>glm.trt</span> <span class='kw'>=</span> <span class='st'>"1"</span>, <span class='kw'>glm.ftime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>,
+  <span class='kw'>glm.ctime</span> <span class='kw'>=</span> <span class='st'>"trt + W1 + W2"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
+  <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
 <span class='co'># call timepoints to get cumulative incidence estimates at each timepoint</span>
 <span class='no'>allTimes</span> <span class='kw'>&lt;-</span> <span class='fu'>timepoints</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>fm</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>returnModels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
@@ -224,17 +234,12 @@ the Super Learner library.</p></td>
 #&gt; 1 1  6.160159e-05  4.270541e-03 -8.875712e-05 -1.167929e-03
 #&gt; 0 2 -9.378340e-04 -8.875712e-05  3.664619e-03  1.676504e-05
 #&gt; 1 2  5.297656e-05 -1.167929e-03  1.676504e-05  3.802279e-03
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -245,7 +250,7 @@ the Super Learner library.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

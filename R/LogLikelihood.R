@@ -1,15 +1,16 @@
 #' Log-Likelihood
 #'
-#' Computes the log-likelihood for a model. Used by \code{optim} on occasion.
+#' @description Computes the log-likelihood for a model. Used by
+#'  \code{\link[stats]{optim}} on occasion.
 #'
 #' @param beta A vector of coefficients in a logistic GLM.
 #' @param X The design matrix.
 #' @param Y The outcome.
 #'
 #' @importFrom stats plogis
-#' @return Numeric of the summed negative log-likelihood loss over observations.
 #'
-
+#' @return Numeric of the summed negative log-likelihood loss over
+#'  observations.
 LogLikelihood <- function(beta, X, Y) {
   pi <- stats::plogis(X %*% beta)
   pi[pi == 0] <- .Machine$double.neg.eps
@@ -20,8 +21,8 @@ LogLikelihood <- function(beta, X, Y) {
 
 #' Log-Likelihood Offset
 #'
-#' Computes the log-likelihood for a logistic regression model with an offset.
-#' Used by \code{optim} on occasion.
+#' @description Computes the log-likelihood for a logistic regression model
+#'  with an offset. Used by \code{optim} on occasion.
 #'
 #' @param beta A vector of coefficients in a logistic GLM.
 #' @param Y A vector of the outcome.
@@ -30,9 +31,8 @@ LogLikelihood <- function(beta, X, Y) {
 #'
 #' @importFrom stats plogis
 #'
-#' @return Numeric of the summed negative log-likelihood loss over observations.
-#'
-
+#' @return Numeric of the summed negative log-likelihood loss over
+#'  observations.
 LogLikelihood_offset <- function(beta, Y, H, offset) {
   X <- as.matrix(cbind(offset, H))
   pi <- stats::plogis(X %*% as.matrix(c(1, beta)))

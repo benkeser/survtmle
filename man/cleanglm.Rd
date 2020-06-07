@@ -7,13 +7,15 @@
 cleanglm(cm)
 }
 \arguments{
-\item{cm}{An object of class \code{glm} or class \code{speedglm}.}
+\item{cm}{An object of class \code{\link[stats]{glm}} or class
+\code{\link[speedglm]{speedglm}}.}
 }
 \value{
-An object of class \code{glm} or \code{speedglm}, but with
-        unnecessary output removed.
+An object of class \code{\link[stats]{glm}} or
+ \code{\link[speedglm]{speedglm}}, but with unnecessary output removed.
 }
 \description{
-Removes superfluous output from the call to \code{glm} that is not needed to
-perform later predictions. It is applied as a space saving technique.
+Removes superfluous output from the call to
+ \code{\link[stats]{glm}} that is not needed to perform later predictions.
+ It is applied as a space saving technique.
 }

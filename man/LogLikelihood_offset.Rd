@@ -16,9 +16,10 @@ LogLikelihood_offset(beta, Y, H, offset)
 \item{offset}{The vector of offsets.}
 }
 \value{
-Numeric of the summed negative log-likelihood loss over observations.
+Numeric of the summed negative log-likelihood loss over
+ observations.
 }
 \description{
-Computes the log-likelihood for a logistic regression model with an offset.
-Used by \code{optim} on occasion.
+Computes the log-likelihood for a logistic regression model
+ with an offset. Used by \code{optim} on occasion.
 }

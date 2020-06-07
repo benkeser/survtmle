@@ -4,11 +4,13 @@
 \name{rv144}
 \alias{rv144}
 \title{Mock RV144 data set}
-\format{A data frame with 15,955 rows and 10 columns:
+\format{
+A data frame with 15,955 rows and 10 columns:
 \describe{
-  \item{ftime}{number of six month visit windows until first recorded incidence of HIV}
+  \item{ftime}{number of six month visit windows until first recorded
+    incidence of HIV}
   \item{ftype}{the genotype of HIV (0 = censored, 1 = amino acid site 169
-               matched, 2 = amino acid site 169 mismatched)}
+    matched, 2 = amino acid site 169 mismatched)}
   \item{vax}{vaccine assignment (0 = placebo, 1 = vaccine)}
   \item{male}{male gender (0 = no, 1 = yes)}
   \item{year04}{trial enrollment year 2004 (0 = no, 1 = yes)}
@@ -18,7 +20,8 @@
   \item{medAge}{medium category for age (0 = no, 1 = yes)}
   \item{highAge}{high category for age (0 = no, 1 = yes)}
   ...
-}}
+}
+}
 \usage{
 rv144
 }

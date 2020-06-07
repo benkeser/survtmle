@@ -5,14 +5,12 @@
 #' @param x An object of class \code{survtmle}
 #' @param ... Other options (not currently used)
 #'
-#' @return Prints the estimates of cumulative incidence and the diagonal
-#'         of the estimated covariance matrix.
+#' @return Prints the estimates of cumulative incidence and the diagonal of the
+#'  estimated covariance matrix.
 #'
 #' @export
 #'
 #' @method print survtmle
-#'
-
 print.survtmle <- function(x, ...) {
   if (length(x$est) <= 4) {
     print(x[c("est", "var")])
@@ -29,14 +27,12 @@ print.survtmle <- function(x, ...) {
 #' @param x An object of class \code{tp.survtmle}.
 #' @param ... Other options (not currently used).
 #'
-#' @return Prints the estimates of cumulative incidence and the diagonal
-#'         of the estimated covariance matrix.
+#' @return Prints the estimates of cumulative incidence and the diagonal of the
+#'  estimated covariance matrix.
 #'
 #' @export
 #'
 #' @method print tp.survtmle
-#'
-
 print.tp.survtmle <- function(x, ...) {
   # extract basic information from input `tp.survtmle` object
   len_groups <- as.numeric(unique(lapply(
@@ -65,7 +61,7 @@ print.tp.survtmle <- function(x, ...) {
   rownames(vars_only) <- names_groups
   colnames(vars_only) <- paste0("t", seq_len(ncol(vars_only)))
 
-  # create output object as list to match `print.cuminc` for class from `cmprsk`
+  # output object as list to match `print.cuminc` for class from `cmprsk`
   out <- list(est = est_only, var = vars_only)
 
   print(out)

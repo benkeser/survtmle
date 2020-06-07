@@ -1,5 +1,3 @@
-utils::globalVariables(c(".", "value", "group"))
-
 #' Plot Results of Cumulative Incidence Estimates
 #'
 #' Step function plots for both raw and smoothed (monotonic) estimates, the
@@ -9,24 +7,23 @@ utils::globalVariables(c(".", "value", "group"))
 #'  appropriate calls to \code{survtmle} and \code{timepoints}
 #' @param type \code{character} describing whether to provide a plot of raw
 #'  ("raw") or monotonic ("iso") estimates in the resultant step function plot,
-#'  with the latter being computed by a call to \code{stats::isoreg}
-#' @param pal A \code{ggplot2} palette object from the \code{ggsci} package. The
-#'  default of \code{scale_color_lancet} is generally appropriate for medical
-#'  and epidemiologic applications, though there are situations in which one
-#'  might opt to change this. Note that this can also be overridden in the
-#'  resultant plot object using standard \code{ggplot2} semantics.
+#'  with the latter being computed by a call to \code{\link[stats]{isoreg}}
+#' @param pal A \code{ggplot2} palette object from the \pkg{ggsci} package. The
+#'  default of \code{\link[ggsci]{scale_color_lancet}} is generally appropriate
+#'  for medical and epidemiologic applications, though there are situations in
+#'  which one might opt to change this. Note that this can also be overridden
+#'  in the resultant plot object using standard \pkg{ggplot2} semantics.
 #' @param ... additional arguments passed \code{plot} as necessary
 #'
-#' @importFrom ggplot2 ggplot aes geom_point geom_step xlab ylab ggtitle
+#' @importFrom ggplot2 ggplot aes_string geom_point geom_step xlab ylab ggtitle
 #' @importFrom ggsci scale_color_lancet
 #' @importFrom stringr str_length str_sub
 #' @importFrom tidyr gather
-#' @importFrom dplyr "%>%"
 #' @importFrom stats isoreg
 #'
 #' @return object of class \code{ggplot} containing a step function plot of the
-#'  raw or smoothened point estimates of cumulative incidence across a series of
-#'  timepoints of interest.
+#'  raw or smoothened point estimates of cumulative incidence across a series
+#'  of timepoints of interest.
 #'
 #' @export
 #'
@@ -53,7 +50,6 @@ utils::globalVariables(c(".", "value", "group"))
 #' )
 #' tpfit <- timepoints(fit, times = seq_len(t_0))
 #' plot(tpfit)
-#' #
 plot.tp.survtmle <- function(x,
                              ...,
                              type = c("iso", "raw"),
@@ -118,7 +114,7 @@ plot.tp.survtmle <- function(x,
   # generate output plot
   p <- ggplot2::ggplot(
     data = plot_in,
-    ggplot2::aes(x = t, y = value, colour = group)
+    ggplot2::aes_string(x = "t", y = "value", colour = "group")
   )
   if (length(unique(plot_in$t)) > 1) {
     p <- p + ggplot2::geom_step()
