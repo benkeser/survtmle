@@ -4,14 +4,16 @@
 \alias{LogLikelihood}
 \title{Log-Likelihood}
 \usage{
-LogLikelihood(beta, X, Y)
+LogLikelihood(beta, X, Y, wts = rep(1, length(Y)))
 }
 \arguments{
-\item{beta}{A vector of coefficients in a logistic GLM.}
+\item{beta}{A \code{numeric} vector of coefficients in a logistic GLM.}
 
 \item{X}{The design matrix.}
 
 \item{Y}{The outcome.}
+
+\item{wts}{A \code{numeric} vector of observation-level weights.}
 }
 \value{
 Numeric of the summed negative log-likelihood loss over

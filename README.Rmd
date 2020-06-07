@@ -92,7 +92,8 @@ fit <- survtmle(ftime = ftime, ftype = ftype,
                 glm.trt = "1",
                 glm.ftime = "I(W1*W2) + trt + t",
                 glm.ctime = "W1 + t",
-                method = "hazard",
+                method = "mean",
+                #method = "hazard",
                 t0 = t_0)
 
 # extract cumulative incidence at each timepoint

@@ -13,6 +13,11 @@
 #' @param adjustVars A \code{data.frame} of adjustment variables that will be
 #'  used in estimating the conditional treatment, censoring, and failure
 #'  (hazard or conditional mean) probabilities.
+#' @param wts A \code{numeric} vector of observation-level weights. Weights are
+#'  assumed to be known or estimated through nonparametric maximum likelihood.
+#'  These weights should not be estimates produced using a working model, as
+#'  the implementation (currently) does not sufficiently account for this. The
+#'  default is to weight all observation equally.
 #' @param t0 The time at which to return cumulative incidence estimates. By
 #'  default this is set to \code{max(ftime)}.
 #' @param SL.ftime A character vector or list specification to be passed to the
@@ -104,6 +109,7 @@ checkInputs <- function(ftime,
                         ftype,
                         trt,
                         adjustVars,
+                        wts,
                         t0 = max(ftime[ftype > 0]),
                         SL.ftime = NULL,
                         SL.ctime = NULL,
@@ -137,6 +143,21 @@ checkInputs <- function(ftime,
   # check that trt is vector
   if (!is.vector(trt)) {
     stop("trt must be a vector.")
+  }
+
+  # check that wts is vector
+  if (!is.vector(wts)) {
+    stop("wts must be a vector.")
+  }
+
+  # check that wts is numeric
+  if (!is.numeric(wts)) {
+    stop("wts must contain only numeric values.")
+  }
+
+  # check that wts is appropriate length
+  if (length(wts) != length(trt)) {
+    stop("wts and trt must be the same length.")
   }
 
   # check that not all failures are < t0
@@ -429,7 +450,7 @@ checkInputs <- function(ftime,
   # return clean variables
   return(list(
     ftime = ftime, ftype = ftype, trt = trt, adjustVars = adjustVars,
-    glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime,
+    wts = wts, glm.trt = glm.trt, SL.trt = SL.trt, glm.ftime = glm.ftime,
     glm.ctime = glm.ctime, SL.ftime = SL.ftime, SL.ctime = SL.ctime
   ))
 }

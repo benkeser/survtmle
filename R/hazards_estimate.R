@@ -179,7 +179,8 @@ estimateHazards <- function(dataList,
         if (class("glm.ftime") != "list") {
           Qj_mod <- stats::optim(
             par = rep(0, ncol(X)), fn = LogLikelihood,
-            Y = Ytilde, X = X, method = "BFGS", gr = grad,
+            Y = Ytilde, X = X, wts = dataList[[1]]$wts,
+            method = "BFGS", gr = grad,
             control = list(reltol = 1e-7, maxit = 50000)
           )
         } else {
@@ -218,6 +219,7 @@ estimateHazards <- function(dataList,
             c("t", "trt", names(adjustVars))
           ],
           id = dataList[[1]]$id[NlessthanJ == 0],
+          obsWeights = dataList[[1]]$wts[NlessthanJ == 0],
           family = stats::binomial(),
           SL.library = SL.ftime,
           cvControl = cvControl,

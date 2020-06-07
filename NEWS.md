@@ -1,3 +1,10 @@
+# survtmle 1.1.4
+* Addition of support for including observation-level weights that are known or
+  estimated by non-parametric maximum likelihood. This was done by introducing
+  a new `wts` argument to `survtmle` and other functions subsequently called in
+  the underlying estimation procedures. This was done to provide support based
+  on the request in https://github.com/benkeser/survtmle/issues/41
+
 # survtmle 1.1.3
 * Extensive improvement to documentation throughout the package, including the
   use of Roxygen macros like `\link{}`.

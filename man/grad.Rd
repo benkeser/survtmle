@@ -4,7 +4,7 @@
 \alias{grad}
 \title{Gradient for Logistic Regression}
 \usage{
-grad(beta, Y, X)
+grad(beta, Y, X, wts = rep(1, length(Y)))
 }
 \arguments{
 \item{beta}{A vector of coefficients in a logistic glm}
@@ -12,6 +12,8 @@ grad(beta, Y, X)
 \item{Y}{The outcome}
 
 \item{X}{The design matrix}
+
+\item{wts}{A \code{numeric} vector of observation-level weights.}
 }
 \value{
 Numeric vector of the gradient of the parameter vector.

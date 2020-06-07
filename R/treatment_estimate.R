@@ -72,7 +72,9 @@ estimateTreatment <- function(dat,
           Y = thisY, X = adjustVars,
           newX = adjustVars,
           SL.library = SL.trt,
-          id = dat$id, verbose = verbose,
+          id = dat$id,
+          obsWeights = dat$wts,
+          verbose = verbose,
           family = "binomial",
           cvControl = cvControl
         )
@@ -84,7 +86,7 @@ estimateTreatment <- function(dat,
     } else if (!is.null(glm.trt) & is.null(SL.trt)) {
       # set up model formula and data for the treatment regression
       trt_form <- paste("thisY", "~", glm.trt, sep = " ")
-      trt_data_in <- as.data.frame(cbind(adjustVars, thisY))
+      trt_data_in <- as.data.frame(cbind(adjustVars, thisY, wts = dat$wts))
 
       # fit GLM if Super Learner not requested
       if (!("glm" %in% class(glm.trt)) & !("speedglm" %in% class(glm.trt))) {

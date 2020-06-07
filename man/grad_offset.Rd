@@ -4,7 +4,7 @@
 \alias{grad_offset}
 \title{Gradient for Logistic Regression with Offsets}
 \usage{
-grad_offset(beta, Y, H, offset = NULL)
+grad_offset(beta, Y, H, offset = NULL, wts = rep(1, length(Y)))
 }
 \arguments{
 \item{beta}{A vector of coefficients in a logistic glm}
@@ -14,6 +14,8 @@ grad_offset(beta, Y, H, offset = NULL)
 \item{H}{The covariate matrix}
 
 \item{offset}{The offset vector}
+
+\item{wts}{A \code{numeric} vector of observation-level weights.}
 }
 \value{
 Numeric vector of the gradient of the parameter vector.

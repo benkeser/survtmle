@@ -35,8 +35,7 @@ fast_glm <- function(reg_form, data, family, ...) {
   )[[1]][1])
 
   # fit speedglm or glm as appropriate
-  out <- tryCatch(
-    {
+  out <- tryCatch({
       # Obviously, a sparse design matrix is not used when fitting an intercept
       # model. In such cases, 'sparse=TRUE' is an inappropriate choice, though
       # this is only expected when estimating the treatment mechanism.
@@ -44,6 +43,7 @@ fast_glm <- function(reg_form, data, family, ...) {
         formula = reg_form,
         data = data,
         family = family,
+        weights = data$wts,
         method = "Cholesky",
         sparse = ifelse(calling_fun == "estimateTreatment",
           FALSE, TRUE
@@ -62,6 +62,7 @@ fast_glm <- function(reg_form, data, family, ...) {
         formula = reg_form,
         data = data,
         family = family,
+        weights = data$wts,
         ...
       )
       return(mod)

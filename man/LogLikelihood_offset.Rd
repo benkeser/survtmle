@@ -4,16 +4,18 @@
 \alias{LogLikelihood_offset}
 \title{Log-Likelihood Offset}
 \usage{
-LogLikelihood_offset(beta, Y, H, offset)
+LogLikelihood_offset(beta, Y, H, offset, wts = rep(1, length(Y)))
 }
 \arguments{
 \item{beta}{A vector of coefficients in a logistic GLM.}
 
-\item{Y}{A vector of the outcome.}
+\item{Y}{A \code{numeric} vector of the outcome.}
 
-\item{H}{The matrix of covariates.}
+\item{H}{The \code{matrix} of covariates.}
 
-\item{offset}{The vector of offsets.}
+\item{offset}{The \code{numeric} vector of offsets.}
+
+\item{wts}{A \code{numeric} vector of observation-level weights.}
 }
 \value{
 Numeric of the summed negative log-likelihood loss over
@@ -21,5 +23,5 @@ Numeric of the summed negative log-likelihood loss over
 }
 \description{
 Computes the log-likelihood for a logistic regression model
- with an offset. Used by \code{optim} on occasion.
+ with an offset. Used by \code{\link[stats]{optim}} on occasion.
 }

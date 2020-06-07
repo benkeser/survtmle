@@ -155,6 +155,7 @@ estimateCensoring <- function(dataList,
             names(adjustVars)
           )],
           id = dataList[[1]]$id[include],
+          obsWeights = dataList[[1]]$wts[include],
           family = "binomial",
           SL.library = SL.ctime,
           verbose = verbose,
