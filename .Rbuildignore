@@ -7,7 +7,7 @@
 ^\.gitmodules$
 ^README\.md$
 ^README\.html$
-^\Makefile$
+^Makefile$
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^docs$
