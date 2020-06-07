@@ -62,7 +62,7 @@ fast_glm <- function(reg_form, data, family, ...) {
         formula = reg_form,
         data = data,
         family = family,
-        weights = data$wts,
+        weights = "wts",
         ...
       )
       return(mod)

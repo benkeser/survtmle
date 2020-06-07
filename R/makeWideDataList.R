@@ -34,19 +34,18 @@ makeWideDataList <- function(dat,
                              t0, ...) {
   wideDataList <- vector(mode = "list", length = length(dataList))
   wideDataList[[1]] <- data.frame(
-    dat$trt, dat[, names(adjustVars)],
+    wts = dat$wts, trt = dat$trt, dat[, names(adjustVars)],
     stats::reshape(
       dataList[[2]][, !(names(dataList[[2]]) %in%
         c(
-          "trt", names(adjustVars),
+          "trt", names(adjustVars), "wts",
           "ftime", "ftype"
         ))],
       direction = "wide",
       timevar = "t", idvar = "id"
     )
   )
-  colnames(wideDataList[[1]])[1] <- c("trt")
-  colnames(wideDataList[[1]])[2:(1 + ncol(adjustVars))] <- names(adjustVars)
+
   # set Nj0=0 for all j -- makes things easier to run in a loop later
   eval(parse(text = paste0(
     paste0(
@@ -60,42 +59,42 @@ makeWideDataList <- function(dat,
     dataList[2:length(dataList)],
     function(x) {
       out <- data.frame(
-        dat[, names(adjustVars)],
+        wts = dat$wts, dat[, names(adjustVars)],
         stats::reshape(
           x[, !(names(x) %in%
             c(
-              "trt", names(adjustVars), "ftime",
+              "trt", names(adjustVars), "wts", "ftime",
               "ftype"
             ))],
           direction = "wide", timevar = "t", idvar = "id"
         ),
         row.names = NULL
       )
-      out[, paste0("C.", 1:t0)] <- 0
-      names(out)[1:(ncol(adjustVars))] <- names(adjustVars)
+      out[, paste0("C.", seq_len(t0))] <- 0
+
       # set Nj0=0 for all j -- makes things easier to run in a loop later
       eval(parse(text = paste0(
         paste0("out$N", allJ, ".0", collapse = "<-"),
         "<- out$C.0 <- 0"
       )))
-      out
-    }
-  )
+      return(out)
+    })
   names(wideDataList) <- c("obs", uniqtrt)
 
+  # append counterfactual values of treatment
   for (z in uniqtrt) wideDataList[[paste0(z)]]$trt <- z
 
   wideDataList <- lapply(wideDataList, function(x) {
     # make clever covariates
     for (z in uniqtrt) {
-      for (t in 1:t0) {
+      for (t in seq_len(t0)) {
         x[[paste0("H", z, ".", t)]] <-
           (x$trt == z & x[[paste0("C.", t - 1)]] == 0) /
             (x[[paste0("G_dC.", t)]] * x[[paste0("g_", z, ".", t)]])
       }
       x[[paste0("H", z, ".0")]] <- (x$trt == z) / x[[paste0("g_", z, ".", t)]]
     }
-    x
+    return(x)
   })
   return(wideDataList)
 }

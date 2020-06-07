@@ -124,6 +124,8 @@ estimateIteratedMean <- function(wideDataList,
   Qj.t <- paste0("Q", whichJ, ".", t)
   NnotJ.tm1 <- paste0("NnotJ.", t - 1)
   Qform <- paste(outcomeName, "~", glm.ftime, sep = " ")
+
+  browser()
   ## GLM code
   if (is.null(SL.ftime)) {
     if (is.null(bounds)) { # with no bounds
@@ -156,9 +158,11 @@ estimateIteratedMean <- function(wideDataList,
           wideDataList[[1]][[lj.t]][include])
       Qmod <- stats::optim(
         par = rep(0, ncol(X)), fn = LogLikelihood,
-        Y = Ytilde, X = X, method = "BFGS", gr = grad,
+        Y = Ytilde, X = X, wts = wideDataList[[1]]$wts,
+        method = "BFGS", gr = grad,
         control = list(reltol = 1e-7, maxit = 50000)
       )
+      browser()
       beta <- Qmod$par
       wideDataList <- lapply(wideDataList, function(x, j, t) {
         newX <- stats::model.matrix(stats::as.formula(Qform), data = x)

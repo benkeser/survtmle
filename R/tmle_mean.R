@@ -198,7 +198,6 @@ mean_tmle <- function(ftime,
   dat <- data.frame(id = id, ftime = ftime, ftype = ftype, trt = trt,
                     wts = wts)
 
-  browser()
   if (!is.null(adjustVars)) {
     dat <- cbind(dat, adjustVars)
   }
@@ -305,6 +304,7 @@ mean_tmle <- function(ftime,
     )
   }
 
+  browser()
   # get point estimate
   est <- rowNames <- NULL
   for (j in ofInterestJ) {
@@ -360,7 +360,8 @@ mean_tmle <- function(ftime,
       )))
       eval(parse(text = paste(
         "wideDataList[[1]]$IC", j, "star.Z", uniqtrt[z],
-        " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),wideDataList[[1]][,ind]))",
+        " <- rowSums(cbind(rep(0, nrow(wideDataList[[1]])),
+        wideDataList[[1]][,ind]))",
         sep = ""
       )))
     }
