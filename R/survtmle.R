@@ -14,6 +14,11 @@
 #' @param adjustVars A data.frame of adjustment variables that will be used in
 #'  estimating the conditional treatment, censoring, and failure (hazard or
 #'  conditional mean) probabilities.
+#' @param wts A \code{numeric} vector of observation-level weights. Weights are
+#'  assumed to be known or estimated through nonparametric maximum likelihood.
+#'  These weights should not be estimates produced using a working model, as
+#'  the implementation (currently) does not sufficiently account for this. The
+#'  default is to weight all observation equally.
 #' @param t0 The time at which to return cumulative incidence estimates. By
 #'  default this is set to \code{max(ftime[ftype > 0])}.
 #' @param SL.ftime A character vector or list specification to be passed to the
@@ -194,7 +199,9 @@
 #' )
 #' fit2
 #' @export
-survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
+survtmle <- function(ftime, ftype, trt, adjustVars,
+                     wts = rep(1, length(trt)),
+                     t0 = max(ftime[ftype > 0]),
                      SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
                      glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL,
                      returnIC = TRUE, returnModels = TRUE,
@@ -218,7 +225,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   # check and clean inputs
   clean <- checkInputs(
     ftime = ftime, ftype = ftype, trt = trt,
-    t0 = t0, adjustVars = adjustVars,
+    t0 = t0, adjustVars = adjustVars, wts = wts,
     SL.ftime = SL.ftime,
     SL.ctime = SL.ctime,
     SL.trt = SL.trt,
@@ -244,6 +251,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       trt = clean$trt,
       t0 = t0,
       adjustVars = clean$adjustVars,
+      wts = clean$wts,
       SL.ftime = clean$SL.ftime,
       SL.ctime = clean$SL.ctime,
       SL.trt = clean$SL.trt,
@@ -268,6 +276,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       trt = clean$trt,
       t0 = t0,
       adjustVars = clean$adjustVars,
+      wts = clean$wts,
       SL.ftime = clean$SL.ftime,
       SL.ctime = clean$SL.ctime,
       SL.trt = clean$SL.trt,

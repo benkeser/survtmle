@@ -10,6 +10,7 @@ hazard_tmle(
   trt,
   t0 = max(ftime[ftype > 0]),
   adjustVars = NULL,
+  wts = NULL,
   SL.ftime = NULL,
   SL.ctime = NULL,
   SL.trt = NULL,
@@ -48,6 +49,12 @@ default this is set to \code{max(ftime[ftype > 0])}.}
 \item{adjustVars}{A data.frame of adjustment variables that will be used in
 estimating the conditional treatment, censoring, and failure (hazard or
 conditional mean) probabilities.}
+
+\item{wts}{A \code{numeric} vector of observation-level weights. Weights are
+assumed to be known or estimated through nonparametric maximum likelihood.
+These weights should not be estimates produced using a working model, as
+the implementation (currently) does not sufficiently account for this. The
+default is to weight all observation equally.}
 
 \item{SL.ftime}{A character vector or list specification to be passed to the
 \code{SL.library} option of \code{\link[SuperLearner]{SuperLearner}} for
@@ -221,4 +228,5 @@ fit1 <- hazard_tmle(
   glm.ctime = "trt + W1 + W2",
   returnModels = TRUE
 )
+
 }

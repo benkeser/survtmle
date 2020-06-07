@@ -9,6 +9,7 @@ survtmle(
   ftype,
   trt,
   adjustVars,
+  wts = rep(1, length(trt)),
   t0 = max(ftime[ftype > 0]),
   SL.ftime = NULL,
   SL.ctime = NULL,
@@ -46,6 +47,12 @@ only two unique values are supported.}
 \item{adjustVars}{A data.frame of adjustment variables that will be used in
 estimating the conditional treatment, censoring, and failure (hazard or
 conditional mean) probabilities.}
+
+\item{wts}{A \code{numeric} vector of observation-level weights. Weights are
+assumed to be known or estimated through nonparametric maximum likelihood.
+These weights should not be estimates produced using a working model, as
+the implementation (currently) does not sufficiently account for this. The
+default is to weight all observation equally.}
 
 \item{t0}{The time at which to return cumulative incidence estimates. By
 default this is set to \code{max(ftime[ftype > 0])}.}
