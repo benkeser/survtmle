@@ -63,7 +63,7 @@ timepoints <- function(object, times, returnModels = FALSE) {
   cglm <- any(class(object$ctimeMod) %in% c("glm", "speedglm")) |
     any(class(object$ctimeMod) == "noCens")
 
-  tglm <- any(class(object$trtMod) %in% c("glm", "speedglm"))
+  tglm <- any(class(object$trtMod[[1]]) %in% c("glm", "speedglm"))
   ftglm <- ifelse(callList$method == "hazard",
     any(class(object$ftimeMod[[1]]) %in% c(
       "glm",
