@@ -144,10 +144,6 @@ checkInputs <- function(ftime,
     stop("No observed events by t0.")
   }
 
-  if (length(unique(trt)) > 2) {
-    stop("trt with more than 2 unique values not yet supported.")
-  }
-
   # check for reserved names in columns of adjustVars
   if (any(colnames(adjustVars) == "t")) {
     stop("t is a reserved name. Please rename that column from adjustVars.")
