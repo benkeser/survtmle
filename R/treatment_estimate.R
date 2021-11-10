@@ -58,10 +58,11 @@ estimateTreatment <- function(dat,
                               returnModels = FALSE,
                               verbose = FALSE,
                               gtol = 1e-3,
+                              trtOfInterest,
                               ...) {
   if (length(unique(dat$trt)) == 1) {
     eval(parse(text = paste0("dat$g_", unique(dat$trt), "<- 1")))
-  } else {
+  } else if(length(unique(dat$trt)) == 2) {
     # binarize the outcome
     thisY <- as.numeric(dat$trt == max(dat$trt))
 
@@ -103,20 +104,87 @@ estimateTreatment <- function(dat,
       dat[[paste0("g_", max(dat$trt))]] <- pred
       dat[[paste0("g_", min(dat$trt))]] <- 1 - pred
     }
-  }
+  } else {
+        a_ct <- 0
+        gn_A <- vector(mode = "list", length = length(trtOfInterest))
+        fm_A <- vector(mode = "list", length = length(trtOfInterest) - 1)
+        name_A <- rep(NA, length(trtOfInterest) - 1)
+        for (a in trtOfInterest[1:(length(trtOfInterest) - 1)]) {
+          # determine who to include in the regression for this outcome
+          if (a_ct == 0) {
+            include <- rep(TRUE, length(dat$trt))
+          } else {
+            include <- !(dat$trt %in% trtOfInterest[1:a_ct])
+          }
+          if (!is.null(SL.trt)) {
+            if (class(SL.trt[[1]]) != "SuperLearner") {
+              # fit super learner
+              tmp_fm <- SuperLearner::SuperLearner(
+                Y = as.numeric(dat$trt[include] == a),
+                X = adjustVars[include, , drop = FALSE], 
+                newX = adjustVars,
+                family = stats::binomial(), SL.library = SL.trt,
+                verbose = verbose, 
+                cvControl = cvControl            
+              )
+            } else {
+              tmp_fm <- SL.trt[[a_ct + 1]]
+            }
+            # get predictions
+            tmp_pred <- tmp_fm$SL.pred
+          } else if (!is.null(glm.trt) & is.null(SL.trt)) {
+            if (!("glm" %in% class(glm.trt[[1]]))) {
+              thisDat <- data.frame(
+                as.numeric(dat$trt[include] == a),
+                adjustVars[include, , drop = FALSE]
+              )
+              colnames(thisDat) <- c("A", colnames(adjustVars))
+              tmp_fm <- stats::glm(
+                stats::as.formula(paste0("A~", glm.trt)),
+                data = thisDat, family = stats::binomial()
+              )
+            } else {
+              tmp_fm <- glm.trt[[a]]
+            }
+            tmp_pred <- predict(tmp_fm, type = "response", 
+                                newdata = adjustVars)
+          }
+          if (a_ct != 0) { # if not the first level of treatment
+            gn_A[[a_ct + 1]] <- tmp_pred * Reduce(
+              "*",
+              lapply(gn_A[1:a_ct], function(x) {
+                1 - x
+              })
+            )                      
+          } else { # if the first level of treatment
+            gn_A[[a_ct + 1]] <- tmp_pred            
+          }
+          dat[[paste0("g_", a)]] <- gn_A[[a_ct + 1]]
+          fm_A[[a_ct + 1]] <- tmp_fm
+          name_A[a_ct + 1] <- paste0("I(trt = ", a, ") ~ adjustVars")
+          a_ct <- a_ct + 1
+        }
+        # add in final predictions
+        gn_A[[a_ct + 1]] <- 1 - Reduce("+", gn_A[1:a_ct])
+        dat[[paste0("g_", trtOfInterest[length(trtOfInterest)])]] <- gn_A[[a_ct + 1]]
+    }
 
   # truncate propensities
-  eval(parse(text = paste0(
-    "dat$g_", min(dat$trt), "[dat$g_", min(dat$trt),
-    "< gtol]<- gtol"
-  )))
-  eval(parse(text = paste0(
-    "dat$g_", max(dat$trt), "[dat$g_", max(dat$trt),
-    "< gtol]<- gtol"
-  )))
+  for(a in trtOfInterest){
+    eval(parse(text = paste0(
+      "dat$g_", a, "[dat$g_", a,
+      "< gtol]<- gtol"
+    )))
+  }  
   out <- list()
   out$dat <- dat
   out$trtMod <- NULL
-  if (returnModels) out$trtMod <- trtMod
+  if (returnModels){
+    if(length(unique(dat$trt)) <= 2){      
+      out$trtMod <- trtMod
+    }else{
+      out$trtMod <- fm_A
+    }
+  }
   return(out)
 }

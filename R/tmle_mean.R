@@ -213,7 +213,8 @@ mean_tmle <- function(ftime,
     glm.trt = glm.trt,
     cvControl = cvControl,
     returnModels = returnModels,
-    gtol = gtol
+    gtol = gtol,
+    trtOfInterest = trtOfInterest
   )
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
