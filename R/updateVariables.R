@@ -53,8 +53,9 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
       for (i in seq_along(uniqtrt)) {
-        ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
-        x[[paste0("F", j, ".z", uniqtrt[i], ".t0")]] <- Fj.t0.allZ[[i]][ind]
+        # browser()
+        # ind <- tapply(X = x$id, INDEX = x$id, FUN = NULL)
+        x[[paste0("F", j, ".z", uniqtrt[i], ".t0")]] <- Fj.t0.allZ[[i]][x$id]
       }
       x
     }, j = j, uniqtrt = uniqtrt, Fj.t0.allZ = Fj.t0.allZ)
@@ -63,9 +64,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   # merge into dataList[[1]]
   # indicators of S.t and Fj.t for dataList[[1]]
   colInd <- which(colnames(dataList[[1]]) %in% c("S.t", paste0(
-    "F",
-    ofInterestJ,
-    ".t"
+    "F", ofInterestJ, ".t"
   )))
   if (ntrt == 1) {
     merge_vars <- c("id", "t")
@@ -74,40 +73,42 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
   }
   # the first time it's called these columns won't exist
   if (length(colInd) == 0) {
+    dataList[[1]]$row_id <- seq_len(dim(dataList[[1]])[1])
     dataList[[1]] <- merge(
       dataList[[1]],
       Reduce(
         rbind,
         dataList[2:(ntrt + 1)]
       )[, c(
-        "id", "t", "trt",
-        "S.t",
+        "id", "t", "trt", "S.t",
         paste0(
-          "F", ofInterestJ,
-          ".t"
+          "F", ofInterestJ, ".t"
         )
       )],
       by = merge_vars
     )
+    dataList[[1]] <- dataList[[1]][order(dataList[[1]]$row_id), ]
+    dataList[[1]] <- dataList[[1]][,-which(colnames(dataList[[1]]) == "row_id")]
   } else {
     # the next times it's called those columns will exist but we want them
     # replaced with the values from dataList[[>1]]
+    dataList[[1]]$row_id <- seq_len(dim(dataList[[1]])[1])
+
     dataList[[1]] <- merge(
       x = dataList[[1]][, -colInd],
       y = Reduce(
         rbind,
         dataList[2:(ntrt + 1)]
       )[, c(
-        "id", "t", "trt",
-        "S.t",
+        "id", "t", "trt", "S.t",
         paste0(
-          "F",
-          ofInterestJ,
-          ".t"
+          "F", ofInterestJ, ".t"
         )
       )],
       by = merge_vars
     )
+    dataList[[1]] <- dataList[[1]][order(dataList[[1]]$row_id), ]
+    dataList[[1]] <- dataList[[1]][,-which(colnames(dataList[[1]]) == "row_id")]
   }
 
   # drop merged trt columns

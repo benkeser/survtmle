@@ -37,6 +37,10 @@
 #'  call to \code{\link[SuperLearner]{SuperLearner}}.
 #' @param gtol The truncation level of predicted trt probabilities to handle
 #'  positivity violations.
+#' @param trtOfInterest An input specifying which levels of \code{trt} are of
+#'  interest. The default value computes estimates for all of the values in
+#'  \code{unique(trt)}. Can alternatively be set to a vector of values found in
+#'  \code{trt}.
 #' @param ... Other arguments. Not currently used
 #'
 #' @return dat The input \code{data.frame} object with two added columns

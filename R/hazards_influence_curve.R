@@ -30,20 +30,34 @@
 #'  efficient influence function evaluated at that observation.
 getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
                                     uniqtrt, t0, verbose, ...) {
+  na_ftime_idx <- which(is.na(dat$ftime))
+  this_list_idx <- 1
   for (z in uniqtrt) {
+    this_list_idx <- this_list_idx + 1
     for (j in ofInterestJ) {
-      dat[[paste0("margF", j, ".z", z, ".t0")]] <-
-        mean(dataList[[1]][[paste0("F", j, ".z", z, ".t0")]][dataList[[1]]$t == min(dataList[[1]]$t)])
-
-      dat[[paste0("F", j, ".z", z, ".t0")]] <-
+      dat[[paste0("F", j, ".z", z, ".t0")]] <- rep(NA, dim(dat)[1])
+      dat[[paste0("F", j, ".z", z, ".t0")]][!is.na(dat$ftime)] <-
         dataList[[1]][[paste0("F", j, ".z", z, ".t0")]][dataList[[1]]$t == min(dataList[[1]]$t)]
+
+      if(any(is.na(dat$ftime))){
+        dat[[paste0("F", j, ".z", z, ".t0")]][na_ftime_idx] <- 
+          dataList[[this_list_idx]][[paste0("F", j, ".z", z, ".t0")]][
+              dataList[[this_list_idx]]$id %in% na_ftime_idx & ( dataList[[this_list_idx]]$t == min(dataList[[this_list_idx]]$t) )
+            ]
+      }
+      dat[[paste0("margF", j, ".z", z, ".t0")]] <- mean(dat[[paste0("F", j, ".z", z, ".t0")]])
+
+      # non-NA people
       thisD <- NULL
       for (jTild in allJ) {
         H <- paste0("H", j, ".j", ifelse(jTild == j, "Self", "NotSelf"), ".z", z)
         thisD <- cbind(thisD, dataList[[1]][[H]] / (1 - dataList[[1]][[paste0("hazNot", j)]]) *
           (dataList[[1]][[paste0("N", jTild)]] - dataList[[1]][[paste0("Q", jTild, "Haz")]]))
       }
-      dat[[paste0("D.j", j, ".z", z)]] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum)) +
+      tmp_D <- rep(0, dim(dat)[1])
+      tmp_D[-na_ftime_idx] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+      
+      dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
         dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]]
     }
   }

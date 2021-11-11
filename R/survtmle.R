@@ -24,6 +24,12 @@
 #'  It is expected that the wrappers used in the library will play nicely with
 #'  the input variables, which will be called \code{"trt"},
 #'  \code{names(adjustVars)}, and \code{"t"} (if \code{method="hazard"}).
+#' @param SL.ftimeMissing A character vector or list specification to be passed to the
+#'  \code{SL.library} in the call to \code{\link[SuperLearner]{SuperLearner}}
+#'  for the missingness model for failure time.
+#'  It is expected that the wrappers used in the library will play nicely with
+#'  the input variables, which will be called \code{"trt"} and 
+#'  \code{names(adjustVars)}.
 #' @param SL.ctime A character vector or list specification to be passed to the
 #'  \code{SL.library} in the call to \code{\link[SuperLearner]{SuperLearner}}
 #'  for the estimate of the conditional hazard for censoring. It is expected
@@ -38,6 +44,12 @@
 #'  equation passed to the \code{\link[stats]{formula}} option of a call to
 #'  \code{\link[stats]{glm}} for the outcome regression. Ignored if
 #'  \code{SL.ftime} is not equal to \code{NULL}. Use \code{"trt"} to specify
+#'  the treatment in this formula (see examples). The formula can additionally
+#'  include any variables found in \code{names(adjustVars)}.
+#' @param glm.ftimeMissing A character specification of the right-hand side of the
+#'  equation passed to the \code{\link[stats]{formula}} option of a call to
+#'  \code{\link[stats]{glm}} for the missingness failure times model. Ignored if
+#'  \code{SL.ftimeMissing} is not equal to \code{NULL}. Use \code{"trt"} to specify
 #'  the treatment in this formula (see examples). The formula can additionally
 #'  include any variables found in \code{names(adjustVars)}.
 #' @param glm.ctime A character specification of the right-hand side of the
@@ -195,8 +207,8 @@
 #' fit2
 #' @export
 survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
-                     SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL,
-                     glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL,
+                     SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, SL.ftimeMissing = NULL,
+                     glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL, glm.ftimeMissing = NULL,
                      returnIC = TRUE, returnModels = TRUE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
                      trtOfInterest = unique(trt),
@@ -245,9 +257,11 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       t0 = t0,
       adjustVars = clean$adjustVars,
       SL.ftime = clean$SL.ftime,
+      SL.ftimeMissing = SL.ftimeMissing,
       SL.ctime = clean$SL.ctime,
       SL.trt = clean$SL.trt,
       glm.ftime = clean$glm.ftime,
+      glm.ftimeMissing = glm.ftimeMissing,
       glm.ctime = clean$glm.ctime,
       glm.trt = clean$glm.trt,
       returnIC = returnIC,
