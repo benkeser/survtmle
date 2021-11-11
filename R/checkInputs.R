@@ -130,8 +130,8 @@ checkInputs <- function(ftime,
   }
 
   # check for missing values
-  if (sum(is.na(ftime)) > 0 | sum(is.na(ftype)) > 0 | sum(is.na(trt)) > 0) {
-    stop("Missing values in ftime, ftype, trt, and adjustVars not supported.")
+  if (sum(is.na(ftype)) > 0 | sum(is.na(trt)) > 0) {
+    stop("Missing values in ftype, trt, and adjustVars not supported.")
   }
 
   # check that trt is vector
@@ -162,7 +162,7 @@ checkInputs <- function(ftime,
   }
 
   # check for ftime with 0
-  if (any(ftime <= 0)) {
+  if (any(ftime[!is.na(ftime)] <= 0)) {
     stop("Some failure times less than or equal zero. Remove these observations
 	 and try again")
   }
@@ -232,7 +232,7 @@ checkInputs <- function(ftime,
   if (method == "hazard") {
     for (j in ftypeOfInterest) {
       for (z in trtOfInterest) {
-        if (t0 > max(ftime[ftype == j & trt == z])) {
+        if (t0 > max(ftime[ftype == j & trt == z], na.rm = TRUE)) {
           warning(paste0(
             "t0 larger than last observed endpoint of ftype = ", j,
             " and trt = ", z, ". Hazard TMLE may be extrapolating to estimate
@@ -243,7 +243,7 @@ checkInputs <- function(ftime,
     }
   }
 
-  if (t0 > max(ftime[ftype > 0]) & method == "mean") {
+  if (t0 > max(ftime[ftype > 0], na.rm = TRUE) & method == "mean") {
     warning("t0 larger than last observed endpoint. Mean-based TMLE assumes
             constant incidence between last observed failure type and this
             time.")

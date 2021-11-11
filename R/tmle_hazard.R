@@ -175,9 +175,11 @@ hazard_tmle <- function(ftime,
                         SL.ftime = NULL,
                         SL.ctime = NULL,
                         SL.trt = NULL,
+                        SL.ftimeMissing = NULL,
                         glm.ftime = NULL,
                         glm.ctime = NULL,
                         glm.trt = "1",
+                        glm.ftimeMissing = NULL, 
                         glm.family = "binomial",
                         returnIC = TRUE,
                         returnModels = FALSE,
@@ -221,11 +223,35 @@ hazard_tmle <- function(ftime,
   dat <- trtOut$dat
   trtMod <- trtOut$trtMod
 
+  ftimeMissingOut <- estimateFtimeMissing(
+    dat = dat,
+    adjustVars = adjustVars,
+    glm.ftimeMissing = glm.ftimeMissing,
+    SL.ftimeMissing = SL.ftimeMissing,
+    cvControl = cvControl,
+    returnModels = returnModels,
+    verbose = verbose,
+    gtol = gtol,
+    trtOfInterest = trtOfInterest
+  )
+  dat <- ftimeMissingOut$dat
+  ftimeMissingMod <- ftimeMissingOut$ftimeMissingMod
+
+
+  # hacky way to make long format data
+  if(any(is.na(dat$ftime))){
+    na_idx <- dat$id[is.na(dat$ftime)]
+    dat$ftime[is.na(dat$ftime)] <- min(dat$ftime, na.rm = TRUE)
+  }
+
   # make long version of data sets needed for estimation and prediction
   dataList <- makeDataList(
     dat = dat, J = allJ, ntrt = ntrt, uniqtrt = uniqtrt,
     t0 = t0, bounds = bounds
   )
+  
+  dataList[[1]] <- dataList[[1]][!(dataList[[1]]$id %in% na_idx), ]
+  dat$ftime[dat$id %in% na_idx] <- NA
 
   # estimate censoring
   censOut <- estimateCensoring(
