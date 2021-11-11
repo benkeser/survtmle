@@ -13,9 +13,11 @@ survtmle(
   SL.ftime = NULL,
   SL.ctime = NULL,
   SL.trt = NULL,
+  SL.ftimeMissing = NULL,
   glm.ftime = NULL,
   glm.ctime = NULL,
   glm.trt = NULL,
+  glm.ftimeMissing = NULL,
   returnIC = TRUE,
   returnModels = TRUE,
   ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -71,6 +73,13 @@ for the estimate of the conditional probability of treatment. It is
 expected that the wrappers used in the library will play nicely with the
 input variables, which will be \code{names(adjustVars)}.}
 
+\item{SL.ftimeMissing}{A character vector or list specification to be passed to the
+\code{SL.library} in the call to \code{\link[SuperLearner]{SuperLearner}}
+for the missingness model for failure time.
+It is expected that the wrappers used in the library will play nicely with
+the input variables, which will be called \code{"trt"} and 
+\code{names(adjustVars)}.}
+
 \item{glm.ftime}{A character specification of the right-hand side of the
 equation passed to the \code{\link[stats]{formula}} option of a call to
 \code{\link[stats]{glm}} for the outcome regression. Ignored if
@@ -91,6 +100,13 @@ equation passed to the \code{\link[stats]{formula}} option of a call to
 \code{\link[stats]{glm}} for the estimate of the conditional probability of
 treatment. Ignored if \code{SL.trt} is not equal to \code{NULL}. The
 formula can include any variables found in \code{names(adjustVars)}.}
+
+\item{glm.ftimeMissing}{A character specification of the right-hand side of the
+equation passed to the \code{\link[stats]{formula}} option of a call to
+\code{\link[stats]{glm}} for the missingness failure times model. Ignored if
+\code{SL.ftimeMissing} is not equal to \code{NULL}. Use \code{"trt"} to specify
+the treatment in this formula (see examples). The formula can additionally
+include any variables found in \code{names(adjustVars)}.}
 
 \item{returnIC}{A \code{logical} indicating whether to return vectors of
 influence curve estimates. These are needed for some post-hoc comparisons,
