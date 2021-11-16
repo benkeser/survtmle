@@ -119,8 +119,8 @@ makeDataList <- function(dat, J, ntrt, uniqtrt, t0, bounds = NULL, ...) {
       }
     } else {
       for (j in J) {
-        dataList[[i + 1]][[paste0("l", j)]] <- .Machine$double.eps
-        dataList[[i + 1]][[paste0("u", j)]] <- 1 - .Machine$double.eps
+        dataList[[i + 1]][[paste0("l", j)]] <- 0
+        dataList[[i + 1]][[paste0("u", j)]] <- 1
       }
     }
   }
