@@ -8,6 +8,9 @@
 #' @param type \code{character} describing whether to provide a plot of raw
 #'  ("raw") or monotonic ("iso") estimates in the resultant step function plot,
 #'  with the latter being computed by a call to \code{\link[stats]{isoreg}}
+#' @param incidence \code{boolean} indicating whether to plot cumulative incidence
+#' or 1 minus cumulative incidence (corresponding to survival curves if only one 
+#' type of failure)
 #' @param pal A \code{ggplot2} palette object from the \pkg{ggsci} package. The
 #'  default of \code{\link[ggsci]{scale_color_lancet}} is generally appropriate
 #'  for medical and epidemiologic applications, though there are situations in
@@ -52,6 +55,7 @@
 #' plot(tpfit)
 plot.tp.survtmle <- function(x,
                              ...,
+                             incidence = TRUE,
                              type = c("iso", "raw"),
                              pal = ggsci::scale_color_lancet()) {
 
@@ -71,7 +75,11 @@ plot.tp.survtmle <- function(x,
   times_labels <- times_labels[order(times_labels)] # re-order
 
   if (type == "raw") {
-    raw_est_in <- as.data.frame(cbind(t(est), times_labels))
+    if(incidence){
+      raw_est_in <- as.data.frame(cbind(t(est), times_labels))
+    }else{
+      raw_est_in <- as.data.frame(cbind(t(1 - est), times_labels))
+    }
     colnames(raw_est_in) <- c(gsub(
       " ", "/",
       colnames(raw_est_in)[seq_len(ncol(raw_est_in)
@@ -89,10 +97,17 @@ plot.tp.survtmle <- function(x,
     raw_est_in[, "group"] <- as.factor(raw_est_in[, "group"])
     plot_in <- raw_est_in
   } else if (type == "iso") {
-    iso <- apply(est, 1, function(y) {
-      tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
-      tmp$yf
-    })
+    if(incidence){
+      iso <- apply(est, 1, function(y) {
+        tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
+        tmp$yf
+      })
+    else{
+      iso <- apply(1 - est, 1, function(y) {
+        tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
+        tmp$yf
+      })
+    }
     iso_est_in <- as.data.frame(cbind(as.matrix(iso), times_labels))
     colnames(iso_est_in) <- c(gsub(
       " ", "/",
@@ -122,14 +137,9 @@ plot.tp.survtmle <- function(x,
     p <- p + ggplot2::geom_point()
   }
   p <- p + ggplot2::xlab("Time") +
-    ggplot2::ylab("Cumulative Incdicence Estimate") +
-    ggplot2::ggtitle(paste(
-      "Cumulative Incidence Amongst Groups",
-      ifelse(type == "iso",
-        "\n (smoothed by isotonic regression)",
-        "\n (raw estimates)"
-      )
-    )) +
+    ggplot2::ylab(
+      ifelse(incidence, "Cumulative Incidence", "Reverse Cumulative Incidence")
+    ) +
     ggplot2::theme_bw() +
     pal
   # ...and print
