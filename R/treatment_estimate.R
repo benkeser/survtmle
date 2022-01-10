@@ -154,11 +154,8 @@ estimateTreatment <- function(dat,
                                 newdata = adjustVars)
           }
           if (a_ct != 0) { # if not the first level of treatment
-            gn_A[[a_ct + 1]] <- tmp_pred * Reduce(
-              "*",
-              lapply(gn_A[1:a_ct], function(x) {
-                1 - x
-              })
+            gn_A[[a_ct + 1]] <- tmp_pred * (1 - Reduce(
+              "+", lapply(gn_A[1:a_ct], '[')
             )                      
           } else { # if the first level of treatment
             gn_A[[a_ct + 1]] <- tmp_pred            
