@@ -167,6 +167,9 @@
 #'   returnModels = TRUE
 #' )
 #' @export
+
+# TO DO: Add input for weight and ph2 indicator
+# TO DO: Add option for referent trt arm for mediation? e.g., a_1, a_2
 hazard_tmle <- function(ftime,
                         ftype,
                         trt,
@@ -208,6 +211,10 @@ hazard_tmle <- function(ftime,
   uniqtrt <- sort(trtOfInterest)
 
   # estimate trt probabilities
+  # TO DO: call estimateTreatment again to estimate
+  #        A | M, W
+  # TO DO: add weight option to estimateTreatment
+  # TO DO: 
   trtOut <- estimateTreatment(
     dat = dat,
     ntrt = ntrt,
@@ -238,6 +245,7 @@ hazard_tmle <- function(ftime,
   ftimeMissingMod <- ftimeMissingOut$ftimeMissingMod
 
 
+  # TO DO: Move to internal estimateCensoring
   # hacky way to make long format data
   if(any(is.na(dat$ftime))){
     na_idx <- dat$id[is.na(dat$ftime)]
@@ -250,6 +258,7 @@ hazard_tmle <- function(ftime,
     t0 = t0, bounds = bounds
   )
   
+  # TO DO: Move to internal estimateCensoring
   dataList[[1]] <- dataList[[1]][!(dataList[[1]]$id %in% na_idx), ]
   dat$ftime[dat$id %in% na_idx] <- NA
 
@@ -272,6 +281,7 @@ hazard_tmle <- function(ftime,
   ctimeMod <- censOut$ctimeMod
 
   # estimate cause specific hazards
+  # TO DO: Pass in mediationVars to estimateHazards
   estOut <- estimateHazards(
     dataList = dataList,
     J = allJ,
@@ -293,6 +303,7 @@ hazard_tmle <- function(ftime,
     }
   )
 
+  # TO DO: Add weights to EIF
   # calculate cum inc and clever covariates needed for fluctuations
   dataList <- updateVariables(
     dataList = dataList, allJ = allJ,
@@ -301,6 +312,7 @@ hazard_tmle <- function(ftime,
     t0 = t0, verbose = verbose
   )
 
+  # TO DO: Note this is the full data influence function
   # calculate influence function
   dat <- getHazardInfluenceCurve(
     dataList = dataList, dat = dat,
@@ -314,6 +326,19 @@ hazard_tmle <- function(ftime,
   } else {
     meanIC <- mean(infCurves)
   }
+
+  # TO DO: Add estimation of Qbar(1,0 | w). Possible to call
+  # drtmle:::estimateQ? Probably need custom function; must allow weights
+  # outcome can be plucked out of dat based on the label
+  # TO DO: Compute second piece of full data influence function 
+  # TO DO: Regress full data influence function on 
+  # ftime, ftype, adjustVars (stratify on trt?)
+  # TO DO: Target weights
+  # TO DO: Fluctuate hazard (add weights to function)
+  # TO DO: Fluctuate Qbar
+  # TO DO: Compute observed data EIF
+  # TO DO: Add proportion mediated calculator
+  #        input is two survtmle objects
 
   attr(dataList, "fluc") <- rep(Inf, ntrt * nJ^2)
   ct <- 0
