@@ -40,17 +40,18 @@ fast_glm <- function(reg_form, data, family, ...) {
       # Obviously, a sparse design matrix is not used when fitting an intercept
       # model. In such cases, 'sparse=TRUE' is an inappropriate choice, though
       # this is only expected when estimating the treatment mechanism.
-      speedglm::speedglm(
-        formula = reg_form,
-        data = data,
-        family = family,
-        method = "Cholesky",
-        sparse = ifelse(calling_fun == "estimateTreatment",
-          FALSE, TRUE
-        ),
-        trace = FALSE,
-        ...
-      )
+      suppressWarnings({
+        speedglm::speedglm(
+          formula = reg_form,
+          data = data,
+          family = family,
+          method = "Cholesky",
+          sparse = ifelse(calling_fun == "estimateTreatment",
+            FALSE, TRUE
+          ),
+          trace = FALSE,
+          ...
+      )})
     },
     error = function(cond) {
       message(paste0(

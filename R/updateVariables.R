@@ -11,6 +11,9 @@
 #' @param nJ The number of unique failure types.
 #' @param uniqtrt The values of \code{trtOfInterest} passed to
 #'  \code{\link{mean_tmle}}.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1. 
 #' @param ntrt The number of \code{trt} values of interest.
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A \code{logical} indicating whether the function should print
@@ -21,7 +24,8 @@
 #'  \code{dataList}, but with updated columns corresponding with estimated
 #'  cumulative incidence at each time and estimated "clever covariates" at each
 #'  time.
-updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
+updateVariables <- function(dataList, allJ, ofInterestJ, 
+                            nJ, uniqtrt, ntrt, t0, att,
                             verbose, ...) {
   dataList[2:(ntrt + 1)] <- lapply(dataList[2:(ntrt + 1)], function(x, allJ) {
     # total hazard
@@ -133,7 +137,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
 
 
   # set up clever covariates needed for fluctuation
-  dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
+  dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt, att) {
     for (z in uniqtrt) {
       for (j in ofInterestJ) {
         x[[paste0("H", j, ".jSelf.z", z)]] <-
@@ -144,10 +148,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt, t0,
           -(x$ftime >= x$t & x$trt == z) / (x[[paste0("g_", z)]] * x$G_dC) *
             (1 - x[[paste0("hazNot", j)]]) * ((x$t < t0) * (x[[paste0("F", j, ".z", z, ".t0")]] -
               x[[paste0("F", j, ".t")]]) / c(x$S.t))
+        if(att){
+          x[[paste0("H", j, ".jSelf.z", z)]] <- x[[paste0("H", j, ".jSelf.z", z)]] * x$g_1
+          x[[paste0("H", j, ".jNotSelf.z", z)]] <- x[[paste0("H", j, ".jNotSelf.z", z)]] * x$g_1
+        }
       }
     }
     x
-  }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt)
+  }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt, att = att)
   #  } else {
   #    dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
   #    # placebo match

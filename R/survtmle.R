@@ -82,6 +82,9 @@
 #'  interest. The default value computes estimates for all of the values in
 #'  \code{unique(trt)}. Can alternatively be set to a vector of values found in
 #'  \code{trt}.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1.
 #' @param cvControl A \code{list} providing control options to be fed directly
 #'  into calls to \code{\link[SuperLearner]{SuperLearner}}. This should match
 #'  the contents of \code{SuperLearner.CV.control} exactly. For details,
@@ -210,6 +213,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      SL.ftime = NULL, SL.ctime = NULL, SL.trt = NULL, SL.ftimeMissing = NULL,
                      glm.ftime = NULL, glm.ctime = NULL, glm.trt = NULL, glm.ftimeMissing = NULL,
                      returnIC = TRUE, returnModels = TRUE,
+                     att = FALSE,
                      ftypeOfInterest = unique(ftype[ftype != 0]),
                      trtOfInterest = unique(trt),
                      cvControl = list(
@@ -231,6 +235,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
   clean <- checkInputs(
     ftime = ftime, ftype = ftype, trt = trt,
     t0 = t0, adjustVars = adjustVars,
+    att = att,
     SL.ftime = SL.ftime,
     SL.ctime = SL.ctime,
     SL.trt = SL.trt,
@@ -255,6 +260,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       ftype = clean$ftype,
       trt = clean$trt,
       t0 = t0,
+      att = att,
       adjustVars = clean$adjustVars,
       SL.ftime = clean$SL.ftime,
       SL.ftimeMissing = SL.ftimeMissing,

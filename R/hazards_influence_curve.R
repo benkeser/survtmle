@@ -22,14 +22,16 @@
 #'  evaluate.
 #' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1.
 #' @param ... Other arguments. Not currently used.
-#'
 #' @return An object of class \code{data.frame} with columns \code{D.jX.zZ}
 #'  added for each value of X in \code{ofInterestJ} and each value of Z in
 #'  \code{uniqtrt}. These are the sum over all timepoints of the estimated
 #'  efficient influence function evaluated at that observation.
 getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
-                                    uniqtrt, t0, verbose, ...) {
+                                    uniqtrt, t0, verbose, att, ...) {
   na_ftime_idx <- which(is.na(dat$ftime))
   this_list_idx <- 1
   for (z in uniqtrt) {
@@ -45,7 +47,11 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
               dataList[[this_list_idx]]$id %in% na_ftime_idx & ( dataList[[this_list_idx]]$t == min(dataList[[this_list_idx]]$t) )
             ]
       }
-      dat[[paste0("margF", j, ".z", z, ".t0")]] <- mean(dat[[paste0("F", j, ".z", z, ".t0")]])
+      if(!att){
+        dat[[paste0("margF", j, ".z", z, ".t0")]] <- mean(dat[[paste0("F", j, ".z", z, ".t0")]])
+      }else{
+        dat[[paste0("margF", j, ".z", z, ".t0")]] <- mean(dat[[paste0("F", j, ".z", z, ".t0")]][dat$trt == 1])
+      }
 
       # non-NA people
       thisD <- NULL
@@ -54,11 +60,22 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
         thisD <- cbind(thisD, dataList[[1]][[H]] / (1 - dataList[[1]][[paste0("hazNot", j)]]) *
           (dataList[[1]][[paste0("N", jTild)]] - dataList[[1]][[paste0("Q", jTild, "Haz")]]))
       }
-      tmp_D <- rep(0, dim(dat)[1])
-      tmp_D[-na_ftime_idx] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+      if(length(na_ftime_idx) > 0){
+        tmp_D <- rep(0, dim(dat)[1])
+        tmp_D[-na_ftime_idx] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+      }else{
+        tmp_D <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+      }
       
-      dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
-        dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]]
+      if(!att){
+        dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
+          dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]]
+      }else{
+        tmp_D <- tmp_D / mean(dat$trt == 1)
+        dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
+          as.numeric(dat$trt == 1) / mean(dat$trt == 1) * 
+            (dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]])
+      }
     }
   }
   return(dat)

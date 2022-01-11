@@ -13,6 +13,9 @@
 #' @param adjustVars A \code{data.frame} of adjustment variables that will be
 #'  used in estimating the conditional treatment, censoring, and failure
 #'  (hazard or conditional mean) probabilities.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1.
 #' @param t0 The time at which to return cumulative incidence estimates. By
 #'  default this is set to \code{max(ftime)}.
 #' @param SL.ftime A character vector or list specification to be passed to the
@@ -69,6 +72,9 @@
 #'  interest. The default value computes estimates for all of the values in
 #'  \code{unique(trt)}. Can alternatively be set to a vector of values
 #'  found in \code{trt}.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1.
 #' @param method A character specification of how the targeted minimum
 #'  loss-based estimators should be computer, either \code{"mean"} or
 #'  \code{"hazard"}. The \code{"mean"} specification uses a closed-form
@@ -111,6 +117,7 @@ checkInputs <- function(ftime,
                         glm.ftime = NULL,
                         glm.ctime = NULL,
                         glm.trt = "1",
+                        att = FALSE,
                         returnIC = TRUE,
                         returnModels = TRUE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -122,6 +129,10 @@ checkInputs <- function(ftime,
                         maxIter = 100,
                         Gcomp = FALSE) {
 
+  if (att){
+    stopifnot(all(trt %in% c(0,1)))
+    stopifnot(method == "hazard")
+  }
   # check for NULL values
   if (sum(is.null(ftime)) > 0 |
     sum(is.null(ftype)) > 0 |
