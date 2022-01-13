@@ -61,6 +61,9 @@
 #'  logistic regression. Only change this from the default if there are
 #'  justifications that are well understood. This is passed directly to
 #'  \code{\link{estimateCensoring}} and \code{\link{estimateHazards}}.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1. 
 #' @param returnIC A \code{logical} indicating whether to return vectors of
 #'  influence curve estimates. These are needed for some post-hoc comparisons,
 #'  so it is recommended to leave as \code{TRUE} (the default) unless the user
@@ -184,6 +187,7 @@ hazard_tmle <- function(ftime,
                         glm.trt = "1",
                         glm.ftimeMissing = NULL, 
                         glm.family = "binomial",
+                        att = FALSE,
                         returnIC = TRUE,
                         returnModels = FALSE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -250,6 +254,8 @@ hazard_tmle <- function(ftime,
   if(any(is.na(dat$ftime))){
     na_idx <- dat$id[is.na(dat$ftime)]
     dat$ftime[is.na(dat$ftime)] <- min(dat$ftime, na.rm = TRUE)
+  }else{
+    na_idx <- NULL
   }
 
   # make long version of data sets needed for estimation and prediction
@@ -309,7 +315,7 @@ hazard_tmle <- function(ftime,
     dataList = dataList, allJ = allJ,
     ofInterestJ = ofInterestJ,
     nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-    t0 = t0, verbose = verbose
+    t0 = t0, verbose = verbose, att = att
   )
 
   # TO DO: Note this is the full data influence function
@@ -318,7 +324,7 @@ hazard_tmle <- function(ftime,
     dataList = dataList, dat = dat,
     ofInterestJ = ofInterestJ, allJ = allJ,
     nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-    verbose = verbose, t0 = t0
+    verbose = verbose, t0 = t0, att = att
   )
   infCurves <- dat[, grep("D.j", names(dat))]
   if (!is.numeric(infCurves)) {
@@ -348,7 +354,7 @@ hazard_tmle <- function(ftime,
       dataList = dataList, ofInterestJ = ofInterestJ,
       tol = tol, allJ = allJ, nJ = nJ,
       uniqtrt = uniqtrt, ntrt = ntrt,
-      verbose = verbose, t0 = t0
+      verbose = verbose, t0 = t0, att = att
     )
     suppressWarnings(
       if (all(dataList[[1]] == "convergence failure")) {
@@ -361,7 +367,7 @@ hazard_tmle <- function(ftime,
       dataList = dataList, dat = dat,
       ofInterestJ = ofInterestJ, allJ = allJ,
       nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-      verbose = verbose, t0 = t0
+      verbose = verbose, t0 = t0, att = att
     )
     infCurves <- dat[, grep("D.j", names(dat))]
     meanIC <- colMeans(infCurves)

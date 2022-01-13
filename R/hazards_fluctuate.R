@@ -28,6 +28,9 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
+#' @param att A \code{boolean} indicating whether to compute the ATT estimate,
+#'  instead of treatment specific survival curves. This option only works with 
+#'  two levels of \code{trt} that are labeled with 0 and 1.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return The function returns a list that is exactly the same as the input
@@ -38,7 +41,7 @@
 #' @importFrom Matrix Diagonal
 #' @importFrom stats optim
 fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
-                             t0, verbose, ...) {
+                             t0, verbose, att, ...) {
   eps <- NULL
   for (z in uniqtrt) {
     for (j in allJ) {
@@ -123,7 +126,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
         dataList = dataList, allJ = allJ,
         ofInterestJ = ofInterestJ,
         nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
-        verbose = verbose, t0 = t0
+        verbose = verbose, t0 = t0, att = att
       )
     }
   }

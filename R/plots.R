@@ -102,7 +102,7 @@ plot.tp.survtmle <- function(x,
         tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
         tmp$yf
       })
-    else{
+    }else{
       iso <- apply(1 - est, 1, function(y) {
         tmp <- stats::isoreg(y = y, x = seq_len(length(x)))
         tmp$yf
