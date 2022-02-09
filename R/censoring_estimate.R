@@ -81,25 +81,40 @@ estimateCensoring <- function(dataList,
                               returnModels = FALSE,
                               verbose = TRUE,
                               gtol = 1e-3,
+                              mediator,
+                              mediatorSampWt,
+                              mediatorInCensMod,
                               ...) {
-  include <- !(dataList[[1]]$t == dataList[[1]]$ftime & dataList[[1]]$C != 1 &
-    dataList[[1]]$t < t0) & !(dataList[[1]]$t == dataList[[1]]$ftime
-  & dataList[[1]]$C == 1 & dataList[[1]]$t == t0)
+  include <- !( # endpoints occurring before t0
+    dataList[[1]]$t == dataList[[1]]$ftime & dataList[[1]]$C != 1 &
+    dataList[[1]]$t < t0
+  ) & !( # censoring occurring at t0 -- stability for when t0 is end of study
+      dataList[[1]]$t == dataList[[1]]$ftime &
+      dataList[[1]]$C == 1 & dataList[[1]]$t == t0
+    )
 
   ## determine whether to use linear or logistic regression in GLM fit
   if (!is.null(glm.family)) {
     glm_family <- parse(text = paste0("stats::", glm.family, "()"))
   }
 
+  input_sampWt <- rep(1, dim(dataList[[1]][include, ])[1])
+  measured_covariates <- rep(TRUE, length(include))
+
+  if(!is.null(mediator) & mediatorInCensMod){
+    input_sampWt <- mediatorSampWt
+    measured_covariates <- dataList[[1]]$id %in% which(complete.cases(mediator))
+  }
   # if no SL library is specified, the code defaults to the specific GLM form
   if (is.null(SL.ctime)) {
     if (!(any(c("glm", "speedglm") %in% class(glm.ctime)))) {
       if (!all(dataList[[1]]$C == 0)) {
         ctimeForm <- stats::as.formula(sprintf("%s ~ %s", "C", glm.ctime))
-        ctimeMod <- fast_glm(
-          reg_form = ctimeForm,
-          data = dataList[[1]][include, ],
-          family = eval(glm_family)
+        ctimeMod <- glm(
+          ctimeForm,
+          data = dataList[[1]][include & measured_covariates, ],
+          family = eval(glm_family),
+          weight = input_sampWt
         )
         if (unique(class(ctimeMod) %in% c("glm", "lm"))) {
           ctimeMod <- cleanglm(ctimeMod)
@@ -124,9 +139,15 @@ estimateCensoring <- function(dataList,
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
-
+          if(!is.null(mediator)){
+            measured_covariates_x <- x$id %in% which(complete.cases(mediator))
+          }else{
+            measured_covariates_x <- rep(TRUE, dim(x)[1])
+          }
           suppressWarnings(
-            g_dC <- 1 - predict(ctimeMod, newdata = x, type = "response")
+            g_dC[measured_covariates_x] <- 
+              1 - predict(ctimeMod, newdata = x[measured_covariates_x, , drop = FALSE], 
+                          type = "response")
           )
 
           # put time back to normal
@@ -149,12 +170,18 @@ estimateCensoring <- function(dataList,
     if (class(SL.ctime) != "SuperLearner") {
       if (!all(dataList[[1]]$C == 0)) {
         ctimeMod <- SuperLearner::SuperLearner(
-          Y = dataList[[1]]$C[include],
-          X = dataList[[1]][include, c(
+          Y = dataList[[1]]$C[include & measured_covariates],
+          X = dataList[[1]][include & measured_covariates, c(
             "t", "trt",
-            names(adjustVars)
+            names(adjustVars),
+            if(mediatorInCensMod){
+              names(mediator)
+            }else{
+              NULL
+            }
           )],
-          id = dataList[[1]]$id[include],
+          id = dataList[[1]]$id[include & measured_covariates],
+          obsWeights = input_sampWt,          
           family = "binomial",
           SL.library = SL.ctime,
           verbose = verbose,
@@ -173,18 +200,28 @@ estimateCensoring <- function(dataList,
     }
     if (class(ctimeMod) != "noCens") {
       dataList <- lapply(dataList, function(x) {
-        g_dC <- rep(1, nrow(x))
+        g_dC <- rep(1, dim(x)[1])
         if (t0 != 1) {
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
-          g_dC <-
+          if(!is.null(mediator)){
+            measured_covariates_x <- x$id %in% which(complete.cases(mediator))
+          }else{
+            measured_covariates_x <- rep(TRUE, dim(x)[1])
+          }
+          g_dC[measured_covariates_x] <-
             suppressWarnings(
               1 - predict(
                 ctimeMod,
-                newdata = x[, c(
+                newdata = x[measured_covariates_x, c(
                   "t", "trt",
-                  names(adjustVars)
+                  names(adjustVars),
+                  if(mediatorInCensMod){
+                    names(mediator)
+                  }else{
+                    NULL
+                  }
                 )],
                 onlySL = TRUE
               )[[1]]

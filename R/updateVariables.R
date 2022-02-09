@@ -26,6 +26,7 @@
 #'  time.
 updateVariables <- function(dataList, allJ, ofInterestJ, 
                             nJ, uniqtrt, ntrt, t0, att,
+                            mediator, mediatorTrtVal,
                             verbose, ...) {
   dataList[2:(ntrt + 1)] <- lapply(dataList[2:(ntrt + 1)], function(x, allJ) {
     # total hazard
@@ -118,7 +119,7 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
   # drop merged trt columns
   if (ntrt == 1) {
     dataList[[1]]$trt <- dataList[[1]]$trt.x
-    dataList[[1]] <- subset(dataList[[1]], select = -c("trt.x", "trt.y"))
+    dataList[[1]] <- dataList[[1]][,-which(colnames(dataList[[1]]) %in% c("trt.x", "trt.y") )]
   }
 
   dataList <- lapply(dataList, function(x, allJ) {
@@ -135,9 +136,11 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
     x
   }, allJ = allJ)
 
-
   # set up clever covariates needed for fluctuation
-  dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt, att) {
+  dataList <- lapply(dataList, 
+   function(x, ofInterestJ, uniqtrt, 
+            att, mediator, mediatorTrtVal,
+            mediatorSampWt) {
     for (z in uniqtrt) {
       for (j in ofInterestJ) {
         x[[paste0("H", j, ".jSelf.z", z)]] <-
@@ -152,10 +155,25 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
           x[[paste0("H", j, ".jSelf.z", z)]] <- x[[paste0("H", j, ".jSelf.z", z)]] * x$g_1
           x[[paste0("H", j, ".jNotSelf.z", z)]] <- x[[paste0("H", j, ".jNotSelf.z", z)]] * x$g_1
         }
+        if(!is.null(mediator)){
+          # browser()
+          x[[paste0("H", j, ".jSelf.z", z)]] <- 
+           x[[paste0("H", j, ".jSelf.z", z)]] * 
+            x$sampWt * 
+             (x[[paste0("g_", z)]] / x[[paste0("g_", mediatorTrtVal)]]) *
+              (x[[paste0("g_", mediatorTrtVal)]] / x[[paste0("g_", z)]])
+          x[[paste0("H", j, ".jNotSelf.z", z)]] <-
+           x[[paste0("H", j, ".jNotSelf.z", z)]] * 
+            x$sampWt * 
+             (x[[paste0("g_", z)]] / x[[paste0("g_", mediatorTrtVal)]]) *
+              (x[[paste0("g_", mediatorTrtVal)]] / x[[paste0("g_", z)]])            
+        }
       }
     }
     x
-  }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt, att = att)
+  }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt, att = att,
+  mediator = mediator, mediatorTrtVal = mediatorTrtVal,
+  mediatorSampWt = mediatorSampWt)
   #  } else {
   #    dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
   #    # placebo match

@@ -1,5 +1,5 @@
 #' Extract Influence Curve for Estimated Hazard Functions
-#'
+#' 
 #' @description This function computes the hazard-based efficient influence
 #'  curve at the final estimate of the fluctuated cause-specific hazard
 #'  functions and evaluates it on the observed data. The influence function is
@@ -30,8 +30,12 @@
 #'  added for each value of X in \code{ofInterestJ} and each value of Z in
 #'  \code{uniqtrt}. These are the sum over all timepoints of the estimated
 #'  efficient influence function evaluated at that observation.
+
+# TO DO: Document that this includes W-tangent space piece
+# for non-mediation case, but does not include W-tangent space
+# piece for mediation case
 getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
-                                    uniqtrt, t0, verbose, att, ...) {
+                                    uniqtrt, t0, verbose, att, mediator, ...) {
   na_ftime_idx <- which(is.na(dat$ftime))
   this_list_idx <- 1
   for (z in uniqtrt) {
@@ -62,19 +66,24 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
       }
       if(length(na_ftime_idx) > 0){
         tmp_D <- rep(0, dim(dat)[1])
-        tmp_D[-na_ftime_idx] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+        tmp_D[-na_ftime_idx] <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
       }else{
-        tmp_D <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+        tmp_D <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
       }
       
-      if(!att){
+      # for natural effects, we'll calculate the portion of 
+      # the EIF in tangent space of adjustVars separately later
+      # in the code
+      if(!att & is.null(mediator)){
         dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
           dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]]
-      }else{
+      }else if(att & is.null(mediator)){
         tmp_D <- tmp_D / mean(dat$trt == 1)
         dat[[paste0("D.j", j, ".z", z)]] <- tmp_D + 
           as.numeric(dat$trt == 1) / mean(dat$trt == 1) * 
             (dat[[paste0("F", j, ".z", z, ".t0")]] - dat[[paste0("margF", j, ".z", z, ".t0")]])
+      }else{
+        dat[[paste0("D.j", j, ".z", z)]] <- tmp_D
       }
     }
   }
