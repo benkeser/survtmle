@@ -161,12 +161,12 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
            x[[paste0("H", j, ".jSelf.z", z)]] * 
             x$sampWt * 
              (x[[paste0("g_", z)]] / x[[paste0("g_", mediatorTrtVal)]]) *
-              (x[[paste0("g_", mediatorTrtVal)]] / x[[paste0("g_", z)]])
+              (x[[paste0("g_M", mediatorTrtVal)]] / x[[paste0("g_M", z)]])
           x[[paste0("H", j, ".jNotSelf.z", z)]] <-
            x[[paste0("H", j, ".jNotSelf.z", z)]] * 
             x$sampWt * 
              (x[[paste0("g_", z)]] / x[[paste0("g_", mediatorTrtVal)]]) *
-              (x[[paste0("g_", mediatorTrtVal)]] / x[[paste0("g_", z)]])            
+              (x[[paste0("g_M", mediatorTrtVal)]] / x[[paste0("g_M", z)]])            
         }
       }
     }

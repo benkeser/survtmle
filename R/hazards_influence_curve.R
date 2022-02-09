@@ -69,7 +69,7 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
         tmp_D[-na_ftime_idx] <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
       }else{
         tmp_D <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
-      }
+      }    
       
       # for natural effects, we'll calculate the portion of 
       # the EIF in tangent space of adjustVars separately later
