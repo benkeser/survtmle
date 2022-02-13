@@ -9,7 +9,8 @@ estimateMedReg <- function(
   bounds,
   ofInterestJ,
   mediatorTrtVal,
-  uniqtrt
+  uniqtrt,
+  verbose
 ){
 	if(!is.null(bounds)){
 		stop("bounds not yet supported for mediation analysis")

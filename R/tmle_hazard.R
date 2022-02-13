@@ -217,7 +217,7 @@ hazard_tmle <- function(ftime,
                         returnModels = FALSE,
                         ftypeOfInterest = unique(ftype[ftype != 0]),
                         trtOfInterest = unique(trt),
-                        cvControl,
+                        cvControl = list(),
                         bounds = NULL,
                         verbose = FALSE,
                         tol = 1 / (length(ftime)),
@@ -400,7 +400,8 @@ hazard_tmle <- function(ftime,
       bounds = bounds,
       ofInterestJ = ofInterestJ,
       mediatorTrtVal = mediatorTrtVal,
-      uniqtrt = uniqtrt
+      uniqtrt = uniqtrt,
+      verbose = verbose
     )
     medMod <- medOut$mediatorMod
     dat <- medOut$dat
@@ -417,7 +418,8 @@ hazard_tmle <- function(ftime,
       uniqtrt = uniqtrt,
       adjustVars = adjustVars, 
       SL.eif = SL.eif, glm.eif = glm.eif, 
-      cvControl = cvControl
+      cvControl = cvControl,
+      verbose = verbose
     )
     eifMod <- eifOut$eifMod
     dat <- eifOut$dat

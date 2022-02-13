@@ -1,7 +1,8 @@
 # TO DO: document
 estimateFullDataEIF <- function(
 	dat, mediator, ofInterestJ, uniqtrt,
-	adjustVars, SL.eif, glm.eif, cvControl
+	adjustVars, SL.eif, glm.eif, cvControl,
+	verbose
 ){
 	j <- ofInterestJ # TODO: generalize for competing risks
 	eifMod <- vector(mode = 'list', length = length(ofInterestJ))
@@ -36,7 +37,8 @@ estimateFullDataEIF <- function(
        	newX = covariates_j_full,
        	SL.library = SL.eif,
        	family = gaussian(),
-       	cvControl = cvControl
+       	cvControl = cvControl,
+       	verbose = verbose
       )
       dat[, estimated_eif_name] <- fit_j$SL.pred
 		}
