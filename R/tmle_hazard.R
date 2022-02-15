@@ -361,12 +361,6 @@ hazard_tmle <- function(ftime,
   )
   dataList <- estOut$dataList
   ftimeMod <- estOut$ftimeMod
-  # check for convergence
-  suppressWarnings(
-    if (all(dataList[[1]] == "convergence failure")) {
-      return("estimation convergence failure")
-    }
-  )
 
   # calculate cum inc and clever covariates needed for fluctuations
   dataList <- updateVariables(
@@ -470,11 +464,6 @@ hazard_tmle <- function(ftime,
       verbose = verbose, t0 = t0, att = att,
       mediator = mediator, mediatorTrtVal = mediatorTrtVal,
       mediatorSampWt = mediatorSampWt
-    )
-    suppressWarnings(
-      if (all(dataList[[1]] == "convergence failure")) {
-        return("fluctuation convergence failure")
-      }
     )
 
     # calculate influence function
