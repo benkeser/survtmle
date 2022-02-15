@@ -426,7 +426,7 @@ hazard_tmle <- function(ftime,
     targeted_mediatorSampProb <- mediatorSampProb
 
     ct <- 0
-    while(max(colMeans(samp_eif)) > tol & ct <= maxIter){
+    while(max(abs(colMeans(samp_eif))) > tol & ct <= maxIter){
       ct <- ct + 1
       targeted_mediatorSampProb <- fluctuateSampWt(
         dat = dat, ofInterestJ = ofInterestJ, 
@@ -488,10 +488,34 @@ hazard_tmle <- function(ftime,
   }
 
   if(!is.null(mediator)){
-    dat <- fluctuateCumInc(
-      dat = dat, ofInterestJ = ofInterestJ, 
-      uniqtrt = uniqtrt, mediatorTrtVal = mediatorTrtVal
+    medOut <- estimateMedReg(
+      dat = dat, 
+      SL.mediator = SL.mediator,
+      glm.mediator = glm.mediator,
+      adjustVars = adjustVars,
+      cvControl = cvControl,
+      returnModels = returnModels,
+      bounds = bounds,
+      ofInterestJ = ofInterestJ,
+      mediatorTrtVal = mediatorTrtVal,
+      uniqtrt = uniqtrt,
+      verbose = verbose
     )
+    medMod <- medOut$mediatorMod
+    dat <- medOut$dat
+
+    dat <- getMediatorInfluenceCurve(
+      dat = dat, uniqtrt = uniqtrt,
+      mediatorTrtVal = mediatorTrtVal,
+      ofInterestJ = ofInterestJ
+    )
+
+    if(abs(mean(dat$Dmed.j1.z1)) > tol){
+      dat <- fluctuateCumInc(
+        dat = dat, ofInterestJ = ofInterestJ, 
+        uniqtrt = uniqtrt, mediatorTrtVal = mediatorTrtVal
+      )
+    }
 
     dat <- getMediatorInfluenceCurve(
       dat = dat, uniqtrt = uniqtrt,
