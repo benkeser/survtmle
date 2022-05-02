@@ -28,14 +28,15 @@ grad <- function(beta, Y, X) {
 #' @param H The covariate matrix
 #' @param offset The offset vector
 #' @param Y The outcome
+#' @param weight Vector of weights
 #'
 #' @importFrom stats plogis
 #'
 #' @return Numeric vector of the gradient of the parameter vector.
-grad_offset <- function(beta, Y, H, offset = NULL) {
+grad_offset <- function(beta, Y, H, offset = NULL, weight) {
   pi <- stats::plogis(cbind(offset, H) %*% c(1, beta))
   pi[pi == 0] <- .Machine$double.neg.eps
   pi[pi == 1] <- 1 - .Machine$double.neg.eps
-  gr <- crossprod(H, Y - pi)
+  gr <- crossprod(weight * H, Y - pi)
   return(-gr)
 }

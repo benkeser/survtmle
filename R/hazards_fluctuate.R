@@ -42,7 +42,7 @@
 #' @importFrom stats optim
 fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
                              t0, verbose, att, mediator, mediatorTrtVal,
-                             mediatorSampWt...) {
+                             mediatorSampWt, ...) {
   eps <- NULL
   for (z in uniqtrt) {
     for (j in allJ) {
@@ -75,7 +75,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
           x$thisScale
         x
       }, j = j, allJ = allJ)
-
+      
       fluc.mod <- stats::optim(
         par = rep(0, length(c(
           cleverCovariatesNotSelf,
@@ -90,6 +90,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
               cleverCovariatesSelf
             )]))
         ),
+        weight = dataList[[1]]$sampWt,
         offset = dataList[[1]]$thisOffset,
         method = "BFGS", gr = grad_offset,
         control = list(reltol = 1e-7, maxit = 50000)
@@ -129,7 +130,7 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
         nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
         verbose = verbose, t0 = t0, att = att,
         mediator = mediator, mediatorTrtVal = mediatorTrtVal,
-            mediatorSampWt = mediatorSampWt
+        mediatorSampWt = mediatorSampWt
       )
     }
   }

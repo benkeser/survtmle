@@ -231,8 +231,8 @@ estimateTreatment <- function(dat,
     }
 
   # truncate propensities
-  g_lab <- ifelse(is.null(mediator), "g_", "g_M")
-  for(a in trtOfInterest){
+  g_lab <- ifelse(is.null(mediator), "g_", "g_M")  
+  for(a in c(min(dat$trt), max(dat$trt))){
     this_g <- paste0(g_lab, a)
     dat[[this_g]][dat[[this_g]] < gtol] <- gtol
   }  

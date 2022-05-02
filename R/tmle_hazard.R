@@ -221,7 +221,7 @@ hazard_tmle <- function(ftime,
                         bounds = NULL,
                         verbose = FALSE,
                         tol = 1 / (length(ftime)),
-                        maxIter = 100,
+                        maxIter = 5,
                         gtol = 1e-3,
                         ...) {
 
@@ -426,7 +426,7 @@ hazard_tmle <- function(ftime,
     targeted_mediatorSampProb <- mediatorSampProb
 
     ct <- 0
-    while(max(abs(colMeans(samp_eif))) > tol & ct <= maxIter){
+    while(max(abs(colMeans(samp_eif))) > tol & ct < maxIter){      
       ct <- ct + 1
       targeted_mediatorSampProb <- fluctuateSampWt(
         dat = dat, ofInterestJ = ofInterestJ, 
@@ -455,7 +455,7 @@ hazard_tmle <- function(ftime,
 
   attr(dataList, "fluc") <- rep(Inf, ntrt * nJ^2)
   ct <- 0
-  while (any(abs(meanIC) > tol) & ct <= maxIter) {
+  while (any(abs(meanIC) > tol) & ct < maxIter) {
     ct <- ct + 1
     dataList <- fluctuateHazards(
       dataList = dataList, ofInterestJ = ofInterestJ,
@@ -483,8 +483,8 @@ hazard_tmle <- function(ftime,
     }
   }
   if (ct == maxIter + 1) {
-    warning("TMLE fluctuations did not converge. Check that meanIC is
-             adequately small and proceed with caution.")
+    warning("maxIter reached. You may wish to check meanIC to ensure
+             it is adequately small.")
   }
 
   if(!is.null(mediator)){
@@ -576,9 +576,6 @@ hazard_tmle <- function(ftime,
     var <- t(as.matrix(infCurves)) %*% as.matrix(infCurves) / n^2
     row.names(var) <- colnames(var) <- rowNames
   }
-
-  # TO DO: Add proportion mediated calculator
-  #        input is two survtmle objects
 
   out <- list(
     est = est, var = var, meanIC = meanIC, ic = infCurves,
