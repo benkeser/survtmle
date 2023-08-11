@@ -196,7 +196,8 @@ hazard_tmle <- function(ftime,
                         mediator = NULL,
                         mediatorTrtVal = NULL,
                         mediatorSampProb = NULL,
-                        mediatorInCensMod = FALSE,
+                        mediatorInCensMod = FALSE, 
+                        mediatorStratify.ftime = TRUE,                       
                         SL.ftime = NULL,
                         SL.ctime = NULL,
                         SL.trt = NULL,
@@ -357,7 +358,9 @@ hazard_tmle <- function(ftime,
     cvControl = cvControl,
     returnModels = returnModels,
     mediator = mediator,
-    mediatorSampWt = mediatorSampWt
+    mediatorSampWt = mediatorSampWt,
+    mediatorStratify.ftime = mediatorStratify.ftime,
+    mediatorTrtVal = mediatorTrtVal
   )
   dataList <- estOut$dataList
   ftimeMod <- estOut$ftimeMod

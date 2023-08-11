@@ -87,6 +87,8 @@ estimateHazards <- function(dataList,
                             verbose,
                             mediator,
                             mediatorSampWt,
+                            mediatorStratify.ftime,
+                            mediatorTrtVal,
                             ...) {
   ftimeMod <- vector(mode = "list", length = length(J))
   names(ftimeMod) <- paste0("J", J)
@@ -239,25 +241,48 @@ estimateHazards <- function(dataList,
       }
 
       if (class(SL.ftime[[1]]) != "SuperLearner") {
-        Qj_mod <- SuperLearner::SuperLearner(
-          Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0 & measured_covariates],
-          X = dataList[[1]][
-            NlessthanJ == 0 & measured_covariates,
-            c("t", "trt", names(adjustVars), 
-              if(!is.null(mediator)){
-                names(mediator)
-              }else{
-                NULL
-              }
-            )
-          ],
-          id = dataList[[1]]$id[NlessthanJ == 0 & measured_covariates],
-          family = stats::binomial(),
-          SL.library = SL.ftime,
-          cvControl = cvControl,
-          verbose = verbose,
-          obsWeights = dataList[[1]]$sampWt[NlessthanJ == 0 & measured_covariates]
-        )
+        if(!mediatorStratify.ftime){
+          Qj_mod <- SuperLearner::SuperLearner(
+            Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0 & measured_covariates],
+            X = dataList[[1]][
+              NlessthanJ == 0 & measured_covariates,
+              c("t", "trt", names(adjustVars), 
+                if(!is.null(mediator)){
+                  names(mediator)
+                }else{
+                  NULL
+                }
+              )
+            ],
+            id = dataList[[1]]$id[NlessthanJ == 0 & measured_covariates],
+            family = stats::binomial(),
+            SL.library = SL.ftime,
+            cvControl = cvControl,
+            verbose = verbose,
+            obsWeights = dataList[[1]]$sampWt[NlessthanJ == 0 & measured_covariates]
+          )
+        }else{
+          haveMediatorTrtVal <- dataList[[1]][[names(mediator)]] == mediatorTrtVal
+          Qj_mod <- SuperLearner::SuperLearner(
+            Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0 & measured_covariates & haveMediatorTrtVal],
+            X = dataList[[1]][
+              NlessthanJ == 0 & measured_covariates & haveMediatorTrtVal,
+              c("t", names(adjustVars), 
+                if(!is.null(mediator)){
+                  names(mediator)
+                }else{
+                  NULL
+                }
+              )
+            ],
+            id = dataList[[1]]$id[NlessthanJ == 0 & measured_covariates & haveMediatorTrtVal],
+            family = stats::binomial(),
+            SL.library = SL.ftime,
+            cvControl = cvControl,
+            verbose = verbose,
+            obsWeights = dataList[[1]]$sampWt[NlessthanJ == 0 & measured_covariates & haveMediatorTrtVal]
+          )
+        }
       } else {
         Qj_mod <- SL.ftime[[paste0("J", j)]]
       }
@@ -278,7 +303,12 @@ estimateHazards <- function(dataList,
               onlySL = TRUE,
               newdata = x[
                 measured_covariates_x, 
-                c("t", "trt", names(adjustVars),
+                c("t", 
+                  if(mediatorStratify.ftime){
+                    "trt"
+                  }else{
+                    NULL
+                  }, names(adjustVars),
                   if(!is.null(mediator)){
                     names(mediator)
                   }else{
