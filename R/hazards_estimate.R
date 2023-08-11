@@ -262,7 +262,7 @@ estimateHazards <- function(dataList,
             obsWeights = dataList[[1]]$sampWt[NlessthanJ == 0 & measured_covariates]
           )
         }else{
-          haveMediatorTrtVal <- dataList[[1]][[names(mediator)]] == mediatorTrtVal
+          haveMediatorTrtVal <- dataList[[1]]$trt == mediatorTrtVal
           Qj_mod <- SuperLearner::SuperLearner(
             Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0 & measured_covariates & haveMediatorTrtVal],
             X = dataList[[1]][
