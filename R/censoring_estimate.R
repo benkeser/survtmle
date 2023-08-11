@@ -139,7 +139,7 @@ estimateCensoring <- function(dataList,
           # temporarily replace time with t-1
           # NOTE: this will fail if t enters model as a factor
           x$t <- x$t - 1
-          if(!is.null(mediator)){
+          if(mediatorInCensMod){
             measured_covariates_x <- x$id %in% which(complete.cases(mediator))
           }else{
             measured_covariates_x <- rep(TRUE, dim(x)[1])
