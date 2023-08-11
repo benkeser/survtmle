@@ -360,7 +360,7 @@ hazard_tmle <- function(ftime,
     mediator = mediator,
     mediatorSampWt = mediatorSampWt,
     mediatorStratify.ftime = mediatorStratify.ftime,
-    mediatorTrtVal = mediatorTrtVal
+    trtOfInterest = trtOfInterest
   )
   dataList <- estOut$dataList
   ftimeMod <- estOut$ftimeMod
