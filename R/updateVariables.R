@@ -184,14 +184,14 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
         quantile_HNotself <- 0
         for (i in seq_along(dataList)[-1]){
           this_quantile <- quantile(
-            abs(dataList[[i]][[paste0("H", j, ".jSelf.z", z)]]), quantile = truncateH
+            abs(dataList[[i]][[paste0("H", j, ".jSelf.z", z)]]), p = truncateH
           )
           if(this_quantile > quantile_Hself){
             quantile_Hself <- this_quantile
           }
 
           this_quantile <- quantile(
-            abs(dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]]), quantile = truncateH
+            abs(dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]]), p = truncateH
           )
           if(this_quantile > quantile_HNotself){
             quantile_HNotself <- this_quantile
@@ -205,10 +205,10 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
             dataList[[i]][[paste0("H", j, ".jSelf.z", z)]] < -quantile_Hself
           ] <- -quantile_Hself
           dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]][
-            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] > quantile_Hself
+            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] > quantile_HNotself
           ] <- quantile_Hself
           dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]][
-            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] < -quantile_Hself
+            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] < -quantile_HNotself
           ] <- -quantile_Hself          
         }
       }
