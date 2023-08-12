@@ -42,7 +42,7 @@
 #' @importFrom stats optim
 fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
                              t0, verbose, att, mediator, mediatorTrtVal,
-                             mediatorSampWt, ...) {
+                             mediatorSampWt, truncateH = 0.975, ...) {
   eps <- NULL
   for (z in uniqtrt) {
     for (j in allJ) {
@@ -130,7 +130,8 @@ fluctuateHazards <- function(dataList, allJ, ofInterestJ, nJ, uniqtrt, ntrt,
         nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
         verbose = verbose, t0 = t0, att = att,
         mediator = mediator, mediatorTrtVal = mediatorTrtVal,
-        mediatorSampWt = mediatorSampWt
+        mediatorSampWt = mediatorSampWt, 
+        truncateH = truncateH
       )
     }
   }

@@ -224,6 +224,7 @@ hazard_tmle <- function(ftime,
                         tol = 1 / (length(ftime)),
                         maxIter = 5,
                         gtol = 1e-3,
+                        truncateH = 0.975,
                         ...) {
 
   # assemble data frame of necessary variables
@@ -371,7 +372,8 @@ hazard_tmle <- function(ftime,
     ofInterestJ = ofInterestJ,
     nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
     t0 = t0, verbose = verbose, att = att,
-    mediator = mediator, mediatorTrtVal = mediatorTrtVal
+    mediator = mediator, mediatorTrtVal = mediatorTrtVal,
+    truncateH = truncateH
   )
 
   # TO DO: Note this is the full data influence function
@@ -466,7 +468,7 @@ hazard_tmle <- function(ftime,
       uniqtrt = uniqtrt, ntrt = ntrt,
       verbose = verbose, t0 = t0, att = att,
       mediator = mediator, mediatorTrtVal = mediatorTrtVal,
-      mediatorSampWt = mediatorSampWt
+      mediatorSampWt = mediatorSampWt, truncateH = truncateH
     )
 
     # calculate influence function

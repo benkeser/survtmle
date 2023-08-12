@@ -18,6 +18,8 @@
 #' @param t0 The timepoint at which \code{survtmle} was called to evaluate.
 #' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
+#' @param truncateH A \code{numeric} indicating the quantile of clever covariates
+#'  beyond which values should be truncated. Set to 0 if no truncation is desired.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @return The function returns a list that is exactly the same as the input
@@ -27,7 +29,7 @@
 updateVariables <- function(dataList, allJ, ofInterestJ, 
                             nJ, uniqtrt, ntrt, t0, att,
                             mediator, mediatorTrtVal,
-                            verbose, ...) {
+                            verbose, truncateH = 0.975, ...) {
   dataList[2:(ntrt + 1)] <- lapply(dataList[2:(ntrt + 1)], function(x, allJ) {
     # total hazard
     Q_dot <- rowSums(cbind(rep(0, nrow(x)), x[, paste0("Q", allJ, "Haz")]))
@@ -174,6 +176,44 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
   }, ofInterestJ = ofInterestJ, uniqtrt = uniqtrt, att = att,
   mediator = mediator, mediatorTrtVal = mediatorTrtVal,
   mediatorSampWt = mediatorSampWt)
+
+  if(truncateH > 0 & truncateH < 1){
+    for (z in uniqtrt) {
+      for (j in ofInterestJ) {
+        quantile_Hself <- 0
+        quantile_HNotself <- 0
+        for (i in seq_along(dataList)[-1]){
+          this_quantile <- quantile(
+            abs(dataList[[i]][[paste0("H", j, ".jSelf.z", z)]]), quantile = truncateH
+          )
+          if(this_quantile > quantile_Hself){
+            quantile_Hself <- this_quantile
+          }
+
+          this_quantile <- quantile(
+            abs(dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]]), quantile = truncateH
+          )
+          if(this_quantile > quantile_HNotself){
+            quantile_HNotself <- this_quantile
+          }
+        }
+        for (i in seq_along(dataList)){
+          dataList[[i]][[paste0("H", j, ".jSelf.z", z)]][
+            dataList[[i]][[paste0("H", j, ".jSelf.z", z)]] > quantile_Hself
+          ] <- quantile_Hself
+          dataList[[i]][[paste0("H", j, ".jSelf.z", z)]][
+            dataList[[i]][[paste0("H", j, ".jSelf.z", z)]] < -quantile_Hself
+          ] <- -quantile_Hself
+          dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]][
+            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] > quantile_Hself
+          ] <- quantile_Hself
+          dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]][
+            dataList[[i]][[paste0("H", j, ".jNotSelf.z", z)]] < -quantile_Hself
+          ] <- -quantile_Hself          
+        }
+      }
+    }
+  }
   #  } else {
   #    dataList <- lapply(dataList, function(x, ofInterestJ, uniqtrt) {
   #    # placebo match
