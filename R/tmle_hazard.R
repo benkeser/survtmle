@@ -224,6 +224,7 @@ hazard_tmle <- function(ftime,
                         tol = 1 / (length(ftime)),
                         maxIter = 5,
                         gtol = 1e-3,
+                        gtolCens = 0.05,
                         truncateH = 0.975,
                         ...) {
 
@@ -338,7 +339,7 @@ hazard_tmle <- function(ftime,
     glm.family = glm.family,
     cvControl = cvControl,
     returnModels = returnModels,
-    gtol = gtol,
+    gtol = gtolCens,
     mediator = mediator,
     mediatorSampWt = mediatorSampWt,
     mediatorInCensMod = mediatorInCensMod
