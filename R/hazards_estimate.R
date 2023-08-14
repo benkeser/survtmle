@@ -252,7 +252,7 @@ estimateHazards <- function(dataList,
                 }else{
                   NULL
                 }
-              )
+              ), drop = FALSE
             ],
             id = dataList[[1]]$id[NlessthanJ == 0 & measured_covariates],
             family = stats::binomial(),
@@ -273,7 +273,7 @@ estimateHazards <- function(dataList,
                 }else{
                   NULL
                 }
-              )
+              ), drop = FALSE
             ],
             id = dataList[[1]]$id[NlessthanJ == 0 & measured_covariates & haveTrtOfInterest],
             family = stats::binomial(),

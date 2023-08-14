@@ -56,6 +56,12 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
       t0.mod <- dataList[[i + 1]]$ftime[1]
       Fj.t0.allZ[[i]] <-
         dataList[[i + 1]][[paste0("F", j, ".t")]][dataList[[i + 1]]$t == t0.mod]
+      Fj.t0.allZ[[i]][
+        Fj.t0.allZ[[i]] > 1
+      ] <- 1
+      Fj.t0.allZ[[i]][
+        Fj.t0.allZ[[i]] < 0
+      ] <- 0
     }
 
     dataList <- lapply(dataList, function(x, j, uniqtrt, Fj.t0.allZ) {
