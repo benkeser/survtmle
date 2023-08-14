@@ -304,7 +304,7 @@ estimateHazards <- function(dataList,
               newdata = x[
                 measured_covariates_x, 
                 c("t", 
-                  if(mediatorStratify.ftime){
+                  if(!mediatorStratify.ftime){
                     "trt"
                   }else{
                     NULL
