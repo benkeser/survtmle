@@ -51,12 +51,18 @@ estimateMedReg <- function(
 			  Y = outcome_j, X = covariates_j, 
 			  newX = covariates_j_full,
 			  SL.library = SL.mediator,
-			  family = binomial(), # should this be gaussian()?
+			  family = gaussian(), # should this be gaussian()?
 			  cvControl = cvControl,
 			  obsWeights = samp_weights_j,
 			  verbose = verbose
       )
 			dat[,new_col_label] <- fit_j$SL.pred
+			dat[,new_col_label][
+				dat[,new_col_label] > 1
+			] <- 1
+			dat[,new_col_label][
+				dat[,new_col_label] < 0
+			] <- 0
 		}
 		mediatorMod[[paste0("J", j)]] <- fit_j
 	}
