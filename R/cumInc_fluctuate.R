@@ -7,11 +7,11 @@ fluctuateCumInc <- function(
   	outcome_j <- paste0("F", j, ".z", uniqtrt, ".t0")
   	offset_label_j <- paste0("margMedF", j, ".z", uniqtrt, ".t0")
     dat[,offset_label_j][
-      data[,offset_label_j] < .Machine$double.neg.eps
+      dat[,offset_label_j] < .Machine$double.neg.eps
     ] <- .Machine$double.neg.eps
 
     dat[,offset_label_j][
-      data[,offset_label_j] > 1 - .Machine$double.neg.eps
+      dat[,offset_label_j] > 1 - .Machine$double.neg.eps
     ] <- 1 - .Machine$double.neg.eps
   	
     g_label <- paste0("g_", uniqtrt)
