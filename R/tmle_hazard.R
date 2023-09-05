@@ -516,7 +516,7 @@ hazard_tmle <- function(ftime,
       ofInterestJ = ofInterestJ
     )
 
-    if(abs(mean(dat[[paste0('Dmed.j1.z', uniqtrt)]]) > tol){
+    if(abs(mean(dat[[paste0('Dmed.j1.z', uniqtrt)]])) > tol){
       dat <- fluctuateCumInc(
         dat = dat, ofInterestJ = ofInterestJ, 
         uniqtrt = uniqtrt, mediatorTrtVal = mediatorTrtVal
