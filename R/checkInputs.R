@@ -127,8 +127,11 @@ checkInputs <- function(ftime,
                         verbose = FALSE,
                         tol = 1 / (length(ftime)),
                         maxIter = 100,
-                        Gcomp = FALSE) {
+                        Gcomp = FALSE, stratify = FALSE) {
 
+  if(stratify){
+    stopifnot(length(trtOfInterest) == 1)
+  }
   if (att){
     stopifnot(all(trt %in% c(0,1)))
     stopifnot(method == "hazard")

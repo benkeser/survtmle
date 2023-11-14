@@ -133,6 +133,13 @@
 #'  the \code{call} slot return only \code{NA} when passing in pre-computed
 #'  initial estimates to reduce memory inefficiency overhead. Defaults to
 #'  \code{TRUE}.
+#' @param stratify Only available if \code{method = "hazard"}. If \code{TRUE}, then the hazard 
+#'  models for both ctime and ftime are estimated using only
+#'  the observations with \code{trt == trtOfInterest}. Only works if 
+#'  \code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+#'  cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+#'  should not assume a variable named \code{trt} will be included in the candidate 
+#'  super learner estimators. 
 #'
 #' @return An object of class \code{survtmle}.
 #' \describe{
@@ -223,7 +230,7 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
                      method = "hazard", bounds = NULL, verbose = FALSE,
                      tol = 1 / (sqrt(length(ftime))),
                      maxIter = 10, Gcomp = FALSE, gtol = 1e-3,
-                     returnCall = TRUE) {
+                     returnCall = TRUE, stratify = FALSE) {
   # optionally catch function call
   if (returnCall) {
     call <- match.call(expand.dots = TRUE)
@@ -247,7 +254,8 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
     ftypeOfInterest = ftypeOfInterest,
     trtOfInterest = trtOfInterest,
     bounds = bounds, verbose = verbose, tol = tol,
-    Gcomp = Gcomp, method = method
+    Gcomp = Gcomp, method = method,
+    stratify = stratify
   )
 
   # run cross-validation arguments through reformatting helper
@@ -279,7 +287,8 @@ survtmle <- function(ftime, ftype, trt, adjustVars, t0 = max(ftime[ftype > 0]),
       verbose = verbose,
       tol = tol,
       maxIter = maxIter,
-      gtol = gtol
+      gtol = gtol,
+      stratify = stratify
     )
   } else if (method == "mean") {
     tmle.fit <- mean_tmle(

@@ -59,6 +59,16 @@
 #'  positivity violations.
 #' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
+#' @param stratify If \code{TRUE}, then the censoring hazard model is estimated using only
+#'  the observations with \code{trt == trtOfInterest}. Only works if 
+#'  \code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+#'  cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+#'  should not assume a variable named \code{trt} will be included in the candidate 
+#'  super learner estimators.
+#' @param trtOfInterest An input specifying which levels of \code{trt} are of
+#'  interest. The default value computes estimates for all values in
+#'  \code{unique(trt)}. Can alternatively be set to a vector of values found in
+#'  \code{trt}. Ignored unless \code{stratify == TRUE}.
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula predict glm
@@ -81,10 +91,22 @@ estimateCensoring <- function(dataList,
                               returnModels = FALSE,
                               verbose = TRUE,
                               gtol = 1e-3,
+                              stratify = FALSE,
+                              trtOfInterest,
                               ...) {
+  if(length(trtOfInterest) > 1){
+    stratify <- FALSE
+    warning("stratify option only supported if there is only a single trtOfInterest.")
+  }
+  if(stratify){
+    stratify_include <- dataList[[1]]$trt == trtOfInterest[1]
+  }else{
+    stratify_include <- rep(TRUE, length(dataList[[1]][,1]))
+  }
   include <- !(dataList[[1]]$t == dataList[[1]]$ftime & dataList[[1]]$C != 1 &
-    dataList[[1]]$t < t0) & !(dataList[[1]]$t == dataList[[1]]$ftime
-  & dataList[[1]]$C == 1 & dataList[[1]]$t == t0)
+    dataList[[1]]$t < t0) & !(dataList[[1]]$t == dataList[[1]]$ftime & 
+    dataList[[1]]$C == 1 & dataList[[1]]$t == t0) & 
+    stratify_include
 
   ## determine whether to use linear or logistic regression in GLM fit
   if (!is.null(glm.family)) {
@@ -148,12 +170,18 @@ estimateCensoring <- function(dataList,
   } else {
     if (class(SL.ctime) != "SuperLearner") {
       if (!all(dataList[[1]]$C == 0)) {
+        predictor_variables <- c(
+            "t",
+            names(adjustVars)
+          )
+        if(!stratify){
+          predictor_variables <- c(
+            predictor_variables, "trt"
+          )
+        }
         ctimeMod <- SuperLearner::SuperLearner(
           Y = dataList[[1]]$C[include],
-          X = dataList[[1]][include, c(
-            "t", "trt",
-            names(adjustVars)
-          )],
+          X = dataList[[1]][include, predictor_variables, drop = FALSE],
           id = dataList[[1]]$id[include],
           family = "binomial",
           SL.library = SL.ctime,
@@ -172,6 +200,15 @@ estimateCensoring <- function(dataList,
       ctimeMod <- SL.ctime
     }
     if (class(ctimeMod) != "noCens") {
+      predictor_variables <- c(
+            "t",
+            names(adjustVars)
+          )
+      if(!stratify){
+        predictor_variables <- c(
+          predictor_variables, "trt"
+        )
+      }
       dataList <- lapply(dataList, function(x) {
         g_dC <- rep(1, nrow(x))
         if (t0 != 1) {
@@ -182,10 +219,7 @@ estimateCensoring <- function(dataList,
             suppressWarnings(
               1 - predict(
                 ctimeMod,
-                newdata = x[, c(
-                  "t", "trt",
-                  names(adjustVars)
-                )],
+                newdata = x[, predictor_variables, drop = FALSE],
                 onlySL = TRUE
               )[[1]]
             )

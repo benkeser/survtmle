@@ -64,6 +64,16 @@
 #' @param bounds A list of bounds... TODO: Add more description here.
 #' @param verbose A \code{logical} indicating whether the function should print
 #'  messages to indicate progress.
+#' @param trtOfInterest An input specifying which levels of \code{trt} are of
+#'  interest. The default value computes estimates for all values in
+#'  \code{unique(trt)}. Can alternatively be set to a vector of values found in
+#'  \code{trt}. Ignored unless \code{stratify == TRUE}.
+#' @param stratify If \code{TRUE}, then the hazard model is estimated using only
+#'  the observations with \code{trt == trtOfInterest}. Only works if 
+#'  \code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+#'  cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+#'  should not assume a variable named \code{trt} will be included in the candidate 
+#'  super learner estimators. 
 #' @param ... Other arguments. Not currently used.
 #'
 #' @importFrom stats as.formula predict model.matrix optim glm binomial
@@ -85,9 +95,22 @@ estimateHazards <- function(dataList,
                             returnModels,
                             bounds,
                             verbose,
+                            trtOfInterest,
+                            stratify,
                             ...) {
+  
+  if(length(trtOfInterest) > 1){
+    stratify <- FALSE
+    warning("stratify option only supported if there is only a single trtOfInterest.")
+  }
+  if(stratify){
+    stratify_include <- dataList[[1]]$trt == trtOfInterest[1]
+  }else{
+    stratify_include <- rep(TRUE, length(dataList[[1]][,1]))
+  }
   ftimeMod <- vector(mode = "list", length = length(J))
   names(ftimeMod) <- paste0("J", J)
+
 
   ## determine whether to use linear or logistic regression in GLM fit
   if (!is.null(glm.family)) {
@@ -111,7 +134,7 @@ estimateHazards <- function(dataList,
           !("speedglm" %in% class(glm.ftime[[1]]))) {
           Qj_mod <- fast_glm(
             reg_form = stats::as.formula(Qj_form),
-            data = dataList[[1]][NlessthanJ == 0, ],
+            data = dataList[[1]][NlessthanJ == 0 & stratify_include, , drop = FALSE],
             family = eval(glm_family)
           )
           if (unique(class(Qj_mod) %in% c("glm", "lm"))) {
@@ -177,9 +200,11 @@ estimateHazards <- function(dataList,
             dataList[[1]][[paste0("l", j)]])
 
         if (class("glm.ftime") != "list") {
+          include <- (NlessthanJ == 0 & stratify_include)
           Qj_mod <- stats::optim(
             par = rep(0, ncol(X)), fn = LogLikelihood,
-            Y = Ytilde, X = X, method = "BFGS", gr = grad,
+            Y = Ytilde[include], X = X[include, drop = FALSE], 
+            method = "BFGS", gr = grad,
             control = list(reltol = 1e-7, maxit = 50000)
           )
         } else {
@@ -212,12 +237,13 @@ estimateHazards <- function(dataList,
 
       if (class(SL.ftime[[1]]) != "SuperLearner") {
         Qj_mod <- SuperLearner::SuperLearner(
-          Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0],
+          Y = dataList[[1]][[paste0("N", j)]][NlessthanJ == 0 & stratify_include],
           X = dataList[[1]][
-            NlessthanJ == 0,
-            c("t", "trt", names(adjustVars))
+            NlessthanJ == 0 & stratify_include,
+            c("t", "trt", names(adjustVars)),
+            drop = FALSE
           ],
-          id = dataList[[1]]$id[NlessthanJ == 0],
+          id = dataList[[1]]$id[NlessthanJ == 0 & stratify_include],
           family = stats::binomial(),
           SL.library = SL.ftime,
           cvControl = cvControl,

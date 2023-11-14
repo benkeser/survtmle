@@ -118,8 +118,12 @@ updateVariables <- function(dataList, allJ, ofInterestJ,
   # drop merged trt columns
   if (ntrt == 1) {
     dataList[[1]]$trt <- dataList[[1]]$trt.x
-    dataList[[1]] <- subset(dataList[[1]], select = -c("trt.x", "trt.y"))
-  }
+    if("trt.x" %in% colnames(dataList[[1]])){
+      dataList[[1]] <- dataList[[1]][, -which(colnames(dataList[[1]]) == "trt.x"), drop = FALSE]
+    }
+    if("trt.y" %in% colnames(dataList[[1]])){
+      dataList[[1]] <- dataList[[1]][, -which(colnames(dataList[[1]]) == "trt.y"), drop = FALSE]    }
+    }
 
   dataList <- lapply(dataList, function(x, allJ) {
     for (j in allJ) {

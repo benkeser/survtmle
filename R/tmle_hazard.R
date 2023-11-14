@@ -109,6 +109,12 @@
 #' @param gtol The truncation level of predicted censoring survival. Setting to
 #'  larger values can help performance in data sets with practical positivity
 #'  violations.
+#' @param stratify If \code{TRUE}, then the hazard model is estimated using only
+#'  the observations with \code{trt == trtOfInterest}. Only works if 
+#'  \code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+#'  cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+#'  should not assume a variable named \code{trt} will be included in the candidate 
+#'  super learner estimators. 
 #' @param ... Other options. Not currently used.
 #'
 #' @return An object of class \code{survtmle}.
@@ -195,6 +201,7 @@ hazard_tmle <- function(ftime,
                         tol = 1 / (length(ftime)),
                         maxIter = 100,
                         gtol = 1e-3,
+                        stratify = FALSE,
                         ...) {
 
   # assemble data frame of necessary variables
@@ -272,7 +279,9 @@ hazard_tmle <- function(ftime,
     glm.family = glm.family,
     cvControl = cvControl,
     returnModels = returnModels,
-    gtol = gtol
+    gtol = gtol,
+    stratify = stratify,
+    trtOfInterest = trtOfInterest
   )
   dataList <- censOut$dataList
   ctimeMod <- censOut$ctimeMod
@@ -288,7 +297,9 @@ hazard_tmle <- function(ftime,
     glm.ftime = glm.ftime,
     glm.family = glm.family,
     cvControl = cvControl,
-    returnModels = returnModels
+    returnModels = returnModels,
+    stratify = stratify,
+    trtOfInterest = trtOfInterest
   )
   dataList <- estOut$dataList
   ftimeMod <- estOut$ftimeMod
@@ -345,7 +356,11 @@ hazard_tmle <- function(ftime,
       verbose = verbose, t0 = t0, att = att
     )
     infCurves <- dat[, grep("D.j", names(dat))]
-    meanIC <- colMeans(infCurves)
+    if(is.numeric(infCurves)){
+      meanIC <- mean(infCurves)
+    }else{
+      meanIC <- colMeans(infCurves)
+    }
 
     if (verbose) {
       # print(attr(dataList,"fluc"))
