@@ -13,6 +13,7 @@ getHazardInfluenceCurve(
   uniqtrt,
   t0,
   verbose,
+  att,
   ...
 )
 }
@@ -38,6 +39,10 @@ evaluate.}
 
 \item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress.}
+
+\item{att}{A \code{boolean} indicating whether to compute the ATT estimate,
+instead of treatment specific survival curves. This option only works with 
+two levels of \code{trt} that are labeled with 0 and 1.}
 
 \item{...}{Other arguments. Not currently used.}
 }

@@ -19,6 +19,7 @@ hazard_tmle(
   glm.trt = "1",
   glm.ftimeMissing = NULL,
   glm.family = "binomial",
+  att = FALSE,
   returnIC = TRUE,
   returnModels = FALSE,
   ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -29,6 +30,7 @@ hazard_tmle(
   tol = 1/(length(ftime)),
   maxIter = 100,
   gtol = 0.001,
+  stratify = FALSE,
   ...
 )
 }
@@ -99,6 +101,10 @@ logistic regression. Only change this from the default if there are
 justifications that are well understood. This is passed directly to
 \code{\link{estimateCensoring}} and \code{\link{estimateHazards}}.}
 
+\item{att}{A \code{boolean} indicating whether to compute the ATT estimate,
+instead of treatment specific survival curves. This option only works with 
+two levels of \code{trt} that are labeled with 0 and 1.}
+
 \item{returnIC}{A \code{logical} indicating whether to return vectors of
 influence curve estimates. These are needed for some post-hoc comparisons,
 so it is recommended to leave as \code{TRUE} (the default) unless the user
@@ -153,6 +159,13 @@ iterations have been completed.}
 \item{gtol}{The truncation level of predicted censoring survival. Setting to
 larger values can help performance in data sets with practical positivity
 violations.}
+
+\item{stratify}{If \code{TRUE}, then the hazard model is estimated using only
+the observations with \code{trt == trtOfInterest}. Only works if 
+\code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+should not assume a variable named \code{trt} will be included in the candidate 
+super learner estimators.}
 
 \item{...}{Other options. Not currently used.}
 }

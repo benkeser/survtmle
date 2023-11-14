@@ -16,6 +16,7 @@ checkInputs(
   glm.ftime = NULL,
   glm.ctime = NULL,
   glm.trt = "1",
+  att = FALSE,
   returnIC = TRUE,
   returnModels = TRUE,
   ftypeOfInterest = unique(ftype[ftype != 0]),
@@ -25,7 +26,8 @@ checkInputs(
   verbose = FALSE,
   tol = 1/(length(ftime)),
   maxIter = 100,
-  Gcomp = FALSE
+  Gcomp = FALSE,
+  stratify = FALSE
 )
 }
 \arguments{
@@ -89,6 +91,10 @@ equation passed to the \code{\link[stats]{formula}} option of a call to
 treatment. Ignored if \code{SL.trt != NULL}. By default set to "1",
 corresponding to using empirical estimates of each value of \code{trt}. The
 formula can include any variables found in \code{names(adjustVars)}.}
+
+\item{att}{A \code{boolean} indicating whether to compute the ATT estimate,
+instead of treatment specific survival curves. This option only works with 
+two levels of \code{trt} that are labeled with 0 and 1.}
 
 \item{returnIC}{A \code{logical} indicating whether to return vectors of
 influence curve estimates. These are needed for some post-hoc comparisons,

@@ -4,13 +4,23 @@
 \alias{plot.tp.survtmle}
 \title{Plot Results of Cumulative Incidence Estimates}
 \usage{
-\method{plot}{tp.survtmle}(x, ..., type = c("iso", "raw"), pal = ggsci::scale_color_lancet())
+\method{plot}{tp.survtmle}(
+  x,
+  ...,
+  incidence = TRUE,
+  type = c("iso", "raw"),
+  pal = ggsci::scale_color_lancet()
+)
 }
 \arguments{
 \item{x}{object of class \code{tp.survtmle} as produced by a sequence of
 appropriate calls to \code{survtmle} and \code{timepoints}}
 
 \item{...}{additional arguments passed \code{plot} as necessary}
+
+\item{incidence}{\code{boolean} indicating whether to plot cumulative incidence
+or 1 minus cumulative incidence (corresponding to survival curves if only one 
+type of failure)}
 
 \item{type}{\code{character} describing whether to provide a plot of raw
 ("raw") or monotonic ("iso") estimates in the resultant step function plot,

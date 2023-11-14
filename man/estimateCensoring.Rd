@@ -15,6 +15,8 @@ estimateCensoring(
   returnModels = FALSE,
   verbose = TRUE,
   gtol = 0.001,
+  stratify = FALSE,
+  trtOfInterest,
   ...
 )
 }
@@ -71,6 +73,18 @@ messages to indicate progress.}
 
 \item{gtol}{The truncation level of predicted censoring survival to handle
 positivity violations.}
+
+\item{stratify}{If \code{TRUE}, then the censoring hazard model is estimated using only
+the observations with \code{trt == trtOfInterest}. Only works if 
+\code{length(trtOfInterest) == 1}. If \code{stratify = TRUE} then \code{glm.ftime}
+cannot include \code{trt} in the model formula and any learners in \code{SL.ftime}
+should not assume a variable named \code{trt} will be included in the candidate 
+super learner estimators.}
+
+\item{trtOfInterest}{An input specifying which levels of \code{trt} are of
+interest. The default value computes estimates for all values in
+\code{unique(trt)}. Can alternatively be set to a vector of values found in
+\code{trt}. Ignored unless \code{stratify == TRUE}.}
 
 \item{...}{Other arguments. Not currently used.}
 }

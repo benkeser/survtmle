@@ -12,6 +12,7 @@ updateVariables(
   uniqtrt,
   ntrt,
   t0,
+  att,
   verbose,
   ...
 )
@@ -32,6 +33,10 @@ passed to \code{\link{hazard_tmle}}.}
 \item{ntrt}{The number of \code{trt} values of interest.}
 
 \item{t0}{The timepoint at which \code{survtmle} was called to evaluate.}
+
+\item{att}{A \code{boolean} indicating whether to compute the ATT estimate,
+instead of treatment specific survival curves. This option only works with 
+two levels of \code{trt} that are labeled with 0 and 1.}
 
 \item{verbose}{A \code{logical} indicating whether the function should print
 messages to indicate progress.}
