@@ -325,12 +325,9 @@ hazard_tmle <- function(ftime,
     nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
     verbose = verbose, t0 = t0, att = att
   )
-  infCurves <- dat[, grep("D.j", names(dat))]
-  if (!is.numeric(infCurves)) {
-    meanIC <- colMeans(infCurves)
-  } else {
-    meanIC <- mean(infCurves)
-  }
+  infCurves <- dat[, grep("D.j", names(dat)), drop = FALSE]
+  meanIC <- colMeans(infCurves)
+
 
   attr(dataList, "fluc") <- rep(Inf, ntrt * nJ^2)
   ct <- 0
@@ -355,12 +352,8 @@ hazard_tmle <- function(ftime,
       nJ = nJ, uniqtrt = uniqtrt, ntrt = ntrt,
       verbose = verbose, t0 = t0, att = att
     )
-    infCurves <- dat[, grep("D.j", names(dat))]
-    if(is.numeric(infCurves)){
-      meanIC <- mean(infCurves)
-    }else{
-      meanIC <- colMeans(infCurves)
-    }
+    infCurves <- dat[, grep("D.j", names(dat)), drop = FALSE]
+    meanIC <- colMeans(infCurves)
 
     if (verbose) {
       # print(attr(dataList,"fluc"))

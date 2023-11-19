@@ -62,9 +62,9 @@ getHazardInfluenceCurve <- function(dataList, dat, allJ, ofInterestJ, nJ,
       }
       if(length(na_ftime_idx) > 0){
         tmp_D <- rep(0, dim(dat)[1])
-        tmp_D[-na_ftime_idx] <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+        tmp_D[-na_ftime_idx] <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
       }else{
-        tmp_D <- unlist(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
+        tmp_D <- c(by(rowSums(thisD), dataList[[1]]$id, FUN = sum))
       }
       
       if(!att){

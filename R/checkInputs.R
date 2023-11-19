@@ -133,7 +133,7 @@ checkInputs <- function(ftime,
     stopifnot(length(trtOfInterest) == 1)
   }
   if (att){
-    stopifnot(all(trt %in% c(0,1)))
+    stopifnot(all(trt %in% c(0,1,-1)))
     stopifnot(method == "hazard")
   }
   # check for NULL values
