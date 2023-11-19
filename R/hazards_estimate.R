@@ -99,7 +99,7 @@ estimateHazards <- function(dataList,
                             stratify,
                             ...) {
   
-  if(length(trtOfInterest) > 1){
+  if(length(trtOfInterest) > 1 & stratify){
     stratify <- FALSE
     warning("stratify option only supported if there is only a single trtOfInterest.")
   }

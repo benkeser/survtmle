@@ -231,3 +231,47 @@ test_that("hazard_tmle with glm and super learner with only glm give same answer
   # should have roughly same point estimates
   expect_equal(fit1$est, fit2$est)
 })
+
+
+test_that("hazard_tmle works with >2 treatments", {
+  set.seed(1234)
+  n <- 300
+  trt <- rbinom(n, 2, 0.33)
+  adjustVars <- data.frame(W1 = round(runif(n)), W2 = round(runif(n, 0, 2)))
+
+  ftime <- round(1 + runif(n, 1, 4) - trt + adjustVars$W1 + adjustVars$W2)
+  ftype <- round(runif(n, 0, 1))
+
+  # fit with no bounds
+  fit1 <- survtmle(
+    ftime = ftime, ftype = ftype, 
+    trt = trt, adjustVars = adjustVars,
+    glm.trt = "W1 + W2",
+    glm.ftime = "trt + W1 + W2", 
+    glm.ctime = "trt + W1 + W2",
+    method = "hazard", t0 = 4,
+    returnModels = TRUE
+  )
+
+  expect_equal(length(fit1$est), 3)
+  expect_equal(names(fit1$trtMod)[1], "I(trt = 2) ~ adjustVars")
+  expect_equal(names(fit1$trtMod)[2], "I(trt = 1) ~ adjustVars")
+  expect_equal(length(fit1$trtMod), 2)
+
+  # now with trtOfInterest subset
+  fit2 <- survtmle(
+    ftime = ftime, ftype = ftype, 
+    trt = trt, adjustVars = adjustVars,
+    glm.trt = "W1 + W2",
+    glm.ftime = "trt + W1 + W2", 
+    glm.ctime = "trt + W1 + W2",
+    method = "hazard", t0 = 4,
+    trtOfInterest = 0,
+    returnModels = TRUE
+  )
+  expect_equal(length(fit2$est), 1)
+  expect_equal(names(fit2$trtMod)[1], "I(trt = 2) ~ adjustVars")
+  expect_equal(names(fit2$trtMod)[2], "I(trt = 1) ~ adjustVars")
+  expect_equal(length(fit2$trtMod), 2)
+
+}
